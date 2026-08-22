@@ -1,0 +1,21 @@
+{
+  "name": "wefes-nexus-nepal-root",
+  "private": true,
+  "scripts": {
+    "build": "pnpm exec turbo run build",
+    "dev": "pnpm exec turbo run dev --parallel",
+    "lint": "pnpm exec turbo run lint",
+    "clean": "pnpm exec turbo run clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0"
+  },
+  "packageManager": "pnpm@10.12.4",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "knip": "^6.32.2"
+  }
+}

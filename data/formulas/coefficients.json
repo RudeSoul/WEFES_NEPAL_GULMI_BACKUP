@@ -1,0 +1,55 @@
+{
+  "version": "1.0.0",
+  "description": "Baseline coefficients and formula configurations for WEFES Nexus Nepal calculation engine.",
+  "waterPillar": {
+    "nationalAvgRainfallMm": 1500,
+    "waterStressMultiplier": 15,
+    "litersToM3Ratio": 1000,
+    "rainfallFactorCapMin": 0.5
+  },
+  "energyPillar": {
+    "kwhToMjFactor": 3.6,
+    "baseSolarRadiationThreshold": 4.0,
+    "solarRenewableCoefficient": 0.1,
+    "maxRenewableShare": 0.8,
+    "gridTariffNprPerKwh": 10.5
+  },
+  "foodPillar": {
+    "timberKgPerM3": 650,
+    "kcalWeight": 20,
+    "yieldWeight": 15,
+    "baseOffset": 30
+  },
+  "ecosystemPillar": {
+    "baseErosionMitigation": {
+      "timber_sal": 85,
+      "tea": 70,
+      "coffee": 70,
+      "cardamom": 70,
+      "apple": 60,
+      "default": 40
+    },
+    "mountainErosionBonus": 10,
+    "carbonOffsetMultiplier": 12,
+    "erosionMitigationWeight": 0.6
+  },
+  "socioeconomicPillar": {
+    "personDaysPerFte": 250,
+    "indirectJobMultiplier": 0.5
+  },
+  "nexusBalanceIndex": {
+    "ecoFoodWeight": 0.45,
+    "ecoMarginWeight": 0.35,
+    "waterStressPenaltyWeight": 0.3,
+    "fossilSharePenaltyWeight": 0.2,
+    "baseConstant": 20
+  },
+  "projection10Year": {
+    "waterStressDecay": 0.97,
+    "energyEfficiencyGainPerYear": 0.98,
+    "biomassYieldGrowthRate": 0.015,
+    "carbonSequestrationRate": 0.02,
+    "economicPriceGrowthRate": 0.04,
+    "laborProductivityGrowthRate": 0.03
+  }
+}

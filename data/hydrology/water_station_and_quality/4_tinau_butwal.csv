@@ -1,0 +1,7 @@
+Parameters,pH,DO,BOD,COD,TDS,EC,NH3-N,NO3-N,NO2-N,TOC,TH,Mg,Fe,TC,E.coli
+Desired Value,6.5-8.5*,>5,<30,<250,<1000*,<1500*,<1.5*,<50*,-,-,<500*,<100,<0.3(3.0)*,0*,0*
+Units,-,mg/l,mg/l,mg/l,mg/l,µS/cm,mg/l,mg/l,mg/l,mg/l,mg/l,mg/l,mg/l,MPN/100ml,MPN/100ml
+Tinau-Jhumsa bridge,7.2,10.4,1.6,2.6,200,220,0.9,0.5,0.02,4,200,14.5,0.1,900,70
+Tinau-Siddhi baba butwal,7.4,8.3,2,2.1,200,220,1.4,0.6,0.05,5,240,15.4,0.1,500,40
+Tinau-Purano bus park,7.4,9.3,1.6,3.3,200,250,1,0.3,0.01,3,120,11.2,0.1,900,50
+Tinau-Radhakrishna tole,7.5,9.5,1.5,3.9,220,220,1,0.5,0.01,4,200,9.8,0.1,500,30

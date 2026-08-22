@@ -1,0 +1,133 @@
+export interface DataIntegrityEntry {
+  domainId: string;
+  domainTitle: string;
+  category: 'Agronomy & Soil' | 'Livestock & Aqua' | 'Weather & Hydro' | 'Market & Value Chain' | 'Energy & Bioeconomy' | 'Finance & Insurance' | 'Carbon & NDC' | 'Local Governance';
+  nepalDataReality: string; // The current institutional/technological gap
+  platformMethodologyAndProxy: string; // How our platform transparently models it
+  uncertaintyGrade: 'Verified NARC/WB Empirical' | 'Calibrated Satellite Proxy' | 'Simulated Policy Scenario' | 'User-Adjustable Baseline';
+  sovereignActionToHelpNepal: string; // How Nepal government / institutions can bridge the gap
+  primarySourcesCited: string[];
+}
+
+export const DATA_INTEGRITY_MATRIX: DataIntegrityEntry[] = [
+  {
+    domainId: 'aquacrop-engine',
+    domainTitle: 'AquaCrop-RS Process-Based Crop Water Productivity & Daily Biomass',
+    category: 'Agronomy & Soil',
+    nepalDataReality: 'Routine crop yield reporting in Nepal relies on post-harvest manual crop-cutting statistics rather than in-season process models.',
+    platformMethodologyAndProxy: 'Calibrated FAO AquaCrop-RS dynamic water productivity (WP* = 32 g/m² for C4 maize, 17.5 g/m² for C3 wheat) to predict mid-season transpiration collapse and biomass buildup.',
+    uncertaintyGrade: 'Verified NARC/WB Empirical',
+    sovereignActionToHelpNepal: 'NARC and MoALD should adopt AquaCrop-RS as the national crop forecasting engine for real-time food balance sheet monitoring.',
+    primarySourcesCited: ['FAO AquaCrop Model Reference Manual', 'CGIAR/Elsevier AquaCrop Yield Forecasting in Nepal (2026)', 'NARC Agronomy Division'],
+  },
+  {
+    domainId: 'livestock-dairy',
+    domainTitle: 'Livestock & Dairy Nexus (Buffalo 71% Milk, Fodder-Water & Enteric Methane)',
+    category: 'Livestock & Aqua',
+    nepalDataReality: 'Nepal has 3.8M dairy households and 1,750+ PMPCs with a daily milk deficit of 550,000L, yet dairy is rarely modeled inside agricultural crop water tools.',
+    platformMethodologyAndProxy: 'Integrated MoALD DLS breed lactation profiles (Murrah buffalo 1,650L @ 7.2% fat vs crossbred cow 2,400L), fodder water footprint, and IPCC Tier-2 enteric methane.',
+    uncertaintyGrade: 'Verified NARC/WB Empirical',
+    sovereignActionToHelpNepal: 'MoALD Department of Livestock Services should establish cold-chain solar chilling grants for Primary Milk Producers Cooperatives (PMPCs).',
+    primarySourcesCited: ['MoALD Livestock Statistics 2024', 'ScienceDirect Policy Insights on Nepal Dairy (2025)', 'IPCC Tier-2 Nepal GHG Inventory'],
+  },
+  {
+    domainId: 'aquaculture-fisheries',
+    domainTitle: 'Aquaculture & Fisheries Super-Zone Economics',
+    category: 'Livestock & Aqua',
+    nepalDataReality: 'Aquaculture produces 100,000 tonnes annually across 200,000 households, with feed accounting for 49.87% of production costs.',
+    platformMethodologyAndProxy: 'Calibrated polycarp stocking densities (7,500 fingerlings/ha), FCR (1.55), open-pond evaporation loss, and Dhanusha Super-Zone empirical economics (B:C 1.33).',
+    uncertaintyGrade: 'Verified NARC/WB Empirical',
+    sovereignActionToHelpNepal: 'Establish domestic fish feed extrusion mills to reduce feed import costs from India.',
+    primarySourcesCited: ['Directorate of Fisheries Nepal', 'Archives of Agriculture and Environmental Science (2024)', 'AFU Aquaculture Dept'],
+  },
+  {
+    domainId: 'groundwater-terai',
+    domainTitle: 'Conjunctive Water Use & Madhesh/Terai Groundwater Crisis',
+    category: 'Weather & Hydro',
+    nepalDataReality: '88% of Madhesh relies on 160,000+ tubewells; zero-marginal-cost solar pumping accelerates depletion (14.5 cm/yr) unless paired with recharge ponds.',
+    platformMethodologyAndProxy: 'Models shallow alluvial vs deep 400ft confined tubewells, over-pumping risk, and ADB 50m² recharge pond replenishment (+10 to +15 cm/yr).',
+    uncertaintyGrade: 'Verified NARC/WB Empirical',
+    sovereignActionToHelpNepal: 'Enact mandatory municipal bylaws requiring every solar irrigation pump subsidy to include a 50m² artificial recharge pond.',
+    primarySourcesCited: ['Groundwater Resources Development Board (GWRDB)', 'ADB MIIP Loan 3842-NEP (2024-2025)', 'Int. Research Journal of Parroha (2025)'],
+  },
+  {
+    domainId: 'heat-stress',
+    domainTitle: 'Terminal Heat Stress & Variety Lethal Thresholds',
+    category: 'Agronomy & Soil',
+    nepalDataReality: 'Spring maize suffers up to 75% yield loss from >37°C pollen sterility, and winter wheat loses 29%–64% when heading temperatures exceed 24.5°C.',
+    platformMethodologyAndProxy: 'Dynamic biophysical engine checking crop reproductive stage against district temperature surges and prescribing verified heat-tolerant varieties (NL 1368, Rampur Hybrid-10).',
+    uncertaintyGrade: 'Verified NARC/WB Empirical',
+    sovereignActionToHelpNepal: 'NWRP and NMRP should scale up foundation seed multiplication for terminal heat-tolerant wheat and spring maize hybrids.',
+    primarySourcesCited: ['Research on Crops: Wheat Heat Stress Nepal (2024)', 'Frontiers in Sustainable Food Systems: Heat Resilient Maize (2023)', 'NWRP Bhairahawa'],
+  },
+  {
+    domainId: 'circular-bioenergy',
+    domainTitle: 'Circular Bioenergy (AEPC Biogas & Bio-Slurry NPK Substitution)',
+    category: 'Energy & Bioeconomy',
+    nepalDataReality: 'Over 400,000 domestic biogas plants are installed across Nepal, but digestate slurry nutrient value is rarely factored into crop fertilizer planning.',
+    platformMethodologyAndProxy: 'Calculates daily dung-to-biogas thermal conversion (1 m³ = 0.45 kg LPG = 2 kWh) and slurry substitution (saves 2.5 bags Urea + 1.2 bags DAP per household).',
+    uncertaintyGrade: 'Verified NARC/WB Empirical',
+    sovereignActionToHelpNepal: 'AEPC and MoALD should formalize bio-slurry commercial packaging standards and provide subsidies for solar slurry distribution tankers.',
+    primarySourcesCited: ['Alternative Energy Promotion Centre (AEPC) Annual Review 2024', 'NRREP Bioenergy Guidelines', 'NARC Soil Science Division'],
+  },
+  {
+    domainId: 'export-traceability',
+    domainTitle: 'Export Market Access, Organic Certification & Nepal-GAP Traceability',
+    category: 'Market & Value Chain',
+    nepalDataReality: 'High-value spices (Cardamom, Ginger, Tea, Coffee) face non-tariff trade barriers and pesticide residue testing at export borders.',
+    platformMethodologyAndProxy: 'Calculates EU Organic/USDA NOP audit costs vs +35%–50% export price premiums, and generates Nepal-GAP QR batch traceability records.',
+    uncertaintyGrade: 'Verified NARC/WB Empirical',
+    sovereignActionToHelpNepal: 'Ministry of Industry, Commerce and Supplies should accredit DFTQC laboratories internationally for rapid export phytosanitary clearance.',
+    primarySourcesCited: ['MoALD Agribusiness Promotion Standards', 'EU Organic Regulation EC 834/2007', 'Nepal Good Agricultural Practices (Nepal-GAP) Manual'],
+  },
+  {
+    domainId: 'donor-alignment',
+    domainTitle: 'Development Partner Project Alignment & Anti-Duplication Map',
+    category: 'Local Governance',
+    nepalDataReality: 'Multilateral donors (ADB, World Bank, USAID, IFAD, GCF) often operate in the same districts with fragmented, overlapping subsidy schemes.',
+    platformMethodologyAndProxy: 'Maps active multilateral project boundaries ($248M+ total active portfolio), flags co-financing matching windows, and provides anti-duplication policy alerts.',
+    uncertaintyGrade: 'Verified NARC/WB Empirical',
+    sovereignActionToHelpNepal: 'Ministry of Finance IECCD should mandate use of a digital project alignment registry for all provincial and local agricultural tenders.',
+    primarySourcesCited: ['Ministry of Finance International Economic Cooperation Coordination Division (IECCD)', 'World Bank PAD-3712', 'ADB Loan 3842-NEP'],
+  },
+  {
+    domainId: 'weather-hydro',
+    domainTitle: 'Meteorological & Hydrological Climatology',
+    category: 'Weather & Hydro',
+    nepalDataReality: 'DHM Nepal operates ~450 manual stations and telemetry gauges, but currently has NO public machine-readable real-time API.',
+    platformMethodologyAndProxy: 'Utilizes NASA MERRA-2 39-year monthly reanalysis (0.5° × 0.5° resolution) + CHIRPS precipitation grids as verified open-source fallbacks.',
+    uncertaintyGrade: 'Calibrated Satellite Proxy',
+    sovereignActionToHelpNepal: 'DHM and MoFE should establish an Open Hydro-Met API Gateway pushing automated daily data to local municipal hubs.',
+    primarySourcesCited: ['NASA MERRA-2 GMAO', 'DHM Nepal Climatological Records', 'CHIRPS UCSB Climate Group'],
+  },
+  {
+    domainId: 'varieties-fertilizer',
+    domainTitle: 'NARC Varietal Registries & 2022 Site-Specific Fertilizer',
+    category: 'Agronomy & Soil',
+    nepalDataReality: 'Historically, Nepal relied on 1976 blanket N-P-K schedules. Fewer than 5% of farm parcels have localized routine chemical laboratory soil test cards.',
+    platformMethodologyAndProxy: 'Ingested 2022 NARC-NSSRC / IFDC / CIMMYT QUEFTS site-specific nutrient management (SSNM) surveys across 7 agro-ecological zones + HWSD v2.0 profiles + NARC 87 certified cultivars.',
+    uncertaintyGrade: 'Verified NARC/WB Empirical',
+    sovereignActionToHelpNepal: 'Local Palikas should equip Ward Agriculture Extension Clinics with portable digital N-P-K spectrometer test kits to issue instant soil health cards.',
+    primarySourcesCited: ['NARC National Rice Research Program (NRRP)', 'NARC-NSSRC / IFDC Site-Specific Fertilizer Guidelines 2022', 'Harmonized World Soil Database v2.0'],
+  },
+  {
+    domainId: 'market-prices',
+    domainTitle: 'Agricultural Wholesale & Farmgate Market Prices',
+    category: 'Market & Value Chain',
+    nepalDataReality: 'Only Kalimati publishes daily prices on its website (without an official API). Other 6 provincial wholesale hubs lack daily digitized feeds.',
+    platformMethodologyAndProxy: 'Combines historical MoALD farmgate statistical averages with Kalimati community scraped JSON caches + provincial highway freight cost indexing.',
+    uncertaintyGrade: 'Calibrated Satellite Proxy',
+    sovereignActionToHelpNepal: 'MoALD should launch a unified National Digital Agriculture Market Information System (NAMIS) linking all 7 provinces.',
+    primarySourcesCited: ['Kalimati Market Development Board', 'MoALD Statistical Information on Nepalese Agriculture', 'GitHub: adityathebe/kalimati-rate'],
+  },
+  {
+    domainId: 'carbon-article6',
+    domainTitle: 'Article 6 Paris Agreement Carbon Monetization',
+    category: 'Carbon & NDC',
+    nepalDataReality: 'Nepal has NOT yet finalized its Article 6.2 national authorization framework or bilateral ITMO transfer agreements.',
+    platformMethodologyAndProxy: 'Transparently modeled as a Secondary Sensitivity Scenario ($30 USD/t compliance price) rather than guaranteed baseline commercial revenue.',
+    uncertaintyGrade: 'Simulated Policy Scenario',
+    sovereignActionToHelpNepal: 'Ministry of Forests and Environment (MoFE) should finalize the National Carbon Market Strategy and Article 6.2 bilateral agreements with buyer nations.',
+    primarySourcesCited: ['UNFCCC Paris Agreement Article 6 Rulebook', 'Nepal Second Nationally Determined Contribution (2020)', 'Carbon Market Watch Status 2025'],
+  },
+];

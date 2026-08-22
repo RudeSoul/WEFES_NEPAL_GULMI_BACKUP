@@ -1,0 +1,26 @@
+{
+  "name": "@wefes/api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs --clean",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@wefes/database": "workspace:*",
+    "@wefes/shared-types": "workspace:*",
+    "@wefes/wefes-engine": "workspace:*",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.0",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,142 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 font-sans antialiased selection:bg-emerald-100 selection:text-emerald-900;
+    font-family: 'Inter', sans-serif;
+    background-color: #f8fafc;
+  }
+}
+
+/* ─── Refined Light Glass Panels & Cards ─── */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+}
+
+/* Bento card utility */
+.card {
+  background: #ffffff;
+  border-radius: 0.875rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* ─── Shadow & Elevation Utilities ─── */
+.elevation-card {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+}
+
+.elevation-hover {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.elevation-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  border-color: rgba(203, 213, 225, 1);
+}
+
+/* ─── Typography ─── */
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ─── Leaflet Map Customization ─── */
+.leaflet-container {
+  background-color: #f1f5f9 !important;
+  font-family: 'Inter', sans-serif !important;
+  border-radius: 0.75rem;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Tactile 3D Map Polygon cursor & transition */
+.leaflet-interactive {
+  transition: fill 0.15s ease, fill-opacity 0.15s ease, stroke 0.15s ease;
+  cursor: pointer;
+}
+
+.leaflet-interactive:active {
+  filter: brightness(0.9) saturate(1.2);
+}
+
+/* ─── Custom Controls & Range Sliders ─── */
+input[type=range] {
+  accent-color: #06b6d4;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* ─── Animations ─── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.25s ease forwards;
+}
+
+@keyframes pulseSoft {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 2s ease-in-out infinite;
+}

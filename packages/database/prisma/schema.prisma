@@ -1,0 +1,43 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model District {
+  id                 String   @id
+  name               String
+  nepaliName         String
+  province           String
+  ecoZone            String   // Mountain | Hill | Terai
+  avgRainfallMm      Float
+  solarRadiationKwh  Float
+  baseSoilPh         Float
+  laborRateNprPerDay Float
+  latitude           Float
+  longitude          Float
+  description        String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Crop {
+  id                    String   @id
+  name                  String
+  nepaliName            String
+  category              String
+  supportedUnits        String   // JSON stringified array of units
+  defaultUnit           String
+  baseUnitName          String   // kg | m3
+  waterFootprintPerUnit Float
+  energyReqPerUnit      Float
+  carbonOffsetPerUnit   Float
+  marketValuePerUnit    Float
+  laborDaysPerUnit      Float
+  caloriesPerUnit       Float
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}

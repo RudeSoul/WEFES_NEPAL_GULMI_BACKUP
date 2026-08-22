@@ -1,0 +1,974 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.558333,
+          29.672222
+        ]
+      },
+      "properties": {
+        "stationNo": "120",
+        "river": "Chamelia",
+        "siteName": "Karkale Gaon",
+        "district": "Darchula",
+        "elevation": 685,
+        "instruments": "Cable Way",
+        "startDate": "1965-01-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.583333,
+          29.516667
+        ]
+      },
+      "properties": {
+        "stationNo": "169",
+        "river": "Surnaya Gad",
+        "siteName": "Gujar Gaon",
+        "district": "Baitadi",
+        "elevation": 1275,
+        "instruments": "Cable Way",
+        "startDate": "1983-05-11"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.441667,
+          29.952778
+        ]
+      },
+      "properties": {
+        "stationNo": "240",
+        "river": "Karnali",
+        "siteName": "Asaraghat",
+        "district": "Bajhang",
+        "elevation": 629,
+        "instruments": "Cable Way",
+        "startDate": "1961-01-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.119444,
+          28.961111
+        ]
+      },
+      "properties": {
+        "stationNo": "250",
+        "river": "Karnali",
+        "siteName": "Benighat",
+        "district": "Surkhet",
+        "elevation": 320,
+        "instruments": "Cable Way",
+        "startDate": "1963-02-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.144444,
+          28.977778
+        ]
+      },
+      "properties": {
+        "stationNo": "260",
+        "river": "West Seti",
+        "siteName": "Banga",
+        "district": "Achham",
+        "elevation": 328,
+        "instruments": "Recorder- Cableway- S",
+        "startDate": "1963-02-06"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.35,
+          28.755556
+        ]
+      },
+      "properties": {
+        "stationNo": "270",
+        "river": "Bheri",
+        "siteName": "Jamu",
+        "district": "Surkhet",
+        "elevation": 246,
+        "instruments": "Cable Way",
+        "startDate": "1963-01-23"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.025,
+          28.299444
+        ]
+      },
+      "properties": {
+        "stationNo": "286",
+        "river": "Sarada Khola",
+        "siteName": "Daredhunga",
+        "district": "Salyan",
+        "elevation": 579,
+        "instruments": "Cable Way",
+        "startDate": "1972-01-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.4,
+          28.341389
+        ]
+      },
+      "properties": {
+        "stationNo": "290",
+        "river": "Babai River",
+        "siteName": "Chepang",
+        "district": "Rolpa",
+        "elevation": 325,
+        "instruments": "Cable Way",
+        "startDate": "1989-10-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.85,
+          27.9
+        ]
+      },
+      "properties": {
+        "stationNo": "350",
+        "river": "Rapti River",
+        "siteName": "Bagasoti Gaun",
+        "district": "Arghakhanchi",
+        "elevation": 381,
+        "instruments": "Cableway- Recorder- Rain Gauge- V",
+        "startDate": "1975-08-05"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.225,
+          27.947222
+        ]
+      },
+      "properties": {
+        "stationNo": "360",
+        "river": "Rapti River",
+        "siteName": "Jalkundi",
+        "district": "Dang",
+        "elevation": 218,
+        "instruments": "Cable Way",
+        "startDate": "1964-04-08"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.093056,
+          28.0075
+        ]
+      },
+      "properties": {
+        "stationNo": "375",
+        "river": "Rapti River",
+        "siteName": "Kusum",
+        "district": "Banke",
+        "elevation": 235,
+        "instruments": "W",
+        "startDate": "2002-12-21"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.463889,
+          27.702778
+        ]
+      },
+      "properties": {
+        "stationNo": "390",
+        "river": "Tinau",
+        "siteName": "Butwal",
+        "district": "Rupandehi",
+        "elevation": 184,
+        "instruments": "Cable Way",
+        "startDate": "1963-12-09"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.602778,
+          28.008333
+        ]
+      },
+      "properties": {
+        "stationNo": "410",
+        "river": "Kali Gandaki",
+        "siteName": "Seti Beni",
+        "district": "Gulmi",
+        "elevation": 546,
+        "instruments": "Cable Way",
+        "startDate": "1964-02-21"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.588889,
+          27.972222
+        ]
+      },
+      "properties": {
+        "stationNo": "415",
+        "river": "Andhi Khola",
+        "siteName": "Borlangpul",
+        "district": "Syangja",
+        "elevation": 749,
+        "instruments": "-",
+        "startDate": "1964-04-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.8,
+          27.89
+        ]
+      },
+      "properties": {
+        "stationNo": "419",
+        "river": "Kali Gandaki",
+        "siteName": "Angsing",
+        "district": "Syangja",
+        "elevation": 351.05,
+        "instruments": "Cableway- Recorder- Rain Gauge- V",
+        "startDate": "1989-04-13"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.347222,
+          27.75
+        ]
+      },
+      "properties": {
+        "stationNo": "420",
+        "river": "Kali Gandaki",
+        "siteName": "Kota Gaon",
+        "district": "Tanahu",
+        "elevation": 198,
+        "instruments": "Cable Way",
+        "startDate": "1964-04-15"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.43,
+          27.95
+        ]
+      },
+      "properties": {
+        "stationNo": "439",
+        "river": "Marsandi River",
+        "siteName": "Bimalnagar",
+        "district": "Tanahu",
+        "elevation": 354,
+        "instruments": "Cable Way",
+        "startDate": "1987-03-31"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.489722,
+          28.061389
+        ]
+      },
+      "properties": {
+        "stationNo": "440",
+        "river": "Chepe Khola",
+        "siteName": "Garambesi",
+        "district": "Lamjung",
+        "elevation": 442,
+        "instruments": "Cable Way",
+        "startDate": "1963-11-20"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.816389,
+          28.043611
+        ]
+      },
+      "properties": {
+        "stationNo": "445",
+        "river": "Budhi Gandaki",
+        "siteName": "Arughat",
+        "district": "Dhading",
+        "elevation": 485,
+        "instruments": "Cableway- Recorder- G",
+        "startDate": "1963-11-28"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.1875,
+          27.973611
+        ]
+      },
+      "properties": {
+        "stationNo": "446",
+        "river": "Phalanku Khola",
+        "siteName": "Betrawati",
+        "district": "Nuwakot",
+        "elevation": 630,
+        "instruments": "-",
+        "startDate": "1969-04-24"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.183333,
+          27.968889
+        ]
+      },
+      "properties": {
+        "stationNo": "447",
+        "river": "Trisuli River",
+        "siteName": "Betrawati",
+        "district": "Nuwakot",
+        "elevation": 600,
+        "instruments": "Recorder- Cableway- Rain Gauge",
+        "startDate": "1967-01-04"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.138333,
+          27.859722
+        ]
+      },
+      "properties": {
+        "stationNo": "448",
+        "river": "Tadi Khola",
+        "siteName": "Belkot",
+        "district": "Nuwakot",
+        "elevation": 610,
+        "instruments": "Cable Way",
+        "startDate": "1968-04-17"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.430556,
+          27.708333
+        ]
+      },
+      "properties": {
+        "stationNo": "450",
+        "river": "Narayani River",
+        "siteName": "Devghat",
+        "district": "Chitwan",
+        "elevation": 180,
+        "instruments": "Recorder-Cableway- Rain Gauge",
+        "startDate": "1962-10-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.970833,
+          27.441667
+        ]
+      },
+      "properties": {
+        "stationNo": "460",
+        "river": "Rapti River",
+        "siteName": "Rajaiya",
+        "district": "Makwanpur",
+        "elevation": 332,
+        "instruments": "Cable Way",
+        "startDate": "1963-01-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.802778,
+          27.55
+        ]
+      },
+      "properties": {
+        "stationNo": "465",
+        "river": "Manahari River",
+        "siteName": "Manahari",
+        "district": "Makwanpur",
+        "elevation": 305,
+        "instruments": "Cable Way",
+        "startDate": "1963-06-13"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.716667,
+          27.594444
+        ]
+      },
+      "properties": {
+        "stationNo": "470",
+        "river": "Lothar",
+        "siteName": "Lothar",
+        "district": "Chitwan",
+        "elevation": 336,
+        "instruments": "Cable Way",
+        "startDate": "1963-11-30"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.427778,
+          27.775
+        ]
+      },
+      "properties": {
+        "stationNo": "505",
+        "river": "Bagmati River",
+        "siteName": "Sundarijal",
+        "district": "Kathmandu",
+        "elevation": 1600,
+        "instruments": "Cableway- Recorder",
+        "startDate": "1962-12-07"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.295,
+          27.6375
+        ]
+      },
+      "properties": {
+        "stationNo": "550",
+        "river": "Bagmati River",
+        "siteName": "Khokana",
+        "district": "Lalitpur",
+        "elevation": 1255,
+        "instruments": "-",
+        "startDate": "1991-06-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.475,
+          27.105556
+        ]
+      },
+      "properties": {
+        "stationNo": "589",
+        "river": "Bagmati River",
+        "siteName": "Pendheradovan",
+        "district": "Sarlahi",
+        "elevation": 127.35,
+        "instruments": "Cableway- Rain Gauge- W",
+        "startDate": "1978-01-28"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.335,
+          27.6
+        ]
+      },
+      "properties": {
+        "stationNo": "600",
+        "river": "Arun River",
+        "siteName": "Uwa Goan",
+        "district": "Sankhuwasabha",
+        "elevation": 1294,
+        "instruments": "Cable Way",
+        "startDate": "1972-05-11"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.220833,
+          27.305556
+        ]
+      },
+      "properties": {
+        "stationNo": "602",
+        "river": "Sabhaya Khola",
+        "siteName": "Tumlingtar",
+        "district": "Sankhuwasabha",
+        "elevation": 305,
+        "instruments": "Cable Way",
+        "startDate": "1974-01-02"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.225,
+          27.295833
+        ]
+      },
+      "properties": {
+        "stationNo": "602",
+        "river": "Hinwa Khola",
+        "siteName": "Pipletar",
+        "district": "Sankhuwasabha",
+        "elevation": null,
+        "instruments": "Cable Way",
+        "startDate": "Historical"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.191667,
+          27.333333
+        ]
+      },
+      "properties": {
+        "stationNo": "604",
+        "river": "Arun River",
+        "siteName": "Turkeghat",
+        "district": "Sankhuwasabha",
+        "elevation": 414,
+        "instruments": "Cableway-Recorder- Rain Gauge- V",
+        "startDate": "1975-05-23"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.158333,
+          26.925
+        ]
+      },
+      "properties": {
+        "stationNo": "606",
+        "river": "Arun River",
+        "siteName": "Simle",
+        "district": "Bhojpur",
+        "elevation": 152,
+        "instruments": "Cable Way",
+        "startDate": "Historical"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.888889,
+          27.786111
+        ]
+      },
+      "properties": {
+        "stationNo": "610",
+        "river": "Bhote Koshi",
+        "siteName": "Barhbise",
+        "district": "Sindhupalchok",
+        "elevation": 840,
+        "instruments": "-",
+        "startDate": "1965-02-17"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.769444,
+          27.805556
+        ]
+      },
+      "properties": {
+        "stationNo": "620",
+        "river": "Balephi Khola",
+        "siteName": "Jalbire",
+        "district": "Sindhupalchok",
+        "elevation": 793,
+        "instruments": "Cable Way",
+        "startDate": "1963-12-25"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.716667,
+          27.641667
+        ]
+      },
+      "properties": {
+        "stationNo": "625",
+        "river": "Sunkoshi River",
+        "siteName": "Dolalghat",
+        "district": "Kavre",
+        "elevation": null,
+        "instruments": "Cable Way",
+        "startDate": "Historical"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.533333,
+          28.041667
+        ]
+      },
+      "properties": {
+        "stationNo": "627",
+        "river": "Melanchi Khola",
+        "siteName": "Helambu",
+        "district": "Sindhupalchok",
+        "elevation": 2134,
+        "instruments": "Cable Way",
+        "startDate": "Historical"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.708333,
+          27.638889
+        ]
+      },
+      "properties": {
+        "stationNo": "629",
+        "river": "Indrawati River",
+        "siteName": "Dolalghat",
+        "district": "Kavre",
+        "elevation": null,
+        "instruments": "Cable Way",
+        "startDate": "1972-09-17"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.752778,
+          27.558333
+        ]
+      },
+      "properties": {
+        "stationNo": "630",
+        "river": "Sunkoshi River",
+        "siteName": "PachuwaRain Gaugehat",
+        "district": "Kavre",
+        "elevation": 589,
+        "instruments": "Cableway- Recorder- Rain Gauge-V",
+        "startDate": "1964-03-26"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.086667,
+          27.634722
+        ]
+      },
+      "properties": {
+        "stationNo": "647",
+        "river": "Tamakoshi River",
+        "siteName": "Busti",
+        "district": "Dolakha",
+        "elevation": 849,
+        "instruments": "Cable Way",
+        "startDate": "1970-01-14"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.197222,
+          27.575
+        ]
+      },
+      "properties": {
+        "stationNo": "650",
+        "river": "Khimti Khola",
+        "siteName": "Rasnalu",
+        "district": "Dolakha",
+        "elevation": 1520,
+        "instruments": "Cable Way",
+        "startDate": "1964-04-06"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86,
+          27.333333
+        ]
+      },
+      "properties": {
+        "stationNo": "652",
+        "river": "Sunkoshi River",
+        "siteName": "Khurkot",
+        "district": "Sindhuli",
+        "elevation": 455,
+        "instruments": "Cable Way",
+        "startDate": "1967-07-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.219444,
+          27.336111
+        ]
+      },
+      "properties": {
+        "stationNo": "660",
+        "river": "Likhu Khola",
+        "siteName": "Sangutar",
+        "district": "Ramechhap",
+        "elevation": 543,
+        "instruments": "Cable Way",
+        "startDate": "1964-03-24"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.366667,
+          27.175
+        ]
+      },
+      "properties": {
+        "stationNo": "665",
+        "river": "Sunkoshi River",
+        "siteName": "Tokselghat",
+        "district": "Sindhuli",
+        "elevation": null,
+        "instruments": "Cable Way",
+        "startDate": "1986-02-20"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.663889,
+          27.266667
+        ]
+      },
+      "properties": {
+        "stationNo": "670",
+        "river": "Dudhkoshi River",
+        "siteName": "Rabuwa Bazar",
+        "district": "Khotang",
+        "elevation": 460,
+        "instruments": "Cableway- Recorder- Rain Gauge- V",
+        "startDate": "1964-10-03"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.7125,
+          27.158333
+        ]
+      },
+      "properties": {
+        "stationNo": "684",
+        "river": "Tamor River",
+        "siteName": "Majhitar",
+        "district": "Tehrathum",
+        "elevation": 533,
+        "instruments": "Cableway- Recorder- Rain Gauge- V",
+        "startDate": "Historical"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.329167,
+          26.930556
+        ]
+      },
+      "properties": {
+        "stationNo": "690",
+        "river": "Tamor River",
+        "siteName": "Mulghat",
+        "district": "Dhankuta",
+        "elevation": 276,
+        "instruments": "-",
+        "startDate": "1977-10-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.158333,
+          26.866667
+        ]
+      },
+      "properties": {
+        "stationNo": "695",
+        "river": "Saptakoshi River",
+        "siteName": "Chatara",
+        "district": "Sunsari",
+        "elevation": 140,
+        "instruments": "Cableway- Recorder- Rain Gauge- V",
+        "startDate": "1977-10-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.929167,
+          26.879167
+        ]
+      },
+      "properties": {
+        "stationNo": "738",
+        "river": "Maikhola",
+        "siteName": "Rajdwali",
+        "district": "Ilam",
+        "elevation": 609,
+        "instruments": "Cable Way",
+        "startDate": "1983-01-01"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.878333,
+          26.686667
+        ]
+      },
+      "properties": {
+        "stationNo": "795",
+        "river": "Kankai River",
+        "siteName": "Mainachuli",
+        "district": "Ilam",
+        "elevation": 125,
+        "instruments": "Cableway- Recorder- Rain Gauge- V",
+        "startDate": "1971-05-01"
+      }
+    }
+  ]
+}

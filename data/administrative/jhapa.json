@@ -1,0 +1,17 @@
+{
+  "id": "jhapa",
+  "name": "Jhapa",
+  "nepaliName": "झापा",
+  "province": "Koshi Province",
+  "ecoZone": "Terai",
+  "avgRainfallMm": 2100,
+  "solarRadiationKwh": 5.4,
+  "baseSoilPh": 6.5,
+  "laborRateNprPerDay": 700,
+  "streamProximityKm": 0.5,
+  "renewableEnergyAccessPercent": 35,
+  "multidimensionalPovertyIndex": 0.11,
+  "wealthIndex": 75,
+  "ecoSystems": ["Agricultural Land", "Wetland Systems"],
+  "description": "Fertile low-land Terai district with extensive paddy production, tea estates, and high agricultural mechanization potential."
+}

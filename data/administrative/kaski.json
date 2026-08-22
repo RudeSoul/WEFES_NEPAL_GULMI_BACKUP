@@ -1,0 +1,17 @@
+{
+  "id": "kaski",
+  "name": "Kaski",
+  "nepaliName": "कास्की",
+  "province": "Gandaki Province",
+  "ecoZone": "Hill",
+  "avgRainfallMm": 3400,
+  "solarRadiationKwh": 5.2,
+  "baseSoilPh": 6.1,
+  "laborRateNprPerDay": 950,
+  "streamProximityKm": 0.3,
+  "renewableEnergyAccessPercent": 75,
+  "multidimensionalPovertyIndex": 0.08,
+  "wealthIndex": 82,
+  "ecoSystems": ["Forest Ecosystems", "Wetland Systems", "Agricultural Land"],
+  "description": "High-rainfall mid-hill district centered around Pokhara with rich water resources and ideal microclimate for tea, coffee, and citrus."
+}

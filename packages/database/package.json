@@ -1,0 +1,27 @@
+{
+  "name": "@wefes/database",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "seed": "tsx src/seed.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.19.0",
+    "@wefes/shared-types": "workspace:*",
+    "@wefes/wefes-engine": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.0",
+    "prisma": "^5.19.0",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

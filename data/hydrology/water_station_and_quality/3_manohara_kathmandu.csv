@@ -1,0 +1,7 @@
+Parameters,pH,DO,BOD,COD,TDS,EC,NH3-N,NO3-N,NO2-N,TOC,TH,Mg,Fe,TC,E.coli
+Desired Value,6.5-8.5*,>5,<30,<250,<1000*,<1500*,<1.5*,<50*,-,-,<500*,<100,<0.3(3.0)*,0*,0*
+Unit,mg/l,mg/l,mg/l,mg/l,mg/l,µS/cm,mg/l,mg/l,mg/l,mg/l,mg/l,mg/l,mg/l,MPN/100ml,MPN/100ml
+Manohara-pepsikola,7.4,7,14.5,23.7,620,870,60,2.3,0.2,4.5,60,7.8,4.9,1600,140
+Manohara-Mulpani bridge,7.2,8.9,11.1,12.3,100,160,20,1.4,0.1,2,120,23.7,0.3,900,80
+Manohara-Sankhu,7,15.7,5.4,12.4,60,78,20,1.6,0.1,6.7,130,12.5,0.4,1600,120
+Manahara-Balkumari,7.6,3.9,23.8,40.5,980,1450,60,2,0.2,12.8,80,11.8,6.1,500,40
