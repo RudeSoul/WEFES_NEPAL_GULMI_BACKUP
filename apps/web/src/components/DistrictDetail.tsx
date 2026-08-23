@@ -11,7 +11,7 @@ import { arimaForecast, extractAnnualRainfallSeries, ARIMAResult } from '../util
 import {
   Sprout, CloudRain, Sun, Mountain, DollarSign, ArrowLeft, ChevronRight, Sparkles,
   Layers, GitCompare, Calendar, Wind, Thermometer, Gauge, Zap, X, Info, TrendingUp,
-  MapPin, Leaf, Cherry, Wheat as WheatIcon, ArrowUpRight, ArrowUp
+  MapPin, Leaf, Cherry, Wheat as WheatIcon, ArrowUpRight, ArrowUp, Droplets, Cloud
 } from 'lucide-react';
 import { FeasibilityMatrix } from './FeasibilityMatrix';
 import { CropComparativeAnalysis } from './CropComparativeAnalysis';
@@ -20,6 +20,33 @@ import { DISTRICT_PALIKAS, DistrictPalika } from '../data/districtPalikaAssets';
 import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
 import { PalikaDossierExportModal } from './PalikaDossierExportModal';
 import { FileText, Printer, Scale, CheckCircle } from 'lucide-react';
+
+const PALIKA_GEO_CENTROIDS: Record<string, { lat: number; lng: number }> = {
+  'Resunga': { lat: 28.0531, lng: 83.2658 },
+  'Musikot': { lat: 28.1846, lng: 83.2826 },
+  'Ruru': { lat: 27.9822, lng: 83.4256 },
+  'Satyawati': { lat: 28.0300, lng: 83.4689 },
+  'Kaligandaki': { lat: 28.0502, lng: 83.5436 },
+  'Chandrakot': { lat: 28.1070, lng: 83.4208 },
+  'Chatrakot': { lat: 27.9862, lng: 83.3472 },
+  'Gulmidarbar': { lat: 28.0398, lng: 83.3167 },
+  'Dhurkot': { lat: 28.1181, lng: 83.1408 },
+  'Isma': { lat: 28.1643, lng: 83.2054 },
+  'Malika': { lat: 28.2131, lng: 83.1426 },
+  'Madane': { lat: 28.1750, lng: 83.0753 },
+};
+
+interface PalikaLiveWeather {
+  temperature: number;
+  apparentTemp: number;
+  humidity: number;
+  precipitation: number;
+  windSpeed: number;
+  solarRadiation: number;
+  cloudCover: number;
+  isDay: boolean;
+  time: string;
+}
 
 interface DistrictDetailProps {
   district: District;
@@ -469,6 +496,9 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
 
   const [activePalikaName, setActivePalikaName] = useState<string>(initialPalikaName || 'Resunga');
   const [isDossierModalOpen, setIsDossierModalOpen] = useState<boolean>(false);
+  const [palikaWeather, setPalikaWeather] = useState<PalikaLiveWeather | null>(null);
+  const [palikaWeatherLoading, setPalikaWeatherLoading] = useState<boolean>(true);
+  const [weatherTelemetryMode, setWeatherTelemetryMode] = useState<'live' | 'archive'>('live');
 
   useEffect(() => {
     if (initialPalikaName) {
@@ -478,6 +508,34 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
 
   const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
   const activePalika: DistrictPalika = gulmiPalikas.find(p => p.name.toLowerCase() === activePalikaName.toLowerCase()) || gulmiPalikas[0] || {} as DistrictPalika;
+
+  // Fetch real-time live satellite weather specifically for the active Palika
+  useEffect(() => {
+    const coords = PALIKA_GEO_CENTROIDS[activePalika.name] || { lat: 28.068, lng: 83.248 };
+    setPalikaWeatherLoading(true);
+
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,wind_speed_10m,direct_radiation,cloud_cover,is_day&timezone=Asia%2FKathmandu`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.current) {
+          setPalikaWeather({
+            temperature: Number(data.current.temperature_2m.toFixed(1)),
+            apparentTemp: Number(data.current.apparent_temperature.toFixed(1)),
+            humidity: Math.round(data.current.relative_humidity_2m),
+            precipitation: Number(data.current.precipitation.toFixed(1)),
+            windSpeed: Number((data.current.wind_speed_10m / 3.6).toFixed(1)),
+            solarRadiation: Math.round(data.current.direct_radiation || 0),
+            cloudCover: Math.round(data.current.cloud_cover || 0),
+            isDay: data.current.is_day === 1,
+            time: data.current.time,
+          });
+        }
+        setPalikaWeatherLoading(false);
+      })
+      .catch(() => {
+        setPalikaWeatherLoading(false);
+      });
+  }, [activePalika.name]);
 
   const GULMI_PALIKA_NEPALI: Record<string, string> = {
     'Resunga': 'रेसुङ्गा',
@@ -634,6 +692,103 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
                 </button>
               );
             })}
+          </div>
+        </div>
+
+        {/* ─── Live Satellite Weather Telemetry for Active Palika ─── */}
+        <div className="flex items-center justify-between flex-wrap gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white shadow-sm border border-slate-800 text-xs animate-fade-in">
+          <div className="flex items-center gap-2 flex-wrap">
+            {weatherTelemetryMode === 'live' && palikaWeather ? (
+              <>
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="font-bold text-slate-100 font-outfit uppercase tracking-wider text-[11px]">
+                  Live Satellite Weather Telemetry ({activePalika.name} Micro-Climate)
+                </span>
+                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
+                  Real-Time Today
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
+                <span className="font-bold text-slate-100 font-outfit uppercase tracking-wider text-[11px]">
+                  NASA POWER / MERRA-2 39-Yr Climatology ({activePalika.name} Baseline)
+                </span>
+                <span className="bg-sky-500/20 text-sky-300 border border-sky-500/30 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
+                  Historical
+                </span>
+              </>
+            )}
+
+            {palikaWeather && (
+              <button
+                onClick={() => setWeatherTelemetryMode(prev => prev === 'live' ? 'archive' : 'live')}
+                className="ml-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 cursor-pointer transition-colors"
+              >
+                {weatherTelemetryMode === 'live' ? '⇄ 39-Yr Archive' : '⇄ 🟢 Live Weather'}
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3.5 sm:gap-4 flex-wrap text-[11px] font-mono">
+            {weatherTelemetryMode === 'live' && palikaWeather ? (
+              <>
+                <div className="flex items-center gap-1.5" title="Live Precipitation Rate">
+                  <CloudRain className="w-3.5 h-3.5 text-sky-400" />
+                  <span className="text-slate-300">Rain:</span>
+                  <strong className="text-sky-300 font-bold">{palikaWeather.precipitation} mm/hr</strong>
+                </div>
+
+                <div className="flex items-center gap-1.5" title="Live Ambient Air Temperature">
+                  <Thermometer className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="text-slate-300">Temp:</span>
+                  <strong className="text-amber-300 font-bold">{palikaWeather.temperature}°C</strong>
+                  <span className="text-[10px] text-slate-400">(Feels {palikaWeather.apparentTemp}°)</span>
+                </div>
+
+                <div className="flex items-center gap-1.5" title="Live Relative Humidity">
+                  <Droplets className="w-3.5 h-3.5 text-blue-400" />
+                  <span className="text-slate-300">Humidity:</span>
+                  <strong className="text-blue-300 font-bold">{palikaWeather.humidity}%</strong>
+                </div>
+
+                <div className="flex items-center gap-1.5" title="Live Surface Wind Speed">
+                  <Wind className="w-3.5 h-3.5 text-teal-400" />
+                  <span className="text-slate-300">Wind:</span>
+                  <strong className="text-teal-300 font-bold">{palikaWeather.windSpeed} m/s</strong>
+                </div>
+
+                <div className="flex items-center gap-1.5" title="Live Direct Solar Flux">
+                  <Sun className="w-3.5 h-3.5 text-yellow-400" />
+                  <span className="text-slate-300">Solar:</span>
+                  <strong className="text-yellow-300 font-bold">{palikaWeather.solarRadiation} W/m²</strong>
+                </div>
+
+                <div className="flex items-center gap-1.5" title="Live Cloud Cover">
+                  <Cloud className="w-3.5 h-3.5 text-indigo-300" />
+                  <span className="text-slate-300">Clouds:</span>
+                  <strong className="text-indigo-200 font-bold">{palikaWeather.cloudCover}%</strong>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-1.5">
+                  <CloudRain className="w-3.5 h-3.5 text-sky-400" />
+                  <span className="text-slate-300">Annual Rain:</span>
+                  <strong className="text-sky-300 font-bold">{activePalika.rainfallMm} mm/yr</strong>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Thermometer className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="text-slate-300">Mean Temp:</span>
+                  <strong className="text-amber-300 font-bold">{activePalika.avgTempC || 17.8}°C</strong>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Sun className="w-3.5 h-3.5 text-yellow-400" />
+                  <span className="text-slate-300">Insolation:</span>
+                  <strong className="text-yellow-300 font-bold">{district.solarRadiationKwh || 5.2} kWh/m²/d</strong>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
