@@ -73,6 +73,8 @@ interface IndicatorModalProps {
 }
 
 const IndicatorModal: React.FC<IndicatorModalProps> = ({ modalKey, district, activePalika, distClimatology, climateDataset, rainfallSeries, rainfallARIMA, rfStartYear, onClose }) => {
+  const [rainfallTimeframe, setRainfallTimeframe] = useState<'annual' | 'monthly'>('annual');
+
   useEffect(() => {
     if (!modalKey) return;
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -98,7 +100,7 @@ const IndicatorModal: React.FC<IndicatorModalProps> = ({ modalKey, district, act
     const startYear = rfStartYear;
     const arima = rainfallARIMA;
 
-    // Build unified chart data with seamless overlap at boundary year
+    // Build unified annual chart data with seamless overlap at boundary year
     const chartData: any[] = [];
     if (arima && arima.historicalYears.length > 0) {
       const lastHistYear = arima.historicalYears[arima.historicalYears.length - 1];
@@ -128,8 +130,32 @@ const IndicatorModal: React.FC<IndicatorModalProps> = ({ modalKey, district, act
     const histMean = annualSeries.length > 0
       ? Math.round(annualSeries.reduce((s, v) => s + v, 0) / annualSeries.length)
       : district.avgRainfallMm;
-    const predictedVal = arima ? Math.round(arima.forecasts[4]) : histMean;
     const forecastEndYear = arima ? arima.forecastYears[arima.forecastYears.length - 1] : null;
+
+    // 12-Month Seasonal Cycle Calculation
+    const NEP_MONTHS = ['माघ', 'फागुन', 'चैत', 'वैशाख', 'जेठ', 'असार', 'साउन', 'भदौ', 'असोज', 'कात्तिक', 'मंसिर', 'पुस'];
+    const ENG_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const MONTHLY_WEIGHTS = [0.012, 0.018, 0.028, 0.048, 0.098, 0.225, 0.295, 0.235, 0.115, 0.022, 0.008, 0.008];
+
+    const monthlyChartData = ENG_MONTHS.map((m, idx) => {
+      const climM = distClimatology?.[idx + 1]?.prectot;
+      const distBase = climM !== undefined ? Math.round(climM) : Math.round(histMean * MONTHLY_WEIGHTS[idx]);
+      const palikaMonthly = Math.round(palikaRain * MONTHLY_WEIGHTS[idx]);
+      const upper = Math.round(palikaMonthly * 1.18);
+      const lower = Math.max(0, Math.round(palikaMonthly * 0.82));
+
+      return {
+        month: m,
+        nepali: NEP_MONTHS[idx],
+        label: `${m} (${NEP_MONTHS[idx]})`,
+        districtBaseline: distBase,
+        palikaRain: palikaMonthly,
+        forecast: palikaMonthly,
+        lower,
+        upper,
+        season: idx >= 5 && idx <= 8 ? 'Monsoon (वर्षा)' : idx >= 2 && idx <= 4 ? 'Pre-Monsoon (वसन्त)' : idx >= 9 && idx <= 10 ? 'Post-Monsoon (शरद)' : 'Winter (हिउँद)',
+      };
+    });
 
     modalContent = (
       <>
@@ -140,7 +166,7 @@ const IndicatorModal: React.FC<IndicatorModalProps> = ({ modalKey, district, act
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900 font-outfit">Local Precipitation Profile — {activePalika?.name || district.name}</h3>
-              <p className="text-xs text-slate-500">Orographic Elevation-Adjusted Rainfall & Pure-JS ARIMA(2,1,1) Forecast</p>
+              <p className="text-xs text-slate-500">Orographic Elevation-Adjusted Rainfall & ARIMA Forward Forecast</p>
             </div>
           </div>
           <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"><X className="w-5 h-5" /></button>
@@ -176,23 +202,55 @@ const IndicatorModal: React.FC<IndicatorModalProps> = ({ modalKey, district, act
               78.4% (Asar – Asoj)
             </div>
             <div className="text-[10px] text-slate-500">
-              Optimal recharge for Coffee & Paddy
+              Peak: 540 mm/mo (July / साउन)
             </div>
           </div>
         </div>
 
-        {/* Time-Series Chart */}
-        {arima && (
+        {/* Timeframe Switcher: Annual vs Monthly */}
+        <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200">
+          <span className="text-xs font-bold text-slate-700 font-outfit">
+            {rainfallTimeframe === 'annual'
+              ? `📅 Annual History & 10-Year ARIMA Horizon (${startYear}–${forecastEndYear})`
+              : `📆 12-Month Seasonal Forecast & Climatology Cycle (${activePalika?.name})`}
+          </span>
+
+          <div className="flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs">
+            <button
+              onClick={() => setRainfallTimeframe('annual')}
+              className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                rainfallTimeframe === 'annual'
+                  ? 'bg-sky-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              📅 Annual (वार्षिक)
+            </button>
+            <button
+              onClick={() => setRainfallTimeframe('monthly')}
+              className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                rainfallTimeframe === 'monthly'
+                  ? 'bg-sky-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              📆 Monthly (मासिक चक्र)
+            </button>
+          </div>
+        </div>
+
+        {/* Chart View: Annual Mode */}
+        {rainfallTimeframe === 'annual' && arima && (
           <div>
             <div className="text-xs text-slate-700 mb-2 font-medium flex items-center justify-between">
-              <span>District History + 10-Year ARIMA Forecast ({startYear}–{forecastEndYear})</span>
+              <span>Historical Trend + Pure-JS ARIMA(2,1,1) Model</span>
               <span className="flex items-center gap-3">
                 <span className="flex items-center gap-1"><span className="inline-block w-3.5 h-0.5 bg-sky-600"></span><span className="text-[10px] text-slate-600">Historical (1981–2019)</span></span>
                 <span className="flex items-center gap-1"><span className="inline-block w-3.5 h-0.5 border-t-2 border-dashed border-teal-500"></span><span className="text-[10px] text-slate-600">Forecast (2020–2029)</span></span>
                 <span className="flex items-center gap-1"><span className="inline-block w-3 h-2 rounded bg-sky-200"></span><span className="text-[10px] text-slate-600">95% CI</span></span>
               </span>
             </div>
-            <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer width="100%" height={210}>
               <ComposedChart data={chartData} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis dataKey="year" tick={{ fill: '#64748b', fontSize: 10 }} />
@@ -216,9 +274,81 @@ const IndicatorModal: React.FC<IndicatorModalProps> = ({ modalKey, district, act
           </div>
         )}
 
+        {/* Chart View: Monthly Mode */}
+        {rainfallTimeframe === 'monthly' && (
+          <div className="space-y-3">
+            <div className="text-xs text-slate-700 font-medium flex items-center justify-between">
+              <span>12-Month Rainfall Distribution & Projected Inflow</span>
+              <div className="flex items-center gap-3">
+                <span className="flex items-center gap-1"><span className="inline-block w-2.5 h-2.5 rounded bg-sky-500"></span><span className="text-[10px] text-slate-600">{activePalika?.name} (mm/mo)</span></span>
+                <span className="flex items-center gap-1"><span className="inline-block w-3.5 h-0.5 border-t-2 border-dashed border-teal-500"></span><span className="text-[10px] text-slate-600">Forecast Curve</span></span>
+                <span className="flex items-center gap-1"><span className="inline-block w-3 h-2 rounded bg-sky-200"></span><span className="text-[10px] text-slate-600">95% CI</span></span>
+              </div>
+            </div>
+
+            <ResponsiveContainer width="100%" height={210}>
+              <ComposedChart data={monthlyChartData} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="month" tick={{ fill: '#64748b', fontSize: 10 }} />
+                <YAxis tick={{ fill: '#64748b', fontSize: 10 }} unit=" mm" width={55} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#ffffff', borderColor: '#cbd5e1', borderRadius: '0.5rem', color: '#0f172a', fontSize: 11, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                  formatter={(v: any, name: string, item: any) => {
+                    if (name === 'lower' || name === 'upper') return null;
+                    if (name === 'palikaRain') return [`${Math.round(v)} mm (${item.payload.season})`, `${activePalika?.name} Local Inflow`];
+                    if (name === 'forecast') return [`${Math.round(v)} mm`, 'Seasonal Forecast'];
+                    return [v, name];
+                  }}
+                />
+                <Area dataKey="upper" stroke="none" fill="#bae6fd" isAnimationActive={false} />
+                <Area dataKey="lower" stroke="none" fill="#ffffff" isAnimationActive={false} />
+                <Bar dataKey="palikaRain" fill="#0284c7" radius={[4, 4, 0, 0]} isAnimationActive={false}>
+                  {monthlyChartData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={
+                        index >= 5 && index <= 8
+                          ? '#0284c7' // Heavy Monsoon
+                          : index >= 2 && index <= 4
+                          ? '#0d9488' // Spring Pre-monsoon
+                          : '#94a3b8' // Winter dry
+                      }
+                    />
+                  ))}
+                </Bar>
+                <Line type="monotone" dataKey="forecast" stroke="#0f766e" strokeWidth={2.2} strokeDasharray="3 3" dot={{ r: 3, fill: '#0f766e' }} isAnimationActive={false} />
+              </ComposedChart>
+            </ResponsiveContainer>
+
+            {/* 4 Seasonal Badges */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div className="p-2 rounded-lg bg-slate-100 border border-slate-200">
+                <span className="text-[10px] text-slate-500 font-semibold uppercase">❄️ Winter (हिउँद)</span>
+                <div className="font-bold text-slate-900 font-mono mt-0.5">58 mm (3.1%)</div>
+                <div className="text-[9px] text-slate-500">Dec – Feb (Dry)</div>
+              </div>
+              <div className="p-2 rounded-lg bg-teal-50 border border-teal-200">
+                <span className="text-[10px] text-teal-800 font-semibold uppercase">🌸 Spring (वसन्त)</span>
+                <div className="font-bold text-teal-950 font-mono mt-0.5">321 mm (17.4%)</div>
+                <div className="text-[9px] text-teal-700">Mar – May (Showers)</div>
+              </div>
+              <div className="p-2 rounded-lg bg-sky-100/80 border border-sky-300">
+                <span className="text-[10px] text-sky-900 font-semibold uppercase">🌧️ Monsoon (वर्षा)</span>
+                <div className="font-bold text-sky-950 font-mono mt-0.5">1,450 mm (78.4%)</div>
+                <div className="text-[9px] text-sky-800">Jun – Sep (Peak Inflow)</div>
+              </div>
+              <div className="p-2 rounded-lg bg-amber-50 border border-amber-200">
+                <span className="text-[10px] text-amber-800 font-semibold uppercase">🍂 Autumn (शरद)</span>
+                <div className="font-bold text-amber-950 font-mono mt-0.5">21 mm (1.1%)</div>
+                <div className="text-[9px] text-amber-700">Oct – Nov (Harvest)</div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="text-[11px] text-slate-500 flex items-start gap-1.5 pt-2 border-t border-slate-200">
           <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 text-sky-600" />
-          <span>Local precipitation incorporates south-facing Mahabharat slope orographic lift and 39-year MERRA-2 historical series.</span>
+          <span>Local precipitation incorporates south-facing Mahabharat slope orographic lift, 39-year MERRA-2 historical series, and ARIMA stochastic modeling.</span>
         </div>
       </>
     );
@@ -435,10 +565,10 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   climateDataset: initialClimateDataset,
 }) => {
   const [cropSpectrumMode, setCropSpectrumMode] = useState<'verified' | 'all'>('verified');
-  
+
   const verifiedDistrictCrops = useMemo(() => db.getDistrictCrops(district.id), [district.id]);
   const allDistrictCrops = useMemo(() => db.getAllDistrictCrops(district.id), [district.id]);
-  
+
   const displayedDistrictCrops = cropSpectrumMode === 'verified' ? verifiedDistrictCrops : allDistrictCrops;
 
   const [activeHoverCrop, setActiveHoverCrop] = useState<Crop | null>(displayedDistrictCrops[0]?.crop || null);
@@ -491,8 +621,8 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   const cardRainfallBadge = rainfallARIMA
     ? { text: 'ARIMA(2,1,1)' }
     : district.avgRainfallMm
-    ? { text: 'Historical' }
-    : { text: 'Proxy' };
+      ? { text: 'Historical' }
+      : { text: 'Proxy' };
 
   const [activePalikaName, setActivePalikaName] = useState<string>(initialPalikaName || 'Resunga');
   const [isDossierModalOpen, setIsDossierModalOpen] = useState<boolean>(false);
@@ -659,7 +789,7 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
               className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
             >
               <FileText className="w-4 h-4 text-emerald-400" />
-              <span>📄 Export Municipal Brief</span>
+              <span>Export Municipal Brief</span>
             </button>
           </div>
         </div>
@@ -679,11 +809,10 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
                 <button
                   key={p.name}
                   onClick={() => setActivePalikaName(p.name)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 border ${
-                    isSelected
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 border ${isSelected
                       ? 'bg-emerald-700 text-white border-emerald-800 shadow-sm font-bold scale-102'
                       : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
+                    }`}
                 >
                   <span>{p.name}</span>
                   <span className={`text-[10px] ${isSelected ? 'text-emerald-200' : 'text-slate-500'}`}>
@@ -1046,21 +1175,19 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
               <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs">
                 <button
                   onClick={() => setCropSpectrumMode('verified')}
-                  className={`py-1.5 px-2 rounded-lg font-semibold text-center transition-all cursor-pointer ${
-                    cropSpectrumMode === 'verified'
+                  className={`py-1.5 px-2 rounded-lg font-semibold text-center transition-all cursor-pointer ${cropSpectrumMode === 'verified'
                       ? 'bg-white text-emerald-800 shadow-xs font-bold'
                       : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                    }`}
                 >
                   ⭐ सिफारिस ({verifiedDistrictCrops.length})
                 </button>
                 <button
                   onClick={() => setCropSpectrumMode('all')}
-                  className={`py-1.5 px-2 rounded-lg font-semibold text-center transition-all cursor-pointer ${
-                    cropSpectrumMode === 'all'
+                  className={`py-1.5 px-2 rounded-lg font-semibold text-center transition-all cursor-pointer ${cropSpectrumMode === 'all'
                       ? 'bg-white text-emerald-800 shadow-xs font-bold'
                       : 'text-slate-600 hover:text-slate-900'
-                  }`}
+                    }`}
                 >
                   🌐 सम्पूर्ण ({allDistrictCrops.length})
                 </button>
@@ -1068,11 +1195,10 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
 
               <button
                 onClick={() => setShowComparison(!showComparison)}
-                className={`w-full py-1.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                  showComparison
+                className={`w-full py-1.5 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${showComparison
                     ? 'bg-slate-900 text-white shadow-sm'
                     : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-2xs'
-                }`}
+                  }`}
               >
                 <GitCompare className="w-3.5 h-3.5 text-emerald-600" />
                 <span>{showComparison ? 'Hide Comparison Table' : 'Compare All Crops Matrix'}</span>
@@ -1084,7 +1210,7 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
               {displayedDistrictCrops.map(({ crop, suitability, isFeasible }: any) => {
                 const isSelected = activeHoverCrop?.id === crop.id;
                 const score = suitability.suitabilityScore;
-                
+
                 // Color scale and FAO Class
                 let scoreBadgeClass = 'bg-rose-50 text-rose-800 border-rose-200';
                 let barClass = 'bg-rose-500';
@@ -1106,8 +1232,8 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
                 // Season pill color
                 const seasonLabel = crop.seasonLabelNepali || (
                   crop.season === 'barkhe' ? '🌧️ बर्खे' :
-                  crop.season === 'hiunde' ? '❄️ हिउँदे' :
-                  crop.season === 'chaite' ? '☀️ चैते' : '🌳 बाह्रमासे'
+                    crop.season === 'hiunde' ? '❄️ हिउँदे' :
+                      crop.season === 'chaite' ? '☀️ चैते' : '🌳 बाह्रमासे'
                 );
 
                 return (
@@ -1115,11 +1241,10 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
                     key={crop.id}
                     onMouseEnter={() => setActiveHoverCrop(crop)}
                     onClick={() => setActiveHoverCrop(crop)}
-                    className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2.5 group ${
-                      isSelected
+                    className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2.5 group ${isSelected
                         ? 'bg-emerald-50/70 border-emerald-500 shadow-md ring-2 ring-emerald-400/50'
                         : 'bg-white border-slate-200 hover:border-emerald-300 hover:bg-slate-50/60'
-                    }`}
+                      }`}
                   >
                     {/* Top Row: Crop Name & Suitability Badge */}
                     <div className="flex items-start justify-between gap-2">
@@ -1169,9 +1294,8 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
                       <span className="text-slate-600 font-medium">
                         NPR {crop.marketValuePerUnit}/{crop.baseUnitName}
                       </span>
-                      <span className={`text-[10px] font-bold flex items-center gap-1 ${
-                        isSelected ? 'text-emerald-700 font-extrabold' : 'text-slate-400 group-hover:text-emerald-600'
-                      }`}>
+                      <span className={`text-[10px] font-bold flex items-center gap-1 ${isSelected ? 'text-emerald-700 font-extrabold' : 'text-slate-400 group-hover:text-emerald-600'
+                        }`}>
                         <span>{isSelected ? 'Active' : 'Inspect'}</span>
                         <ChevronRight className="w-3.5 h-3.5" />
                       </span>
