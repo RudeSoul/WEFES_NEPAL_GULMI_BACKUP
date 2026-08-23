@@ -1497,8 +1497,29 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
           </div>
         )}
 
+        {/* ─── Distinct Section Separator & Header: 4 Agro-Ecological Baseline Benchmarks ─── */}
+        <div className="pt-4 mt-2 border-t border-slate-200/90 flex items-center justify-between flex-wrap gap-2 animate-fade-in">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-emerald-100/80 border border-emerald-300/80 flex items-center justify-center text-emerald-800 text-xs font-bold shadow-2xs">
+              📊
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-slate-900 font-outfit uppercase tracking-wider flex items-center gap-2">
+                <span>{activePalika.name} Agro-Ecological Baseline Benchmarks</span>
+                <span className="text-[10px] font-mono font-normal text-slate-500 lowercase">(ground surveys & climatology)</span>
+              </h4>
+              <p className="text-[10px] text-slate-500">
+                Calibrated against NARC ground soil grid & NASA MERRA-2 lapse climatology • Click any pillar to inspect time-series & forecasts
+              </p>
+            </div>
+          </div>
+          <span className="text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-700">
+            4 Interactive Micro-Dossiers
+          </span>
+        </div>
+
         {/* 4 Clickable Palika Micro-Indicator Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {indicators.map(({ key, icon, label, value, badge, cardBg, iconBg, badgeClass, badgeDot }) => (
             <button
               key={key}
