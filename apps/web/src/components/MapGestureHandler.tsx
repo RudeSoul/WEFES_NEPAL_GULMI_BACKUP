@@ -53,7 +53,7 @@ export const MapGestureHandler: React.FC = () => {
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
         timeoutRef.current = setTimeout(() => {
           setShowHint(false);
-        }, 1300);
+        }, 50);
       }
     };
 
@@ -71,9 +71,9 @@ export const MapGestureHandler: React.FC = () => {
   if (!showHint) return null;
 
   return (
-    <div className="absolute inset-0 z-[1200] pointer-events-none flex items-center justify-center bg-slate-900/35 backdrop-blur-[1.5px] transition-all duration-200 animate-fade-in">
-      <div className="bg-slate-900/95 text-white font-sans text-xs px-4 py-2.5 rounded-xl shadow-2xl border border-white/20 flex items-center gap-2.5 tracking-wide font-medium">
-        <kbd className="px-2 py-0.5 bg-white/20 rounded font-mono font-bold text-white text-xs shadow-xs border border-white/30">
+    <div className="absolute inset-0 z-[1200] pointer-events-none flex items-center justify-center bg-slate-900/20 backdrop-blur-[0.5px] transition-opacity duration-150 animate-fade-in">
+      <div className="bg-slate-900/90 text-white font-sans text-xs px-3.5 py-2 rounded-xl shadow-xl border border-white/20 flex items-center gap-2 tracking-wide font-medium">
+        <kbd className="px-1.5 py-0.5 bg-white/20 rounded font-mono font-bold text-white text-[11px] border border-white/30">
           {keyName}
         </kbd>
         <span>+ scroll to zoom map</span>
