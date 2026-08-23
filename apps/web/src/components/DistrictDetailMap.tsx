@@ -968,7 +968,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
             <select
               value={baseMapStyle}
               onChange={e => setBaseMapStyle(e.target.value as BaseMapStyle)}
-              className="bg-slate-900/90 text-white text-xs font-semibold px-2.5 py-1 rounded-lg border border-slate-700 shadow-sm cursor-pointer focus:outline-none"
+              className="bg-white/95 text-slate-800 text-xs font-semibold px-2.5 py-1 rounded-xl border border-slate-200 shadow-md cursor-pointer focus:outline-none backdrop-blur-md"
             >
               <option value="voyager">🗺️ Streets & Roads</option>
               <option value="osm">🛣️ OpenStreetMap</option>
@@ -977,10 +977,10 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
             </select>
             <button
               onClick={() => setShowContours(!showContours)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold border flex items-center gap-1 shadow-xs transition-all cursor-pointer ${
+              className={`px-2.5 py-1 rounded-xl text-xs font-bold border flex items-center gap-1 shadow-md transition-all cursor-pointer backdrop-blur-md ${
                 showContours
                   ? 'bg-sky-600 text-white border-sky-500'
-                  : 'bg-slate-900/85 text-slate-300 border-slate-700 hover:bg-slate-800'
+                  : 'bg-white/95 text-slate-700 border-slate-200 hover:bg-slate-100'
               }`}
             >
               <Mountain className="w-3.5 h-3.5" />
@@ -990,9 +990,9 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
 
           {/* Floating Map Overlay Badge */}
           <div className="absolute top-3 left-3 z-[1000] pointer-events-none">
-            <div className="bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700 shadow-sm flex items-center gap-2 text-white">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-bold font-outfit">
+            <div className="bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200 shadow-md flex items-center gap-2 text-slate-800">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-bold font-outfit text-slate-900">
                 {activePalika.name} ({activePalika.elevation}m ASL • pH {activePalika.soilPh})
               </span>
             </div>

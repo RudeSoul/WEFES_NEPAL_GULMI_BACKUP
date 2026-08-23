@@ -53,6 +53,15 @@ interface LiveWeatherTelemetry {
   windSpeed: number;
   solarRadiation: number;
   cloudCover: number;
+  et0: number;
+  vpd: number;
+  topsoilMoisture: number;
+  deepSoilMoisture: number;
+  soilMoisturePct: number;
+  fungalRisk: 'Low' | 'Moderate' | 'High';
+  solarPumpingScore: number;
+  fireDangerRating: 'Low' | 'Moderate' | 'High' | 'Extreme';
+  landslideHazard: 'Low' | 'Moderate' | 'Alert';
 }
 
 // Compute standard WEFES 5-Pillar indices (0-100) for any Palika
@@ -116,33 +125,59 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
 
     setLiveLoading(true);
 
+    const buildUrl = (coord: { lat: number; lng: number }) =>
+      `https://api.open-meteo.com/v1/forecast?latitude=${coord.lat}&longitude=${coord.lng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,wind_speed_10m,direct_radiation,cloud_cover,surface_pressure,et0_fao_evapotranspiration,vapour_pressure_deficit,soil_moisture_0_to_7cm,soil_moisture_7_to_28cm,uv_index&timezone=Asia%2FKathmandu`;
+
     Promise.all([
-      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coordA.lat}&longitude=${coordA.lng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,wind_speed_10m,direct_radiation,cloud_cover&timezone=Asia%2FKathmandu`).then(r => r.json()),
-      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coordB.lat}&longitude=${coordB.lng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,wind_speed_10m,direct_radiation,cloud_cover&timezone=Asia%2FKathmandu`).then(r => r.json()),
+      fetch(buildUrl(coordA)).then(r => r.json()),
+      fetch(buildUrl(coordB)).then(r => r.json()),
     ])
       .then(([dataA, dataB]) => {
-        if (dataA?.current) {
-          setCurrentLiveWeather({
-            temperature: Number(dataA.current.temperature_2m.toFixed(1)),
-            apparentTemp: Number(dataA.current.apparent_temperature.toFixed(1)),
-            humidity: Math.round(dataA.current.relative_humidity_2m),
-            precipitation: Number(dataA.current.precipitation.toFixed(1)),
-            windSpeed: Number((dataA.current.wind_speed_10m / 3.6).toFixed(1)),
-            solarRadiation: Math.round(dataA.current.direct_radiation || 0),
-            cloudCover: Math.round(dataA.current.cloud_cover || 0),
-          });
-        }
-        if (dataB?.current) {
-          setTargetLiveWeather({
-            temperature: Number(dataB.current.temperature_2m.toFixed(1)),
-            apparentTemp: Number(dataB.current.apparent_temperature.toFixed(1)),
-            humidity: Math.round(dataB.current.relative_humidity_2m),
-            precipitation: Number(dataB.current.precipitation.toFixed(1)),
-            windSpeed: Number((dataB.current.wind_speed_10m / 3.6).toFixed(1)),
-            solarRadiation: Math.round(dataB.current.direct_radiation || 0),
-            cloudCover: Math.round(dataB.current.cloud_cover || 0),
-          });
-        }
+        const parseWeather = (data: any): LiveWeatherTelemetry | null => {
+          if (!data?.current) return null;
+          const c = data.current;
+          const topsoil = c.soil_moisture_0_to_7cm ?? 0.35;
+          const deepSoil = c.soil_moisture_7_to_28cm ?? 0.38;
+          const vpdVal = c.vapour_pressure_deficit ?? 0.65;
+          const rh = Math.round(c.relative_humidity_2m);
+          const temp = Number(c.temperature_2m.toFixed(1));
+          const wind = Number((c.wind_speed_10m / 3.6).toFixed(1));
+          const solar = Math.round(c.direct_radiation || 0);
+
+          const soilSat = Math.min(100, Math.round((topsoil / 0.55) * 100));
+          const fungalStatus: 'Low' | 'Moderate' | 'High' =
+            (rh > 85 && vpdVal < 0.4 && temp > 15) ? 'High' : (rh > 72 || vpdVal < 0.6) ? 'Moderate' : 'Low';
+          const solarPumpScore = Math.min(100, Math.round((solar / 750) * 100));
+          const fireIndex: 'Low' | 'Moderate' | 'High' | 'Extreme' =
+            (topsoil < 0.20 && vpdVal > 1.3 && wind > 3.5) ? 'Extreme' :
+            (topsoil < 0.26 && vpdVal > 0.9) ? 'High' :
+            (topsoil < 0.32) ? 'Moderate' : 'Low';
+          const landslideAlert: 'Low' | 'Moderate' | 'Alert' =
+            (c.precipitation > 15 && soilSat > 82) ? 'Alert' :
+            (c.precipitation > 5 || soilSat > 75) ? 'Moderate' : 'Low';
+
+          return {
+            temperature: temp,
+            apparentTemp: Number(c.apparent_temperature.toFixed(1)),
+            humidity: rh,
+            precipitation: Number(c.precipitation.toFixed(1)),
+            windSpeed: wind,
+            solarRadiation: solar,
+            cloudCover: Math.round(c.cloud_cover || 0),
+            et0: Number((c.et0_fao_evapotranspiration || 0).toFixed(2)),
+            vpd: Number(vpdVal.toFixed(2)),
+            topsoilMoisture: Number(topsoil.toFixed(3)),
+            deepSoilMoisture: Number(deepSoil.toFixed(3)),
+            soilMoisturePct: soilSat,
+            fungalRisk: fungalStatus,
+            solarPumpingScore: solarPumpScore,
+            fireDangerRating: fireIndex,
+            landslideHazard: landslideAlert,
+          };
+        };
+
+        setCurrentLiveWeather(parseWeather(dataA));
+        setTargetLiveWeather(parseWeather(dataB));
         setLiveLoading(false);
       })
       .catch(() => setLiveLoading(false));
@@ -585,14 +620,121 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
             {/* Live Cloud Cover */}
             <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-center space-y-1">
               <div className="flex items-center justify-center gap-1 text-[11px] font-semibold text-slate-500">
-                <Cloud className="w-3.5 h-3.5 text-slate-500" />
+                <Cloud className="w-3.5 h-3.5 text-indigo-400" />
                 <span>Cloud Cover</span>
               </div>
-              <div className="text-base font-extrabold text-slate-900 font-mono">
+              <div className="text-base font-extrabold text-indigo-950 font-mono">
                 {currentLiveWeather ? `${currentLiveWeather.cloudCover}%` : '--'}
               </div>
               <div className="text-[10px] text-indigo-700 font-mono font-bold">
                 vs {targetLiveWeather ? `${targetLiveWeather.cloudCover}%` : '--'}
+              </div>
+            </div>
+          </div>
+
+          {/* ─── 4 Advanced Agro-Hydrology & Biophysical Satellite Comparisons ─── */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 pt-1 text-xs">
+            {/* Soil Moisture */}
+            <div className="p-3 rounded-xl bg-cyan-50/70 border border-cyan-200 space-y-1">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-bold text-cyan-900 flex items-center gap-1">
+                  <span>💧 Topsoil Moisture</span>
+                </span>
+                <span className="text-[9px] text-cyan-700 font-mono">0–7 cm</span>
+              </div>
+              <div className="flex items-center justify-between font-mono pt-1 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-500 block">{currentPalika.name}:</span>
+                  <strong className="text-emerald-900 font-bold text-sm">
+                    {currentLiveWeather ? `${currentLiveWeather.topsoilMoisture} m³` : '--'}
+                  </strong>
+                  <span className="text-[9px] text-emerald-700 block">({currentLiveWeather?.soilMoisturePct}%)</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] text-slate-500 block">{targetPalika.name}:</span>
+                  <strong className="text-indigo-900 font-bold text-sm">
+                    {targetLiveWeather ? `${targetLiveWeather.topsoilMoisture} m³` : '--'}
+                  </strong>
+                  <span className="text-[9px] text-indigo-700 block">({targetLiveWeather?.soilMoisturePct}%)</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Vapor Pressure Deficit & Fungal Risk */}
+            <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-1">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-bold text-emerald-900 flex items-center gap-1">
+                  <span>🍃 Vapor Deficit (VPD)</span>
+                </span>
+                <span className="text-[9px] text-emerald-700 font-mono">kPa</span>
+              </div>
+              <div className="flex items-center justify-between font-mono pt-1 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-500 block">{currentPalika.name}:</span>
+                  <strong className="text-emerald-900 font-bold text-sm">
+                    {currentLiveWeather ? `${currentLiveWeather.vpd} kPa` : '--'}
+                  </strong>
+                  <span className="text-[9px] text-emerald-700 block">{currentLiveWeather?.fungalRisk} Risk</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] text-slate-500 block">{targetPalika.name}:</span>
+                  <strong className="text-indigo-900 font-bold text-sm">
+                    {targetLiveWeather ? `${targetLiveWeather.vpd} kPa` : '--'}
+                  </strong>
+                  <span className="text-[9px] text-indigo-700 block">{targetLiveWeather?.fungalRisk} Risk</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Solar River-Lifting Efficiency */}
+            <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 space-y-1">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-bold text-amber-900 flex items-center gap-1">
+                  <span>⚡ Solar Pumping</span>
+                </span>
+                <span className="text-[9px] text-amber-700 font-mono">Viability</span>
+              </div>
+              <div className="flex items-center justify-between font-mono pt-1 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-500 block">{currentPalika.name}:</span>
+                  <strong className="text-emerald-900 font-bold text-sm">
+                    {currentLiveWeather ? `${currentLiveWeather.solarPumpingScore}%` : '--'}
+                  </strong>
+                  <span className="text-[9px] text-emerald-700 block">Pumping Viable</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] text-slate-500 block">{targetPalika.name}:</span>
+                  <strong className="text-indigo-900 font-bold text-sm">
+                    {targetLiveWeather ? `${targetLiveWeather.solarPumpingScore}%` : '--'}
+                  </strong>
+                  <span className="text-[9px] text-indigo-700 block">Pumping Viable</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Landslide & Disaster Hazard Rating */}
+            <div className="p-3 rounded-xl bg-rose-50/70 border border-rose-200 space-y-1">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="font-bold text-rose-900 flex items-center gap-1">
+                  <span>⚠️ Hazard Alert</span>
+                </span>
+                <span className="text-[9px] text-rose-700 font-mono">Early Warning</span>
+              </div>
+              <div className="flex items-center justify-between font-mono pt-1 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-500 block">{currentPalika.name}:</span>
+                  <strong className="text-emerald-900 font-bold text-sm">
+                    {currentLiveWeather?.landslideHazard} Slide
+                  </strong>
+                  <span className="text-[9px] text-emerald-700 block">FDRI: {currentLiveWeather?.fireDangerRating}</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] text-slate-500 block">{targetPalika.name}:</span>
+                  <strong className="text-indigo-900 font-bold text-sm">
+                    {targetLiveWeather?.landslideHazard} Slide
+                  </strong>
+                  <span className="text-[9px] text-indigo-700 block">FDRI: {targetLiveWeather?.fireDangerRating}</span>
+                </div>
               </div>
             </div>
           </div>

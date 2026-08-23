@@ -1815,25 +1815,25 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       />
 
       {/* Live Satellite Weather vs 39-Yr NASA Climatology Telemetry Ribbon */}
-      <div className="flex items-center justify-between flex-wrap gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white shadow-sm border border-slate-800 text-xs animate-fade-in">
+      <div className="flex items-center justify-between flex-wrap gap-2 px-4 py-2.5 rounded-2xl bg-white/95 text-slate-800 shadow-xs border border-slate-200/90 text-xs animate-fade-in glass-panel">
         <div className="flex items-center gap-2 flex-wrap">
           {weatherMode === 'live' && liveWeather ? (
             <>
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="font-bold text-slate-100 font-outfit uppercase tracking-wider text-[11px]">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="font-bold text-slate-900 font-outfit uppercase tracking-wider text-[11px]">
                 {lang === 'np' ? 'प्रत्यक्ष भू-उपग्रह मौसमी टेलिमेट्री (गुल्मी)' : 'Live Satellite Weather Telemetry (Gulmi HQ)'}
               </span>
-              <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
+              <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
                 {lang === 'np' ? 'आजको वास्तविक समय' : 'Real-Time Today'}
               </span>
             </>
           ) : (
             <>
-              <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
-              <span className="font-bold text-slate-100 font-outfit uppercase tracking-wider text-[11px]">
+              <span className="w-2.5 h-2.5 rounded-full bg-sky-500" />
+              <span className="font-bold text-slate-900 font-outfit uppercase tracking-wider text-[11px]">
                 NASA POWER / MERRA-2 Climatology Archive ({MONTH_NAMES[climateMonth - 1]} {climateMode === 'climatology' ? '39-Yr Baseline' : climateYear})
               </span>
-              <span className="bg-sky-500/20 text-sky-300 border border-sky-500/30 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
+              <span className="bg-sky-50 text-sky-800 border border-sky-300 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
                 {currentSeason}
               </span>
             </>
@@ -1843,7 +1843,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
           {liveWeather && (
             <button
               onClick={() => setWeatherMode(prev => prev === 'live' ? 'archive' : 'live')}
-              className="ml-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 cursor-pointer transition-colors"
+              className="ml-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 cursor-pointer transition-colors"
             >
               {weatherMode === 'live' ? '⇄ 39-Yr Archive' : '⇄ 🟢 Live Weather'}
             </button>
@@ -1854,61 +1854,61 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
           {weatherMode === 'live' && liveWeather ? (
             <>
               <div className="flex items-center gap-1.5" title="Live Rain">
-                <CloudRain className="w-3.5 h-3.5 text-sky-400" />
-                <span className="text-slate-300">Rain:</span>
-                <strong className="text-sky-300 font-bold">{liveWeather.precipitation} mm/hr</strong>
+                <CloudRain className="w-3.5 h-3.5 text-sky-600" />
+                <span className="text-slate-500">Rain:</span>
+                <strong className="text-sky-900 font-bold">{liveWeather.precipitation} mm/hr</strong>
               </div>
 
               <div className="flex items-center gap-1.5" title="Live Air Temperature">
-                <Thermometer className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-slate-300">Temp:</span>
-                <strong className="text-amber-300 font-bold">{liveWeather.temperature}°C</strong>
-                <span className="text-[10px] text-slate-400">(Feels {liveWeather.apparentTemp}°)</span>
+                <Thermometer className="w-3.5 h-3.5 text-amber-600" />
+                <span className="text-slate-500">Temp:</span>
+                <strong className="text-amber-900 font-bold">{liveWeather.temperature}°C</strong>
+                <span className="text-[10px] text-slate-500">(Feels {liveWeather.apparentTemp}°)</span>
               </div>
 
               <div className="flex items-center gap-1.5" title="Live Relative Humidity">
-                <Droplets className="w-3.5 h-3.5 text-blue-400" />
-                <span className="text-slate-300">Humidity:</span>
-                <strong className="text-blue-300 font-bold">{liveWeather.humidity}%</strong>
+                <Droplets className="w-3.5 h-3.5 text-blue-600" />
+                <span className="text-slate-500">Humidity:</span>
+                <strong className="text-blue-900 font-bold">{liveWeather.humidity}%</strong>
               </div>
 
               <div className="flex items-center gap-1.5" title="Live Wind Speed">
-                <Wind className="w-3.5 h-3.5 text-teal-400" />
-                <span className="text-slate-300">Wind:</span>
-                <strong className="text-teal-300 font-bold">{liveWeather.windSpeed} m/s</strong>
+                <Wind className="w-3.5 h-3.5 text-teal-600" />
+                <span className="text-slate-500">Wind:</span>
+                <strong className="text-teal-900 font-bold">{liveWeather.windSpeed} m/s</strong>
               </div>
 
               <div className="flex items-center gap-1.5" title="Live Direct Solar Irradiance">
-                <Sun className="w-3.5 h-3.5 text-yellow-400" />
-                <span className="text-slate-300">Solar:</span>
-                <strong className="text-yellow-300 font-bold">{liveWeather.solarRadiation} W/m²</strong>
+                <Sun className="w-3.5 h-3.5 text-amber-500" />
+                <span className="text-slate-500">Solar:</span>
+                <strong className="text-amber-900 font-bold">{liveWeather.solarRadiation} W/m²</strong>
               </div>
             </>
           ) : (
             <>
               <div className="flex items-center gap-1.5" title="Estimated Monthly Precipitation">
-                <CloudRain className="w-3.5 h-3.5 text-sky-400" />
-                <span className="text-slate-300">Rain:</span>
-                <strong className="text-sky-300 font-bold">{currentRainMm} mm/mo</strong>
+                <CloudRain className="w-3.5 h-3.5 text-sky-600" />
+                <span className="text-slate-500">Rain:</span>
+                <strong className="text-sky-900 font-bold">{currentRainMm} mm/mo</strong>
               </div>
 
               <div className="flex items-center gap-1.5" title="Air Temperature at 2m">
-                <Thermometer className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-slate-300">Temp:</span>
-                <strong className="text-amber-300 font-bold">{currentTempC}°C</strong>
-                <span className="text-[10px] text-slate-400">({currentTempMin}°–{currentTempMax}°)</span>
+                <Thermometer className="w-3.5 h-3.5 text-amber-600" />
+                <span className="text-slate-500">Temp:</span>
+                <strong className="text-amber-900 font-bold">{currentTempC}°C</strong>
+                <span className="text-[10px] text-slate-500">({currentTempMin}°–{currentTempMax}°)</span>
               </div>
 
               <div className="flex items-center gap-1.5" title="Relative Humidity">
-                <Droplets className="w-3.5 h-3.5 text-blue-400" />
-                <span className="text-slate-300">Humidity:</span>
-                <strong className="text-blue-300 font-bold">{currentHumidity}%</strong>
+                <Droplets className="w-3.5 h-3.5 text-blue-600" />
+                <span className="text-slate-500">Humidity:</span>
+                <strong className="text-blue-900 font-bold">{currentHumidity}%</strong>
               </div>
 
               <div className="flex items-center gap-1.5" title="Wind Speed at 10m">
-                <Wind className="w-3.5 h-3.5 text-teal-400" />
-                <span className="text-slate-300">Wind:</span>
-                <strong className="text-teal-300 font-bold">{currentWind} m/s</strong>
+                <Wind className="w-3.5 h-3.5 text-teal-600" />
+                <span className="text-slate-500">Wind:</span>
+                <strong className="text-teal-900 font-bold">{currentWind} m/s</strong>
               </div>
             </>
           )}
