@@ -33,8 +33,11 @@ export function App() {
       .catch(err => console.warn('MERRA-2 Climatology pre-fetch warning:', err));
   }, []);
 
-  const handleSelectDistrictFromMap = (district: District) => {
+  const [selectedPalikaName, setSelectedPalikaName] = useState<string | null>(null);
+
+  const handleSelectDistrictFromMap = (district: District, palikaName?: string) => {
     setSelectedDistrict(district);
+    setSelectedPalikaName(palikaName || null);
     setActiveScreen(2);
   };
 
@@ -92,6 +95,7 @@ export function App() {
         {activeScreen === 2 && selectedDistrict && (
           <DistrictDetail
             district={selectedDistrict}
+            initialPalikaName={selectedPalikaName || undefined}
             onSelectCrop={handleSelectCropFromMatrix}
             onBackToMap={() => setActiveScreen(1)}
             climateDataset={climateDataset}

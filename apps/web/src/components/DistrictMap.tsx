@@ -490,7 +490,7 @@ function getSocioMetricColor(props: any, metric: string): string {
 }
 
 interface DistrictMapProps {
-  onSelectDistrict: (district: District) => void;
+  onSelectDistrict: (district: District, palikaName?: string) => void;
   selectedDistrict: District | null;
   selectedPillar: WEFESPillar;
   setSelectedPillar: (pillar: WEFESPillar) => void;
@@ -677,7 +677,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   // Palika Quick Matrix Handlers
   const handleSelectPalikaFromMatrix = (palikaName: string) => {
     const gulmiDistrict = db.getDistrictById('gulmi');
-    if (gulmiDistrict) onSelectDistrict(gulmiDistrict);
+    if (gulmiDistrict) onSelectDistrict(gulmiDistrict, palikaName);
   };
 
   const handleHoverPalikaFromMatrix = (palikaName: string | null) => {
@@ -1195,7 +1195,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     layer.on({
       click: () => {
         const gulmiDistrict = db.getDistrictById('gulmi');
-        if (gulmiDistrict) onSelectDistrict(gulmiDistrict);
+        if (gulmiDistrict) onSelectDistrict(gulmiDistrict, props.name);
       },
       mouseover: (e: any) => {
         e.target.setStyle({
@@ -2002,8 +2002,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                       handleHoverPalikaFromMatrix(null);
                     },
                     click: () => {
+                      const name = feature?.properties?.name || '';
                       const gulmiDistrict = db.getDistrictById('gulmi');
-                      if (gulmiDistrict) onSelectDistrict(gulmiDistrict);
+                      if (gulmiDistrict) onSelectDistrict(gulmiDistrict, name);
                     }
                   });
                 }}

@@ -23,6 +23,7 @@ import { FileText, Printer, Scale, CheckCircle } from 'lucide-react';
 
 interface DistrictDetailProps {
   district: District;
+  initialPalikaName?: string;
   onSelectCrop: (crop: Crop) => void;
   onBackToMap: () => void;
   climateDataset?: any;
@@ -401,6 +402,7 @@ const IndicatorModal: React.FC<IndicatorModalProps> = ({ modalKey, district, act
 
 export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   district,
+  initialPalikaName,
   onSelectCrop,
   onBackToMap,
   climateDataset: initialClimateDataset,
@@ -465,8 +467,14 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
     ? { text: 'Historical' }
     : { text: 'Proxy' };
 
-  const [activePalikaName, setActivePalikaName] = useState<string>('Resunga');
+  const [activePalikaName, setActivePalikaName] = useState<string>(initialPalikaName || 'Resunga');
   const [isDossierModalOpen, setIsDossierModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (initialPalikaName) {
+      setActivePalikaName(initialPalikaName);
+    }
+  }, [initialPalikaName]);
 
   const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
   const activePalika: DistrictPalika = gulmiPalikas.find(p => p.name.toLowerCase() === activePalikaName.toLowerCase()) || gulmiPalikas[0] || {} as DistrictPalika;
