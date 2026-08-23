@@ -14,7 +14,7 @@ import { PolicyPresetSelector } from './PolicyPresetSelector';
 import { PalikaQuickMatrix } from './PalikaQuickMatrix';
 import { ElevationCrossSection } from './ElevationCrossSection';
 import { NexusRadarWidget } from './NexusRadarWidget';
-import { MapPin, Sparkles, Calendar, Coins, Trees, Droplets, Zap, Sprout, Sun, Wheat, Cherry, Leaf, Thermometer, Mountain, Target, Layers, CloudRain, Wind, Activity, Globe, Compass, Check, Eye, EyeOff } from 'lucide-react';
+import { MapPin, Sparkles, Calendar, Coins, Trees, Droplets, Zap, Sprout, Sun, Wheat, Cherry, Leaf, Thermometer, Mountain, Target, Layers, CloudRain, Wind, Activity, Globe, Compass, Check, Eye, EyeOff, Building2 } from 'lucide-react';
 import gulmiSoilPoints from '../data/gulmiSoilPoints.json';
 import { PalikaHoverCard } from './PalikaHoverCard';
 import { DISTRICT_PALIKAS } from '../data/districtPalikaAssets';
@@ -35,33 +35,78 @@ const GULMI_BOUNDS: [[number, number], [number, number]] = [
   [28.271, 83.608],
 ];
 
-// Palika centroid geographical coordinates for bilingual map labels
+// Palika centroid geographical coordinates for bilingual map labels (Exact Polygon Centroids from GeoJSON)
 const PALIKA_CENTROIDS: Record<string, { lat: number; lng: number; nepali: string }> = {
-  'Resunga': { lat: 28.065, lng: 83.250, nepali: 'रेसुङ्गा' },
-  'Musikot': { lat: 28.165, lng: 83.280, nepali: 'मुसिकोट' },
-  'Ruru': { lat: 27.970, lng: 83.430, nepali: 'रुरुक्षेत्र' },
-  'Satyawati': { lat: 28.020, lng: 83.520, nepali: 'सत्यवती' },
-  'Kaligandaki': { lat: 28.020, lng: 83.620, nepali: 'कालीगण्डकी' },
-  'Chandrakot': { lat: 28.130, lng: 83.470, nepali: 'चन्द्रकोट' },
-  'Chatrakot': { lat: 28.040, lng: 83.380, nepali: 'छत्रकोट' },
-  'Gulmidarbar': { lat: 28.030, lng: 83.310, nepali: 'गुल्मीदरबार' },
-  'Dhurkot': { lat: 28.130, lng: 83.180, nepali: 'धुर्कोट' },
-  'Isma': { lat: 28.190, lng: 83.160, nepali: 'इस्मा' },
-  'Malika': { lat: 28.160, lng: 83.050, nepali: 'मालिका' },
-  'Madane': { lat: 28.220, lng: 83.020, nepali: 'मदाने' },
+  'Resunga': { lat: 28.0531, lng: 83.2658, nepali: 'रेसुङ्गा' },
+  'Musikot': { lat: 28.1846, lng: 83.2826, nepali: 'मुसिकोट' },
+  'Ruru': { lat: 27.9822, lng: 83.4256, nepali: 'रुरुक्षेत्र' },
+  'Satyawati': { lat: 28.0300, lng: 83.4689, nepali: 'सत्यवती' },
+  'Kaligandaki': { lat: 28.0502, lng: 83.5436, nepali: 'कालीगण्डकी' },
+  'Chandrakot': { lat: 28.1070, lng: 83.4208, nepali: 'चन्द्रकोट' },
+  'Chatrakot': { lat: 27.9862, lng: 83.3472, nepali: 'छत्रकोट' },
+  'Gulmidarbar': { lat: 28.0398, lng: 83.3167, nepali: 'गुल्मीदरबार' },
+  'Dhurkot': { lat: 28.1181, lng: 83.1408, nepali: 'धुर्कोट' },
+  'Isma': { lat: 28.1643, lng: 83.2054, nepali: 'इस्मा' },
+  'Malika': { lat: 28.2131, lng: 83.1426, nepali: 'मालिका' },
+  'Madane': { lat: 28.1750, lng: 83.0753, nepali: 'मदाने' },
 };
 
-function GulmiBoundsController({ resetTrigger }: { resetTrigger: number }) {
+function createPalikaLabelIcon(name: string, nepali: string, isHovered: boolean) {
+  return L.divIcon({
+    className: 'custom-palika-label',
+    html: `
+      <div style="
+        background: transparent;
+        color: ${isHovered ? '#047857' : '#0f172a'};
+        text-align: center;
+        font-family: system-ui, -apple-system, sans-serif;
+        white-space: nowrap;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        text-shadow:
+          -1.5px -1.5px 0 #ffffff,
+          1.5px -1.5px 0 #ffffff,
+          -1.5px 1.5px 0 #ffffff,
+          1.5px 1.5px 0 #ffffff,
+          0 0 4px #ffffff,
+          0 0 8px #ffffff;
+      ">
+        <div style="font-weight: 800; font-size: 11.5px; line-height: 1.15; letter-spacing: -0.01em;">${name}</div>
+        <div style="font-size: 9.5px; font-weight: 700; opacity: 0.85; color: ${isHovered ? '#047857' : '#334155'};">${nepali}</div>
+      </div>
+    `,
+    iconSize: [0, 0],
+    iconAnchor: [0, 0],
+  });
+}
+
+interface LiveGulmiWeather {
+  temperature: number;
+  apparentTemp: number;
+  humidity: number;
+  precipitation: number;
+  windSpeed: number;
+  solarRadiation: number;
+  cloudCover: number;
+  isDay: boolean;
+  time: string;
+}
+
+function GulmiBoundsController({ resetTrigger, activeDrawerTab }: { resetTrigger: number; activeDrawerTab?: string | null }) {
   const map = useMap();
   useEffect(() => {
     if (map) {
-      map.fitBounds(GULMI_BOUNDS, {
-        padding: [10, 10],
-        maxZoom: 11.8,
-        animate: true,
-      });
+      const timer = setTimeout(() => {
+        map.invalidateSize({ animate: true });
+        map.fitBounds(GULMI_BOUNDS, {
+          padding: [15, 15],
+          maxZoom: 11.8,
+          animate: true,
+        });
+      }, 150);
+      return () => clearTimeout(timer);
     }
-  }, [map, resetTrigger]);
+  }, [map, resetTrigger, activeDrawerTab]);
   return null;
 }
 
@@ -599,6 +644,35 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     setSelectedPillar(pillar);
     onSubFilterChange(presetFilters);
   };
+
+  const [liveWeather, setLiveWeather] = useState<LiveGulmiWeather | null>(null);
+  const [liveWeatherLoading, setLiveWeatherLoading] = useState<boolean>(true);
+  const [weatherMode, setWeatherMode] = useState<'live' | 'archive'>('live');
+
+  // Fetch real-time live satellite weather for Gulmi district coordinates
+  useEffect(() => {
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=28.068&longitude=83.248&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,wind_speed_10m,direct_radiation,cloud_cover,is_day&timezone=Asia%2FKathmandu')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.current) {
+          setLiveWeather({
+            temperature: Number(data.current.temperature_2m.toFixed(1)),
+            apparentTemp: Number(data.current.apparent_temperature.toFixed(1)),
+            humidity: Math.round(data.current.relative_humidity_2m),
+            precipitation: Number(data.current.precipitation.toFixed(1)),
+            windSpeed: Number((data.current.wind_speed_10m / 3.6).toFixed(1)),
+            solarRadiation: Math.round(data.current.direct_radiation || 0),
+            cloudCover: Math.round(data.current.cloud_cover || 0),
+            isDay: data.current.is_day === 1,
+            time: data.current.time,
+          });
+        }
+        setLiveWeatherLoading(false);
+      })
+      .catch(() => {
+        setLiveWeatherLoading(false);
+      });
+  }, []);
 
   // Palika Quick Matrix Handlers
   const handleSelectPalikaFromMatrix = (palikaName: string) => {
@@ -1697,11 +1771,39 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             <Target className="w-3.5 h-3.5 text-emerald-600" />
             <span>Recenter</span>
           </button>
+        </div>
+      </div>
 
-          {/* Pillar Selector Tabs */}
-          <div className="shrink-0 overflow-x-auto max-w-full pb-0.5">
-            <PillarFilter selectedPillar={selectedPillar} onSelectPillar={setSelectedPillar} />
-          </div>
+      {/* 5-Pillar WEFES Selector Bar */}
+      <div className="glass-panel p-2 sm:p-2.5 rounded-2xl border border-slate-200/90 shadow-2xs bg-white/95 flex items-center justify-between flex-wrap gap-2 animate-fade-in">
+        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
+          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider px-2 shrink-0 font-outfit">
+            {lang === 'np' ? '५ नेक्सस स्तम्भहरू:' : '5 WEFES Pillars:'}
+          </span>
+          {[
+            { id: 'water', label: 'Water', nepali: 'जल', icon: Droplets, color: 'text-sky-600', activeBg: 'bg-sky-600 text-white' },
+            { id: 'energy', label: 'Energy', nepali: 'ऊर्जा', icon: Zap, color: 'text-amber-600', activeBg: 'bg-amber-600 text-white' },
+            { id: 'food', label: 'Food', nepali: 'खाद्य', icon: Sprout, color: 'text-emerald-600', activeBg: 'bg-emerald-700 text-white' },
+            { id: 'ecosystem', label: 'Ecosystem', nepali: 'पारिस्थितिकी', icon: Trees, color: 'text-teal-600', activeBg: 'bg-teal-700 text-white' },
+            { id: 'socioeconomics', label: 'Socioeconomics', nepali: 'सामाजिक-आर्थिक', icon: Building2, color: 'text-indigo-600', activeBg: 'bg-indigo-700 text-white' },
+          ].map(p => {
+            const Icon = p.icon;
+            const isActive = selectedPillar === p.id;
+            return (
+              <button
+                key={p.id}
+                onClick={() => setSelectedPillar(p.id as WEFESPillar)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap border ${
+                  isActive
+                    ? `${p.activeBg} border-transparent shadow-xs scale-[1.02]`
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : p.color}`} />
+                <span>{lang === 'np' ? p.nepali : p.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -1712,284 +1814,401 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         subFilters={subFilters}
       />
 
-      {/* MERRA-2 & NASA POWER Monthly Climate Time-Series Controller (1984–2024) */}
-      <ClimateTimeController
-        year={climateYear}
-        month={climateMonth}
-        mode={climateMode}
-        onYearChange={setClimateYear}
-        onMonthChange={setClimateMonth}
-        onModeChange={setClimateMode}
-        minYear={1984}
-        maxYear={2024}
-      />
-
-      {/* Live Gulmi Climatology & NASA POWER Telemetry Ribbon */}
+      {/* Live Satellite Weather vs 39-Yr NASA Climatology Telemetry Ribbon */}
       <div className="flex items-center justify-between flex-wrap gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white shadow-sm border border-slate-800 text-xs animate-fade-in">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="font-bold text-slate-100 font-outfit uppercase tracking-wider text-[11px]">
-            Live Climate Telemetry ({MONTH_NAMES[climateMonth - 1]} {climateMode === 'climatology' ? '39-Yr Baseline' : climateYear})
-          </span>
-          <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
-            {currentSeason}
-          </span>
+          {weatherMode === 'live' && liveWeather ? (
+            <>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-bold text-slate-100 font-outfit uppercase tracking-wider text-[11px]">
+                {lang === 'np' ? 'प्रत्यक्ष भू-उपग्रह मौसमी टेलिमेट्री (गुल्मी)' : 'Live Satellite Weather Telemetry (Gulmi HQ)'}
+              </span>
+              <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
+                {lang === 'np' ? 'आजको वास्तविक समय' : 'Real-Time Today'}
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
+              <span className="font-bold text-slate-100 font-outfit uppercase tracking-wider text-[11px]">
+                NASA POWER / MERRA-2 Climatology Archive ({MONTH_NAMES[climateMonth - 1]} {climateMode === 'climatology' ? '39-Yr Baseline' : climateYear})
+              </span>
+              <span className="bg-sky-500/20 text-sky-300 border border-sky-500/30 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
+                {currentSeason}
+              </span>
+            </>
+          )}
+
+          {/* Toggle Button */}
+          {liveWeather && (
+            <button
+              onClick={() => setWeatherMode(prev => prev === 'live' ? 'archive' : 'live')}
+              className="ml-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 cursor-pointer transition-colors"
+            >
+              {weatherMode === 'live' ? '⇄ 39-Yr Archive' : '⇄ 🟢 Live Weather'}
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-4 flex-wrap text-[11px] font-mono">
-          <div className="flex items-center gap-1.5" title="Estimated Monthly Precipitation">
-            <CloudRain className="w-3.5 h-3.5 text-sky-400" />
-            <span className="text-slate-300">Rain:</span>
-            <strong className="text-sky-300 font-bold">{currentRainMm} mm/mo</strong>
-          </div>
+          {weatherMode === 'live' && liveWeather ? (
+            <>
+              <div className="flex items-center gap-1.5" title="Live Rain">
+                <CloudRain className="w-3.5 h-3.5 text-sky-400" />
+                <span className="text-slate-300">Rain:</span>
+                <strong className="text-sky-300 font-bold">{liveWeather.precipitation} mm/hr</strong>
+              </div>
 
-          <div className="flex items-center gap-1.5" title="Air Temperature at 2m">
-            <Thermometer className="w-3.5 h-3.5 text-amber-400" />
-            <span className="text-slate-300">Temp:</span>
-            <strong className="text-amber-300 font-bold">{currentTempC}°C</strong>
-            <span className="text-[10px] text-slate-400">({currentTempMin}°–{currentTempMax}°)</span>
-          </div>
+              <div className="flex items-center gap-1.5" title="Live Air Temperature">
+                <Thermometer className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-slate-300">Temp:</span>
+                <strong className="text-amber-300 font-bold">{liveWeather.temperature}°C</strong>
+                <span className="text-[10px] text-slate-400">(Feels {liveWeather.apparentTemp}°)</span>
+              </div>
 
-          <div className="flex items-center gap-1.5" title="Relative Humidity">
-            <Droplets className="w-3.5 h-3.5 text-blue-400" />
-            <span className="text-slate-300">Humidity:</span>
-            <strong className="text-blue-300 font-bold">{currentHumidity}%</strong>
-          </div>
+              <div className="flex items-center gap-1.5" title="Live Relative Humidity">
+                <Droplets className="w-3.5 h-3.5 text-blue-400" />
+                <span className="text-slate-300">Humidity:</span>
+                <strong className="text-blue-300 font-bold">{liveWeather.humidity}%</strong>
+              </div>
 
-          <div className="flex items-center gap-1.5" title="Wind Speed at 10m">
-            <Wind className="w-3.5 h-3.5 text-teal-400" />
-            <span className="text-slate-300">Wind:</span>
-            <strong className="text-teal-300 font-bold">{currentWind} m/s</strong>
-          </div>
+              <div className="flex items-center gap-1.5" title="Live Wind Speed">
+                <Wind className="w-3.5 h-3.5 text-teal-400" />
+                <span className="text-slate-300">Wind:</span>
+                <strong className="text-teal-300 font-bold">{liveWeather.windSpeed} m/s</strong>
+              </div>
+
+              <div className="flex items-center gap-1.5" title="Live Direct Solar Irradiance">
+                <Sun className="w-3.5 h-3.5 text-yellow-400" />
+                <span className="text-slate-300">Solar:</span>
+                <strong className="text-yellow-300 font-bold">{liveWeather.solarRadiation} W/m²</strong>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-1.5" title="Estimated Monthly Precipitation">
+                <CloudRain className="w-3.5 h-3.5 text-sky-400" />
+                <span className="text-slate-300">Rain:</span>
+                <strong className="text-sky-300 font-bold">{currentRainMm} mm/mo</strong>
+              </div>
+
+              <div className="flex items-center gap-1.5" title="Air Temperature at 2m">
+                <Thermometer className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-slate-300">Temp:</span>
+                <strong className="text-amber-300 font-bold">{currentTempC}°C</strong>
+                <span className="text-[10px] text-slate-400">({currentTempMin}°–{currentTempMax}°)</span>
+              </div>
+
+              <div className="flex items-center gap-1.5" title="Relative Humidity">
+                <Droplets className="w-3.5 h-3.5 text-blue-400" />
+                <span className="text-slate-300">Humidity:</span>
+                <strong className="text-blue-300 font-bold">{currentHumidity}%</strong>
+              </div>
+
+              <div className="flex items-center gap-1.5" title="Wind Speed at 10m">
+                <Wind className="w-3.5 h-3.5 text-teal-400" />
+                <span className="text-slate-300">Wind:</span>
+                <strong className="text-teal-300 font-bold">{currentWind} m/s</strong>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
       {/* Dynamic Heatmap Legend */}
       {renderLegend()}
 
-      {/* Map Container */}
-      <div className="relative glass-panel p-1.5 rounded-xl overflow-hidden shadow-sm border border-slate-200 bg-white h-[640px]">
-        {geoLoading && (
-          <div className="absolute inset-0 z-[2000] flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-sm rounded-xl">
-            <div className="w-10 h-10 border-2 border-slate-300 border-t-white rounded-full animate-spin mb-3" />
-            <p className="text-white text-xs font-medium">Loading climate GIS datasets…</p>
-          </div>
-        )}
-        <MapContainer
-          center={GULMI_MAP_CENTER}
-          zoom={GULMI_MAP_ZOOM}
-          scrollWheelZoom={false}
-          maxBounds={NEPAL_MAX_BOUNDS}
-          maxBoundsViscosity={0.5}
-          minZoom={7}
-          maxZoom={14}
-          style={{ height: '100%', width: '100%', borderRadius: '0.625rem' }}
-        >
-          <GulmiBoundsController resetTrigger={resetTrigger} />
-          <MapGestureHandler />
-          <MapPanesSetup />
-
-          {/* Dynamic Basemap Layer */}
-          <TileLayer
-            key={`basemap-${basemap}`}
-            attribution={
-              basemap === 'satellite'
-                ? '&copy; <a href="https://www.esri.com/">Esri World Imagery</a>'
-                : basemap === 'terrain'
-                ? '&copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
-                : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-            }
-            url={
-              basemap === 'satellite'
-                ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                : basemap === 'terrain'
-                ? 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
-                : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
-            }
-          />
-
-          {/* Base Nepal Districts (Non-Gulmi dimmed & non-interactive) */}
-          {geoData && (
-            <GeoJSON
-              key={`geojson-${selectedPillar}-${selectedMapCropId}-${subFilters.foodOverlayType || ''}-${subFilters.soilMetric || ''}-${subFilters.waterClimateMetric || ''}-${subFilters.energyClimateMetric || ''}-${subFilters.foodClimateMetric || ''}-${subFilters.ecoSubFilter || ''}-${subFilters.socioMetric || ''}-${climateYear}-${climateMonth}-${climateMode}-${selectedDistrict?.id}`}
-              data={geoData}
-              style={getStyle}
-              onEachFeature={onEachFeature}
-            />
+      {/* Map & Dock Responsive Workspace */}
+      <div className="flex flex-col lg:flex-row gap-4 items-stretch">
+        {/* Map Container */}
+        <div className={`relative glass-panel p-1.5 rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-white h-[640px] transition-all duration-300 ${
+          activeDrawerTab === 'matrix' ? 'w-full lg:flex-1' : 'w-full'
+        }`}>
+          {geoLoading && (
+            <div className="absolute inset-0 z-[2000] flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-sm rounded-xl">
+              <div className="w-10 h-10 border-2 border-slate-300 border-t-white rounded-full animate-spin mb-3" />
+              <p className="text-white text-xs font-medium">Loading climate GIS datasets…</p>
+            </div>
           )}
+          <MapContainer
+            center={GULMI_MAP_CENTER}
+            zoom={GULMI_MAP_ZOOM}
+            scrollWheelZoom={false}
+            maxBounds={NEPAL_MAX_BOUNDS}
+            maxBoundsViscosity={0.5}
+            minZoom={7}
+            maxZoom={14}
+            style={{ height: '100%', width: '100%', borderRadius: '0.875rem' }}
+          >
+            <GulmiBoundsController resetTrigger={resetTrigger} activeDrawerTab={activeDrawerTab} />
+            <MapGestureHandler />
+            <MapPanesSetup />
 
-          {/* 12 Gulmi Palikas Vector Layer (Dynamically styled per Pillar, Crop, and Climate Time-Series) */}
-          {palikasData && (
-            <GeoJSON
-              key={`gulmi-palikas-${selectedPillar}-${selectedMapCropId || ''}-${subFilters.foodMode || ''}-${subFilters.crop || ''}-${subFilters.waterSubFilter || ''}-${subFilters.ecoSubFilter || ''}-${subFilters.energySubFilter || ''}-${subFilters.socioSubFilter || ''}-${climateYear}-${climateMonth}-${climateMode}-${hoveredPalika?.name || ''}`}
-              data={palikasData}
-              style={getPalikaStyle}
-              onEachFeature={onEachPalika}
+            {/* Dynamic Basemap Layer */}
+            <TileLayer
+              key={`basemap-${basemap}`}
+              attribution={
+                basemap === 'satellite'
+                  ? '&copy; <a href="https://www.esri.com/">Esri World Imagery</a>'
+                  : basemap === 'terrain'
+                  ? '&copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+                  : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+              }
+              url={
+                basemap === 'satellite'
+                  ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                  : basemap === 'terrain'
+                  ? 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+                  : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+              }
             />
-          )}
 
-          {/* Bold Outer Perimeter Frame for Gulmi District */}
-          {geoData && (
-            <GeoJSON
-              key={`gulmi-outer-frame-${selectedDistrict?.id}`}
-              data={{
-                type: 'FeatureCollection',
-                features: geoData.features.filter((f: any) => f.properties?.id === 'gulmi' || f.id === 'gulmi')
-              } as any}
-              style={{
-                fillColor: 'transparent',
-                fillOpacity: 0,
-                color: '#5b5555',
-                weight: 3.5,
-                opacity: 1,
-              }}
-              interactive={false}
-            />
-          )}
+            {/* Base Nepal Districts (Non-Gulmi dimmed & non-interactive) */}
+            {geoData && (
+              <GeoJSON
+                key={`geojson-${selectedPillar}-${selectedMapCropId}-${subFilters.foodOverlayType || ''}-${subFilters.soilMetric || ''}-${subFilters.waterClimateMetric || ''}-${subFilters.energyClimateMetric || ''}-${subFilters.foodClimateMetric || ''}-${subFilters.ecoSubFilter || ''}-${subFilters.socioMetric || ''}-${climateYear}-${climateMonth}-${climateMode}-${selectedDistrict?.id}`}
+                data={geoData}
+                style={getStyle}
+                onEachFeature={onEachFeature}
+              />
+            )}
 
-          {/* Palika Centroid Bilingual Text Labels */}
-          {showPalikaLabels && Object.entries(PALIKA_CENTROIDS).map(([name, c]) => (
-            <Marker
-              key={`palika-label-${name}`}
-              position={[c.lat, c.lng]}
-              pane="markerPane"
-              interactive={false}
-              icon={L.divIcon({
-                className: 'palika-map-label',
-                html: `
-                  <div style="transform: translate(-50%, -50%); pointer-events: none; text-align: center; white-space: nowrap;">
-                    <div style="font-size: 10px; font-weight: 800; color: ${basemap === 'satellite' ? '#ffffff' : '#0f172a'}; text-shadow: ${basemap === 'satellite' ? '0 0 4px #000000, 0 1px 3px #000000' : '0 0 4px #ffffff, 0 0 6px #ffffff, 0 1px 2px rgba(0,0,0,0.4)'}; font-family: Outfit, sans-serif; letter-spacing: -0.01em;">
-                      ${name}
-                    </div>
-                    <div style="font-size: 8.5px; font-weight: 700; color: ${basemap === 'satellite' ? '#cbd5e1' : '#334155'}; text-shadow: ${basemap === 'satellite' ? '0 0 3px #000000' : '0 0 3px #ffffff'}; font-family: sans-serif;">
-                      ${c.nepali}
-                    </div>
-                  </div>
-                `,
-                iconSize: [1, 1],
-                iconAnchor: [0, 0],
-              })}
-            />
-          ))}
-
-          {/* High-Resolution Micro-Soil Sampling Grid (81 Points from mapped_output.csv) */}
-          {showSoilGrid && gulmiSoilPoints.map((pt: any, idx: number) => {
-            const nColor = pt.nitrogen >= 0.18 ? '#059669' : pt.nitrogen >= 0.14 ? '#10b981' : '#f59e0b';
-            return (
-              <CircleMarker
-                key={`soil-pt-${idx}`}
-                center={[pt.lat, pt.lon]}
-                radius={5.5}
-                pane="markerPane"
-                pathOptions={{
-                  fillColor: nColor,
-                  fillOpacity: 0.92,
-                  color: '#ffffff',
-                  weight: 1.5,
+            {/* 12 Gulmi Palikas Vector Layer (Dynamically styled per Pillar, Crop, and Climate Time-Series) */}
+            {palikasData && (
+              <GeoJSON
+                key={`gulmi-palikas-${selectedPillar}-${selectedMapCropId}-${subFilters.crop || ''}-${subFilters.foodMode || ''}-${subFilters.foodOverlayType || ''}-${subFilters.soilMetric || ''}-${subFilters.waterClimateMetric || ''}-${subFilters.energyClimateMetric || ''}-${subFilters.socioMetric || ''}-${hoveredPalika?.name || ''}`}
+                data={palikasData}
+                style={(feature: any) => {
+                  const pName = (feature?.properties?.name || '').toLowerCase();
+                  const isHovered = hoveredPalika?.name && (
+                    pName.includes(hoveredPalika.name.toLowerCase()) ||
+                    hoveredPalika.name.toLowerCase().includes(pName)
+                  );
+                  return {
+                    fillColor: getGulmiPalikaColor(feature?.properties),
+                    fillOpacity: isHovered ? 0.92 : 0.72,
+                    color: isHovered ? '#10b981' : '#ffffff',
+                    weight: isHovered ? 3.5 : 1.8,
+                    dashArray: '',
+                  };
                 }}
-              >
-                <Tooltip direction="top" offset={[0, -6]} opacity={0.98} pane="popupPane">
-                  <div className="text-xs p-2 min-w-[200px] bg-white rounded-lg shadow-lg border border-slate-200">
-                    <div className="font-bold text-slate-900 border-b border-slate-100 pb-1 mb-1.5 flex items-center justify-between">
-                      <span className="flex items-center gap-1">🧪 Gulmi Soil Point #{idx + 1}</span>
-                      <span className="font-mono text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">pH {pt.ph}</span>
-                    </div>
-                    <div className="text-[11px] text-slate-600 space-y-1">
-                      <div>Geology: <strong className="text-slate-800">{pt.soilType}</strong></div>
-                      <div className="grid grid-cols-2 gap-1 bg-slate-50 p-1.5 rounded text-[10px] font-mono">
+                onEachFeature={(feature: any, layer: any) => {
+                  layer.on({
+                    mouseover: () => {
+                      const name = feature?.properties?.name || '';
+                      handleHoverPalikaFromMatrix(name);
+                    },
+                    mouseout: () => {
+                      handleHoverPalikaFromMatrix(null);
+                    },
+                    click: () => {
+                      const gulmiDistrict = db.getDistrictById('gulmi');
+                      if (gulmiDistrict) onSelectDistrict(gulmiDistrict);
+                    }
+                  });
+                }}
+              />
+            )}
+
+            {/* Bold Outer Perimeter Frame for Gulmi District */}
+            {geoData && (
+              <GeoJSON
+                key={`gulmi-outer-frame-${selectedDistrict?.id}`}
+                data={{
+                  type: 'FeatureCollection',
+                  features: geoData.features.filter((f: any) => f.properties?.id === 'gulmi' || f.id === 'gulmi')
+                } as any}
+                style={{
+                  fillColor: 'transparent',
+                  fillOpacity: 0,
+                  color: '#5b5555',
+                  weight: 3.5,
+                  opacity: 1,
+                }}
+                interactive={false}
+              />
+            )}
+
+            {/* Bilingual Palika Center Labels (Transparent text with halo glow) */}
+            {showPalikaLabels && Object.entries(PALIKA_CENTROIDS).map(([pName, pGeo]) => {
+              const isHovered = hoveredPalika?.name?.toLowerCase() === pName.toLowerCase();
+              return (
+                <Marker
+                  key={`label-${pName}`}
+                  position={[pGeo.lat, pGeo.lng]}
+                  icon={createPalikaLabelIcon(pName, pGeo.nepali, isHovered)}
+                  interactive={false}
+                />
+              );
+            })}
+
+            {/* National Highways (Class A) & Feeder Roads Overlays */}
+            {nationalRoads && subFilters.highwayFilter !== 'none' && (
+              <GeoJSON
+                key={`national-roads-${subFilters.highwayFilter}`}
+                data={nationalRoads}
+                style={(feature: any) => {
+                  const hwyType = (feature?.properties?.highway || '').toLowerCase();
+                  const isPrimary = hwyType === 'trunk' || hwyType === 'primary';
+                  return {
+                    color: isPrimary ? '#f97316' : '#fbbf24',
+                    weight: isPrimary ? 3 : 2,
+                    opacity: 0.85,
+                  };
+                }}
+                pane="roadsPane"
+              />
+            )}
+
+            {/* 81 Ground Testing Points (NARC Survey Soil Grid) */}
+            {showSoilGrid && (gulmiSoilPoints as any[]).map((pt: any) => {
+              let markerColor = '#10b981';
+              let valLabel = `pH ${pt.ph}`;
+              if (subFilters.soilMetric === 'nitrogen') {
+                markerColor = pt.nitrogen >= 0.20 ? '#047857' : pt.nitrogen >= 0.15 ? '#10b981' : '#f59e0b';
+                valLabel = `N: ${pt.nitrogen}%`;
+              } else if (subFilters.soilMetric === 'phosphorus') {
+                markerColor = pt.phosphorus >= 50 ? '#0369a1' : pt.phosphorus >= 30 ? '#0ea5e9' : '#f59e0b';
+                valLabel = `P: ${pt.phosphorus} kg/ha`;
+              } else if (subFilters.soilMetric === 'potassium') {
+                markerColor = pt.potassium >= 250 ? '#7e22ce' : pt.potassium >= 150 ? '#a855f7' : '#f59e0b';
+                valLabel = `K: ${pt.potassium} kg/ha`;
+              } else {
+                markerColor = pt.ph >= 6.5 ? '#10b981' : pt.ph >= 6.0 ? '#f59e0b' : '#ef4444';
+              }
+
+              return (
+                <CircleMarker
+                  key={`soil-${pt.id}`}
+                  center={[pt.lat, pt.lon]}
+                  radius={4.5}
+                  pane="markerPane"
+                  pathOptions={{
+                    fillColor: markerColor,
+                    fillOpacity: 0.9,
+                    color: '#ffffff',
+                    weight: 1.5,
+                  }}
+                >
+                  <Tooltip direction="top" offset={[0, -6]} opacity={0.98} pane="popupPane">
+                    <div className="text-xs p-1 min-w-[160px] bg-white rounded shadow-sm">
+                      <div className="font-bold text-slate-800 flex justify-between border-b pb-0.5 mb-1">
+                        <span>🧪 Soil Point #{pt.id}</span>
+                        <span className="font-mono text-emerald-700">{valLabel}</span>
+                      </div>
+                      <div className="text-slate-600 text-[10px]">{pt.soilType}</div>
+                      <div className="mt-1 pt-1 border-t text-[10px] font-mono grid grid-cols-2 gap-x-2 gap-y-0.5">
+                        <div>pH: <strong>{pt.ph}</strong></div>
                         <div>N: <strong className="text-emerald-700">{pt.nitrogen}%</strong></div>
                         <div>P₂O₅: <strong className="text-blue-700">{pt.phosphorus} kg/ha</strong></div>
                         <div className="col-span-2">K₂O: <strong className="text-purple-700">{pt.potassium} kg/ha</strong></div>
                       </div>
                     </div>
+                  </Tooltip>
+                </CircleMarker>
+              );
+            })}
+
+            {/* DHM River Gauging Stations Overlay */}
+            {selectedPillar === 'water' && subFilters.waterClimateMetric === 'dhm_stations' && hydrologyStations.map((st: any, idx: number) => (
+              <CircleMarker
+                key={`hydro-${st.properties.stationNo}-${idx}`}
+                center={[st.geometry.coordinates[1], st.geometry.coordinates[0]]}
+                radius={7}
+                pane="markerPane"
+                pathOptions={{
+                  fillColor: '#0284c7',
+                  fillOpacity: 0.95,
+                  color: '#ffffff',
+                  weight: 2.5,
+                }}
+              >
+                <Tooltip direction="top" offset={[0, -8]} opacity={0.98} pane="popupPane">
+                  <div className="text-xs p-1.5 min-w-[200px] bg-white rounded shadow-md border border-sky-200">
+                    <div className="font-bold text-sky-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
+                      <span className="flex items-center gap-1">💧 DHM Station #{st.properties.stationNo}</span>
+                      <span className="text-[9px] bg-sky-100 text-sky-800 px-1.5 py-0.5 rounded font-mono font-bold">Active</span>
+                    </div>
+                    <div className="font-semibold text-slate-900 text-xs">{st.properties.river} ({st.properties.siteName})</div>
+                    <div className="text-slate-600 text-[10px] mt-0.5">District: <strong>{st.properties.district}</strong> • Elevation: <strong>{st.properties.elevation ? `${st.properties.elevation}m` : 'N/A'}</strong></div>
+                    <div className="text-slate-500 text-[10px] mt-1 bg-slate-50 p-1 rounded font-mono">Equip: {st.properties.instruments}</div>
+                    {st.properties.startDate && st.properties.startDate !== 'Historical' && (
+                      <div className="text-slate-400 text-[9px] mt-0.5">Established: {st.properties.startDate}</div>
+                    )}
                   </div>
                 </Tooltip>
               </CircleMarker>
-            );
-          })}
+            ))}
 
-          {/* DHM River Gauging Stations Overlay */}
-          {selectedPillar === 'water' && subFilters.waterClimateMetric === 'dhm_stations' && hydrologyStations.map((st: any, idx: number) => (
-            <CircleMarker
-              key={`hydro-${st.properties.stationNo}-${idx}`}
-              center={[st.geometry.coordinates[1], st.geometry.coordinates[0]]}
-              radius={7}
-              pane="markerPane"
-              pathOptions={{
-                fillColor: '#0284c7',
-                fillOpacity: 0.95,
-                color: '#ffffff',
-                weight: 2.5,
-              }}
-            >
-              <Tooltip direction="top" offset={[0, -8]} opacity={0.98} pane="popupPane">
-                <div className="text-xs p-1.5 min-w-[200px] bg-white rounded shadow-md border border-sky-200">
-                  <div className="font-bold text-sky-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
-                    <span className="flex items-center gap-1">💧 DHM Station #{st.properties.stationNo}</span>
-                    <span className="text-[9px] bg-sky-100 text-sky-800 px-1.5 py-0.5 rounded font-mono font-bold">Active</span>
-                  </div>
-                  <div className="font-semibold text-slate-900 text-xs">{st.properties.river} ({st.properties.siteName})</div>
-                  <div className="text-slate-600 text-[10px] mt-0.5">District: <strong>{st.properties.district}</strong> • Elevation: <strong>{st.properties.elevation ? `${st.properties.elevation}m` : 'N/A'}</strong></div>
-                  <div className="text-slate-500 text-[10px] mt-1 bg-slate-50 p-1 rounded font-mono">Equip: {st.properties.instruments}</div>
-                  {st.properties.startDate && st.properties.startDate !== 'Historical' && (
-                    <div className="text-slate-400 text-[9px] mt-0.5">Established: {st.properties.startDate}</div>
-                  )}
-                </div>
-              </Tooltip>
-            </CircleMarker>
-          ))}
-
-          {/* 20 Potentially Dangerous Glacial Lakes Overlay */}
-          {selectedPillar === 'water' && subFilters.waterClimateMetric === 'glof_lakes' && glacialLakes.map((l: any, idx: number) => (
-            <CircleMarker
-              key={`glof-${l.properties.sn}-${idx}`}
-              center={[l.geometry.coordinates[1], l.geometry.coordinates[0]]}
-              radius={l.properties.hazardLevel === 'Critical' ? 8.5 : 7}
-              pane="markerPane"
-              pathOptions={{
-                fillColor: l.properties.hazardLevel === 'Critical' ? '#dc2626' : '#ea580c',
-                fillOpacity: 0.98,
-                color: '#ffffff',
-                weight: 2.5,
-              }}
-            >
-              <Tooltip direction="top" offset={[0, -10]} opacity={0.98} pane="popupPane">
-                <div className="text-xs p-1.5 min-w-[210px] bg-white rounded shadow-md border border-red-200">
-                  <div className="font-bold text-red-700 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
-                    <span className="flex items-center gap-1">❄️ {l.properties.lakeName}</span>
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${l.properties.hazardLevel === 'Critical' ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-amber-100 text-amber-800 border border-amber-200'
-                      }`}>
-                      {l.properties.hazardLevel} GLOF Risk
-                    </span>
-                  </div>
-                  <div className="text-slate-700 text-[10px]">District: <strong>{l.properties.district}</strong> • Altitude: <strong className="font-mono">{l.properties.altitude}m</strong></div>
-                  {l.properties.basin && <div className="text-slate-600 text-[10px]">Basin: <strong>{l.properties.basin}</strong></div>}
-                  {l.properties.areaSqM && (
-                    <div className="text-slate-500 text-[10px] mt-1 bg-red-50/70 p-1 rounded font-mono text-red-950">
-                      Surface Area: <strong>{(l.properties.areaSqM / 10000).toFixed(1)} ha</strong> ({l.properties.areaSqM.toLocaleString()} m²)
+            {/* 20 Potentially Dangerous Glacial Lakes Overlay */}
+            {selectedPillar === 'water' && subFilters.waterClimateMetric === 'glof_lakes' && glacialLakes.map((l: any, idx: number) => (
+              <CircleMarker
+                key={`glof-${l.properties.sn}-${idx}`}
+                center={[l.geometry.coordinates[1], l.geometry.coordinates[0]]}
+                radius={l.properties.hazardLevel === 'Critical' ? 8.5 : 7}
+                pane="markerPane"
+                pathOptions={{
+                  fillColor: l.properties.hazardLevel === 'Critical' ? '#dc2626' : '#ea580c',
+                  fillOpacity: 0.98,
+                  color: '#ffffff',
+                  weight: 2.5,
+                }}
+              >
+                <Tooltip direction="top" offset={[0, -10]} opacity={0.98} pane="popupPane">
+                  <div className="text-xs p-1.5 min-w-[210px] bg-white rounded shadow-md border border-red-200">
+                    <div className="font-bold text-red-700 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
+                      <span className="flex items-center gap-1">❄️ {l.properties.lakeName}</span>
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${l.properties.hazardLevel === 'Critical' ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-amber-100 text-amber-800 border border-amber-200'
+                        }`}>
+                        {l.properties.hazardLevel} GLOF Risk
+                      </span>
                     </div>
-                  )}
-                </div>
-              </Tooltip>
-            </CircleMarker>
-          ))}
-        </MapContainer>
+                    <div className="text-slate-700 text-[10px]">District: <strong>{l.properties.district}</strong> • Altitude: <strong className="font-mono">{l.properties.altitude}m</strong></div>
+                    {l.properties.basin && <div className="text-slate-600 text-[10px]">Basin: <strong>{l.properties.basin}</strong></div>}
+                    {l.properties.areaSqM && (
+                      <div className="text-slate-500 text-[10px] mt-1 bg-red-50/70 p-1 rounded font-mono text-red-950">
+                        Surface Area: <strong>{(l.properties.areaSqM / 10000).toFixed(1)} ha</strong> ({l.properties.areaSqM.toLocaleString()} m²)
+                      </div>
+                    )}
+                  </div>
+                </Tooltip>
+              </CircleMarker>
+            ))}
+          </MapContainer>
 
-        {/* Palika-Specific Hover Card: Shows strictly when hovering a Palika */}
-        {hoveredPalika && <PalikaHoverCard palikaProp={hoveredPalika} />}
+          {/* Palika-Specific Hover Card: Shows strictly when hovering a Palika */}
+          {hoveredPalika && <PalikaHoverCard palikaProp={hoveredPalika} />}
 
-        {/* District Hover Card: Shows strictly when hovering the district boundary directly without a palika */}
-        {hoveredDistrict && !hoveredPalika && (
-          <DistrictHoverCard
-            district={hoveredDistrict}
-            climateDataset={climateDataset}
-            climateYear={climateYear}
-            climateMonth={climateMonth}
-            climateMode={climateMode}
-            activeClimateMetric={getActiveClimateMetricKey() || undefined}
-            selectedPillar={selectedPillar}
-            selectedCropId={selectedMapCropId}
-          />
+          {/* District Hover Card: Shows strictly when hovering the district boundary directly without a palika */}
+          {hoveredDistrict && !hoveredPalika && (
+            <DistrictHoverCard
+              district={hoveredDistrict}
+              climateDataset={climateDataset}
+              climateYear={climateYear}
+              climateMonth={climateMonth}
+              climateMode={climateMode}
+              activeClimateMetric={getActiveClimateMetricKey() || undefined}
+              selectedPillar={selectedPillar}
+              selectedCropId={selectedMapCropId}
+            />
+          )}
+        </div>
+
+        {/* Side-by-Side Docked 12-Palika Matrix: ZERO coverage of map, pristine side-by-side analytics */}
+        {activeDrawerTab === 'matrix' && (
+          <div className="w-full lg:w-[380px] xl:w-[420px] h-[640px] shrink-0 animate-fade-in">
+            <PalikaQuickMatrix
+              docked={true}
+              onClose={() => setActiveDrawerTab(null)}
+              onSelectPalika={handleSelectPalikaFromMatrix}
+              hoveredPalikaName={hoveredPalika?.name || null}
+              onHoverPalika={handleHoverPalikaFromMatrix}
+              selectedPillar={selectedPillar}
+              selectedCropId={selectedMapCropId || subFilters.crop || null}
+              subFilters={subFilters}
+              lang={lang}
+            />
+          </div>
         )}
       </div>
 
@@ -2007,12 +2226,12 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             onClick={() => setActiveDrawerTab(prev => prev === 'matrix' ? null : 'matrix')}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${
               activeDrawerTab === 'matrix'
-                ? 'bg-emerald-700 text-white border-emerald-600 shadow-xs'
+                ? 'bg-emerald-700 text-white border-emerald-600 shadow-xs ring-1 ring-emerald-500'
                 : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
-            <span>{lang === 'np' ? '१२ स्थानीय तह म्याट्रिक्स' : '12 Palikas Matrix'}</span>
+            <span>{lang === 'np' ? '१२ स्थानीय तह म्याट्रिक्स (डक)' : '12 Palikas Matrix (Dock)'}</span>
           </button>
 
           <button
@@ -2051,21 +2270,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         </div>
       </div>
 
-      {/* 3. Collapsible Drawer Content: Smooth Slide-In */}
-      {activeDrawerTab && (
+      {/* 3. Collapsible Drawer Content for Elevation and Radar: Smooth Slide-In */}
+      {activeDrawerTab && activeDrawerTab !== 'matrix' && (
         <div className="relative animate-fade-in-up">
-          {activeDrawerTab === 'matrix' && (
-            <PalikaQuickMatrix
-              onSelectPalika={handleSelectPalikaFromMatrix}
-              hoveredPalikaName={hoveredPalika?.name || null}
-              onHoverPalika={handleHoverPalikaFromMatrix}
-              selectedPillar={selectedPillar}
-              selectedCropId={selectedMapCropId || subFilters.crop || null}
-              subFilters={subFilters}
-              lang={lang}
-            />
-          )}
-
           {activeDrawerTab === 'elevation' && (
             <ElevationCrossSection
               lang={lang}
