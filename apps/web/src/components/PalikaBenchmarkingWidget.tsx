@@ -98,7 +98,7 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
 }) => {
   const allPalikas = DISTRICT_PALIKAS['gulmi'] || [];
   const [compareTargetName, setCompareTargetName] = useState<string>('Musikot');
-  const [activeBenchmarkTab, setActiveBenchmarkTab] = useState<'crops' | 'pillars' | 'live' | 'rotations'>('crops');
+  const [activeBenchmarkTab, setActiveBenchmarkTab] = useState<'crops' | 'pillars' | 'live' | 'rotations'>('live');
 
   // Find target Palika or fallback to another Palika
   const targetPalika: DistrictPalika = allPalikas.find(p => p.name === compareTargetName) ||
