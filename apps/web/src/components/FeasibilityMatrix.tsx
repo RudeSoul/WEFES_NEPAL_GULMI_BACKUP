@@ -109,24 +109,26 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
   }, [evalResult, crop]);
 
   return (
-    <div className="glass-panel p-5 rounded-2xl border border-slate-200 bg-white/95 space-y-4 shadow-sm animate-fade-in-up">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-        <div>
-          <h4 className="text-base font-bold text-slate-900 flex items-center gap-2 font-outfit">
-            <Layers className="w-4 h-4 text-emerald-600" />
-            <span>FAO Land Evaluation & AHP Matrix</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-md font-sans font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-              {crop.name}
-            </span>
-          </h4>
-          <p className="text-xs text-slate-500 mt-0.5 font-sans">
-            Parametric agro-ecological suitability in <strong className="text-slate-800">{district.name}</strong>.
-          </p>
+    <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/90 space-y-4 shadow-xs">
+      {/* Header: Title & Overall Fit Badge */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-3">
+        <div className="flex items-center gap-2.5">
+          <span className="p-2 rounded-xl bg-emerald-100/70 text-emerald-800 border border-emerald-200/80 shadow-2xs shrink-0">
+            <Layers className="w-4 h-4 text-emerald-700" />
+          </span>
+          <div>
+            <h4 className="text-sm font-bold text-slate-900 font-outfit">
+              FAO Land Evaluation & AHP Matrix
+            </h4>
+            <p className="text-xs text-slate-500 font-sans mt-0.5">
+              Parametric agro-ecological suitability in <strong className="text-slate-800">{district.name}</strong>
+            </p>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
-          <span className="text-xs text-slate-600 font-medium font-sans">Overall Fit:</span>
-          <span className={`text-lg font-extrabold font-mono ${displayScore >= 75 ? 'text-emerald-700' : displayScore >= 50 ? 'text-amber-700' : 'text-rose-700'}`}>
+        <div className="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs shrink-0">
+          <span className="text-xs text-slate-500 font-medium font-sans">Overall Fit:</span>
+          <span className={`text-base font-extrabold font-mono ${displayScore >= 75 ? 'text-emerald-700' : displayScore >= 50 ? 'text-amber-700' : 'text-rose-700'}`}>
             {displayScore}%
           </span>
           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${getScoreBadge(displayScore).badgeClass}`}>
@@ -136,48 +138,56 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
       </div>
 
       {/* Criteria Breakdown Rows */}
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         {criteria.map((c) => {
           const badge = getScoreBadge(c.score);
           return (
-            <div key={c.label} className="bg-slate-50/70 hover:bg-slate-50 rounded-xl p-3 border border-slate-200/80 transition-colors space-y-2">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="p-1 rounded-lg bg-white border border-slate-200 shadow-2xs shrink-0">
+            <div key={c.label} className="bg-white hover:bg-slate-50/70 rounded-xl p-3.5 border border-slate-200/90 transition-colors space-y-2.5 shadow-2xs">
+              {/* Row 1: Criterion Label, Icon, Weight & Parameter Values */}
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="p-1.5 rounded-lg bg-slate-50 border border-slate-200 shadow-2xs shrink-0">
                     {c.icon}
                   </span>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-bold text-slate-900 font-sans">{c.label}</span>
-                      <span className="text-[10px] font-mono font-bold bg-slate-200/80 text-slate-700 px-1.5 py-0.2 rounded">
-                        wt {c.weight}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-slate-500 hidden sm:inline">
-                      {c.description}
-                    </div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-xs font-bold text-slate-900 font-sans">{c.label}</span>
+                    <span className="text-[10px] font-mono font-bold bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200">
+                      wt {c.weight}
+                    </span>
                   </div>
                 </div>
-                
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs text-slate-600 font-mono font-medium hidden md:inline">
-                    {c.value} <span className="text-slate-400 font-sans">({c.ideal})</span>
+
+                <div className="flex items-center gap-2 text-right shrink-0">
+                  <span className="text-xs font-mono font-bold text-slate-800 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">
+                    {c.value}
                   </span>
-                  <span className={`text-xs font-bold font-mono ${badge.color}`}>
-                    {c.score}/100
-                  </span>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${badge.badgeClass}`}>
-                    {badge.label}
+                  <span className="text-[11px] text-slate-400 font-sans hidden sm:inline">
+                    (ideal: {c.ideal})
                   </span>
                 </div>
               </div>
 
-              {/* Smooth Progress Bar */}
-              <div className="w-full bg-slate-200/80 rounded-full h-1.5 overflow-hidden">
+              {/* Row 2: Smooth Progress Bar */}
+              <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-slate-200/60">
                 <div
                   className={`h-full rounded-full transition-all duration-500 ${badge.barClass}`}
                   style={{ width: `${c.score}%` }}
                 />
+              </div>
+
+              {/* Row 3: Description on left, Score & Badge on right */}
+              <div className="flex items-center justify-between text-[11px] pt-0.5">
+                <span className="text-slate-500 truncate mr-2">
+                  {c.description}
+                </span>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className={`font-mono font-bold ${badge.color}`}>
+                    {c.score}/100
+                  </span>
+                  <span className={`text-[9.5px] font-bold px-1.5 py-0.2 rounded border ${badge.badgeClass}`}>
+                    {badge.label}
+                  </span>
+                </div>
               </div>
             </div>
           );
@@ -185,7 +195,7 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
       </div>
 
       {/* FAO Framework Classification & Formulation Explainer */}
-      <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 text-[11px] text-slate-500 font-sans">
+      <div className="pt-2.5 border-t border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5 text-[11px] text-slate-500 font-sans">
         <div className="flex items-center gap-1.5">
           <Award className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
           <span>
@@ -197,8 +207,8 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
             )}
           </span>
         </div>
-        <div className="font-mono text-slate-700 font-bold">
-          AHP Weighted Base = {evalResult.ahpWeightedBase}% &rarr; Overall = {displayScore}%
+        <div className="font-mono text-slate-700 font-bold bg-white px-2 py-0.5 rounded-md border border-slate-200 shadow-2xs">
+          AHP Base: {evalResult.ahpWeightedBase}% &rarr; Overall: {displayScore}%
         </div>
       </div>
     </div>
