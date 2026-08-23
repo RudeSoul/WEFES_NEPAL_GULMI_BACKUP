@@ -16,6 +16,10 @@ import {
 import { FeasibilityMatrix } from './FeasibilityMatrix';
 import { CropComparativeAnalysis } from './CropComparativeAnalysis';
 import { DistrictDetailMap } from './DistrictDetailMap';
+import { DISTRICT_PALIKAS, DistrictPalika } from '../data/districtPalikaAssets';
+import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
+import { PalikaDossierExportModal } from './PalikaDossierExportModal';
+import { FileText, Printer, Scale, CheckCircle } from 'lucide-react';
 
 interface DistrictDetailProps {
   district: District;
@@ -520,11 +524,26 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
     ? { text: 'Historical' }
     : { text: 'Proxy' };
 
-  const nasaYearly = (district as any).nasaSolarYearly || {};
-  const nasaYearKeys = Object.keys(nasaYearly).map(Number);
-  const nasa41YrAvg = nasaYearKeys.length > 0
-    ? Number((nasaYearKeys.reduce((s, y) => s + nasaYearly[y], 0) / nasaYearKeys.length).toFixed(2))
-    : null;
+  const [activePalikaName, setActivePalikaName] = useState<string>('Resunga');
+  const [isDossierModalOpen, setIsDossierModalOpen] = useState<boolean>(false);
+
+  const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
+  const activePalika: DistrictPalika = gulmiPalikas.find(p => p.name.toLowerCase() === activePalikaName.toLowerCase()) || gulmiPalikas[0] || {} as DistrictPalika;
+
+  const GULMI_PALIKA_NEPALI: Record<string, string> = {
+    'Resunga': 'रेसुङ्गा',
+    'Musikot': 'मुसिकोट',
+    'Ruru': 'रुरुक्षेत्र',
+    'Satyawati': 'सत्यवती',
+    'Kaligandaki': 'कालीगण्डकी',
+    'Chandrakot': 'चन्द्रकोट',
+    'Chatrakot': 'छत्रकोट',
+    'Gulmidarbar': 'गुल्मीदरबार',
+    'Dhurkot': 'धुर्कोट',
+    'Isma': 'इस्मा',
+    'Malika': 'मालिका',
+    'Madane': 'मदाने',
+  };
 
   const hasRealSoil = district.hasRealSoilData !== false && (district.soilSampleCount || 0) > 0 && district.baseSoilPh !== undefined;
 
@@ -532,9 +551,9 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
     {
       key: 'rainfall' as ModalKey,
       icon: <CloudRain className="w-5 h-5 text-sky-600" />,
-      label: 'Predicted Rainfall',
-      value: `${cardRainfallValue} mm/yr`,
-      badge: cardRainfallBadge.text,
+      label: 'Local Precipitation',
+      value: activePalika.rainfallMm ? `${activePalika.rainfallMm} mm/yr` : `${cardRainfallValue} mm/yr`,
+      badge: 'Elevation Adjusted',
       cardBg: 'bg-sky-50/70 border-sky-200/90 hover:border-sky-300 hover:bg-sky-50',
       iconBg: 'bg-sky-100 border-sky-200',
       badgeClass: 'bg-sky-100 text-sky-800 border-sky-300',
@@ -543,9 +562,9 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
     {
       key: 'solar' as ModalKey,
       icon: <Sun className="w-5 h-5 text-amber-600" />,
-      label: 'Solar Radiation',
-      value: nasa41YrAvg !== null ? `${nasa41YrAvg} kWh/m²/d` : `${district.solarRadiationKwh} kWh/m²`,
-      badge: nasa41YrAvg !== null ? 'NASA POWER' : 'Proxy',
+      label: 'Mean Elevation',
+      value: activePalika.elevation ? `${activePalika.elevation}m ASL` : `${district.elevationRange}m`,
+      badge: 'Mid-Hills Belt',
       cardBg: 'bg-amber-50/70 border-amber-200/90 hover:border-amber-300 hover:bg-amber-50',
       iconBg: 'bg-amber-100 border-amber-200',
       badgeClass: 'bg-amber-100 text-amber-800 border-amber-300',
@@ -554,9 +573,9 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
     {
       key: 'soil' as ModalKey,
       icon: <Mountain className="w-5 h-5 text-emerald-600" />,
-      label: 'Soil pH Level',
-      value: hasRealSoil ? `pH ${district.baseSoilPh}` : 'No Data',
-      badge: hasRealSoil ? 'NARC Ground' : 'No Data',
+      label: 'Soil Benchmark',
+      value: activePalika.soilPh ? `pH ${activePalika.soilPh}` : (hasRealSoil ? `pH ${district.baseSoilPh}` : 'No Data'),
+      badge: 'NARC Ground Grid',
       cardBg: 'bg-emerald-50/70 border-emerald-200/90 hover:border-emerald-300 hover:bg-emerald-50',
       iconBg: 'bg-emerald-100 border-emerald-200',
       badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-300',
@@ -565,9 +584,9 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
     {
       key: 'labor' as ModalKey,
       icon: <DollarSign className="w-5 h-5 text-purple-600" />,
-      label: 'Agri Labor Rate',
-      value: `NPR ${district.laborRateNprPerDay}/day`,
-      badge: '77-District Dar',
+      label: 'Local Avg Temp',
+      value: activePalika.avgTempC ? `${activePalika.avgTempC}°C` : `${distClimatology?.[7]?.t2m || 17.8}°C`,
+      badge: 'Micro-Climatology',
       cardBg: 'bg-purple-50/70 border-purple-200/90 hover:border-purple-300 hover:bg-purple-50',
       iconBg: 'bg-purple-100 border-purple-200',
       badgeClass: 'bg-purple-100 text-purple-800 border-purple-300',
@@ -590,51 +609,86 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
         />
       )}
 
-      <div className="glass-panel p-6 rounded-2xl relative overflow-hidden border border-slate-200 shadow-sm bg-white/95">
+      {/* Palika Municipal Dossier Export Modal */}
+      {isDossierModalOpen && (
+        <PalikaDossierExportModal
+          palika={activePalika}
+          isOpen={isDossierModalOpen}
+          onClose={() => setIsDossierModalOpen(false)}
+        />
+      )}
+
+      {/* ─── Screen 2 Top Executive Header with Smart Palika Selector ─── */}
+      <div className="glass-panel p-6 rounded-2xl relative overflow-hidden border border-slate-200 shadow-sm bg-white/95 space-y-5">
+        {/* Navigation & Action Bar */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <button onClick={onBackToMap} className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 mb-2 font-semibold transition-colors cursor-pointer">
               <ArrowLeft className="w-3.5 h-3.5" />
-              Back to District Map
+              ← Back to Gulmi Spatial Map
             </button>
             <div className="flex items-center space-x-3 flex-wrap gap-y-1">
-              <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-outfit">{district.name} District</h2>
-              {district.nepaliName && <span className="text-base font-serif text-slate-500 font-medium">({district.nepaliName})</span>}
-              <span className="text-xs px-2.5 py-0.5 rounded-md font-bold uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200">
-                {district.ecoZone} Zone
+              <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-outfit">
+                {activePalika.name} {activePalika.unitType}
+              </h2>
+              {GULMI_PALIKA_NEPALI[activePalika.name] && (
+                <span className="text-lg font-serif text-slate-600 font-semibold">
+                  ({GULMI_PALIKA_NEPALI[activePalika.name]} {activePalika.unitType === 'Nagarpalika' ? 'नगरपालिका' : 'गाउँपालिका'})
+                </span>
+              )}
+              <span className="text-xs px-2.5 py-0.5 rounded-md font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
+                Gulmi District • {activePalika.unitType}
               </span>
             </div>
-            {/* Climate Zone, Elevation, Physiographic Region badges */}
-            <div className="flex flex-wrap items-center gap-2 mt-2">
-              {district.climateZone && (
-                <span className="text-[10px] px-2.5 py-1 rounded-lg font-semibold inline-flex items-center gap-1.5 bg-sky-50 text-sky-800 border border-sky-200">
-                  <Thermometer className="w-3 h-3" />
-                  {district.climateZone}
-                </span>
-              )}
-              {district.elevationRange && (
-                <span className="text-[10px] px-2.5 py-1 rounded-lg font-semibold inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 border border-amber-200">
-                  <MapPin className="w-3 h-3" />
-                  {district.elevationRange}m
-                </span>
-              )}
-              {district.physiographicRegion && (
-                <span className="text-[10px] px-2.5 py-1 rounded-lg font-semibold inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200">
-                  <Mountain className="w-3 h-3" />
-                  {district.physiographicRegion}
-                </span>
-              )}
-            </div>
-            <p className="text-xs text-slate-600 mt-1 max-w-2xl font-normal leading-relaxed">{district.description}</p>
+            <p className="text-xs text-slate-600 mt-1 max-w-2xl font-normal leading-relaxed">
+              Precision Agro-Ecological Dossier and 4-Season Cropping Calendar for <strong>{activePalika.name}</strong> ({activePalika.elevation}m ASL, {activePalika.rainfallMm} mm/yr). Parameterized from NARC ground soil surveys and NASA/MERRA-2 micro-climatology.
+            </p>
           </div>
-          <div className="text-right shrink-0">
-            <span className="text-xs text-slate-400 font-medium">Administrative Unit</span>
-            <div className="text-sm font-bold text-slate-800">{district.province}</div>
+
+          <div className="flex items-center gap-2.5 self-start md:self-center">
+            <button
+              onClick={() => setIsDossierModalOpen(true)}
+              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+            >
+              <FileText className="w-4 h-4 text-emerald-400" />
+              <span>📄 Export Municipal Brief</span>
+            </button>
           </div>
         </div>
 
-        {/* 4 Clickable Colorful Indicator Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-4 border-t border-slate-200">
+        {/* ─── 12-Palika Quick-Switch Carousel Ribbon ─── */}
+        <div className="pt-3 border-t border-slate-200">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider font-outfit flex items-center gap-1.5">
+              <span>🏛️ Switch Palika ({gulmiPalikas.length} Local Bodies in Gulmi):</span>
+            </span>
+            <span className="text-[10px] text-slate-400 italic">Click to switch dossier</span>
+          </div>
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+            {gulmiPalikas.map((p) => {
+              const isSelected = p.name.toLowerCase() === activePalika.name?.toLowerCase();
+              return (
+                <button
+                  key={p.name}
+                  onClick={() => setActivePalikaName(p.name)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 border ${
+                    isSelected
+                      ? 'bg-emerald-700 text-white border-emerald-800 shadow-sm font-bold scale-102'
+                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  <span>{p.name}</span>
+                  <span className={`text-[10px] ${isSelected ? 'text-emerald-200' : 'text-slate-500'}`}>
+                    ({GULMI_PALIKA_NEPALI[p.name] || ''})
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 4 Clickable Palika Micro-Indicator Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
           {indicators.map(({ key, icon, label, value, badge, cardBg, iconBg, badgeClass, badgeDot }) => (
             <button
               key={key}
@@ -662,444 +716,197 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
           ))}
         </div>
 
-        {/* MERRA-2 39-Year Monthly Climate Table */}
-        {distClimatology && (
-          <div className="mt-5 p-4 bg-slate-50/80 rounded-xl border border-slate-200 space-y-3">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-2 text-slate-800 font-semibold text-xs uppercase tracking-wider">
-                <Calendar className="w-3.5 h-3.5 text-sky-600" />
-                <span>MERRA-2 39-Year Monthly Climatology Baseline (1981–2019)</span>
+        {/* ─── Palika Soil Health & Liming Advisory Banner ─── */}
+        <div className="p-3.5 bg-emerald-50/80 rounded-xl border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-emerald-950">
+          <div className="flex items-center gap-2.5">
+            <span className="text-lg">🧪</span>
+            <div>
+              <div className="font-bold font-outfit text-emerald-900 uppercase tracking-wider text-[11px]">
+                NARC Soil Health Diagnosis for {activePalika.name}:
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] text-slate-500 font-sans italic hidden sm:inline">← Scroll 12 months →</span>
-                <span className="text-[10px] bg-white text-slate-600 px-2 py-0.5 rounded-md border border-slate-200 font-mono font-medium">12-Month Cycle</span>
+              <div className="text-[11px] text-emerald-800 mt-0.5">
+                Benchmark Soil pH: <strong className="font-mono">{activePalika.soilPh}</strong> • {activePalika.soilPh < 6.0 ? 'Acidic Hill Slope (Moderate Lime Required)' : 'Near-Neutral Balanced Soil (Optimal Micronutrient Availability)'}
               </div>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="border-b border-slate-200 text-[10px] text-slate-500 uppercase font-mono bg-slate-100/80">
-                    <th className="py-2 px-2.5 font-semibold">Metric</th>
-                    {MONTH_NAMES.map(m => <th key={m} className="py-2 px-2 text-center font-semibold">{m}</th>)}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200/80 font-mono text-[11px]">
-                  <tr className="hover:bg-white transition-colors">
-                    <td className="py-2 px-2.5 font-semibold text-slate-800 flex items-center gap-1.5 font-sans"><CloudRain className="w-3.5 h-3.5 text-sky-600" /> Rainfall (mm)</td>
-                    {MONTH_NAMES.map((_, i) => {
-                      const v = distClimatology[i + 1]?.prectot;
-                      return (
-                        <td key={i} className={`py-2 px-2 text-center font-semibold ${v >= 200 ? 'text-sky-700 bg-sky-50/60 font-bold' : 'text-slate-700'}`}>
-                          {v ?? '-'}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                  <tr className="hover:bg-white transition-colors">
-                    <td className="py-2 px-2.5 font-semibold text-slate-800 flex items-center gap-1.5 font-sans"><Thermometer className="w-3.5 h-3.5 text-amber-600" /> Air Temp (°C)</td>
-                    {MONTH_NAMES.map((_, i) => {
-                      const v = distClimatology[i + 1]?.t2m;
-                      return (
-                        <td key={i} className={`py-2 px-2 text-center font-semibold ${v >= 25 ? 'text-amber-700 bg-amber-50/60' : 'text-slate-700'}`}>
-                          {v ?? '-'}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                  <tr className="hover:bg-white transition-colors">
-                    <td className="py-2 px-2.5 font-semibold text-slate-800 flex items-center gap-1.5 font-sans"><Wind className="w-3.5 h-3.5 text-purple-600" /> Wind 50m (m/s)</td>
-                    {MONTH_NAMES.map((_, i) => <td key={i} className="py-2 px-2 text-center text-slate-700">{distClimatology[i + 1]?.ws50m ?? '-'}</td>)}
-                  </tr>
-                  <tr className="hover:bg-white transition-colors">
-                    <td className="py-2 px-2.5 font-semibold text-slate-800 flex items-center gap-1.5 font-sans"><Gauge className="w-3.5 h-3.5 text-emerald-600" /> Humidity (%)</td>
-                    {MONTH_NAMES.map((_, i) => <td key={i} className="py-2 px-2 text-center text-slate-700">{distClimatology[i + 1]?.rh2m ?? '-'}</td>)}
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
-        )}
-
-        {/* Real NEA Hydropower Infrastructure Table */}
-        {district.hydroStationsList && district.hydroStationsList.length > 0 && (
-          <div className="mt-5 p-4 bg-slate-50/80 rounded-xl border border-slate-200 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-slate-800 font-semibold text-xs uppercase tracking-wider">
-                <Zap className="w-3.5 h-3.5 text-amber-600" />
-                <span>Hydropower Stations ({district.hydroStationCount} Plants • <strong className="text-purple-700">{district.totalHydroCapacityMW} MW</strong> Installed Capacity)</span>
-              </div>
-              <span className="text-[10px] bg-white text-slate-600 px-2 py-0.5 rounded-md border border-slate-200 font-mono font-medium">NEA Database</span>
-            </div>
-            <div className="overflow-x-auto max-h-52 overflow-y-auto">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="border-b border-slate-200 text-[10px] text-slate-500 uppercase font-mono sticky top-0 bg-slate-100">
-                    <th className="py-2 px-2.5 font-semibold">Station Name</th>
-                    <th className="py-2 px-2.5 text-right font-semibold">Installed MW</th>
-                    <th className="py-2 px-2.5 text-center font-semibold">Commissioned</th>
-                    <th className="py-2 px-2.5 font-semibold">Owner / Developer</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200/80 font-mono text-[11px]">
-                  {district.hydroStationsList.map((st, idx) => (
-                    <tr key={idx} className="hover:bg-white transition-colors">
-                      <td className="py-2 px-2.5 font-semibold text-slate-800 font-sans">{st.name}</td>
-                      <td className="py-2 px-2.5 text-right font-extrabold text-purple-700">{st.capacityMW} MW</td>
-                      <td className="py-2 px-2.5 text-center text-slate-600">{st.commissioned}</td>
-                      <td className="py-2 px-2.5 text-slate-600 font-sans">{st.owner}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <div className="shrink-0 bg-white px-3 py-1.5 rounded-lg border border-emerald-300 text-emerald-800 font-semibold font-mono text-[11px]">
+            {activePalika.soilPh < 6.0 ? 'Advisory: Apply 2.0 t/ha Agri-Lime' : 'Advisory: Standard N-P-K Organic Compost'}
           </div>
-        )}
+        </div>
 
-        {/* Real DHM National River Gauging Stations */}
-        {district.hydrologyStationsList && district.hydrologyStationsList.length > 0 && (
-          <div className="mt-4 p-4 bg-sky-50/70 rounded-xl border border-sky-200 space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sky-950 font-semibold text-xs uppercase tracking-wider">
-                <CloudRain className="w-3.5 h-3.5 text-sky-600" />
-                <span>DHM River Gauging Stations ({district.hydrologyStationsCount} Active Gauges)</span>
-              </div>
-              <span className="text-[10px] bg-white text-sky-800 px-2 py-0.5 rounded-md border border-sky-300 font-mono font-medium">DHM Hydrology</span>
+        {/* ─── 4-Season Cropping Calendar & Verified Feasibility for this Palika ─── */}
+        <div className="p-4 bg-white rounded-xl border border-slate-200 space-y-4">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2 text-slate-800 font-semibold text-xs uppercase tracking-wider">
+              <Leaf className="w-3.5 h-3.5 text-emerald-600" />
+              <span>4-Season Cropping Calendar & Verified Feasibility ({activePalika.name})</span>
             </div>
-            <div className="overflow-x-auto max-h-48 overflow-y-auto">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="border-b border-sky-200 text-[10px] text-sky-900 uppercase font-mono sticky top-0 bg-sky-100/90">
-                    <th className="py-2 px-2.5 font-semibold">Station #</th>
-                    <th className="py-2 px-2.5 font-semibold">River Name</th>
-                    <th className="py-2 px-2.5 font-semibold">Gauging Site</th>
-                    <th className="py-2 px-2.5 text-right font-semibold">Elevation</th>
-                    <th className="py-2 px-2.5 font-semibold">Instrumentation</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-sky-200/70 font-mono text-[11px]">
-                  {district.hydrologyStationsList.map((st, idx) => (
-                    <tr key={idx} className="hover:bg-white/80 transition-colors">
-                      <td className="py-2 px-2.5 font-extrabold text-sky-700">#{st.stationNo}</td>
-                      <td className="py-2 px-2.5 font-semibold text-slate-900 font-sans">{st.river}</td>
-                      <td className="py-2 px-2.5 text-slate-700 font-sans">{st.siteName}</td>
-                      <td className="py-2 px-2.5 text-right text-slate-700 font-mono">{st.elevation ? `${st.elevation} m` : 'N/A'}</td>
-                      <td className="py-2 px-2.5 text-slate-600 font-sans text-[10px]">{st.instruments}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md border border-emerald-200 font-mono font-medium">
+              {activePalika.feasibleCropsCount || activePalika.feasibleCrops?.length || 5} Verified Crops
+            </span>
           </div>
-        )}
 
-        {/* Glacial Lakes, Alpine Water Bodies & GLOF Hazard Ledger */}
-        {((district.totalLakesCount || 0) > 0 || (district.dangerousGlacialLakes && district.dangerousGlacialLakes.length > 0)) && (
-          <div className="mt-4 p-4 bg-cyan-50/80 rounded-xl border border-cyan-200 space-y-3.5">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-cyan-100 border border-cyan-300 flex items-center justify-center shrink-0">
-                  <Mountain className="w-4 h-4 text-cyan-700" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-cyan-950 text-sm font-outfit">Glacial Lakes, Alpine Water Bodies & GLOF Risk</span>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-md font-mono font-bold border ${
-                      district.glofRiskLevel === 'Critical' ? 'bg-red-100 text-red-800 border-red-300' :
-                      district.glofRiskLevel === 'High' ? 'bg-amber-100 text-amber-800 border-amber-300' :
-                      'bg-cyan-100 text-cyan-800 border-cyan-300'
-                    }`}>
-                      {district.glofRiskLevel || 'Low'} Risk
-                    </span>
-                  </div>
-                  <div className="text-cyan-900 text-xs mt-0.5 font-sans">
-                    Total District Lakes: <strong className="font-mono">{district.totalLakesCount || 0}</strong> • High-Altitude (&gt;3,000m): <strong className="font-mono">{district.highAltitudeLakesCount || 0} Lakes</strong>
-                  </div>
-                </div>
-              </div>
-              <span className="text-[10px] bg-white text-cyan-900 px-2 py-0.5 rounded-md border border-cyan-200 font-mono font-medium">ICIMOD / UNDP Registry</span>
-            </div>
-
-            {/* Dangerous Glacial Lakes Table if present in this district */}
-            {district.dangerousGlacialLakes && district.dangerousGlacialLakes.length > 0 && (
-              <div className="bg-white rounded-lg border border-cyan-200/90 overflow-hidden shadow-2xs">
-                <div className="px-3 py-2 bg-red-50/60 border-b border-red-200 text-xs font-semibold text-red-950 flex items-center gap-1.5">
-                  <span className="text-sm">❄️</span>
-                  <span>Potentially Dangerous Glacial Lakes in {district.name} ({district.dangerousGlacialLakes.length} High-Risk Lakes)</span>
-                </div>
-                <div className="overflow-x-auto max-h-48 overflow-y-auto">
-                  <table className="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr className="border-b border-slate-200 text-[10px] text-slate-500 uppercase font-mono sticky top-0 bg-slate-100/90">
-                        <th className="py-2 px-3 font-semibold">Glacial Lake Name</th>
-                        <th className="py-2 px-3 text-right font-semibold">Altitude (masl)</th>
-                        <th className="py-2 px-3 text-right font-semibold">Surface Area</th>
-                        <th className="py-2 px-3 font-semibold">River Basin</th>
-                        <th className="py-2 px-3 text-center font-semibold">GLOF Hazard Tier</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 font-mono text-[11px]">
-                      {district.dangerousGlacialLakes.map((lake, idx) => (
-                        <tr key={idx} className="hover:bg-cyan-50/50 transition-colors">
-                          <td className="py-2 px-3 font-bold text-slate-900 font-sans flex items-center gap-1.5">
-                            <span className="text-cyan-600">❄️</span>
-                            {lake.name}
-                          </td>
-                          <td className="py-2 px-3 text-right font-bold text-cyan-900">{lake.altitude.toLocaleString()} m</td>
-                          <td className="py-2 px-3 text-right text-slate-700">
-                            {lake.areaSqM ? `${(lake.areaSqM / 10000).toFixed(1)} ha` : 'N/A'}
-                          </td>
-                          <td className="py-2 px-3 text-slate-700 font-sans">{lake.basin || 'Koshi Basin'}</td>
-                          <td className="py-2 px-3 text-center">
-                            <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold ${
-                              lake.hazardLevel === 'Critical' ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-amber-100 text-amber-800 border border-amber-200'
-                            }`}>
-                              {lake.hazardLevel}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            {/* Lake Count by Altitude Elevation Band */}
-            {district.lakeAltitudeDistribution && (
-              <div className="bg-white p-3 rounded-lg border border-cyan-200/90 space-y-2">
-                <div className="text-[11px] font-semibold text-slate-800 flex items-center justify-between">
-                  <span>Elevation Band Distribution of Water Bodies ({district.totalLakesCount || 0} Total Lakes)</span>
-                  <span className="text-[10px] text-slate-500 font-normal">CBS National Water Census</span>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-center text-xs font-mono">
-                  <div className="bg-slate-50 p-2 rounded-md border border-slate-200">
-                    <div className="text-[10px] text-slate-500 font-sans font-medium">&lt;100m (Terai)</div>
-                    <div className="text-sm font-bold text-slate-800 mt-0.5">{district.lakeAltitudeDistribution.under100m}</div>
-                  </div>
-                  <div className="bg-slate-50 p-2 rounded-md border border-slate-200">
-                    <div className="text-[10px] text-slate-500 font-sans font-medium">100–499m</div>
-                    <div className="text-sm font-bold text-slate-800 mt-0.5">{district.lakeAltitudeDistribution.from100to499m}</div>
-                  </div>
-                  <div className="bg-slate-50 p-2 rounded-md border border-slate-200">
-                    <div className="text-[10px] text-slate-500 font-sans font-medium">500–1,999m</div>
-                    <div className="text-sm font-bold text-slate-800 mt-0.5">{district.lakeAltitudeDistribution.from500to1999m}</div>
-                  </div>
-                  <div className="bg-slate-50 p-2 rounded-md border border-slate-200">
-                    <div className="text-[10px] text-slate-500 font-sans font-medium">2,000–2,999m</div>
-                    <div className="text-sm font-bold text-slate-800 mt-0.5">{district.lakeAltitudeDistribution.from2000to2999m}</div>
-                  </div>
-                  <div className="bg-sky-50 p-2 rounded-md border border-sky-200">
-                    <div className="text-[10px] text-sky-800 font-sans font-semibold">3,000–4,999m</div>
-                    <div className="text-sm font-extrabold text-sky-700 mt-0.5">{district.lakeAltitudeDistribution.from3000to4999m}</div>
-                  </div>
-                  <div className="bg-cyan-50 p-2 rounded-md border border-cyan-200">
-                    <div className="text-[10px] text-cyan-800 font-sans font-semibold">&gt;5,000m Alpine</div>
-                    <div className="text-sm font-extrabold text-cyan-700 mt-0.5">{district.lakeAltitudeDistribution.above5000m}</div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Strategic Road Density & Market Transport Logistics */}
-        {district.roadDensityKmPerKm2 !== undefined && (
-          <div className="mt-4 p-3.5 bg-purple-50/60 rounded-xl border border-purple-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-purple-100 border border-purple-200 flex items-center justify-center shrink-0">
-                <TrendingUp className="w-4 h-4 text-purple-700" />
-              </div>
+          {/* 4 Seasonal Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* Barkhe (Monsoon) */}
+            <div className="p-3.5 rounded-xl bg-sky-50/70 border border-sky-200 flex flex-col justify-between gap-3">
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-900 font-outfit">Strategic Road Network & Market Access</span>
-                  <span className="text-[10px] bg-white text-purple-800 border border-purple-200 px-2 py-0.5 rounded-md font-mono font-semibold">610K Road Vectors</span>
+                <div className="flex items-center justify-between text-xs font-bold text-sky-900 font-outfit uppercase">
+                  <span>🌧️ बरखे (Monsoon)</span>
+                  <span className="text-[10px] text-sky-700 font-normal font-sans">असार – कात्तिक</span>
                 </div>
-                <div className="text-slate-600 text-xs mt-0.5">
-                  Road Density: <strong className="text-purple-950 font-bold font-mono">{district.roadDensityKmPerKm2} km/km²</strong> • Avg Highway Distance: <strong className="text-purple-950 font-bold font-mono">{district.avgDistanceToPavedRoadKm} km</strong>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-lg border border-purple-200 font-mono shadow-2xs">
-              <div className="text-center">
-                <div className="text-[10px] text-slate-500 uppercase font-sans font-semibold">Market Index</div>
-                <div className="text-sm font-extrabold text-purple-700">{district.marketAccessIndex || 60}/100</div>
-              </div>
-              <div className="w-px h-6 bg-slate-200" />
-              <div className="text-center">
-                <div className="text-[10px] text-slate-500 uppercase font-sans font-semibold">Freight Tariff</div>
-                <div className="text-sm font-extrabold text-slate-800">NPR {district.freightLogisticsTariffNprPerTonKm || 20} <span className="text-[10px] font-normal text-slate-500">/t-km</span></div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Ground Soil Survey N-P-K & Texture Breakdown */}
-        {district.hasRealSoilData !== false && district.soilNitrogen !== undefined && district.soilPhosphorus !== undefined && district.soilPotassium !== undefined && (district.soilSampleCount || 0) > 0 ? (
-          <div className="mt-4 p-3.5 bg-emerald-50/60 rounded-xl border border-emerald-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-100 border border-emerald-200 flex items-center justify-center shrink-0">
-                <Sparkles className="w-4 h-4 text-emerald-700" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-slate-900 text-sm font-outfit">Ground Soil Survey & Texture Composition</span>
-                  <span className="text-[10px] bg-white text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-mono font-semibold">{district.soilSampleCount} NARC Samples</span>
-                </div>
-                <div className="text-slate-600 text-xs mt-0.5">
-                  Dominant: <strong className="text-emerald-950 font-bold">{district.soilType}</strong>
-                  {district.soilTextureShares && ` (Loam ${district.soilTextureShares.loamPct}% • Sand ${district.soilTextureShares.sandPct}% • Silt ${district.soilTextureShares.siltPct}% • Clay ${district.soilTextureShares.clayPct}%)`}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-lg border border-emerald-200 font-mono shadow-2xs">
-              <div className="text-center">
-                <div className="text-[10px] text-slate-500 uppercase font-sans font-semibold">Total N</div>
-                <div className="text-sm font-extrabold text-emerald-700">{district.soilNitrogen}%</div>
-              </div>
-              <div className="w-px h-6 bg-slate-200" />
-              <div className="text-center">
-                <div className="text-[10px] text-slate-500 uppercase font-sans font-semibold">Available P₂O₅</div>
-                <div className="text-sm font-extrabold text-sky-700">{district.soilPhosphorus} <span className="text-[10px] font-normal text-slate-500">kg/ha</span></div>
-              </div>
-              <div className="w-px h-6 bg-slate-200" />
-              <div className="text-center">
-                <div className="text-[10px] text-slate-500 uppercase font-sans font-semibold">Available K₂O</div>
-                <div className="text-sm font-extrabold text-purple-700">{district.soilPotassium} <span className="text-[10px] font-normal text-slate-500">kg/ha</span></div>
-              </div>
-              {district.annualSoilErosionRiskTonnesPerHa !== undefined && (
-                <>
-                  <div className="w-px h-6 bg-slate-200" />
-                  <div className="text-center">
-                    <div className="text-[10px] text-slate-500 uppercase font-sans font-semibold">Erosion Risk</div>
-                    <div className="text-sm font-extrabold text-amber-700">{district.annualSoilErosionRiskTonnesPerHa} <span className="text-[10px] font-normal text-slate-500">t/ha/yr</span></div>
+                {activePalika.seasonalRotations?.barkhe ? (
+                  <div className="mt-2 space-y-1">
+                    <div className="flex items-center gap-1.5 font-bold text-slate-900 text-sm">
+                      <span>{activePalika.seasonalRotations.barkhe.emoji}</span>
+                      <span>{activePalika.seasonalRotations.barkhe.cropName}</span>
+                    </div>
+                    <div className="text-[11px] text-slate-600 font-serif">
+                      ({activePalika.seasonalRotations.barkhe.nepaliName})
+                    </div>
+                    <div className="text-[10px] text-sky-800 font-mono font-semibold">
+                      Suitability: {activePalika.seasonalRotations.barkhe.score}% ({activePalika.seasonalRotations.barkhe.rating})
+                    </div>
                   </div>
-                </>
+                ) : (
+                  <div className="text-xs text-slate-500 italic mt-2">Monsoon Paddy / Maize / Ginger</div>
+                )}
+              </div>
+              {activePalika.seasonalRotations?.barkhe && (
+                <button
+                  onClick={() => {
+                    const c = db.getCropById(activePalika.seasonalRotations?.barkhe?.cropId || '') || db.getAllCrops()[0];
+                    onSelectCrop(c);
+                  }}
+                  className="w-full py-1 px-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-[10px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                >
+                  <span>⚡ Run WEFES Simulation</span>
+                </button>
+              )}
+            </div>
+
+            {/* Hiunde (Winter) */}
+            <div className="p-3.5 rounded-xl bg-amber-50/70 border border-amber-200 flex flex-col justify-between gap-3">
+              <div>
+                <div className="flex items-center justify-between text-xs font-bold text-amber-900 font-outfit uppercase">
+                  <span>❄️ हिउँदे (Winter)</span>
+                  <span className="text-[10px] text-amber-700 font-normal font-sans">कात्तिक – फागुन</span>
+                </div>
+                {activePalika.seasonalRotations?.hiunde ? (
+                  <div className="mt-2 space-y-1">
+                    <div className="flex items-center gap-1.5 font-bold text-slate-900 text-sm">
+                      <span>{activePalika.seasonalRotations.hiunde.emoji}</span>
+                      <span>{activePalika.seasonalRotations.hiunde.cropName}</span>
+                    </div>
+                    <div className="text-[11px] text-slate-600 font-serif">
+                      ({activePalika.seasonalRotations.hiunde.nepaliName})
+                    </div>
+                    <div className="text-[10px] text-amber-800 font-mono font-semibold">
+                      Suitability: {activePalika.seasonalRotations.hiunde.score}% ({activePalika.seasonalRotations.hiunde.rating})
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-slate-500 italic mt-2">Winter Wheat / Seed Potato</div>
+                )}
+              </div>
+              {activePalika.seasonalRotations?.hiunde && (
+                <button
+                  onClick={() => {
+                    const c = db.getCropById(activePalika.seasonalRotations?.hiunde?.cropId || '') || db.getAllCrops()[0];
+                    onSelectCrop(c);
+                  }}
+                  className="w-full py-1 px-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                >
+                  <span>⚡ Run WEFES Simulation</span>
+                </button>
+              )}
+            </div>
+
+            {/* Chaite (Spring) */}
+            <div className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200 flex flex-col justify-between gap-3">
+              <div>
+                <div className="flex items-center justify-between text-xs font-bold text-emerald-900 font-outfit uppercase">
+                  <span>🌱 चैते (Spring)</span>
+                  <span className="text-[10px] text-emerald-700 font-normal font-sans">फागुन – जेठ</span>
+                </div>
+                {activePalika.seasonalRotations?.chaite ? (
+                  <div className="mt-2 space-y-1">
+                    <div className="flex items-center gap-1.5 font-bold text-slate-900 text-sm">
+                      <span>{activePalika.seasonalRotations.chaite.emoji}</span>
+                      <span>{activePalika.seasonalRotations.chaite.cropName}</span>
+                    </div>
+                    <div className="text-[11px] text-slate-600 font-serif">
+                      ({activePalika.seasonalRotations.chaite.nepaliName})
+                    </div>
+                    <div className="text-[10px] text-emerald-800 font-mono font-semibold">
+                      Suitability: {activePalika.seasonalRotations.chaite.score}% ({activePalika.seasonalRotations.chaite.rating})
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-slate-500 italic mt-2">Spring Maize / Seasonal Cucurbits</div>
+                )}
+              </div>
+              {activePalika.seasonalRotations?.chaite && (
+                <button
+                  onClick={() => {
+                    const c = db.getCropById(activePalika.seasonalRotations?.chaite?.cropId || '') || db.getAllCrops()[0];
+                    onSelectCrop(c);
+                  }}
+                  className="w-full py-1 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                >
+                  <span>⚡ Run WEFES Simulation</span>
+                </button>
+              )}
+            </div>
+
+            {/* Baahramase (Perennial Cash Crops) */}
+            <div className="p-3.5 rounded-xl bg-purple-50/70 border border-purple-200 flex flex-col justify-between gap-3">
+              <div>
+                <div className="flex items-center justify-between text-xs font-bold text-purple-900 font-outfit uppercase">
+                  <span>☕ बाह्रमासे (Perennial)</span>
+                  <span className="text-[10px] text-purple-700 font-normal font-sans">वर्षभरि (Perennial)</span>
+                </div>
+                {activePalika.seasonalRotations?.baahramase ? (
+                  <div className="mt-2 space-y-1">
+                    <div className="flex items-center gap-1.5 font-bold text-slate-900 text-sm">
+                      <span>{activePalika.seasonalRotations.baahramase.emoji}</span>
+                      <span>{activePalika.seasonalRotations.baahramase.cropName}</span>
+                    </div>
+                    <div className="text-[11px] text-slate-600 font-serif">
+                      ({activePalika.seasonalRotations.baahramase.nepaliName})
+                    </div>
+                    <div className="text-[10px] text-purple-800 font-mono font-semibold">
+                      Suitability: {activePalika.seasonalRotations.baahramase.score}% ({activePalika.seasonalRotations.baahramase.rating})
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-slate-500 italic mt-2">Arabica Coffee / Mandarin Orange</div>
+                )}
+              </div>
+              {activePalika.seasonalRotations?.baahramase && (
+                <button
+                  onClick={() => {
+                    const c = db.getCropById(activePalika.seasonalRotations?.baahramase?.cropId || '') || db.getAllCrops()[0];
+                    onSelectCrop(c);
+                  }}
+                  className="w-full py-1 px-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[10px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"
+                >
+                  <span>⚡ Run WEFES Simulation</span>
+                </button>
               )}
             </div>
           </div>
-        ) : (
-          <div className="mt-4 p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center shrink-0">
-                <Sparkles className="w-4 h-4 text-slate-500" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-slate-700 text-sm font-outfit">Ground Soil Survey Data</span>
-                  <span className="text-[10px] bg-white text-slate-500 border border-slate-200 px-2 py-0.5 rounded-md font-mono">No Data (0 Samples)</span>
-                </div>
-                <div className="text-slate-500 text-xs mt-0.5">Ground soil measurements were not recorded for {district.name}.</div>
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
 
-        {/* ─── Crop Feasibility Section from CSV ─── */}
-        {(district.feasibleCrops?.length || district.feasibleFruits?.length || district.feasibleSpicesCashCrops?.length) ? (
-          <div className="mt-5 p-4 bg-white rounded-xl border border-slate-200 space-y-4">
-            <div className="flex items-center gap-2 text-slate-800 font-semibold text-xs uppercase tracking-wider">
-              <Leaf className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Crop Feasibility Profile</span>
-              <span className="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md border border-emerald-200 font-mono font-medium normal-case">NARC Field Data</span>
-            </div>
-
-            {/* Feasible Crops (Cereals/Grains) */}
-            {district.feasibleCrops && district.feasibleCrops.length > 0 && (
-              <div>
-                <div className="text-[10px] text-slate-500 font-semibold uppercase mb-1.5 flex items-center gap-1">
-                  <WheatIcon className="w-3 h-3 text-amber-600" />
-                  Feasible Crops ({district.feasibleCrops.length})
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {district.feasibleCrops.map((c, i) => (
-                    <span key={i} className="text-[10px] px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 font-medium">{c}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Feasible Vegetables */}
-            {district.feasibleVegetables && district.feasibleVegetables.length > 0 && (
-              <div>
-                <div className="text-[10px] text-slate-500 font-semibold uppercase mb-1.5 flex items-center gap-1">
-                  <Sprout className="w-3 h-3 text-emerald-600" />
-                  Feasible Vegetables ({district.feasibleVegetables.length})
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {district.feasibleVegetables.map((v, i) => (
-                    <span key={i} className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">{v}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Feasible Fruits */}
-            {district.feasibleFruits && district.feasibleFruits.length > 0 && (
-              <div>
-                <div className="text-[10px] text-slate-500 font-semibold uppercase mb-1.5 flex items-center gap-1">
-                  <Cherry className="w-3 h-3 text-orange-600" />
-                  Feasible Fruits ({district.feasibleFruits.length})
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {district.feasibleFruits.map((f, i) => (
-                    <span key={i} className="text-[10px] px-2 py-0.5 rounded-md bg-orange-50 text-orange-800 border border-orange-200 font-medium">{f}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Feasible Spices & Cash Crops */}
-            {district.feasibleSpicesCashCrops && district.feasibleSpicesCashCrops.length > 0 && (
-              <div>
-                <div className="text-[10px] text-slate-500 font-semibold uppercase mb-1.5 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-purple-600" />
-                  Spices & Cash Crops ({district.feasibleSpicesCashCrops.length})
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {district.feasibleSpicesCashCrops.map((s, i) => (
-                    <span key={i} className="text-[10px] px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200 font-medium">{s}</span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Commercial Coffee Production 2080 Callout */}
-            {district.coffeeProductionMt !== undefined && (
-              <div className="p-3 bg-amber-50/70 rounded-lg border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="text-base">☕</span>
-                  <div>
-                    <span className="font-bold text-amber-950 font-outfit">MoALD 2080 Commercial Coffee Production Record</span>
-                    <div className="text-[11px] text-amber-900 mt-0.5">
-                      Production: <strong className="font-mono">{district.coffeeProductionMt} MT</strong> • Farm Area: <strong className="font-mono">{district.coffeeAreaHa} Ha</strong> • Smallholders: <strong className="font-mono">{district.coffeeFarmersCount} Farmers</strong>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right shrink-0 font-mono bg-white px-2.5 py-1 rounded-md border border-amber-200 text-amber-900 font-bold text-[11px]">
-                  Yield: {district.coffeeYieldKgHa} kg/ha
-                </div>
-              </div>
-            )}
-
-            {/* Feasibility Reasoning */}
-            {district.feasibilityReasoning && (
-              <div className="mt-2 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                <div className="text-[10px] text-slate-500 font-semibold uppercase mb-1 flex items-center gap-1">
-                  <Info className="w-3 h-3 text-slate-400" />
-                  Agronomic Reasoning
-                </div>
-                <p className="text-xs text-slate-700 leading-relaxed italic">
-                  "{district.feasibilityReasoning}"
-                </p>
-              </div>
-            )}
-          </div>
-        ) : null}
+        {/* ─── Head-to-Head Palika Comparison Benchmarking Widget ─── */}
+        <PalikaBenchmarkingWidget currentPalika={activePalika} />
       </div>
 
-      {/* Interactive District Spatial Map & Real-time Variable Inspector */}
+      {/* Interactive Palika Spatial Map & Real-time Variable Inspector */}
       <DistrictDetailMap
         district={district}
+        selectedPalikaName={activePalika.name}
+        onSelectPalika={setActivePalikaName}
         distClimatology={distClimatology}
         rainfallARIMA={rainfallARIMA}
         districtCrops={verifiedDistrictCrops}

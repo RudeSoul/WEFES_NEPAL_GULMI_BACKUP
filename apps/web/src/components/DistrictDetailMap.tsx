@@ -25,6 +25,8 @@ import { generateDistrictContours, ContourLine } from '../utils/contourGenerator
 
 interface DistrictDetailMapProps {
   district: District;
+  selectedPalikaName?: string;
+  onSelectPalika?: (palikaName: string) => void;
   distClimatology?: any;
   rainfallARIMA?: any;
   districtCrops?: { crop: Crop; suitability: CropSuitability }[];
