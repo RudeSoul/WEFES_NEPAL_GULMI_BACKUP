@@ -129,6 +129,8 @@ const MONTH_NAMES = [
 
 function suitabilityToColor(score: number): string {
   if (score >= 80) return '#10b981';
+  if (score >= 75) return '#2b2870ff';
+  if (score >= 70) return '#55799fff';
   if (score >= 60) return '#84cc16';
   if (score >= 40) return '#f59e0b';
   return '#ef4444';
@@ -835,52 +837,52 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   const currentRainMm = climateDataset ? Math.round(
     climateMode === 'climatology'
       ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.prectot ?? 150
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.prectot 
-         ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.prectot ?? 150)
+      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.prectot
+        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.prectot ?? 150)
   ) : 150;
 
   const currentTempC = climateDataset ? Number((
     climateMode === 'climatology'
       ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2m ?? 19.5
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.t2m 
-         ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2m ?? 19.5)
+      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.t2m
+        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2m ?? 19.5)
   ).toFixed(1)) : 19.5;
 
   const currentTempMax = climateDataset ? Number((
     climateMode === 'climatology'
       ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2mMax ?? 23.5
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.t2mMax 
-         ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2mMax ?? 23.5)
+      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.t2mMax
+        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2mMax ?? 23.5)
   ).toFixed(1)) : 23.5;
 
   const currentTempMin = climateDataset ? Number((
     climateMode === 'climatology'
       ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2mMin ?? 16.2
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.t2mMin 
-         ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2mMin ?? 16.2)
+      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.t2mMin
+        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2mMin ?? 16.2)
   ).toFixed(1)) : 16.2;
 
   const currentHumidity = climateDataset ? Math.round(
     climateMode === 'climatology'
       ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.rh2m ?? 80
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.rh2m 
-         ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.rh2m ?? 80)
+      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.rh2m
+        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.rh2m ?? 80)
   ) : 80;
 
   const currentWind = climateDataset ? Number((
     climateMode === 'climatology'
       ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.ws10m ?? 2.5
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.ws10m 
-         ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.ws10m ?? 2.5)
+      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.ws10m
+        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.ws10m ?? 2.5)
   ).toFixed(1)) : 2.5;
 
-  const currentSeason = [6, 7, 8, 9].includes(climateMonth) 
-    ? 'Monsoon Peak' 
-    : [10, 11].includes(climateMonth) 
-    ? 'Post-Monsoon' 
-    : [12, 1, 2].includes(climateMonth) 
-    ? 'Winter Dry' 
-    : 'Pre-Monsoon Spring';
+  const currentSeason = [6, 7, 8, 9].includes(climateMonth)
+    ? 'Monsoon Peak'
+    : [10, 11].includes(climateMonth)
+      ? 'Post-Monsoon'
+      : [12, 1, 2].includes(climateMonth)
+        ? 'Winter Dry'
+        : 'Pre-Monsoon Spring';
 
   // Dynamic Palika Color Resolution based on active Gulmi Micro-Intelligence Suite
   const getGulmiPalikaColor = (props: any) => {
@@ -889,8 +891,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
     const pData = gulmiPalikas.find(
       p => p.name.toLowerCase() === palikaName ||
-           palikaName.includes(p.name.toLowerCase()) ||
-           p.name.toLowerCase().includes(palikaName)
+        palikaName.includes(p.name.toLowerCase()) ||
+        p.name.toLowerCase().includes(palikaName)
     );
 
     // ==========================================
@@ -904,7 +906,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         if (pData?.feasibleCrops) {
           const c = pData.feasibleCrops.find(
             fc => fc.cropId.toLowerCase() === cropId.toLowerCase() ||
-                  cropId.toLowerCase().includes(fc.cropId.toLowerCase())
+              cropId.toLowerCase().includes(fc.cropId.toLowerCase())
           );
           if (c) {
             if (c.score >= 80) return '#059669'; // Optimal - Deep Emerald
@@ -1147,8 +1149,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
     const pData = gulmiPalikas.find(
       p => p.name.toLowerCase() === palikaName ||
-           palikaName.includes(p.name.toLowerCase()) ||
-           p.name.toLowerCase().includes(palikaName)
+        palikaName.includes(p.name.toLowerCase()) ||
+        p.name.toLowerCase().includes(palikaName)
     );
 
     let metricSnippet = '';
@@ -1157,7 +1159,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       if (pData?.feasibleCrops) {
         const c = pData.feasibleCrops.find(
           fc => fc.cropId.toLowerCase() === cropId.toLowerCase() ||
-                cropId.toLowerCase().includes(fc.cropId.toLowerCase())
+            cropId.toLowerCase().includes(fc.cropId.toLowerCase())
         );
         if (c) {
           metricSnippet = `<div style="color: #059669; font-weight: 600; font-size: 10px; margin-top: 2px;">
@@ -1170,7 +1172,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       if (wSub === 'river_basins') {
         const basin = ['kaligandaki', 'satyawati', 'ruru'].some(n => palikaName.includes(n)) ? 'Kali Gandaki Basin'
           : ['musikot', 'isma'].some(n => palikaName.includes(n)) ? 'Badigad River Basin'
-          : ['resunga', 'gulmidarbar', 'chatrakot', 'chandrakot'].some(n => palikaName.includes(n)) ? 'Ridi Khola Basin' : 'Panaha/Chhaldi Basin';
+            : ['resunga', 'gulmidarbar', 'chatrakot', 'chandrakot'].some(n => palikaName.includes(n)) ? 'Ridi Khola Basin' : 'Panaha/Chhaldi Basin';
         metricSnippet = `<div style="color: #0284c7; font-size: 10px; margin-top: 2px;">🌊 Watershed: <strong>${basin}</strong></div>`;
       } else {
         const localRain = Math.round(currentRainMm * (1 + ((pData?.elevation || 1450) - 1000) / 10000));
@@ -1708,27 +1710,24 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
           <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs font-semibold text-slate-700 shadow-2xs">
             <button
               onClick={() => setBasemap('voyager')}
-              className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
-                basemap === 'voyager' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900'
-              }`}
+              className={`px-2 py-1 rounded-md transition-all cursor-pointer ${basemap === 'voyager' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900'
+                }`}
               title="Clean Vector Basemap"
             >
               Clean
             </button>
             <button
               onClick={() => setBasemap('satellite')}
-              className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
-                basemap === 'satellite' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900'
-              }`}
+              className={`px-2 py-1 rounded-md transition-all cursor-pointer ${basemap === 'satellite' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900'
+                }`}
               title="ESRI World Imagery Satellite"
             >
               Satellite
             </button>
             <button
               onClick={() => setBasemap('terrain')}
-              className={`px-2 py-1 rounded-md transition-all cursor-pointer ${
-                basemap === 'terrain' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900'
-              }`}
+              className={`px-2 py-1 rounded-md transition-all cursor-pointer ${basemap === 'terrain' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900'
+                }`}
               title="Topographic Elevation Contours"
             >
               Relief
@@ -1738,11 +1737,10 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
           {/* Palika Centroid Labels Toggle */}
           <button
             onClick={() => setShowPalikaLabels(prev => !prev)}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${
-              showPalikaLabels
-                ? 'bg-slate-800 text-white border-slate-700 shadow-2xs'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-            }`}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${showPalikaLabels
+              ? 'bg-slate-800 text-white border-slate-700 shadow-2xs'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+              }`}
             title="Toggle Palika Name Text Labels"
           >
             {showPalikaLabels ? <Eye className="w-3.5 h-3.5 text-emerald-400" /> : <EyeOff className="w-3.5 h-3.5 text-slate-400" />}
@@ -1752,11 +1750,10 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
           {/* Soil Grid Toggle */}
           <button
             onClick={() => setShowSoilGrid(prev => !prev)}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${
-              showSoilGrid
-                ? 'bg-emerald-700 text-white border-emerald-600 shadow-2xs'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-            }`}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${showSoilGrid
+              ? 'bg-emerald-700 text-white border-emerald-600 shadow-2xs'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+              }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Soil Grid (81)</span>
@@ -1793,11 +1790,10 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               <button
                 key={p.id}
                 onClick={() => setSelectedPillar(p.id as WEFESPillar)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap border ${
-                  isActive
-                    ? `${p.activeBg} border-transparent shadow-xs scale-[1.02]`
-                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
-                }`}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap border ${isActive
+                  ? `${p.activeBg} border-transparent shadow-xs scale-[1.02]`
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
+                  }`}
               >
                 <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : p.color}`} />
                 <span>{lang === 'np' ? p.nepali : p.label}</span>
@@ -1921,9 +1917,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       {/* Map & Dock Responsive Workspace */}
       <div className="flex flex-col lg:flex-row gap-4 items-stretch">
         {/* Map Container */}
-        <div className={`relative glass-panel p-1.5 rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-white h-[640px] transition-all duration-300 ${
-          activeDrawerTab === 'matrix' ? 'w-full lg:flex-1' : 'w-full'
-        }`}>
+        <div className={`relative glass-panel p-1.5 rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-white h-[640px] transition-all duration-300 ${activeDrawerTab === 'matrix' ? 'w-full lg:flex-1' : 'w-full'
+          }`}>
           {geoLoading && (
             <div className="absolute inset-0 z-[2000] flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-sm rounded-xl">
               <div className="w-10 h-10 border-2 border-slate-300 border-t-white rounded-full animate-spin mb-3" />
@@ -1951,15 +1946,15 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 basemap === 'satellite'
                   ? '&copy; <a href="https://www.esri.com/">Esri World Imagery</a>'
                   : basemap === 'terrain'
-                  ? '&copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
-                  : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                    ? '&copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+                    : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
               }
               url={
                 basemap === 'satellite'
                   ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
                   : basemap === 'terrain'
-                  ? 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
-                  : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+                    ? 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+                    : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
               }
             />
 
@@ -2225,11 +2220,10 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setActiveDrawerTab(prev => prev === 'matrix' ? null : 'matrix')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${
-              activeDrawerTab === 'matrix'
-                ? 'bg-emerald-700 text-white border-emerald-600 shadow-xs ring-1 ring-emerald-500'
-                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-            }`}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${activeDrawerTab === 'matrix'
+              ? 'bg-emerald-700 text-white border-emerald-600 shadow-xs ring-1 ring-emerald-500'
+              : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+              }`}
           >
             <Layers className="w-3.5 h-3.5" />
             <span>{lang === 'np' ? '१२ स्थानीय तह म्याट्रिक्स (डक)' : '12 Palikas Matrix (Dock)'}</span>
@@ -2237,11 +2231,10 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 
           <button
             onClick={() => setActiveDrawerTab(prev => prev === 'elevation' ? null : 'elevation')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${
-              activeDrawerTab === 'elevation'
-                ? 'bg-emerald-700 text-white border-emerald-600 shadow-xs'
-                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-            }`}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${activeDrawerTab === 'elevation'
+              ? 'bg-emerald-700 text-white border-emerald-600 shadow-xs'
+              : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+              }`}
           >
             <Mountain className="w-3.5 h-3.5" />
             <span>{lang === 'np' ? 'उचाइ प्रोफाइल र बाली बेल्ट' : 'Elevation Profile'}</span>
@@ -2249,11 +2242,10 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 
           <button
             onClick={() => setActiveDrawerTab(prev => prev === 'radar' ? null : 'radar')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${
-              activeDrawerTab === 'radar'
-                ? 'bg-emerald-700 text-white border-emerald-600 shadow-xs'
-                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
-            }`}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${activeDrawerTab === 'radar'
+              ? 'bg-emerald-700 text-white border-emerald-600 shadow-xs'
+              : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+              }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>{lang === 'np' ? 'नेक्सस राडार सूचकांक' : 'Nexus Radar (73%)'}</span>
