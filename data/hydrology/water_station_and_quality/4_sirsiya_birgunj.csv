@@ -1,7 +1,0 @@
-Parameters,pH,DO,BOD,COD,TDS,EC,NH3-N,NO3-N,NO2-N,TOC,TH,Mg,Fe,TC,E.coli
-Desired Value,6.5-8.5*,>5,<30,<250,<1000*,<1500*,<1.5*,<50*,-,-,<500*,<100,<0.3(3.0)*,0*,0*
-Units,-,mg/l,mg/l,mg/l,mg/l,µS/cm,mg/l,mg/l,mg/l,mg/l,mg/l,mg/l,mg/l,MPN/100ml,MPN/100ml
-Sirsiya-Parwanipur,6.5,1.1,87.3,123.1,390,410,80,8.9,0.2,23,300,24.6,3.9,1600,170
-Sirsiya-bridge,7,1.2,76.8,110,760,700,70,5.7,0.1,35,250,20.8,4.3,500,80
-Sirsiya-Miteri bridge,6.8,1,70.6,90,590,550,100,4.7,0.4,45,340,22.8,2.1,1600,140
-Sirsiya-Ghadi harwa Pokhara,6.6,1.1,88.6,78,750,710,90,3.6,0.2,33,240,25.9,3.7,900,110

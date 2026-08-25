@@ -1,6 +1,0 @@
-Parameters,pH,DO,BOD,COD,TDS,EC,NH3-N,NO3-N,NO2-N,TOC,TH,Mg,Fe,TC,E.coli
-Desired Value,6.5-8.5*,>5,<30,<250,<1000*,<1500*,<1.5*,<50*,-,-,<500*,<100,<0.3(3.0)*,0*,0*
-Unit,mg/l,mg/l,mg/l,mg/l,mg/l,µS/cm,mg/l,mg/l,mg/l,mg/l,mg/l,mg/l,mg/l,MPN/100ml,MPN/100ml
-Hanumante-Sallaghari,8.5,1.8,33,120,1530,1800,160,2.4,0.2,45.6,80,9.8,6.4,1600,120
-Hanumante-Kausaltar,7.6,7.5,35,58.9,1200,1560,190,3.6,0.2,34.5,80,9.9,3.4,900,70
-Hanumante-Thimi,7.3,15.1,48.9,90.7,1290,1600,180,2.7,0.1,26.7,120,10.2,6.5,1600,90

@@ -62,37 +62,9 @@ export const NEPAL_DEVELOPMENT_PARTNER_REGISTRY: DevelopmentPartnerProject[] = [
   },
 ];
 
-// ─── District-level operational presence lists (GAP 3 FIX) ───────────────────
-// WB-REED: Rural Enterprise & Economic Development Project (P170215)
-// Focused on mid-hills commercial corridors and Terai food-belt.
-const WB_REED_DISTRICTS = new Set([
-  // Koshi Province — eastern hills & Terai
-  'jhapa', 'morang', 'sunsari', 'dhankuta', 'ilam', 'panchthar', 'taplejung',
-  'terhathum', 'bhojpur', 'khotang', 'okhaldhunga',
-  // Madhesh Province — terai food belt
-  'saptari', 'siraha', 'dhanusha', 'mahottari', 'sarlahi', 'rautahat', 'bara', 'parsa',
-  // Bagmati Province — valleys and mid-hills
-  'kathmandu', 'lalitpur', 'bhaktapur', 'kavrepalanchok', 'dhading', 'nuwakot',
-  'sindhuli', 'makwanpur', 'chitwan',
-  // Gandaki Province — mid-hills commercial hubs
-  'kaski', 'syangja', 'palpa', 'gulmi', 'arghakhanchi', 'parbat', 'baglung',
-  'lamjung', 'tanahun', 'gorkha', 'nawalparasi',
-  // Lumbini Province — western Terai
-  'rupandehi', 'kapilvastu', 'dang', 'banke', 'pyuthan', 'rolpa',
-  // Sudurpashchim — Terai belt
-  'kailali', 'kanchanpur',
-]);
-
-// USAID Feed the Future / NSAF: Nepal Seed and Fertilizer Project (720367)
-// Intensification focus: Terai belt + key commercial agricultural valleys only.
-const USAID_NSAF_DISTRICTS = new Set([
-  // Core Terai intensification zones
-  'jhapa', 'morang', 'sunsari', 'saptari', 'siraha', 'dhanusha', 'mahottari',
-  'sarlahi', 'rautahat', 'bara', 'parsa', 'nawalparasi', 'rupandehi', 'kapilvastu',
-  'dang', 'banke', 'kailali',
-  // Key mid-hills commercial valleys
-  'kaski', 'syangja', 'lalitpur', 'kavrepalanchok', 'dhading', 'chitwan', 'makwanpur',
-]);
+// District-level operational presence lists
+const WB_REED_DISTRICTS = new Set(['gulmi', 'palpa', 'arghakhanchi', 'rupandehi', 'kaski', 'syangja']);
+const USAID_NSAF_DISTRICTS = new Set(['gulmi', 'rupandehi', 'kapilvastu', 'palpa', 'syangja']);
 
 export function computeDevelopmentPartnerAlignment(
   districtName: string
@@ -103,11 +75,9 @@ export function computeDevelopmentPartnerAlignment(
     let isActive: boolean;
 
     if (p.id === 'adb-miip') {
-      // ADB MIIP: flat-land irrigation districts only (Terai tubewell zones)
-      isActive = ['saptari', 'siraha', 'dhanusha', 'mahottari', 'sarlahi', 'rautahat', 'bara', 'parsa', 'rupandehi', 'kapilvastu', 'kailali', 'bardiya'].includes(dNorm);
+      isActive = ['rupandehi', 'kapilvastu'].includes(dNorm);
     } else if (p.id === 'ifad-asdp') {
-      // IFAD ASDP: Karnali / Mid-western mountain poverty belt
-      isActive = ['surkhet', 'dailekh', 'salyan', 'jajarkot', 'jumla', 'kalikot', 'dolpa', 'mugu', 'humla', 'rolpa', 'rukum'].includes(dNorm);
+      isActive = ['gulmi', 'arghakhanchi'].includes(dNorm);
     } else if (p.id === 'wb-reed') {
       isActive = WB_REED_DISTRICTS.has(dNorm);
     } else if (p.id === 'usaid-nsaf') {

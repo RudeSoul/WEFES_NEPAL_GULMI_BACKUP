@@ -100,11 +100,7 @@ export function computeCircularBioeconomy(
 
   const isTerai = matchedDist
     ? matchedDist.ecoZone === 'Terai'
-    : [
-        'jhapa', 'morang', 'sunsari', 'saptari', 'siraha', 'dhanusha', 'mahottari',
-        'sarlahi', 'rautahat', 'bara', 'parsa', 'chitwan', 'nawalparasi', 'nawalparasieast', 'nawalparasiwest',
-        'rupandehi', 'kapilvastu', 'dang', 'banke', 'bardiya', 'kailali', 'kanchanpur'
-      ].includes(dNorm);
+    : ['rupandehi', 'kapilvastu', 'nawalparasi'].includes(dNorm);
 
   // 1. Crop calculations using seed data properties
   const isPaddy = cropName.toLowerCase().includes('paddy') || cropName.toLowerCase().includes('rice');

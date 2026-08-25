@@ -1,7 +1,0 @@
-Parameters,pH,DO,BOD,COD,TDS,EC,NH3-N,NO3-N,NO2-N,TOC,TH,Mg,Fe,TC,E.coli
-Desired Value,6.5-8.5*,>5,<30,<250,<1000*,<1500*,<1.5*,<50*,-,-,<500*,<100,<0.3(3.0)*,0*,0*
-Unit,,mg/l,mg/l,mg/l,mg/l,µS/cm,mg/l,mg/l,mg/l,mg/l,mg/l,mg/l,mg/l,MPN/100ml,MPN/100ml
-Phewa-Halanchowk,7.5,7.9,2.5,5.7,50,50,1.6,0.11,0.07,5,120,6.7,0.1,900,70
-Phewa-Temple site,7.6,8.1,2.6,5.8,40,50,1.4,0.13,0.06,2,150,7.8,0.2,500,40
-Phewa-gaurighat,7.5,9.6,2.7,5.4,40,50,1.4,0.15,0.06,3,140,12.3,0.1,500,40
-Phewa-Damp site,7.6,8,2.1,5.7,50,60,1.6,0.16,0.07,4,120,11.1,0.1,900,70

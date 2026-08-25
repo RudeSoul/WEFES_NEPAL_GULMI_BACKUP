@@ -44,7 +44,7 @@ export function computeAquacultureModel(
 
   let yieldTon = 4.8;
   let priceKg = 280;
-  let isSuperZone = ['dhanusha', 'bara', 'parsa', 'rautahat', 'saptari', 'siraha', 'morang', 'sunsari', 'chitwan', 'rupandehi', 'kailali', 'bardiya'].includes(dNorm);
+  let isSuperZone = ['rupandehi', 'kapilvastu'].includes(dNorm);
 
   if (isSuperZone) {
     yieldTon = 5.6; // High intensive polycarp super-zone

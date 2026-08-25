@@ -311,7 +311,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
 
     Promise.all([
       fetch('/geojson/gulmi-palikas.json').then(r => (r.ok ? r.json() : null)).catch(() => null),
-      fetch('/geojson/nepal-districts-enriched.json').then(r => (r.ok ? r.json() : null)).catch(() => null),
+      fetch('/geojson/gulmi-district.json').then(r => (r.ok ? r.json() : null)).catch(() => null),
     ]).then(([palikasData, districtData]) => {
       if (!isMounted) return;
 

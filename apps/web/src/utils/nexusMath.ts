@@ -605,25 +605,12 @@ export function computeDeepNexusAnalysis(output: WEFESOutput): DeepNexusAnalysis
   let downstreamDistrictsAffected = 19;
   let watershedGovernanceNote = 'Central mid-hills agro-ecological sponge regulating dry-season baseflow to Narayani irrigation systems and Trishuli-Gandaki hydro cascades.';
 
-  if (['jhapa', 'morang', 'sunsari', 'ilam', 'sankhuwasabha', 'taplejung', 'solukhumbu', 'dhankuta', 'terhathum', 'bhojpur', 'khotang', 'okhaldhunga', 'udayapur', 'saptari', 'siraha'].includes(dName)) {
-    basinName = 'Koshi River Basin (Eastern Hydro-Cascade)';
-    basinAreaKm2 = 34000;
-    basinPopulationM = 14.2;
-    downstreamDistrictsAffected = 28;
-    watershedGovernanceNote = 'Upstream headwater agroforestry and terrace conservation directly protect downstream Eastern Tarai irrigation canals (Chatara) and suppress transboundary flood peaks.';
-  } else if (['humla', 'jumla', 'mugu', 'dolpa', 'kalikot', 'dailekh', 'jajarkot', 'surkhet', 'banke', 'bardiya', 'salyan', 'rukum', 'pyuthan', 'rolpa', 'dang'].includes(dName)) {
-    basinName = 'Karnali River Basin (Western Pristine Cascade)';
-    basinAreaKm2 = 55000;
-    basinPopulationM = 6.1;
-    downstreamDistrictsAffected = 24;
-    watershedGovernanceNote = 'Pristine mountain headwaters dictate Western Tarai aquifer recharge (Bardiya/Kailali) and run-of-river hydropower stability.';
-  } else if (['kailali', 'kanchanpur', 'dadeldhura', 'doti', 'achham', 'bajura', 'bajhang', 'darchula', 'baitadi'].includes(dName)) {
-    basinName = 'Mahakali River Basin (Far-Western Hydro-Cascade)';
-    basinAreaKm2 = 15000;
-    basinPopulationM = 2.3;
-    downstreamDistrictsAffected = 9;
-    watershedGovernanceNote = 'Far-Western transboundary basin requiring strict watershed-level soil conservation to prevent reservoir siltation.';
-  }
+  // Gulmi & Lumbini Mid-Hills drain into the Kali Gandaki / Narayani River Basin
+  basinName = 'Gandaki (Kali Gandaki / Narayani) River Basin';
+  basinAreaKm2 = 32000;
+  basinPopulationM = 7.8;
+  downstreamDistrictsAffected = 12;
+  watershedGovernanceNote = 'Central mid-hills agro-ecological sponge regulating dry-season baseflow to Narayani irrigation systems, Ridi confluence, and Kaligandaki ' + 'A' + ' hydro cascade.';
 
   const sedimentMitigationTonsPerHa = Number((output.ecosystem.erosionMitigationIndex * 0.12).toFixed(1));
   const upstreamRetentionTonsCo2 = Number((output.ecosystem.carbonOffsetKgCo2 / 1000).toFixed(2));

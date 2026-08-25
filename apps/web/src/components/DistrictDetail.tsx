@@ -896,7 +896,7 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
       setClimateDataset(initialClimateDataset);
       return;
     }
-    fetch('/geojson/nepal-climate-monthly.json')
+    fetch('/geojson/gulmi-climate-monthly.json')
       .then(res => res.json())
       .then(data => setClimateDataset(data))
       .catch(() => null);

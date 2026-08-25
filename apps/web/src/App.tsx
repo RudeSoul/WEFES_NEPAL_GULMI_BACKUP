@@ -27,10 +27,10 @@ export function App() {
 
   // Pre-fetch the 39-year MERRA-2 gridded monthly climate dataset once at root level
   useEffect(() => {
-    fetch('/geojson/nepal-climate-monthly.json')
+    fetch('/geojson/gulmi-climate-monthly.json')
       .then(res => res.json())
       .then(data => setClimateDataset(data))
-      .catch(err => console.warn('MERRA-2 Climatology pre-fetch warning:', err));
+      .catch(err => console.warn('Gulmi MERRA-2 Climatology pre-fetch warning:', err));
   }, []);
 
   const [selectedPalikaName, setSelectedPalikaName] = useState<string | null>(null);

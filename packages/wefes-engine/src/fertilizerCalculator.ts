@@ -71,37 +71,22 @@ export const NEPAL_CUSTOMS_BORDER_PORTS: Record<string, { id: PalikaLogisticsRou
 
 function getLocalPalikaRoute(districtId: string, palikaName?: string, palikaId?: string): PalikaLogisticsRoute {
   const d = districtId.toLowerCase();
-  let customsPortId: PalikaLogisticsRoute['customsPortId'] = 'birgunj';
-  let distanceTeraiKm = 100;
-  let distanceHillKm = 80;
-  let distanceLastMileKm = 20;
-  let elevationDeltaM = 1000;
-  let lastMileRoadType: PalikaLogisticsRoute['lastMileRoadType'] = 'Gravel Valley';
+  let customsPortId: PalikaLogisticsRoute['customsPortId'] = 'bhairahawa';
+  let distanceTeraiKm = 85;
+  let distanceHillKm = 92;
+  let distanceLastMileKm = 26;
+  let elevationDeltaM = 1250;
+  let lastMileRoadType: PalikaLogisticsRoute['lastMileRoadType'] = 'Earthen Mountain';
 
-  if (['jhapa', 'ilam'].includes(d)) {
-    customsPortId = 'kakarbhitta'; distanceTeraiKm = 30; distanceHillKm = d === 'ilam' ? 78 : 0; distanceLastMileKm = 15; elevationDeltaM = d === 'ilam' ? 1180 : 40;
-  } else if (['morang', 'sunsari', 'dhankuta', 'bhojpur', 'sankhuwasabha', 'taplejung', 'terhathum', 'panchthar', 'saptari', 'siraha', 'udayapur', 'khotang', 'okhaldhunga', 'solukhumbu'].includes(d)) {
-    customsPortId = 'biratnagar';
-    if (['morang', 'sunsari', 'saptari', 'siraha'].includes(d)) { distanceTeraiKm = 40; distanceHillKm = 0; distanceLastMileKm = 12; elevationDeltaM = 30; lastMileRoadType = 'Paved Highway'; }
-    else { distanceTeraiKm = 70; distanceHillKm = 160; distanceLastMileKm = 30; elevationDeltaM = 1600; lastMileRoadType = 'Earthen Mountain'; }
-  } else if (['rupandehi', 'kapilvastu', 'palpa', 'syangja', 'kaski', 'tanahun', 'gorkha', 'lamjung', 'parbat', 'baglung', 'myagdi', 'mustang', 'manang', 'gulmi', 'arghakhanchi', 'nawalparasi'].includes(d)) {
-    customsPortId = 'bhairahawa';
-    if (['rupandehi', 'kapilvastu', 'nawalparasi'].includes(d)) { distanceTeraiKm = 30; distanceHillKm = 0; distanceLastMileKm = 10; elevationDeltaM = 20; lastMileRoadType = 'Paved Highway'; }
-    else if (['mustang', 'manang'].includes(d)) { distanceTeraiKm = 125; distanceHillKm = 265; distanceLastMileKm = 55; elevationDeltaM = 3000; lastMileRoadType = 'Seasonal Rough Earthen'; }
-    else { distanceTeraiKm = 85; distanceHillKm = 75; distanceLastMileKm = 20; elevationDeltaM = 950; lastMileRoadType = 'Gravel Valley'; }
-  } else if (['banke', 'bardiya', 'dang', 'pyuthan', 'rolpa', 'salyan', 'surkhet', 'dailekh', 'jajarkot', 'rukum', 'jumla', 'kalikot', 'mugu', 'humla', 'dolpa'].includes(d)) {
-    customsPortId = 'nepalgunj';
-    if (['banke', 'bardiya'].includes(d)) { distanceTeraiKm = 25; distanceHillKm = 0; distanceLastMileKm = 10; elevationDeltaM = 15; lastMileRoadType = 'Paved Highway'; }
-    else if (['humla', 'dolpa', 'mugu'].includes(d)) { distanceTeraiKm = 95; distanceHillKm = 320; distanceLastMileKm = 70; elevationDeltaM = 3000; lastMileRoadType = 'Seasonal Rough Earthen'; }
-    else { distanceTeraiKm = 80; distanceHillKm = 110; distanceLastMileKm = 25; elevationDeltaM = 1200; lastMileRoadType = 'Earthen Mountain'; }
-  } else if (['kailali', 'kanchanpur', 'dadeldhura', 'doti', 'achham', 'baitadi', 'darchula', 'bajhang', 'bajura'].includes(d)) {
-    customsPortId = 'dhangadhi';
-    if (['kailali', 'kanchanpur'].includes(d)) { distanceTeraiKm = 25; distanceHillKm = 0; distanceLastMileKm = 10; elevationDeltaM = 15; lastMileRoadType = 'Paved Highway'; }
-    else if (['bajura', 'bajhang', 'darchula'].includes(d)) { distanceTeraiKm = 85; distanceHillKm = 230; distanceLastMileKm = 50; elevationDeltaM = 2000; lastMileRoadType = 'Seasonal Rough Earthen'; }
-    else { distanceTeraiKm = 65; distanceHillKm = 120; distanceLastMileKm = 25; elevationDeltaM = 1250; lastMileRoadType = 'Gravel Valley'; }
+  if (['rupandehi', 'kapilvastu'].includes(d)) {
+    distanceTeraiKm = 25; distanceHillKm = 0; distanceLastMileKm = 10; elevationDeltaM = 15; lastMileRoadType = 'Paved Highway';
+  } else if (d === 'palpa') {
+    distanceTeraiKm = 45; distanceHillKm = 42; distanceLastMileKm = 18; elevationDeltaM = 950; lastMileRoadType = 'Gravel Valley';
+  } else if (d === 'arghakhanchi') {
+    distanceTeraiKm = 65; distanceHillKm = 78; distanceLastMileKm = 24; elevationDeltaM = 1180; lastMileRoadType = 'Gravel Valley';
   }
 
-  const port = NEPAL_CUSTOMS_BORDER_PORTS[customsPortId] || NEPAL_CUSTOMS_BORDER_PORTS.birgunj;
+  const port = NEPAL_CUSTOMS_BORDER_PORTS[customsPortId] || NEPAL_CUSTOMS_BORDER_PORTS.bhairahawa;
   return {
     palikaId: palikaId || `${d}-hq`,
     palikaName: palikaName || `${districtId.toUpperCase()} Center`,

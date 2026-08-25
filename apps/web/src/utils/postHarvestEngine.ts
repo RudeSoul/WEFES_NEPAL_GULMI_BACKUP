@@ -32,70 +32,48 @@ export interface PostHarvestLossModel {
 
 export const NEPAL_COLD_STORAGE_REGISTRY: ColdStorageFacility[] = [
   {
-    id: 'cs-ilam-fikkal',
-    name: 'Fikkal Cooperative Agro Cold Store',
-    location: 'Fikkal, Suryodaya-10',
-    district: 'Ilam',
-    capacityMetricTons: 1500,
+    id: 'cs-tamghas-citrus',
+    name: 'Tamghas Municipal Potato & Citrus Cold Chamber',
+    location: 'Tamghas-2, Resunga',
+    district: 'Gulmi',
+    capacityMetricTons: 1200,
     facilityType: 'Cooperative Solar-Powered',
-    corridor: 'Mechi Highway (Charali–Ilam–Taplejung)',
-    tariffPerKgPerMonthNpr: 2.2,
-    contactNumber: '027-540112',
-  },
-  {
-    id: 'cs-chitwan-ratnanagar',
-    name: 'Chitwan Central Multi-Chamber Cold Store',
-    location: 'Ratnanagar-2',
-    district: 'Chitwan',
-    capacityMetricTons: 5000,
-    facilityType: 'Multi-Chamber Commercial',
-    corridor: 'East-West Highway (Narayangarh–Hetauda)',
-    tariffPerKgPerMonthNpr: 1.8,
-    contactNumber: '056-560245',
-  },
-  {
-    id: 'cs-kavre-panauti',
-    name: 'Panauti Agro Processing & Cold Storage Hub',
-    location: 'Panauti-4',
-    district: 'Kavrepalanchok',
-    capacityMetricTons: 3500,
-    facilityType: 'Multi-Chamber Commercial',
-    corridor: 'Araniko / BP Highway (Banepa–Sindhuli)',
+    corridor: 'Madan Bhandari Highway (Tamghas–Sandhikharka)',
     tariffPerKgPerMonthNpr: 2.0,
-    contactNumber: '011-440332',
+    contactNumber: '079-520114',
   },
   {
-    id: 'cs-kaski-pokhara',
-    name: 'Pokhara Regional Valley Cold Storage',
+    id: 'cs-ridi-precooling',
+    name: 'Ridi Confluence Agro Pre-Cooling Center',
+    location: 'Ridi Bazar, Ruru-1',
+    district: 'Gulmi',
+    capacityMetricTons: 800,
+    facilityType: 'Cooperative Solar-Powered',
+    corridor: 'Ridi–Tamghas Feeder Highway',
+    tariffPerKgPerMonthNpr: 2.2,
+    contactNumber: '079-540028',
+  },
+  {
+    id: 'cs-butwal-regional',
+    name: 'Butwal Regional Agro Multi-Chamber Cold Hub',
+    location: 'Ramnagar, Butwal-12',
+    district: 'Rupandehi',
+    capacityMetricTons: 6500,
+    facilityType: 'Multi-Chamber Commercial',
+    corridor: 'Siddhartha Highway (Palpa–Butwal–Bhairahawa)',
+    tariffPerKgPerMonthNpr: 1.7,
+    contactNumber: '071-540223',
+  },
+  {
+    id: 'cs-pokhara-regional',
+    name: 'Pokhara Valley Controlled Atmosphere Cold Storage',
     location: 'Kundahar, Pokhara-14',
     district: 'Kaski',
     capacityMetricTons: 4000,
     facilityType: 'Government CA (Controlled Atmosphere)',
-    corridor: 'Prithvi Highway (Mugling–Pokhara)',
+    corridor: 'Mid-Hill Highway (Pokhara–Baglung–Gulmi)',
     tariffPerKgPerMonthNpr: 2.1,
     contactNumber: '061-532190',
-  },
-  {
-    id: 'cs-banke-nepalgunj',
-    name: 'Mid-Western Agricultural Cold Hub',
-    location: 'Karkando, Nepalgunj-18',
-    district: 'Banke',
-    capacityMetricTons: 6000,
-    facilityType: 'Multi-Chamber Commercial',
-    corridor: 'Ratna Highway (Nepalgunj–Surkhet)',
-    tariffPerKgPerMonthNpr: 1.7,
-    contactNumber: '081-521088',
-  },
-  {
-    id: 'cs-mustang-marpha',
-    name: 'Marpha Controlled Atmosphere Apple Store',
-    location: 'Marpha, Gharapjhong-2',
-    district: 'Mustang',
-    capacityMetricTons: 800,
-    facilityType: 'Government CA (Controlled Atmosphere)',
-    corridor: 'Beni–Jomsom Mountain Corridor',
-    tariffPerKgPerMonthNpr: 2.8,
-    contactNumber: '069-440012',
   },
 ];
 
@@ -109,7 +87,7 @@ export function computePostHarvestLoss(
   let cropCategory: PostHarvestLossModel['cropCategory'] = 'Fruits & Vegetables';
   let lossPct = 28.5; // Default 28.5% for fruits & vegetables
 
-  if (normCrop.includes('rice') || normCrop.includes('paddy') || normCrop.includes('maize') || normCrop.includes('wheat')) {
+  if (normCrop.includes('rice') || normCrop.includes('paddy') || normCrop.includes('maize') || normCrop.includes('wheat') || normCrop.includes('millet')) {
     cropCategory = 'Grains & Cereals';
     lossPct = 14.8;
   } else if (normCrop.includes('cardamom') || normCrop.includes('ginger') || normCrop.includes('tea') || normCrop.includes('coffee')) {
@@ -118,49 +96,32 @@ export function computePostHarvestLoss(
   } else if (normCrop.includes('potato')) {
     cropCategory = 'Tubers & Roots';
     lossPct = 22.0;
-  } else if (normCrop.includes('apple') || normCrop.includes('tomato') || normCrop.includes('orange')) {
+  } else if (normCrop.includes('apple') || normCrop.includes('tomato') || normCrop.includes('orange') || normCrop.includes('citrus')) {
     cropCategory = 'Fruits & Vegetables';
     lossPct = 36.5;
   }
 
   const financialLossNpr = Math.round(farmgateRevenueNpr * (lossPct / 100));
 
-  // Find closest cold storage
+  // Find closest cold storage in Gulmi / Lumbini corridor
   const dNorm = districtName.toLowerCase();
-  let nearestColdStorage = NEPAL_COLD_STORAGE_REGISTRY[1]; // Default Chitwan
-  let distanceKm = 45;
+  let nearestColdStorage = NEPAL_COLD_STORAGE_REGISTRY[0]; // Default Tamghas
+  let distanceKm = 14;
 
-  const directMatch = NEPAL_COLD_STORAGE_REGISTRY.find(c => c.district.toLowerCase() === dNorm);
-  if (directMatch) {
-    nearestColdStorage = directMatch;
-    distanceKm = 18;
-  } else if (['taplejung', 'panchthar', 'sankhuwasabha', 'dhankuta', 'jhapa', 'morang'].includes(dNorm)) {
-    nearestColdStorage = NEPAL_COLD_STORAGE_REGISTRY[0]; // Ilam
-    distanceKm = 72;
-  } else if (['bhaktapur', 'lalitpur', 'kathmandu', 'sindhupalchok', 'dhading', 'nuwakot'].includes(dNorm)) {
-    nearestColdStorage = NEPAL_COLD_STORAGE_REGISTRY[2]; // Panauti
-    distanceKm = 34;
-  } else if (['syangja', 'tanahun', 'lamjung', 'parbat', 'myagdi', 'baglung'].includes(dNorm)) {
-    nearestColdStorage = NEPAL_COLD_STORAGE_REGISTRY[3]; // Pokhara
-    distanceKm = 48;
-  } else if (['surkhet', 'bardiya', 'dang', 'salyan', 'dailekh'].includes(dNorm)) {
-    nearestColdStorage = NEPAL_COLD_STORAGE_REGISTRY[4]; // Nepalgunj
-    distanceKm = 65;
-  } else if (['jumla', 'dolpa', 'manang', 'mustang'].includes(dNorm)) {
-    nearestColdStorage = NEPAL_COLD_STORAGE_REGISTRY[5]; // Marpha
-    distanceKm = 52;
+  if (dNorm === 'rupandehi') {
+    nearestColdStorage = NEPAL_COLD_STORAGE_REGISTRY[2]; // Butwal
+    distanceKm = 12;
+  } else if (dNorm === 'palpa') {
+    nearestColdStorage = NEPAL_COLD_STORAGE_REGISTRY[1]; // Ridi
+    distanceKm = 24;
   }
 
-  // Road transport delay risk
-  let roadType: PostHarvestLossModel['roadTransportDisruptionRisk']['roadType'] = 'Feeder Asphalt Road';
-  let monsoonTransitDelayHours = 8;
-  let spoilageAccelerationPct = 14;
+  // Road transport delay risk along hill feeder tracks
+  let roadType: PostHarvestLossModel['roadTransportDisruptionRisk']['roadType'] = 'Earthen Mountain Track';
+  let monsoonTransitDelayHours = 18;
+  let spoilageAccelerationPct = 16;
 
-  if (distanceKm > 60 || ['mustang', 'jumla', 'taplejung', 'sankhuwasabha'].includes(dNorm)) {
-    roadType = 'Earthen Mountain Track';
-    monsoonTransitDelayHours = 28; // Landslides / roadblocks
-    spoilageAccelerationPct = 24;
-  } else if (['chitwan', 'jhapa', 'morang', 'kailali', 'rupandehi'].includes(dNorm)) {
+  if (['rupandehi'].includes(dNorm)) {
     roadType = 'Paved Highway (BP / Prithvi / East-West)';
     monsoonTransitDelayHours = 3;
     spoilageAccelerationPct = 6;
@@ -175,9 +136,9 @@ export function computePostHarvestLoss(
     baselineFieldToMarketLossPct: lossPct,
     financialLossNpr,
     primaryLossFactors: [
-      { factor: 'Lack of Farmgate Pre-Cooling & Cold Storage', sharePct: 45, mechanism: 'Rapid enzymatic degradation and respiration heat accumulation in ambient mountain summer temperatures.' },
-      { factor: 'Monsoon Roadway Landslide Transit Delays', sharePct: 30, mechanism: 'Vehicle stranding along landslide-prone highway bottlenecks (e.g. Mugling-Narayangarh, BP Highway).' },
-      { factor: 'Sub-standard Jute / Poly-Bag Packaging', sharePct: 25, mechanism: 'Mechanical compression damage and puncture bruising during rough transit on earthen rural roads.' },
+      { factor: 'Lack of Palika-Level Pre-Cooling & Solar Storage', sharePct: 45, mechanism: 'Rapid enzymatic degradation and respiration heat accumulation in ambient hill valley temperatures.' },
+      { factor: 'Monsoon Feeder Road Landslide Transit Delays', sharePct: 30, mechanism: 'Vehicle stranding along steep feeder road bottlenecks during peak monsoon harvest.' },
+      { factor: 'Rough Terrain Mechanical Damage', sharePct: 25, mechanism: 'Mechanical compression damage and bruising during rough transit on unpaved mountain tracks.' },
     ],
     nearestColdStorage,
     distanceToColdStorageKm: distanceKm,

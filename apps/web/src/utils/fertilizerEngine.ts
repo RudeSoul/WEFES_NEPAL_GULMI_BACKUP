@@ -43,12 +43,9 @@ export function computeSiteSpecificFertilizer(
   const dLower = districtName.toLowerCase();
   let agroZone: SiteSpecificNutrientPrescription['agroZone'] = 'Mid-Hills';
 
-  if (['jhapa', 'morang', 'sunsari'].includes(dLower)) agroZone = 'Eastern Terai';
-  else if (['saptari', 'siraha', 'dhanusha', 'mahottari', 'sarlahi', 'rautahat', 'bara', 'parsa'].includes(dLower)) agroZone = 'Central Terai';
-  else if (['nawalparasi', 'rupandehi', 'kapilvastu'].includes(dLower)) agroZone = 'Western Terai';
-  else if (['banke', 'bardiya', 'kailali', 'kanchanpur'].includes(dLower)) agroZone = 'Far-Western Terai';
-  else if (['chitwan', 'dang', 'makwanpur', 'surkhet'].includes(dLower)) agroZone = 'Inner Terai';
-  else if (['mustang', 'manang', 'jumla', 'humla', 'mugu', 'dolpa', 'solukhumbu'].includes(dLower)) agroZone = 'High Mountains';
+  if (['rupandehi', 'kapilvastu', 'nawalparasi'].includes(dLower)) {
+    agroZone = 'Western Terai';
+  }
 
   // 2022 NARC-NSSRC QUEFTS calibrated rates per target yield
   let baseN = 120;
@@ -64,20 +61,14 @@ export function computeSiteSpecificFertilizer(
     baseK = Math.round(35 + targetYieldTon * 3);
     baseZn = 25; // Zinc deficiency common in calcareous/calcium-rich Terai
     baseB = 10;
-  } else if (agroZone === 'Mid-Hills') {
+  } else {
+    // Mid-Hills (Gulmi standard)
     baseN = Math.round(95 + targetYieldTon * 7);
     baseP = Math.round(55 + targetYieldTon * 5); // Acidic hill soils fix phosphorus
     baseK = Math.round(40 + targetYieldTon * 3.5);
     baseZn = 15;
     baseB = 12; // Boron deficiency common in acidic hill terraces
     compostTon = 8.0;
-  } else if (agroZone === 'High Mountains') {
-    baseN = Math.round(80 + targetYieldTon * 6);
-    baseP = Math.round(50 + targetYieldTon * 4);
-    baseK = Math.round(35 + targetYieldTon * 3);
-    baseZn = 10;
-    baseB = 8;
-    compostTon = 10.0;
   }
 
   // Soil pH correction (Acidic fix P, Alkaline fix Zn/Fe)

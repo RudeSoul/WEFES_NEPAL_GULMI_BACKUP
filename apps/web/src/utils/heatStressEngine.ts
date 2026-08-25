@@ -22,11 +22,7 @@ export function computeHeatStressRisk(
   const norm = cropName.toLowerCase();
   const dNorm = districtName.toLowerCase();
 
-  const isTerai = [
-    'jhapa', 'morang', 'sunsari', 'saptari', 'siraha', 'dhanusha', 'mahottari',
-    'sarlahi', 'rautahat', 'bara', 'parsa', 'chitwan', 'nawalparasi', 'rupandehi',
-    'kapilvastu', 'dang', 'banke', 'bardiya', 'kailali', 'kanchanpur'
-  ].includes(dNorm);
+  const isTerai = ['rupandehi', 'kapilvastu', 'nawalparasi'].includes(dNorm);
 
   if (norm.includes('wheat') || norm.includes('barley')) {
     const peakTemp = isTerai ? 28.5 : 22.0;

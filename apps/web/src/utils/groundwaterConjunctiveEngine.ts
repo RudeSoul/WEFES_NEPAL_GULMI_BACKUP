@@ -28,13 +28,8 @@ export function computeGroundwaterConjunctiveModel(
 ): GroundwaterConjunctiveProfile {
   const dNorm = districtName.toLowerCase();
 
-  const isTerai = [
-    'jhapa', 'morang', 'sunsari', 'saptari', 'siraha', 'dhanusha', 'mahottari',
-    'sarlahi', 'rautahat', 'bara', 'parsa', 'chitwan', 'nawalparasi', 'rupandehi',
-    'kapilvastu', 'dang', 'banke', 'bardiya', 'kailali', 'kanchanpur'
-  ].includes(dNorm);
-
-  const isMadhesh = ['saptari', 'siraha', 'dhanusha', 'mahottari', 'sarlahi', 'rautahat', 'bara', 'parsa'].includes(dNorm);
+  const isTerai = ['rupandehi', 'kapilvastu', 'nawalparasi'].includes(dNorm);
+  const isMadhesh = false;
 
   const dependencyPct = isMadhesh ? 88 : isTerai ? 68 : 22;
   const depletionRateCm = isMadhesh ? 14.5 : isTerai ? 9.2 : 2.5;

@@ -708,18 +708,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 
   useEffect(() => {
     Promise.all([
-      fetch('/geojson/nepal-districts-enriched.json').then(r => r.json()),
+      fetch('/geojson/gulmi-district.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-palikas.json').then(r => r.json()).catch(() => null),
-      initialClimateDataset ? Promise.resolve(initialClimateDataset) : fetch('/geojson/nepal-climate-monthly.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/nepal-hydrology-stations.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/nepal-glacial-lakes.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/roads/nepal-national-highways-core.json').then(r => r.json()).catch(() => null),
-    ]).then(([geo, palikas, climate, hydro, glof, roads]) => {
-      setGeoData(geo);
+      initialClimateDataset ? Promise.resolve(initialClimateDataset) : fetch('/geojson/gulmi-climate-monthly.json').then(r => r.json()).catch(() => null),
+      fetch('/geojson/roads/gulmi.json').then(r => r.json()).catch(() => null),
+    ]).then(([geo, palikas, climate, roads]) => {
+      if (geo) setGeoData(geo);
       if (palikas) setPalikasData(palikas);
       if (climate) setClimateDataset(climate);
-      if (hydro && hydro.features) setHydrologyStations(hydro.features);
-      if (glof && glof.features) setGlacialLakes(glof.features);
       if (roads) setNationalRoads(roads);
       setGeoLoading(false);
     }).catch(() => setGeoLoading(false));
@@ -1958,16 +1954,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               }
             />
 
-            {/* Base Nepal Districts (Non-Gulmi dimmed & non-interactive) */}
-            {geoData && (
-              <GeoJSON
-                key={`geojson-${selectedPillar}-${selectedMapCropId}-${subFilters.foodOverlayType || ''}-${subFilters.soilMetric || ''}-${subFilters.waterClimateMetric || ''}-${subFilters.energyClimateMetric || ''}-${subFilters.foodClimateMetric || ''}-${subFilters.ecoSubFilter || ''}-${subFilters.socioMetric || ''}-${climateYear}-${climateMonth}-${climateMode}-${selectedDistrict?.id}`}
-                data={geoData}
-                style={getStyle}
-                onEachFeature={onEachFeature}
-              />
-            )}
-
             {/* 12 Gulmi Palikas Vector Layer (Dynamically styled per Pillar, Crop, and Climate Time-Series) */}
             {palikasData && (
               <GeoJSON
@@ -2010,14 +1996,11 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             {geoData && (
               <GeoJSON
                 key={`gulmi-outer-frame-${selectedDistrict?.id}`}
-                data={{
-                  type: 'FeatureCollection',
-                  features: geoData.features.filter((f: any) => f.properties?.id === 'gulmi' || f.id === 'gulmi')
-                } as any}
+                data={geoData}
                 style={{
                   fillColor: 'transparent',
                   fillOpacity: 0,
-                  color: '#5b5555',
+                  color: '#475569',
                   weight: 3.5,
                   opacity: 1,
                 }}
