@@ -77,16 +77,16 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
                 onChange={handleChange}
               >
                 <optgroup label="☕ Signature Cash Crops">
-                  <option value="coffee">☕ Arabica Coffee (Ruru, Satyawati, Chatrakot)</option>
-                  <option value="orange">🍊 Mandarin Orange / सुन्तला (Dhurkot, Resunga, Nayagaun)</option>
-                  <option value="ginger">🫚 Ginger & Turmeric / अदुवा (Satyawati, Ruru, Kaligandaki)</option>
-                  <option value="cardamom">🌿 Large Cardamom / अलैंची (Chandrakot, Chatrakot)</option>
+                  <option value="coffee">☕ Arabica Coffee (कफी)</option>
+                  <option value="orange">🍊 Mandarin Orange (सुन्तला)</option>
+                  <option value="ginger">🫚 Ginger & Turmeric (अदुवा / बेसार)</option>
+                  <option value="cardamom">🌿 Large Cardamom (अलैंची)</option>
                 </optgroup>
                 <optgroup label="🌾 Cereals & High-Altitude Crops">
-                  <option value="potato">🥔 Seed Potato / उच्च पहाडी आलु (Resunga, Madane, Malika)</option>
-                  <option value="buckwheat">🌾 Buckwheat & Wheat / फापर (Madane, Malika, Isma)</option>
-                  <option value="rice">🌾 Monsoon / Spring Paddy (Musikot, Kaligandaki, Dhurkot)</option>
-                  <option value="maize">🌽 Mid-Hill Maize (Gulmi Wide)</option>
+                  <option value="potato">🥔 Seed Potato (आलु)</option>
+                  <option value="buckwheat">🌾 Buckwheat (फापर)</option>
+                  <option value="rice">🌾 Monsoon Paddy (धान)</option>
+                  <option value="maize">🌽 Mid-Hill Maize (मकै)</option>
                 </optgroup>
               </select>
             )}

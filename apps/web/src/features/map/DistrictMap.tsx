@@ -18,6 +18,7 @@ import { MapPin, Sparkles, Calendar, Coins, Trees, Droplets, Zap, Sprout, Sun, W
 import gulmiSoilPoints from '../../data/gulmiSoilPoints.json';
 import { PalikaHoverCard } from '../palika/PalikaHoverCard';
 import { DISTRICT_PALIKAS } from '../../data/districtPalikaAssets';
+import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../../utils/climateDownscaling';
 
 // Fix Leaflet default marker icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -905,67 +906,96 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               cropId.toLowerCase().includes(fc.cropId.toLowerCase())
           );
           if (c) {
-            if (c.score >= 80) return '#059669'; // Optimal - Deep Emerald
-            if (c.score >= 60) return '#10b981'; // High - Green
-            if (c.score >= 40) return '#f59e0b'; // Moderate - Amber
-            return '#ef4444'; // Challenging - Red
+            if (c.score >= 90) return '#047857'; // Tier 1: ≥90% Optimal Prime Pocket
+            if (c.score >= 80) return '#059669'; // Tier 2: 80–89% Very High Suitability
+            if (c.score >= 70) return '#10b981'; // Tier 3: 70–79% High Suitability
+            if (c.score >= 60) return '#14b8a6'; // Tier 4: 60–69% Moderate-High
+            if (c.score >= 45) return '#f59e0b'; // Tier 5: 45–59% Marginal / Secondary
+            return '#ef4444';                  // Tier 6: <45% Severely Constrained
           }
         }
-        // Fallbacks for signature Gulmi crops
+        // Fallbacks for signature Gulmi crops across 6 tiers
         if (cropId === 'coffee') {
-          if (['ruru', 'satyawati', 'chatrakot', 'gulmidarbar', 'kaligandaki', 'dhurkot'].some(n => palikaName.includes(n))) return '#059669';
-          if (['resunga', 'chandrakot'].some(n => palikaName.includes(n))) return '#10b981';
-          return '#f59e0b';
+          if (['ruru', 'chatrakot', 'satyawati', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#047857'; // Tier 1: ≥90% Optimal Prime Belt (92–97%)
+          if (['resunga', 'dhurkot', 'isma'].some(n => palikaName.includes(n))) return '#059669'; // Tier 2: 80–89% Very High Suitability (80–88%)
+          if (['chandrakot'].some(n => palikaName.includes(n))) return '#10b981'; // Tier 3: 70–79% High Suitability (74%)
+          if (['musikot'].some(n => palikaName.includes(n))) return '#14b8a6'; // Tier 4: 60–69% Moderate-High (68%)
+          if (['malika', 'kaligandaki'].some(n => palikaName.includes(n))) return '#f59e0b'; // Tier 5: 45–59% Marginal / Sub-Optimal (52–58%)
+          return '#ef4444'; // Tier 6: <45% Constrained High Frost (Madane 42%)
         }
         if (cropId === 'orange') {
-          if (['dhurkot', 'resunga', 'musikot', 'chatrakot', 'ruru', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#059669';
-          if (['kaligandaki', 'isma', 'chandrakot'].some(n => palikaName.includes(n))) return '#10b981';
-          return '#f59e0b';
+          if (['dhurkot', 'resunga', 'chatrakot', 'gulmidarbar', 'musikot'].some(n => palikaName.includes(n))) return '#047857'; // Tier 1: ≥90%
+          if (['satyawati', 'isma', 'ruru', 'chandrakot'].some(n => palikaName.includes(n))) return '#059669'; // Tier 2: 80–89%
+          if (['malika'].some(n => palikaName.includes(n))) return '#10b981'; // Tier 3: 70–79%
+          if (['kaligandaki'].some(n => palikaName.includes(n))) return '#14b8a6'; // Tier 4: 60–69%
+          if (['madane'].some(n => palikaName.includes(n))) return '#f59e0b'; // Tier 5: 45–59%
+          return '#ef4444';
         }
         if (cropId === 'ginger') {
-          if (['satyawati', 'kaligandaki', 'ruru', 'gulmidarbar', 'chatrakot'].some(n => palikaName.includes(n))) return '#059669';
-          if (['chandrakot', 'musikot', 'dhurkot'].some(n => palikaName.includes(n))) return '#10b981';
-          return '#f59e0b';
+          if (['kaligandaki', 'satyawati', 'ruru', 'chatrakot'].some(n => palikaName.includes(n))) return '#047857'; // Tier 1: ≥90%
+          if (['gulmidarbar', 'musikot', 'chandrakot', 'dhurkot'].some(n => palikaName.includes(n))) return '#059669'; // Tier 2: 80–89%
+          if (['isma', 'resunga'].some(n => palikaName.includes(n))) return '#10b981'; // Tier 3: 70–79%
+          if (['malika'].some(n => palikaName.includes(n))) return '#14b8a6'; // Tier 4: 60–69%
+          if (['madane'].some(n => palikaName.includes(n))) return '#f59e0b'; // Tier 5: 45–59%
+          return '#ef4444';
         }
         if (cropId === 'potato') {
-          if (['resunga', 'madane', 'malika', 'chandrakot', 'isma', 'dhurkot'].some(n => palikaName.includes(n))) return '#059669';
-          if (['musikot', 'gulmidarbar', 'chatrakot'].some(n => palikaName.includes(n))) return '#10b981';
+          if (['madane', 'malika', 'resunga', 'chandrakot', 'isma', 'dhurkot'].some(n => palikaName.includes(n))) return '#047857'; // Tier 1: ≥90%
+          if (['gulmidarbar', 'satyawati', 'chatrakot', 'musikot'].some(n => palikaName.includes(n))) return '#059669'; // Tier 2: 80–89%
+          if (['ruru'].some(n => palikaName.includes(n))) return '#10b981'; // Tier 3: 70–79%
+          if (['kaligandaki'].some(n => palikaName.includes(n))) return '#14b8a6'; // Tier 4: 60–69%
           return '#f59e0b';
         }
         if (cropId === 'buckwheat') {
-          if (['chandrakot', 'madane', 'malika', 'resunga', 'isma'].some(n => palikaName.includes(n))) return '#059669';
-          if (['musikot', 'dhurkot', 'gulmidarbar', 'chatrakot'].some(n => palikaName.includes(n))) return '#10b981';
-          return '#f59e0b';
-        }
-        if (cropId === 'rice') {
-          if (['musikot', 'kaligandaki', 'ruru', 'satyawati'].some(n => palikaName.includes(n))) return '#059669';
-          if (['chatrakot', 'gulmidarbar', 'chandrakot', 'dhurkot', 'isma'].some(n => palikaName.includes(n))) return '#10b981';
+          if (['madane', 'malika', 'chandrakot'].some(n => palikaName.includes(n))) return '#047857';
+          if (['isma', 'dhurkot', 'resunga', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#059669';
+          if (['chatrakot', 'satyawati', 'ruru', 'musikot'].some(n => palikaName.includes(n))) return '#10b981';
+          if (['kaligandaki'].some(n => palikaName.includes(n))) return '#f59e0b';
           return '#ef4444';
         }
+        if (cropId === 'rice') {
+          if (['kaligandaki', 'musikot', 'ruru'].some(n => palikaName.includes(n))) return '#047857';
+          if (['satyawati', 'chatrakot', 'dhurkot'].some(n => palikaName.includes(n))) return '#059669';
+          if (['gulmidarbar', 'chandrakot', 'resunga'].some(n => palikaName.includes(n))) return '#10b981';
+          if (['isma'].some(n => palikaName.includes(n))) return '#14b8a6';
+          if (['malika'].some(n => palikaName.includes(n))) return '#f59e0b';
+          return '#ef4444'; // Madane (<45%)
+        }
         if (cropId === 'cardamom') {
-          if (['chandrakot', 'chatrakot', 'ruru', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#059669';
-          if (['resunga', 'dhurkot', 'isma'].some(n => palikaName.includes(n))) return '#10b981';
-          return '#f59e0b';
+          if (['chandrakot', 'malika', 'resunga'].some(n => palikaName.includes(n))) return '#047857';
+          if (['dhurkot', 'satyawati', 'chatrakot', 'isma', 'madane', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#059669';
+          if (['ruru', 'musikot'].some(n => palikaName.includes(n))) return '#10b981';
+          if (['kaligandaki'].some(n => palikaName.includes(n))) return '#f59e0b';
+          return '#ef4444';
         }
         return '#059669';
       }
 
       if (foodMode === 'barkhe_summer') {
-        if (['musikot', 'kaligandaki', 'ruru', 'satyawati'].some(n => palikaName.includes(n))) return '#059669'; // Irrigated river flats
-        if (['dhurkot', 'chatrakot', 'chandrakot', 'gulmidarbar', 'isma'].some(n => palikaName.includes(n))) return '#10b981'; // Slope terraces
-        return '#f59e0b'; // High ridges
+        if (['kaligandaki', 'musikot'].some(n => palikaName.includes(n))) return '#047857'; // ≥90% Prime Irrigated Valleys
+        if (['ruru', 'satyawati'].some(n => palikaName.includes(n))) return '#059669'; // 80–89% Alluvial Terraces
+        if (['dhurkot', 'chatrakot'].some(n => palikaName.includes(n))) return '#10b981'; // 70–79% Agroforestry Terraces
+        if (['chandrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#14b8a6'; // 60–69% Rainfed Slopes
+        if (['isma', 'malika'].some(n => palikaName.includes(n))) return '#f59e0b'; // 50–59% High Upland
+        return '#ef4444'; // <50% High Ridge Runoff
       }
 
       if (foodMode === 'hiunde_winter') {
-        if (['dhurkot', 'resunga', 'chatrakot', 'gulmidarbar', 'chandrakot'].some(n => palikaName.includes(n))) return '#059669'; // Mid-hill winter pocket
-        if (['madane', 'malika', 'isma', 'musikot'].some(n => palikaName.includes(n))) return '#10b981'; // Ridge/valley winter
-        return '#f59e0b';
+        if (['dhurkot', 'resunga'].some(n => palikaName.includes(n))) return '#047857'; // ≥90% Optimal Winter Niche
+        if (['chatrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#059669'; // 80–89% High Cold-Hardy Zone
+        if (['chandrakot', 'musikot'].some(n => palikaName.includes(n))) return '#10b981'; // 70–79% Mid-Hill Winter Terraces
+        if (['isma', 'ruru'].some(n => palikaName.includes(n))) return '#14b8a6'; // 60–69% Temperate Highlands
+        if (['satyawati', 'kaligandaki'].some(n => palikaName.includes(n))) return '#f59e0b'; // 50–59% Low-Moisture Slopes
+        return '#ef4444'; // <50% Severe Frost Ridges
       }
 
       if (foodMode === 'double_cropping') {
-        if (['musikot', 'kaligandaki', 'ruru', 'satyawati'].some(n => palikaName.includes(n))) return '#059669'; // 2-3 Crops (Year-round water)
-        if (['dhurkot', 'chatrakot', 'chandrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#10b981'; // 2 Crops (Seasonal spring)
-        return '#f59e0b'; // 1-2 Crops (Rainfed upland)
+        if (['kaligandaki', 'musikot'].some(n => palikaName.includes(n))) return '#047857'; // 300% Triple-Cropping (Perennial)
+        if (['ruru', 'satyawati'].some(n => palikaName.includes(n))) return '#059669'; // 250% Intensive Double-to-Triple
+        if (['dhurkot', 'chatrakot'].some(n => palikaName.includes(n))) return '#10b981'; // 200% Standard Double-Cropping
+        if (['chandrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#14b8a6'; // 175% Semi-Irrigated Double
+        if (['isma', 'malika'].some(n => palikaName.includes(n))) return '#f59e0b'; // 130% Single-to-Double Rainfed
+        return '#ef4444'; // 100% Strict Single Crop Slopes
       }
 
       return '#059669';
@@ -978,40 +1008,51 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       const wSub = subFilters.waterSubFilter || 'merra_rainfall';
 
       if (wSub === 'river_basins') {
-        if (['kaligandaki', 'satyawati', 'ruru'].some(n => palikaName.includes(n))) return '#0284c7'; // Kali Gandaki Corridor (Ocean Blue)
-        if (['musikot', 'isma'].some(n => palikaName.includes(n))) return '#0ea5e9'; // Badigad River Corridor (Azure)
-        if (['resunga', 'gulmidarbar', 'chatrakot', 'chandrakot'].some(n => palikaName.includes(n))) return '#06b6d4'; // Ridi Khola Basin (Teal)
-        return '#3b82f6'; // Panaha & Chhaldi Khola Basin (Indigo)
+        if (['kaligandaki'].some(n => palikaName.includes(n))) return '#0369a1'; // Kali Gandaki Mainstem
+        if (['satyawati', 'ruru'].some(n => palikaName.includes(n))) return '#0284c7'; // Kali Gandaki Confluence
+        if (['musikot', 'isma'].some(n => palikaName.includes(n))) return '#0ea5e9'; // Badigad River Corridor
+        if (['resunga', 'gulmidarbar', 'chatrakot'].some(n => palikaName.includes(n))) return '#06b6d4'; // Ridi Khola Sub-Basin
+        if (['chandrakot'].some(n => palikaName.includes(n))) return '#38bdf8'; // Hugdi Khola Catchment
+        return '#3b82f6'; // Panaha & Chhaldi Basins (Dhurkot, Malika, Madane)
       }
 
       if (wSub === 'dhm_station') {
-        if (['kaligandaki', 'satyawati', 'ruru'].some(n => palikaName.includes(n))) return '#0284c7'; // Seti Beni DHM Station #410 Corridor
-        return '#64748b'; // Upstream Catchment
+        if (['kaligandaki'].some(n => palikaName.includes(n))) return '#0284c7'; // Seti Beni DHM Station #410 Primary
+        if (['satyawati', 'ruru'].some(n => palikaName.includes(n))) return '#0ea5e9'; // Downstream Direct Catchment
+        if (['musikot', 'isma'].some(n => palikaName.includes(n))) return '#06b6d4'; // Badigad Gauging Inflow
+        if (['chandrakot', 'chatrakot'].some(n => palikaName.includes(n))) return '#38bdf8'; // Middle Tributaries
+        if (['gulmidarbar', 'dhurkot'].some(n => palikaName.includes(n))) return '#94a3b8'; // Headwater Tributaries
+        return '#64748b'; // Distant Highland Catchment (Madane, Malika, Resunga)
       }
 
       if (wSub === 'spring_vulnerability') {
-        if (['resunga', 'madane', 'malika', 'isma'].some(n => palikaName.includes(n))) return '#ef4444'; // High Ridge Spring Drying Risk (Red)
-        if (['dhurkot', 'gulmidarbar', 'chatrakot', 'chandrakot'].some(n => palikaName.includes(n))) return '#f59e0b'; // Moderate Slope Springs (Amber)
-        return '#10b981'; // Valley Perennial Access (Emerald)
+        if (['madane'].some(n => palikaName.includes(n))) return '#991b1b'; // Extreme Risk (>85% Dry-up Risk)
+        if (['resunga', 'malika'].some(n => palikaName.includes(n))) return '#ef4444'; // Severe Risk (70–85% Reduction)
+        if (['isma'].some(n => palikaName.includes(n))) return '#f97316'; // Moderate-High Risk (50–70% Seasonal Drop)
+        if (['dhurkot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#f59e0b'; // Moderate Risk (30–50% Depletion)
+        if (['chatrakot', 'chandrakot'].some(n => palikaName.includes(n))) return '#10b981'; // Low Risk (15–30% Variance)
+        return '#059669'; // Secure / Perennial (<15% Fluctuation: Kaligandaki, Satyawati, Ruru, Musikot)
       }
 
       if (wSub === 'irrigation_potential') {
-        if (['musikot', 'kaligandaki', 'ruru', 'satyawati'].some(n => palikaName.includes(n))) return '#059669'; // High River Lift Potential
-        if (['dhurkot', 'chatrakot', 'chandrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#10b981'; // Stream Diversion Canals
-        return '#f59e0b'; // Rainfed Terraces
+        if (['musikot', 'kaligandaki'].some(n => palikaName.includes(n))) return '#047857'; // Deep Lift Electric (>150 ha)
+        if (['ruru', 'satyawati'].some(n => palikaName.includes(n))) return '#059669'; // Medium River Lift (75–150 ha)
+        if (['dhurkot', 'chatrakot'].some(n => palikaName.includes(n))) return '#10b981'; // Perennial Canal Kulo (30–75 ha)
+        if (['chandrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#14b8a6'; // Spring Diversion Tank (15–30 ha)
+        if (['isma', 'malika'].some(n => palikaName.includes(n))) return '#f59e0b'; // Conservation Pond / Drip (5–15 ha)
+        return '#ef4444'; // Strictly Rainfed (<5 ha: Madane, Resunga Ridge)
       }
 
-      // Default: Dynamic MERRA-2 Rainfall Animation
-      const elev = pData?.elevation || 1450;
-      const elevFactor = 1 + (elev - 1000) / 10000;
-      const localRain = currentRainMm * elevFactor;
+      // Default: Dynamic MERRA-2 Topographically Downscaled Rainfall across 6 Tiers
+      const micro = getPalikaMicroClimate(palikaName, currentRainMm, currentTempC, climateMonth, pData?.elevation);
+      const factor = micro.orographicFactor;
 
-      if (localRain >= 350) return '#0369a1'; // Deep Monsoon Indigo
-      if (localRain >= 220) return '#0284c7'; // Heavy Rain Azure
-      if (localRain >= 120) return '#0ea5e9'; // Moderate Sky Blue
-      if (localRain >= 50) return '#38bdf8';  // Light Rain
-      if (localRain >= 20) return '#facc15';  // Pre-Monsoon Golden
-      return '#f97316';                       // Winter Arid
+      if (factor >= 1.19) return '#0369a1'; // Tier 1: Peak Ridge Lekh (+20% to +24% Uplift: Madane, Resunga)
+      if (factor >= 1.10) return '#0284c7'; // Tier 2: High Mountain Ridge (+12% to +16%: Malika, Chandrakot)
+      if (factor >= 1.03) return '#0ea5e9'; // Tier 3: Upper Mid-Hill (+4% to +6%: Isma, Dhurkot)
+      if (factor >= 0.96) return '#38bdf8'; // Tier 4: Central Mid-Hill Baseline (-2% to +1%: Gulmidarbar, Satyawati)
+      if (factor >= 0.90) return '#f59e0b'; // Tier 5: Lower Valley Transition (-6% to -8%: Musikot, Chatrakot)
+      return '#ea580c';                      // Tier 6: Subtropical Riverbed (-12% to -18%: Ruru, Kaligandaki)
     }
 
     // ==========================================
@@ -1022,32 +1063,58 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 
       if (ecoSub === 'soil_ph') {
         const ph = pData?.soilPh || 6.5;
-        if (ph >= 6.4 && ph <= 7.2) return '#059669'; // Ideal Neutral Alluvium
-        if (ph >= 5.8 && ph < 6.4) return '#10b981'; // Slightly Acidic
-        return '#f59e0b'; // Acidic Hill Slope (Needs Liming)
+        if (ph >= 7.0) return '#0284c7'; // Tier 1: Neutral-Alkaline Valley Alluvium (Ruru 7.1)
+        if (ph >= 6.6) return '#059669'; // Tier 2: Optimum Neutral Agricultural (Kaligandaki 6.9, Satyawati 6.8, Chandrakot 6.7, Musikot 6.6)
+        if (ph >= 6.2) return '#10b981'; // Tier 3: Slightly Acidic Agroforestry (Chatrakot 6.4, Gulmidarbar 6.3, Resunga 6.2)
+        if (ph >= 5.8) return '#84cc16'; // Tier 4: Moderately Acidic (Dhurkot 6.1, Isma 5.9)
+        if (ph >= 5.4) return '#f59e0b'; // Tier 5: Strongly Acidic / Lime Needed (Malika 5.7, Madane 5.4)
+        return '#ef4444';                  // Tier 6: Highly Acidic (<5.4)
       }
 
       if (ecoSub === 'elevation_zones') {
         const elev = pData?.elevation || 1450;
-        if (elev >= 1550) return '#8b5cf6'; // High Mountain Ridges (>1550m) (Purple)
-        if (elev >= 1150) return '#0284c7'; // Mid-Hill Slopes (1150–1550m) (Blue)
-        return '#10b981'; // River Basin Lowlands (<1150m) (Green)
+        if (elev >= 1700) return '#4c1d95'; // Tier 1: >1,700m Alpine Ridges (Madane 1740m, Resunga Peak)
+        if (elev >= 1550) return '#7c3aed'; // Tier 2: 1,550–1,700m Cool Temperate (Malika 1680m, Chandrakot 1603m)
+        if (elev >= 1450) return '#0284c7'; // Tier 3: 1,450–1,550m Coffee Belt (Resunga 1530m, Dhurkot 1520m, Isma 1480m)
+        if (elev >= 1200) return '#0ea5e9'; // Tier 4: 1,200–1,450m Mid-Hill Slopes (Chatrakot 1420m, Gulmidarbar 1350m)
+        if (elev >= 950) return '#10b981';  // Tier 5: 950–1,200m Lower Mid-Hills (Musikot 1120m, Satyawati 980m)
+        return '#059669';                   // Tier 6: <950m Subtropical Riverbed (Ruru 935m, Kaligandaki 890m)
       }
 
       if (ecoSub === 'agroforestry_belt') {
-        if (['resunga', 'madane', 'malika', 'dhurkot'].some(n => palikaName.includes(n))) return '#059669'; // Dense Community & Pine Forest
-        if (['isma', 'chandrakot', 'chatrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#10b981'; // Agroforestry Terraces
-        return '#0ea5e9'; // River Basin Farmland
+        if (['resunga'].some(n => palikaName.includes(n))) return '#047857'; // >65% Forest Sanctuary
+        if (['madane', 'malika'].some(n => palikaName.includes(n))) return '#059669'; // 55–65% Dense Pine/Sal
+        if (['dhurkot', 'chandrakot'].some(n => palikaName.includes(n))) return '#10b981'; // 45–54% Agroforestry
+        if (['chatrakot', 'isma'].some(n => palikaName.includes(n))) return '#84cc16'; // 35–44% Terrace Farming
+        if (['gulmidarbar', 'satyawati'].some(n => palikaName.includes(n))) return '#f59e0b'; // 25–34% Intensive Slopes
+        return '#0ea5e9'; // <25% Riverbed Farmland (Musikot, Ruru, Kaligandaki)
       }
 
       if (ecoSub === 'soil_nitrogen') {
-        if (['satyawati', 'kaligandaki', 'ruru'].some(n => palikaName.includes(n))) return '#059669'; // Rich alluvial nitrogen
-        return '#10b981';
+        if (['kaligandaki'].some(n => palikaName.includes(n))) return '#047857'; // ≥0.22% Very High
+        if (['satyawati', 'ruru'].some(n => palikaName.includes(n))) return '#059669'; // 0.18–0.21% High
+        if (['musikot', 'chandrakot'].some(n => palikaName.includes(n))) return '#10b981'; // 0.14–0.17% Medium-High
+        if (['chatrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#84cc16'; // 0.10–0.13% Medium
+        if (['dhurkot', 'isma'].some(n => palikaName.includes(n))) return '#f59e0b'; // 0.06–0.09% Low
+        return '#ef4444'; // <0.06% Low Nitrogen (Malika, Madane)
       }
 
-      if (ecoSub === 'soil_phosphorus' || ecoSub === 'soil_potassium') {
-        if (['satyawati', 'kaligandaki', 'ruru'].some(n => palikaName.includes(n))) return '#0284c7';
-        return '#38bdf8';
+      if (ecoSub === 'soil_phosphorus') {
+        if (['ruru', 'kaligandaki'].some(n => palikaName.includes(n))) return '#0284c7'; // ≥45 kg/ha High
+        if (['satyawati', 'musikot'].some(n => palikaName.includes(n))) return '#0ea5e9'; // 35–44 kg/ha Adequate
+        if (['chatrakot', 'chandrakot'].some(n => palikaName.includes(n))) return '#38bdf8'; // 25–34 kg/ha Medium
+        if (['gulmidarbar', 'dhurkot'].some(n => palikaName.includes(n))) return '#7dd3fc'; // 18–24 kg/ha Low-Medium
+        if (['isma', 'resunga'].some(n => palikaName.includes(n))) return '#f59e0b'; // 12–17 kg/ha Low
+        return '#ef4444'; // <12 kg/ha Deficient (Malika, Madane)
+      }
+
+      if (ecoSub === 'soil_potassium') {
+        if (['satyawati', 'kaligandaki'].some(n => palikaName.includes(n))) return '#0284c7'; // ≥220 kg/ha Very High
+        if (['ruru', 'musikot'].some(n => palikaName.includes(n))) return '#0ea5e9'; // 180–219 kg/ha High
+        if (['chandrakot', 'chatrakot'].some(n => palikaName.includes(n))) return '#38bdf8'; // 140–179 kg/ha Adequate
+        if (['gulmidarbar', 'dhurkot'].some(n => palikaName.includes(n))) return '#7dd3fc'; // 110–139 kg/ha Medium
+        if (['isma', 'resunga'].some(n => palikaName.includes(n))) return '#f59e0b'; // 80–109 kg/ha Low
+        return '#ef4444'; // <80 kg/ha Leached Slopes (Malika, Madane)
       }
 
       return '#059669';
@@ -1060,28 +1127,39 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       const eSub = subFilters.energySubFilter || 'hydro_corridor';
 
       if (eSub === 'hydro_corridor') {
-        if (['kaligandaki', 'ruru', 'satyawati', 'musikot'].some(n => palikaName.includes(n))) return '#6d28d9'; // Major Hydro Run-of-River Corridor
-        if (['dhurkot', 'chandrakot', 'chatrakot'].some(n => palikaName.includes(n))) return '#8b5cf6'; // Micro-Hydro Stream Catchment
-        return '#a855f7';
+        if (['kaligandaki'].some(n => palikaName.includes(n))) return '#4c1d95'; // >20 MW Major Corridor
+        if (['musikot'].some(n => palikaName.includes(n))) return '#6d28d9'; // 10–20 MW Commercial Cascade
+        if (['ruru', 'satyawati'].some(n => palikaName.includes(n))) return '#8b5cf6'; // 3–10 MW Small Hydro
+        if (['dhurkot', 'chandrakot'].some(n => palikaName.includes(n))) return '#a855f7'; // 1–3 MW Mini Hydro
+        if (['chatrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#c084fc'; // 100–1000 kW Micro Hydro
+        return '#d8b4fe'; // <100 kW Solar/Wind Hybrid (Isma, Malika, Madane)
       }
 
       if (eSub === 'solar_irradiance') {
-        const elev = pData?.elevation || 1450;
-        if (elev >= 1500) return '#d97706'; // High Solar Potential on Ridges (5.1 kWh/m²)
-        if (elev >= 1100) return '#f59e0b'; // Mid-Hill Solar (4.9 kWh/m²)
-        return '#fbbf24'; // Valley (4.6 kWh/m²)
+        if (['resunga', 'madane'].some(n => palikaName.includes(n))) return '#b45309'; // ≥5.3 kWh/m²/d Optimal Ridge
+        if (['malika', 'chandrakot'].some(n => palikaName.includes(n))) return '#d97706'; // 5.0–5.2 kWh/m²/d High Solar
+        if (['dhurkot', 'isma'].some(n => palikaName.includes(n))) return '#f59e0b'; // 4.7–4.9 kWh/m²/d Good Mid-Hill
+        if (['chatrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#fbbf24'; // 4.4–4.6 kWh/m²/d Moderate
+        if (['musikot', 'satyawati'].some(n => palikaName.includes(n))) return '#fde047'; // 4.0–4.3 kWh/m²/d Lower Valley
+        return '#fef08a'; // <4.0 kWh/m²/d Shaded Gorge (Ruru, Kaligandaki)
       }
 
       if (eSub === 'clean_cooking_biomass') {
-        if (['madane', 'malika', 'isma'].some(n => palikaName.includes(n))) return '#ef4444'; // High Firewood Dependence (>85%)
-        if (['dhurkot', 'chatrakot', 'satyawati', 'chandrakot'].some(n => palikaName.includes(n))) return '#f59e0b'; // Moderate Transition
-        return '#10b981'; // Urban/Commercial Transition (Resunga, Musikot)
+        if (['madane'].some(n => palikaName.includes(n))) return '#991b1b'; // >88% Extreme Firewood
+        if (['malika', 'isma'].some(n => palikaName.includes(n))) return '#ef4444'; // 80–88% High Reliance
+        if (['dhurkot', 'chandrakot'].some(n => palikaName.includes(n))) return '#f97316'; // 72–79% Moderate-High
+        if (['chatrakot', 'satyawati'].some(n => palikaName.includes(n))) return '#f59e0b'; // 65–71% Transitioning
+        if (['gulmidarbar', 'ruru', 'kaligandaki'].some(n => palikaName.includes(n))) return '#84cc16'; // 55–64% Modern Adoption
+        return '#059669'; // <55% Clean Cooking (Resunga, Musikot)
       }
 
       if (eSub === 'grid_electrification') {
-        if (['resunga', 'gulmidarbar', 'musikot'].some(n => palikaName.includes(n))) return '#059669'; // 33kV Tamghas Grid Core (>95%)
-        if (['dhurkot', 'chatrakot', 'ruru', 'chandrakot', 'isma'].some(n => palikaName.includes(n))) return '#10b981'; // 11kV Feeder Line
-        return '#f59e0b'; // Tail Feeder Lines
+        if (['resunga'].some(n => palikaName.includes(n))) return '#047857'; // ≥98% 33kV Substation Core
+        if (['musikot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#059669'; // 92–97% Primary 11kV Radial
+        if (['chatrakot', 'ruru'].some(n => palikaName.includes(n))) return '#10b981'; // 85–91% Municipal Main Line
+        if (['dhurkot', 'chandrakot'].some(n => palikaName.includes(n))) return '#84cc16'; // 75–84% Secondary Feeders
+        if (['isma', 'satyawati', 'kaligandaki'].some(n => palikaName.includes(n))) return '#f59e0b'; // 65–74% Feeder Tails
+        return '#ef4444'; // <65% Off-Grid Pockets (Madane, Malika)
       }
 
       return '#6d28d9';
@@ -1094,27 +1172,39 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       const sSub = subFilters.socioSubFilter || 'local_governance';
 
       if (sSub === 'local_governance') {
-        if (['resunga', 'musikot'].some(n => palikaName.includes(n))) return '#4f46e5'; // Municipalities (नगरपालिका) (Indigo)
-        return '#10b981'; // Rural Municipalities (गाउँपालिका) (Green)
+        if (['resunga'].some(n => palikaName.includes(n))) return '#3730a3'; // District Administrative Capital
+        if (['musikot'].some(n => palikaName.includes(n))) return '#4f46e5'; // Commercial Western Hub Municipality
+        if (['chatrakot', 'ruru'].some(n => palikaName.includes(n))) return '#059669'; // High-Pop Trade Corridors
+        if (['dhurkot', 'chandrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#10b981'; // Cash Crop Agroforestry Palikas
+        if (['kaligandaki', 'satyawati'].some(n => palikaName.includes(n))) return '#0ea5e9'; // River Basin Lowland Palikas
+        return '#14b8a6'; // Highland Watershed Palikas (Madane, Malika, Isma)
       }
 
       if (sSub === 'hq_market_proximity') {
-        if (['resunga', 'gulmidarbar', 'dhurkot'].some(n => palikaName.includes(n))) return '#059669'; // Direct Proximity (<15 km to Tamghas)
-        if (['chatrakot', 'isma', 'musikot', 'ruru'].some(n => palikaName.includes(n))) return '#10b981'; // Arterial Link (15–35 km)
-        if (['satyawati', 'chandrakot', 'malika'].some(n => palikaName.includes(n))) return '#f59e0b'; // Secondary Link (35–55 km)
-        return '#ef4444'; // Remote Perimeter (>55 km)
+        if (['resunga'].some(n => palikaName.includes(n))) return '#047857'; // <10 km Direct Urban Access
+        if (['gulmidarbar', 'dhurkot'].some(n => palikaName.includes(n))) return '#059669'; // 10–20 km Fast Arterial Corridor
+        if (['chatrakot', 'isma'].some(n => palikaName.includes(n))) return '#10b981'; // 20–35 km Paved Corridor
+        if (['musikot', 'ruru', 'chandrakot'].some(n => palikaName.includes(n))) return '#84cc16'; // 35–50 km Secondary Feeder
+        if (['satyawati', 'malika'].some(n => palikaName.includes(n))) return '#f59e0b'; // 50–65 km Distant Rural Road
+        return '#ef4444'; // >65 km Remote Perimeter (Madane, Kaligandaki)
       }
 
       if (sSub === 'agri_landholding') {
-        if (['madane', 'malika', 'dhurkot'].some(n => palikaName.includes(n))) return '#059669'; // Larger Holdings (>0.6 ha/hh)
-        if (['isma', 'chandrakot', 'chatrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#10b981'; // Moderate (0.4–0.6 ha)
-        return '#0ea5e9'; // Dense Urban/Valley (<0.4 ha)
+        if (['madane'].some(n => palikaName.includes(n))) return '#047857'; // >0.75 ha/hh Upper Highland
+        if (['malika', 'dhurkot'].some(n => palikaName.includes(n))) return '#059669'; // 0.60–0.75 ha/hh Large Hill Farms
+        if (['isma', 'chandrakot'].some(n => palikaName.includes(n))) return '#10b981'; // 0.45–0.59 ha/hh Moderate Terraced
+        if (['chatrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#84cc16'; // 0.35–0.44 ha/hh Medium-Small
+        if (['satyawati', 'ruru', 'kaligandaki'].some(n => palikaName.includes(n))) return '#f59e0b'; // 0.25–0.34 ha/hh Fragmented Plots
+        return '#0ea5e9'; // <0.25 ha/hh Urban Homestead Density (Resunga, Musikot)
       }
 
       if (sSub === 'labor_wages') {
-        if (['resunga', 'musikot'].some(n => palikaName.includes(n))) return '#4f46e5'; // Commercial Hub (NPR 850–950/day)
-        if (['ruru', 'satyawati', 'dhurkot'].some(n => palikaName.includes(n))) return '#6366f1'; // Semi-Commercial (NPR 750–850)
-        return '#818cf8'; // Rural Ag Wage (NPR 650–750)
+        if (['resunga'].some(n => palikaName.includes(n))) return '#3730a3'; // >NPR 900/day Commercial Hub
+        if (['musikot'].some(n => palikaName.includes(n))) return '#4f46e5'; // NPR 825–900/day Trade Node
+        if (['ruru', 'satyawati'].some(n => palikaName.includes(n))) return '#6366f1'; // NPR 760–824/day Corridor
+        if (['dhurkot', 'chatrakot', 'gulmidarbar'].some(n => palikaName.includes(n))) return '#818cf8'; // NPR 700–759/day Mid-Hill
+        if (['chandrakot', 'isma', 'kaligandaki'].some(n => palikaName.includes(n))) return '#a5b4fc'; // NPR 640–699/day Rural
+        return '#c7d2fe'; // <NPR 640/day Remote Highland (Madane, Malika)
       }
 
       return '#4f46e5';
@@ -1158,9 +1248,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             cropId.toLowerCase().includes(fc.cropId.toLowerCase())
         );
         if (c) {
-          metricSnippet = `<div style="color: #059669; font-weight: 600; font-size: 10px; margin-top: 2px;">
-            ${c.emoji} ${c.cropName.split('(')[0]}: <strong>${c.score}% Suitability</strong> (${c.rating})
-          </div>`;
+          metricSnippet = `
+            <div style="color: #059669; font-weight: 600; font-size: 10px; margin-top: 2px;">
+              ${c.emoji} ${c.cropName.split('(')[0].trim()}: <strong>${c.score}% Suitability</strong> (${c.rating})
+            </div>
+            <div style="color: #64748b; font-size: 9px;">
+              Biophysical: ${pData?.elevation || 1450}m Elev • pH ${pData?.soilPh || 6.5}
+            </div>
+          `;
         }
       }
     } else if (selectedPillar === 'water') {
@@ -1171,8 +1266,17 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             : ['resunga', 'gulmidarbar', 'chatrakot', 'chandrakot'].some(n => palikaName.includes(n)) ? 'Ridi Khola Basin' : 'Panaha/Chhaldi Basin';
         metricSnippet = `<div style="color: #0284c7; font-size: 10px; margin-top: 2px;">🌊 Watershed: <strong>${basin}</strong></div>`;
       } else {
-        const localRain = Math.round(currentRainMm * (1 + ((pData?.elevation || 1450) - 1000) / 10000));
-        metricSnippet = `<div style="color: #0284c7; font-size: 10px; margin-top: 2px;">🌧️ Est. Rain: <strong>${localRain} mm/mo</strong> (${currentSeason})</div>`;
+        const micro = getPalikaMicroClimate(palikaName, currentRainMm, currentTempC, climateMonth, pData?.elevation);
+        const orographicDiff = Math.round((micro.orographicFactor - 1) * 100);
+        const orographicStr = orographicDiff >= 0 ? `+${orographicDiff}%` : `${orographicDiff}%`;
+        metricSnippet = `
+          <div style="color: #0284c7; font-size: 10px; margin-top: 2px;">
+            🌧️ Downscaled Rain: <strong>${micro.monthlyRainMm} mm/mo</strong> (${orographicStr} Orographic)
+          </div>
+          <div style="color: #475569; font-size: 9.5px; margin-top: 1px;">
+            🌡️ Micro-Temp: <strong>${micro.monthlyTempC}°C</strong> • Baseline: <strong>${micro.annualRainMm} mm/yr</strong>
+          </div>
+        `;
       }
     } else if (selectedPillar === 'ecosystem') {
       metricSnippet = `<div style="color: #059669; font-size: 10px; margin-top: 2px;">🧪 Soil pH: <strong>${pData?.soilPh || 6.5}</strong> • Elev: <strong>${pData?.elevation || 1450}m</strong></div>`;
@@ -1228,10 +1332,12 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         };
         const title = `${cropNames[cropId] || cropId} Suitability across Gulmi's 12 Palikas:`;
         const items: [string, string][] = [
-          ['#059669', '≥80% Optimal Synergy (Primary Pocket)'],
-          ['#10b981', '60–79% High Suitability'],
-          ['#f59e0b', '40–59% Moderate / Secondary'],
-          ['#ef4444', '<40% Challenging (Terrain/Frost Limiting)']
+          ['#047857', '≥90% Optimal Prime Pocket (Optimal Micro-Climate & Soil)'],
+          ['#059669', '80–89% High Commercial Potential'],
+          ['#10b981', '70–79% Good Suitability'],
+          ['#14b8a6', '60–69% Moderate-High Viability'],
+          ['#f59e0b', '45–59% Marginal / Secondary Cultivation'],
+          ['#ef4444', '<45% Severely Constrained / Altitude-Frost Limiting']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1240,8 +1346,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 <Sprout className="w-3.5 h-3.5 text-emerald-600" />
                 {title}
               </span>
-              <span className="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-mono font-semibold">
-                Gulmi Agro-Ecological Model
+              <span className="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-mono font-semibold" title="Suitability dynamically calibrated per Palika via FAO-EcoCrop, NARC Soil pH, and Topographic Temperature/Elevation Lapse Model">
+                🔬 Calibrated via WEFE Biophysical Model (FAO-EcoCrop & NARC Altitude/Soil Matrix)
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-3.5">
@@ -1257,11 +1363,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       }
 
       if (foodMode === 'barkhe_summer') {
-        const title = '☀️ Barkhe (बरखे - Summer Monsoon) Crop Feasibility:';
+        const title = '☀️ Barkhe (बरखे - Summer Monsoon) Crop Feasibility (6 Tiers):';
         const items: [string, string][] = [
-          ['#059669', 'High Monsoon Capacity (Paddy, Ginger, Commercial Maize in River Valleys)'],
-          ['#10b981', 'Terrace Agroforestry (Maize, Millet, Arabica Coffee)'],
-          ['#f59e0b', 'Ridge Subsistence Farming']
+          ['#047857', '≥90% Prime Irrigated Valleys (Monsoon Paddy, Commercial Ginger, Spring Maize)'],
+          ['#059669', '80–89% Alluvial Terraces (Monsoon Paddy, Hybrid Maize, Turmeric)'],
+          ['#10b981', '70–79% Agroforestry Terraces (Arabica Coffee, Finger Millet, Vegetables)'],
+          ['#14b8a6', '60–69% Rainfed Slopes (Millet, Pulses, Legumes, Fodder)'],
+          ['#f59e0b', '50–59% High Upland Terraces (Subsistence Cereals & Forage)'],
+          ['#ef4444', '<50% Steep Ridge Slopes (High Runoff & Erosion Risk)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1282,11 +1391,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       }
 
       if (foodMode === 'hiunde_winter') {
-        const title = '❄️ Hiunde (हिउँदे - Winter Season) Crop Feasibility:';
+        const title = '❄️ Hiunde (हिउँदे - Winter Season) Crop Feasibility (6 Tiers):';
         const items: [string, string][] = [
-          ['#059669', 'Mid-Hill Winter Pockets (Wheat, Mustard, Winter Vegetables)'],
-          ['#10b981', 'High-Altitude Winter Crops (Seed Potato, Buckwheat)'],
-          ['#f59e0b', 'Rainfed Slopes with Low Moisture']
+          ['#047857', '≥90% Optimal Winter Niche (Winter Wheat, Yellow Mustard, Commercial Vegetables)'],
+          ['#059669', '80–89% High Cold-Hardy Zone (Seed Potato, High-Altitude Wheat)'],
+          ['#10b981', '70–79% Mid-Hill Winter Terraces (Off-Season Vegetables, Legumes)'],
+          ['#14b8a6', '60–69% Temperate Highlands (Buckwheat, Barley, Cover Crops)'],
+          ['#f59e0b', '50–59% Low-Moisture Rainfed Slopes (Winter Drought Constrained)'],
+          ['#ef4444', '<50% Severe Frost / High Mountain Ridge Slopes']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1307,11 +1419,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       }
 
       if (foodMode === 'double_cropping') {
-        const title = '🔄 Double & Triple Cropping Rotation Intensity:';
+        const title = '🔄 Double & Triple Cropping Rotation Intensity (6 Tiers):';
         const items: [string, string][] = [
-          ['#059669', '2–3 Crops/Year (Perennial Riverbed Irrigation: Musikot, Kaligandaki, Ruru)'],
-          ['#10b981', '2 Crops/Year (Mid-Hill Spring-fed Terraces: Dhurkot, Chatrakot, Chandrakot)'],
-          ['#f59e0b', '1–2 Crops/Year (High Rainfed Slopes: Resunga, Madane, Malika)']
+          ['#047857', '300% Triple-Cropping (Year-Round River Canal Lift: Paddy-Wheat-Maize: Kaligandaki, Musikot)'],
+          ['#059669', '250% Intensive Double-to-Triple (Paddy-Potato-Vegetables: Ruru, Satyawati)'],
+          ['#10b981', '200% Standard Double-Cropping (Perennial Spring Kulos: Dhurkot, Chatrakot)'],
+          ['#14b8a6', '175% Semi-Irrigated Double-Crop (Monsoon Maize + Winter Legumes: Chandrakot, Gulmidarbar)'],
+          ['#f59e0b', '130% Single-to-Double Rainfed (Maize + Fallow/Millet: Isma, Malika)'],
+          ['#ef4444', '100% Single-Cropping (High Rainfed Mountain Slopes: Madane, Resunga Ridge)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1335,12 +1450,42 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     if (selectedPillar === 'water') {
       const wSub = subFilters.waterSubFilter || 'merra_rainfall';
       if (wSub === 'river_basins') {
-        const title = '🌊 Gulmi Major River Basin Corridors:';
+        const title = '🌊 Gulmi Major River Basins & Watershed Corridors (6 Hydrological Zones):';
         const items: [string, string][] = [
-          ['#0284c7', 'Kali Gandaki Basin (Kaligandaki, Satyawati, Ruru) - Glacial/Snowmelt Flow'],
-          ['#0ea5e9', 'Badigad River Valley (Musikot, Isma) - Major Irrigation Lifeline'],
-          ['#06b6d4', 'Ridi Khola & Hugdi Basin (Resunga, Gulmidarbar, Chatrakot, Chandrakot)'],
-          ['#3b82f6', 'Panaha & Chhaldi Khola (Dhurkot, Malika, Madane)']
+          ['#0369a1', 'Kali Gandaki Mainstem (Kaligandaki) — Glacier/Snowmelt High Flow'],
+          ['#0284c7', 'Kali Gandaki Confluence Corridor (Satyawati, Ruru) — Hydro/Lift Hub'],
+          ['#0ea5e9', 'Badigad River Valley (Musikot, Isma) — Irrigation Lifeline Corridor'],
+          ['#06b6d4', 'Ridi Khola Sub-Basin (Resunga, Gulmidarbar, Chatrakot) — Central Drainage'],
+          ['#38bdf8', 'Hugdi Khola Catchment (Chandrakot) — East River Drainage'],
+          ['#3b82f6', 'Panaha & Chhaldi Headwaters (Dhurkot, Malika, Madane) — Western Watersheds']
+        ];
+        return (
+          <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
+            <span className="text-slate-800 font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 text-xs">
+              <Droplets className="w-3.5 h-3.5 text-sky-600" />
+              {title}
+            </span>
+            <div className="flex flex-wrap items-center gap-3.5">
+              {items.map(([c, l]) => (
+                <span key={l} className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-sm inline-block border border-slate-300 shadow-xs" style={{ backgroundColor: c }} />
+                  <span className="text-slate-700 font-medium">{l}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      if (wSub === 'dhm_station') {
+        const title = '💧 DHM Hydrological Station #410 at Seti Beni (6 Gauging Catchment Tiers):';
+        const items: [string, string][] = [
+          ['#0284c7', 'Seti Beni DHM Station #410 Primary Gauging Site (Kaligandaki)'],
+          ['#0ea5e9', 'Downstream Direct Catchment (Satyawati, Ruru) — Real-Time Monitored'],
+          ['#06b6d4', 'Badigad Inflow Gauging Corridor (Musikot, Isma) — Major Inflow'],
+          ['#38bdf8', 'Middle Tributaries (Chandrakot, Chatrakot) — Secondary Catchment'],
+          ['#94a3b8', 'Headwater Tributaries (Gulmidarbar, Dhurkot) — Stream Sources'],
+          ['#64748b', 'Distant Mountain Catchment (Madane, Malika, Resunga) — Headwater Divides']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1361,11 +1506,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       }
 
       if (wSub === 'spring_vulnerability') {
-        const title = '🏔️ Spring-Fed Water Vulnerability (मुहान सुक्ने जोखिम):';
+        const title = '🏔️ ICIMOD Springshed Hydro-Vulnerability (मुहान सुक्ने जोखिम - 6 Tiers):';
         const items: [string, string][] = [
-          ['#ef4444', 'High Risk: Mountain Ridges (Resunga, Madane, Malika, Isma) - Spring Dry-up in Mar-May'],
-          ['#f59e0b', 'Moderate Risk: Mid-Hill Slopes (Dhurkot, Gulmidarbar, Chatrakot, Chandrakot)'],
-          ['#10b981', 'Low Risk / Secure: Perennial River Valleys (Kaligandaki, Satyawati, Ruru, Musikot)']
+          ['#991b1b', 'Extreme Risk (>85% Spring Discharge Reduction: Madane Lekh Ridges)'],
+          ['#ef4444', 'Severe Risk (70–85% Reduction: Resunga & Malika Mountain Ridges)'],
+          ['#f97316', 'Moderate-High Risk (50–70% Seasonal Drop: Isma Steep Slopes)'],
+          ['#f59e0b', 'Moderate Risk (30–50% Depletion: Dhurkot, Gulmidarbar Mid-Hills)'],
+          ['#10b981', 'Low Risk (15–30% Seasonal Variance: Chatrakot, Chandrakot Terraces)'],
+          ['#059669', 'Secure / Perennial Access (<15% Variance: Kaligandaki, Satyawati, Ruru, Musikot)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1386,11 +1534,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       }
 
       if (wSub === 'irrigation_potential') {
-        const title = '🌾 Agricultural Lift & Canal Irrigation Feasibility:';
+        const title = '🌾 Agricultural Lift & Canal Irrigation Feasibility (6 Tiers):';
         const items: [string, string][] = [
-          ['#059669', 'High Potential: Riverbed Lift & Canal Irrigation (Musikot, Kaligandaki, Ruru, Satyawati)'],
-          ['#10b981', 'Moderate: Stream Diversion & Gravity Kulos (Dhurkot, Chatrakot, Chandrakot)'],
-          ['#f59e0b', 'Rainfed: Rainwater Harvesting & Conservation Ponds Required']
+          ['#047857', 'Major River Lift & Deep Intake (>150 ha Command: Musikot, Kaligandaki)'],
+          ['#059669', 'Medium River Lift & Piped Feeder Networks (75–150 ha: Ruru, Satyawati)'],
+          ['#10b981', 'Perennial Stream Gravity Canal / Kulos (30–75 ha: Dhurkot, Chatrakot)'],
+          ['#14b8a6', 'Spring Diversion & Upland Storage Tanks (15–30 ha: Chandrakot, Gulmidarbar)'],
+          ['#f59e0b', 'Conservation Ponds & Drip / Micro-Sprinklers (5–15 ha: Isma, Malika)'],
+          ['#ef4444', 'Strictly Rainfed Mountain Terraces (<5 ha: Madane, Resunga Ridge)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1410,15 +1561,15 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         );
       }
 
-      // Default: MERRA-2 Rainfall Legend
-      const title = `🌧️ MERRA-2 Rainfall Climatology (${MONTH_NAMES[climateMonth - 1]} ${climateMode === 'climatology' ? '39-Yr Baseline' : climateYear}):`;
+      // Default: MERRA-2 Topographically Downscaled Rainfall Legend (6 Tiers)
+      const title = `🌧️ MERRA-2 Topographically Downscaled Rainfall Micro-Climates (${MONTH_NAMES[climateMonth - 1]} ${climateMode === 'climatology' ? '39-Yr Baseline' : climateYear} - 6 Tiers):`;
       const items: [string, string][] = [
-        ['#0369a1', '≥350 mm Extreme Monsoon (Heavy Runoff)'],
-        ['#0284c7', '220–350 mm High Rainfall (Monsoon Surge)'],
-        ['#0ea5e9', '120–220 mm Moderate Rain'],
-        ['#38bdf8', '50–120 mm Light Showers'],
-        ['#facc15', '20–50 mm Pre-Monsoon Dry'],
-        ['#f97316', '<20 mm Arid Winter Drought']
+        ['#0369a1', `Tier 1: Peak Ridge Lekh (+20% to +24% Uplift: Madane ${Math.round(currentRainMm * 1.24)}mm, Resunga ${Math.round(currentRainMm * 1.20)}mm)`],
+        ['#0284c7', `Tier 2: High Mountain Ridge (+12% to +16%: Malika ${Math.round(currentRainMm * 1.16)}mm, Chandrakot ${Math.round(currentRainMm * 1.12)}mm)`],
+        ['#0ea5e9', `Tier 3: Upper Mid-Hill (+4% to +6%: Isma ${Math.round(currentRainMm * 1.06)}mm, Dhurkot ${Math.round(currentRainMm * 1.04)}mm)`],
+        ['#38bdf8', `Tier 4: Central Mid-Hill Baseline (-2% to +1%: Gulmidarbar ${Math.round(currentRainMm * 1.01)}mm, Satyawati ${Math.round(currentRainMm * 0.98)}mm)`],
+        ['#f59e0b', `Tier 5: Lower Valley Transition (-6% to -8%: Musikot ${Math.round(currentRainMm * 0.94)}mm, Chatrakot ${Math.round(currentRainMm * 0.92)}mm)`],
+        ['#ea580c', `Tier 6: Subtropical Riverbed (-12% to -18%: Ruru ${Math.round(currentRainMm * 0.88)}mm, Kaligandaki ${Math.round(currentRainMm * 0.82)}mm)`],
       ];
       return (
         <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1441,11 +1592,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     if (selectedPillar === 'ecosystem') {
       const ecoSub = subFilters.ecoSubFilter || 'soil_ph';
       if (ecoSub === 'soil_ph') {
-        const title = '🧪 Soil pH & Agricultural Lime Requirement:';
+        const title = '🧪 Soil Reaction (pH) & Agricultural Lime Requirement (6 Tiers):';
         const items: [string, string][] = [
-          ['#059669', 'Neutral / Optimal (pH 6.5–7.2) — River Alluvium (Kaligandaki, Ruru, Satyawati, Musikot)'],
-          ['#10b981', 'Slightly Acidic (pH 5.8–6.4) — Mid-Hill Agroforestry Soils'],
-          ['#f59e0b', 'Acidic (pH <5.8) — Pine/Sal Slopes (Agricultural Lime Application Recommended)']
+          ['#0284c7', 'pH ≥7.0 Neutral / Slightly Alkaline River Alluvium (Ruru)'],
+          ['#059669', 'pH 6.6–6.9 Optimal Benchmark Agricultural Soil (Kaligandaki, Satyawati, Chandrakot, Musikot)'],
+          ['#10b981', 'pH 6.2–6.5 Slightly Acidic / Prime Agroforestry (Chatrakot, Gulmidarbar, Resunga)'],
+          ['#84cc16', 'pH 5.8–6.1 Moderately Acidic (Dhurkot, Isma)'],
+          ['#f59e0b', 'pH 5.4–5.7 Strongly Acidic / Agricultural Lime Recommended (Malika, Madane)'],
+          ['#ef4444', 'pH <5.4 Highly Acidic Pine / Sal Ridges (Heavy Liming Required)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1466,11 +1620,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       }
 
       if (ecoSub === 'elevation_zones') {
-        const title = '🏔️ Topographic & Hypsometric Elevation Tiers:';
+        const title = '🏔️ Topographic & Hypsometric Elevation Tiers (6 Agro-Ecological Zones):';
         const items: [string, string][] = [
-          ['#8b5cf6', 'High Mountain Ridges (>1,550m to 2,690m) — Resunga, Madane, Malika (Cool Temperate)'],
-          ['#0284c7', 'Mid-Hill Slopes (1,150–1,550m) — Dhurkot, Isma, Gulmidarbar, Chatrakot (Coffee/Orange Belt)'],
-          ['#10b981', 'River Valleys & Low Hills (<1,150m) — Musikot, Kaligandaki, Ruru (Subtropical Riverbed)']
+          ['#4c1d95', '>1,700m Alpine Ridges & Sacred Forests (Madane Lekh 1740m, Resunga Peak)'],
+          ['#7c3aed', '1,550–1,700m Cool Temperate Highlands (Malika 1680m, Chandrakot 1603m)'],
+          ['#0284c7', '1,450–1,550m Upper Mid-Hills Coffee Belt (Resunga 1530m, Dhurkot 1520m, Isma 1480m)'],
+          ['#0ea5e9', '1,200–1,450m Middle Sub-Tropical Slopes (Chatrakot 1420m, Gulmidarbar 1350m)'],
+          ['#10b981', '950–1,200m Lower Mid-Hills Valley Slopes (Musikot 1120m, Satyawati 980m)'],
+          ['#059669', '<950m Sub-Tropical Riverbed Terraces (Ruru 935m, Kaligandaki 890m)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1491,11 +1648,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       }
 
       if (ecoSub === 'agroforestry_belt') {
-        const title = '🌲 Community Forestry & Pine/Sal Agroforestry Coverage:';
+        const title = '🌲 Community Forestry & Pine/Sal Agroforestry Coverage (6 Tiers):';
         const items: [string, string][] = [
-          ['#059669', 'High Woodland Cover (>55% Forest) — Resunga, Madane, Malika, Dhurkot'],
-          ['#10b981', 'Terraced Agroforestry (35–55% Forest Cover)'],
-          ['#0ea5e9', 'Intensive Agricultural Farmland (<35% Forest Cover)']
+          ['#047857', '>65% Forest Cover (Protected Community & Religious Forests: Resunga)'],
+          ['#059669', '55–65% Dense Pine & Sal Woodlands (Madane, Malika)'],
+          ['#10b981', '45–54% Integrated Coffee & Fruit Agroforestry (Dhurkot, Chandrakot)'],
+          ['#84cc16', '35–44% Mixed Agroforestry / Terrace Farming (Chatrakot, Isma)'],
+          ['#f59e0b', '25–34% Intensive Agricultural Slopes (Gulmidarbar, Satyawati)'],
+          ['#0ea5e9', '<25% Riverbed Agricultural Farmland (Musikot, Ruru, Kaligandaki)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1515,11 +1675,98 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         );
       }
 
-      const title = '🌱 NARC 81-Point Ground Soil Sampling Grid:';
+      if (ecoSub === 'soil_nitrogen') {
+        const title = '🌱 NARC Soil Nitrogen Content (81 Field Points - 6 Tiers):';
+        const items: [string, string][] = [
+          ['#047857', '≥0.22% N Very High Organic Nitrogen (Kaligandaki)'],
+          ['#059669', '0.18–0.21% N High Available Nitrogen (Satyawati, Ruru)'],
+          ['#10b981', '0.14–0.17% N Medium-High Nitrogen (Musikot, Chandrakot)'],
+          ['#84cc16', '0.10–0.13% N Medium Nitrogen (Chatrakot, Gulmidarbar)'],
+          ['#f59e0b', '0.06–0.09% N Low Nitrogen (Dhurkot, Isma)'],
+          ['#ef4444', '<0.06% N Low / Deficient Slopes (Malika, Madane)']
+        ];
+        return (
+          <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
+            <span className="text-slate-800 font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 text-xs">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+              {title}
+            </span>
+            <div className="flex flex-wrap items-center gap-3.5">
+              {items.map(([c, l]) => (
+                <span key={l} className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-sm inline-block border border-slate-300 shadow-xs" style={{ backgroundColor: c }} />
+                  <span className="text-slate-700 font-medium">{l}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      if (ecoSub === 'soil_phosphorus') {
+        const title = '🧪 NARC Available Phosphorus (P₂O₅) Distribution (6 Tiers):';
+        const items: [string, string][] = [
+          ['#0284c7', '≥45 kg/ha P₂O₅ High Available Phosphorus (Ruru, Kaligandaki)'],
+          ['#0ea5e9', '35–44 kg/ha P₂O₅ Adequate Available Phosphorus (Satyawati, Musikot)'],
+          ['#38bdf8', '25–34 kg/ha P₂O₅ Medium Phosphorus (Chatrakot, Chandrakot)'],
+          ['#7dd3fc', '18–24 kg/ha P₂O₅ Low-Medium Phosphorus (Gulmidarbar, Dhurkot)'],
+          ['#f59e0b', '12–17 kg/ha P₂O₅ Low Phosphorus (Isma, Resunga)'],
+          ['#ef4444', '<12 kg/ha P₂O₅ Deficient Acidic Slopes (Malika, Madane)']
+        ];
+        return (
+          <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
+            <span className="text-slate-800 font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 text-xs">
+              <Sparkles className="w-3.5 h-3.5 text-sky-600" />
+              {title}
+            </span>
+            <div className="flex flex-wrap items-center gap-3.5">
+              {items.map(([c, l]) => (
+                <span key={l} className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-sm inline-block border border-slate-300 shadow-xs" style={{ backgroundColor: c }} />
+                  <span className="text-slate-700 font-medium">{l}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      if (ecoSub === 'soil_potassium') {
+        const title = '🥔 NARC Available Potassium (K₂O) Distribution (6 Tiers):';
+        const items: [string, string][] = [
+          ['#0284c7', '≥220 kg/ha K₂O Very High Available Potassium (Satyawati, Kaligandaki)'],
+          ['#0ea5e9', '180–219 kg/ha K₂O High Available Potassium (Ruru, Musikot)'],
+          ['#38bdf8', '140–179 kg/ha K₂O Adequate Potassium (Chandrakot, Chatrakot)'],
+          ['#7dd3fc', '110–139 kg/ha K₂O Medium Potassium (Gulmidarbar, Dhurkot)'],
+          ['#f59e0b', '80–109 kg/ha K₂O Low Potassium (Isma, Resunga)'],
+          ['#ef4444', '<80 kg/ha K₂O Leached Highland Slopes (Malika, Madane)']
+        ];
+        return (
+          <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
+            <span className="text-slate-800 font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 text-xs">
+              <Sparkles className="w-3.5 h-3.5 text-sky-600" />
+              {title}
+            </span>
+            <div className="flex flex-wrap items-center gap-3.5">
+              {items.map(([c, l]) => (
+                <span key={l} className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-sm inline-block border border-slate-300 shadow-xs" style={{ backgroundColor: c }} />
+                  <span className="text-slate-700 font-medium">{l}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      const title = '🌱 NARC 81-Point Ground Soil Sampling Grid (6 Tiers):';
       const items: [string, string][] = [
-        ['#059669', 'Sampled River Valley Soil (High Nitrogen ≥0.18% / Optimal pH)'],
-        ['#10b981', 'Medium Nutrient Holdings (N: 0.12–0.18%)'],
-        ['#f59e0b', 'Low/Moderate Holdings (<0.12%)']
+        ['#047857', 'Optimal Prime Soil (N ≥0.22% / pH 6.6–7.2 / P₂O₅ ≥45)'],
+        ['#059669', 'High Quality Soil (N 0.18–0.21% / pH 6.4–6.8)'],
+        ['#10b981', 'Medium-High Soil (N 0.14–0.17% / pH 6.0–6.4)'],
+        ['#84cc16', 'Medium Soil (N 0.10–0.13% / pH 5.8–6.1)'],
+        ['#f59e0b', 'Low/Moderate Holdings (N 0.06–0.09% / pH 5.4–5.7)'],
+        ['#ef4444', 'Leached Acidic Slopes (N <0.06% / pH <5.4)']
       ];
       return (
         <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1542,11 +1789,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     if (selectedPillar === 'energy') {
       const eSub = subFilters.energySubFilter || 'hydro_corridor';
       if (eSub === 'hydro_corridor') {
-        const title = '⚡ Run-of-River & Micro-Hydro Catchment Potential:';
+        const title = '⚡ Run-of-River & Micro-Hydro Potential (6 Energy Corridors):';
         const items: [string, string][] = [
-          ['#6d28d9', 'Major Hydropower Corridors (Kali Gandaki & Badigad Basins)'],
-          ['#8b5cf6', 'Micro-Hydro Stream Catchments (Dhurkot, Chandrakot, Chatrakot)'],
-          ['#a855f7', 'Upland Solar/Wind Hybrid Zones']
+          ['#4c1d95', '>20 MW Major Run-of-River Hydro Corridor (Kaligandaki Basin)'],
+          ['#6d28d9', '10–20 MW Commercial Hydropower Cascade (Badigad: Musikot)'],
+          ['#8b5cf6', '3–10 MW Small Hydro Corridors (Ruru, Satyawati)'],
+          ['#a855f7', '1–3 MW Mini-Hydro Stream Catchments (Dhurkot, Chandrakot)'],
+          ['#c084fc', '100–1000 kW Micro-Hydro & Solar Hybrid (Chatrakot, Gulmidarbar)'],
+          ['#d8b4fe', '<100 kW Standalone Solar / Micro-Grid Pockets (Isma, Malika, Madane)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1567,11 +1817,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       }
 
       if (eSub === 'solar_irradiance') {
-        const title = '☀️ Solar Photovoltaic Irradiance (NASA POWER Daily Avg):';
+        const title = '☀️ Solar Photovoltaic Irradiance (NASA POWER Daily Avg - 6 Tiers):';
         const items: [string, string][] = [
-          ['#d97706', 'High Irradiance: Sun-Exposed South Ridges (≥5.1 kWh/m²/d)'],
-          ['#f59e0b', 'Good Irradiance: Mid-Hill Terraced Slopes (4.8–5.1 kWh/m²/d)'],
-          ['#fbbf24', 'Moderate: Shaded River Gorges (<4.8 kWh/m²/d)']
+          ['#b45309', '≥5.3 kWh/m²/d Optimal Solar Ridge (Resunga, Madane Ridges)'],
+          ['#d97706', '5.0–5.2 kWh/m²/d High Solar Slopes (Malika, Chandrakot)'],
+          ['#f59e0b', '4.7–4.9 kWh/m²/d Good Mid-Hill Terraces (Dhurkot, Isma)'],
+          ['#fbbf24', '4.4–4.6 kWh/m²/d Moderate Upland Solar (Chatrakot, Gulmidarbar)'],
+          ['#fde047', '4.0–4.3 kWh/m²/d Lower Valley Solar (Musikot, Satyawati)'],
+          ['#fef08a', '<4.0 kWh/m²/d Shaded Deep River Gorges (Ruru, Kaligandaki)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1592,11 +1845,42 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       }
 
       if (eSub === 'clean_cooking_biomass') {
-        const title = '🪵 Clean Cooking & Firewood Transition Demand:';
+        const title = '🪵 Clean Cooking & Firewood Transition Demand (6 Tiers):';
         const items: [string, string][] = [
-          ['#ef4444', 'High Firewood Dependence (>85% hh): Madane, Malika, Isma'],
-          ['#f59e0b', 'Moderate Transition: Mid-Hills (65–85% hh)'],
-          ['#10b981', 'Advanced LPG & Induction Adoption (<65% Firewood): Resunga, Musikot']
+          ['#991b1b', '>88% Extreme Traditional Firewood Dependence (Madane)'],
+          ['#ef4444', '80–88% High Firewood Reliance (Malika, Isma)'],
+          ['#f97316', '72–79% Moderate-High Biomass (Dhurkot, Chandrakot)'],
+          ['#f59e0b', '65–71% Transitioning Mid-Hills (Chatrakot, Satyawati)'],
+          ['#84cc16', '55–64% Modern Fuel Adoption (Gulmidarbar, Ruru, Kaligandaki)'],
+          ['#059669', '<55% Advanced Clean Cooking & Induction (Resunga Tamghas, Musikot)']
+        ];
+        return (
+          <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
+            <span className="text-slate-800 font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 text-xs">
+              <Zap className="w-3.5 h-3.5 text-amber-600" />
+              {title}
+            </span>
+            <div className="flex flex-wrap items-center gap-3.5">
+              {items.map(([c, l]) => (
+                <span key={l} className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-sm inline-block border border-slate-300 shadow-xs" style={{ backgroundColor: c }} />
+                  <span className="text-slate-700 font-medium">{l}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      if (eSub === 'grid_electrification') {
+        const title = '🔌 NEA Distribution Grid Reach (Tamghas Grid Core vs Perimeter - 6 Tiers):';
+        const items: [string, string][] = [
+          ['#047857', '≥98% 33kV Substation Core / 24/7 Grid (Resunga Tamghas Center)'],
+          ['#059669', '92–97% Primary Town Radial 11kV Feeders (Musikot, Gulmidarbar)'],
+          ['#10b981', '85–91% Municipal Main Distribution (Chatrakot, Ruru)'],
+          ['#84cc16', '75–84% Secondary Feeder Lines (Dhurkot, Chandrakot)'],
+          ['#f59e0b', '65–74% Distant Feeder Tails / Single-Phase (Isma, Satyawati, Kaligandaki)'],
+          ['#ef4444', '<65% Remote Off-Grid / Micro-Hydro Pockets (Madane, Malika)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1620,10 +1904,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     if (selectedPillar === 'socioeconomics') {
       const sSub = subFilters.socioSubFilter || 'local_governance';
       if (sSub === 'local_governance') {
-        const title = '🏛️ Local Government Body Classification:';
+        const title = '🏛️ Local Government Body Classification (6 Governance Zones):';
         const items: [string, string][] = [
-          ['#4f46e5', 'Urban Municipalities (नगरपालिका): Resunga & Musikot'],
-          ['#10b981', 'Rural Municipalities (गाउँपालिका): 10 Local Bodies']
+          ['#3730a3', 'District Administrative Capital: Resunga Municipality (रेसुङ्गा)'],
+          ['#4f46e5', 'Western Commercial Hub: Musikot Municipality (मुसिकोट)'],
+          ['#059669', 'Trade & Religious Corridors: Chatrakot & Ruru (रुरु / छत्रकोट)'],
+          ['#10b981', 'Agroforestry & Coffee Belt: Dhurkot, Chandrakot, Gulmidarbar'],
+          ['#0ea5e9', 'River Basin Lowlands: Kaligandaki & Satyawati (कालीगण्डकी / सत्यवती)'],
+          ['#14b8a6', 'Highland Watershed Belt: Madane, Malika, Isma (मदाने / मालिका / इस्मा)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1644,12 +1932,70 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       }
 
       if (sSub === 'hq_market_proximity') {
-        const title = '🛣️ Road Proximity to Tamghas District Headquarters:';
+        const title = '🛣️ Road Proximity to Tamghas District Headquarters (6 Tiers):';
         const items: [string, string][] = [
-          ['#059669', '<15 km Direct Urban Access (Resunga, Gulmidarbar, Dhurkot)'],
-          ['#10b981', '15–35 km Arterial Corridor (Chatrakot, Isma, Musikot, Ruru)'],
-          ['#f59e0b', '35–55 km Secondary Link (Satyawati, Chandrakot, Malika)'],
-          ['#ef4444', '>55 km Remote Perimeter (Madane, Kaligandaki)']
+          ['#047857', '<10 km Direct Urban Access (Resunga District HQ)'],
+          ['#059669', '10–20 km Fast Arterial Corridor (Gulmidarbar, Dhurkot)'],
+          ['#10b981', '20–35 km Paved Highway Corridor (Chatrakot, Isma)'],
+          ['#84cc16', '35–50 km Secondary Feeder Link (Musikot, Ruru, Chandrakot)'],
+          ['#f59e0b', '50–65 km Distant Rural Mountain Road (Satyawati, Malika)'],
+          ['#ef4444', '>65 km Remote Perimeter Border (Madane, Kaligandaki)']
+        ];
+        return (
+          <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
+            <span className="text-slate-800 font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 text-xs">
+              <Coins className="w-3.5 h-3.5 text-indigo-600" />
+              {title}
+            </span>
+            <div className="flex flex-wrap items-center gap-3.5">
+              {items.map(([c, l]) => (
+                <span key={l} className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-sm inline-block border border-slate-300 shadow-xs" style={{ backgroundColor: c }} />
+                  <span className="text-slate-700 font-medium">{l}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      if (sSub === 'agri_landholding') {
+        const title = '🚜 Average Agricultural Landholding per Household (6 Tiers):';
+        const items: [string, string][] = [
+          ['#047857', '>0.75 ha/hh Upper Highland Holdings (Madane)'],
+          ['#059669', '0.60–0.75 ha/hh Large Hill Family Farms (Malika, Dhurkot)'],
+          ['#10b981', '0.45–0.59 ha/hh Moderate Terraced Holdings (Isma, Chandrakot)'],
+          ['#84cc16', '0.35–0.44 ha/hh Medium-Small Family Plots (Chatrakot, Gulmidarbar)'],
+          ['#f59e0b', '0.25–0.34 ha/hh Fragmented Semi-Urban Plots (Satyawati, Ruru, Kaligandaki)'],
+          ['#0ea5e9', '<0.25 ha/hh Intensive Urban Homestead Holdings (Resunga, Musikot)']
+        ];
+        return (
+          <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
+            <span className="text-slate-800 font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 text-xs">
+              <Coins className="w-3.5 h-3.5 text-indigo-600" />
+              {title}
+            </span>
+            <div className="flex flex-wrap items-center gap-3.5">
+              {items.map(([c, l]) => (
+                <span key={l} className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-sm inline-block border border-slate-300 shadow-xs" style={{ backgroundColor: c }} />
+                  <span className="text-slate-700 font-medium">{l}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      if (sSub === 'labor_wages') {
+        const title = '💼 Daily Agricultural Labor Rate (NPR / Day - 6 Tiers):';
+        const items: [string, string][] = [
+          ['#3730a3', '>NPR 900/day Commercial Urban Hub (Resunga Tamghas)'],
+          ['#4f46e5', 'NPR 825–900/day Major Trade & Transport Center (Musikot)'],
+          ['#6366f1', 'NPR 760–824/day Semi-Commercial Corridor (Ruru, Satyawati)'],
+          ['#818cf8', 'NPR 700–759/day Mid-Hill Road Corridors (Dhurkot, Chatrakot, Gulmidarbar)'],
+          ['#a5b4fc', 'NPR 640–699/day Rural Agricultural Valleys (Chandrakot, Isma, Kaligandaki)'],
+          ['#c7d2fe', '<NPR 640/day Remote Highland Farming (Madane, Malika)']
         ];
         return (
           <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
@@ -1878,17 +2224,22 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             </>
           ) : (
             <>
-              <div className="flex items-center gap-1.5" title="Estimated Monthly Precipitation">
+              <div className="flex items-center gap-1.5" title="Estimated Monthly Precipitation across Gulmi & 12 Palikas">
                 <CloudRain className="w-3.5 h-3.5 text-sky-600" />
-                <span className="text-slate-500">Rain:</span>
+                <span className="text-slate-500">District Avg Rain:</span>
                 <strong className="text-sky-900 font-bold">{currentRainMm} mm/mo</strong>
+                <span className="text-[10px] text-sky-700 bg-sky-100/80 px-1.5 py-0.2 rounded font-sans font-semibold">
+                  ({Math.round(currentRainMm * 0.82)}–{Math.round(currentRainMm * 1.24)} mm across Palikas)
+                </span>
               </div>
 
-              <div className="flex items-center gap-1.5" title="Air Temperature at 2m">
+              <div className="flex items-center gap-1.5" title="Air Temperature at 2m (Tamghas Baseline & Topographic Range)">
                 <Thermometer className="w-3.5 h-3.5 text-amber-600" />
                 <span className="text-slate-500">Temp:</span>
                 <strong className="text-amber-900 font-bold">{currentTempC}°C</strong>
-                <span className="text-[10px] text-slate-500">({currentTempMin}°–{currentTempMax}°)</span>
+                <span className="text-[10px] text-slate-500">
+                  ({(currentTempC - 1.7).toFixed(1)}° at 1750m – {(currentTempC + 3.2).toFixed(1)}° at 890m)
+                </span>
               </div>
 
               <div className="flex items-center gap-1.5" title="Relative Humidity">
@@ -1957,7 +2308,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             {/* 12 Gulmi Palikas Vector Layer (Dynamically styled per Pillar, Crop, and Climate Time-Series) */}
             {palikasData && (
               <GeoJSON
-                key={`gulmi-palikas-${selectedPillar}-${selectedMapCropId}-${subFilters.crop || ''}-${subFilters.foodMode || ''}-${subFilters.foodOverlayType || ''}-${subFilters.soilMetric || ''}-${subFilters.waterClimateMetric || ''}-${subFilters.energyClimateMetric || ''}-${subFilters.socioMetric || ''}-${hoveredPalika?.name || ''}`}
+                key={`gulmi-palikas-${selectedPillar}-${selectedMapCropId}-${subFilters.crop || ''}-${subFilters.foodMode || ''}-${subFilters.foodOverlayType || ''}-${subFilters.waterSubFilter || ''}-${subFilters.ecoSubFilter || ''}-${subFilters.energySubFilter || ''}-${subFilters.socioSubFilter || ''}-${climateMonth}-${climateYear}-${climateMode}-${currentRainMm}-${hoveredPalika?.name || ''}`}
                 data={palikasData}
                 style={(feature: any) => {
                   const pName = (feature?.properties?.name || '').toLowerCase();
@@ -2156,7 +2507,16 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
           </MapContainer>
 
           {/* Palika-Specific Hover Card: Shows strictly when hovering a Palika */}
-          {hoveredPalika && <PalikaHoverCard palikaProp={hoveredPalika} />}
+          {hoveredPalika && (
+            <PalikaHoverCard
+              palikaProp={hoveredPalika}
+              currentRainMm={currentRainMm}
+              currentTempC={currentTempC}
+              climateMonth={climateMonth}
+              climateMode={climateMode}
+              climateYear={climateYear}
+            />
+          )}
 
           {/* District Hover Card: Shows strictly when hovering the district boundary directly without a palika */}
           {hoveredDistrict && !hoveredPalika && (

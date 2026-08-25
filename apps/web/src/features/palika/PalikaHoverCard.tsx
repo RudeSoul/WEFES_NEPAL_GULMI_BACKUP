@@ -1,6 +1,7 @@
 import React from 'react';
 import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
-import { Mountain, Thermometer, CloudRain, Sparkles, Sprout, ArrowRight, Layers } from 'lucide-react';
+import { Mountain, Thermometer, CloudRain, Sparkles, Sprout, ArrowRight, Layers, Compass } from 'lucide-react';
+import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../../utils/climateDownscaling';
 
 interface PalikaHoverCardProps {
   palikaProp: {
@@ -12,9 +13,21 @@ interface PalikaHoverCardProps {
     code?: string;
     areaSqKm?: number;
   } | null;
+  currentRainMm?: number;
+  currentTempC?: number;
+  climateMonth?: number;
+  climateMode?: string;
+  climateYear?: number;
 }
 
-export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({ palikaProp }) => {
+export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({
+  palikaProp,
+  currentRainMm = 150,
+  currentTempC = 19.5,
+  climateMonth = 7,
+  climateMode = 'climatology',
+  climateYear = 2019,
+}) => {
   if (!palikaProp) return null;
 
   // Find rich agro-ecological asset data for this palika in Gulmi
@@ -26,14 +39,17 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({ palikaProp }) 
   );
 
   const elevation = richData?.elevation || 1450;
-  const avgTemp = richData?.avgTempC || 14.5;
-  const rainfall = richData?.rainfallMm || 1850;
   const soilPh = richData?.soilPh || 6.5;
   const topCrops: PalikaFeasibleCrop[] = richData?.feasibleCrops || [];
   const rotations = richData?.seasonalRotations;
 
+  // Compute topographically downscaled micro-climate metrics
+  const micro = getPalikaMicroClimate(palikaProp.name, currentRainMm, currentTempC, climateMonth, elevation);
+  const orographicDiff = Math.round((micro.orographicFactor - 1) * 100);
+  const orographicStr = orographicDiff >= 0 ? `+${orographicDiff}%` : `${orographicDiff}%`;
+
   return (
-    <div className="absolute top-3 right-3 z-[1000] w-72 sm:w-80 glass-panel rounded-xl p-3.5 bg-white/95 border border-emerald-300/80 shadow-lg backdrop-blur-md animate-fade-in pointer-events-none transition-all duration-150">
+    <div className="absolute top-3 right-3 z-[1000] w-80 sm:w-88 glass-panel rounded-xl p-3.5 bg-white/95 border border-emerald-300/80 shadow-lg backdrop-blur-md animate-fade-in pointer-events-none transition-all duration-150">
       {/* Header */}
       <div className="flex items-start justify-between border-b border-slate-100 pb-2 mb-2">
         <div>
@@ -57,6 +73,12 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({ palikaProp }) 
         </span>
       </div>
 
+      {/* Micro-Climate Niche Description */}
+      <div className="mb-2 px-2 py-1 rounded bg-sky-50/80 border border-sky-200/70 text-[10px] text-sky-900 flex items-center gap-1.5">
+        <Compass className="w-3 h-3 text-sky-600 shrink-0" />
+        <span className="truncate font-medium">{micro.microClimateNiche}</span>
+      </div>
+
       {/* Environmental & Soil Indicators Grid */}
       <div className="grid grid-cols-4 gap-1 mb-2 bg-slate-50/90 p-1.5 rounded-lg border border-slate-200/60 text-center">
         <div>
@@ -72,15 +94,17 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({ palikaProp }) 
             <Thermometer className="w-2.5 h-2.5 text-amber-600" />
             <span>Temp</span>
           </div>
-          <span className="text-[11px] font-bold text-slate-900 font-mono">{avgTemp}°C</span>
+          <span className="text-[11px] font-bold text-slate-900 font-mono">{micro.monthlyTempC}°C</span>
         </div>
 
         <div>
           <div className="flex items-center justify-center gap-0.5 text-[9px] text-slate-500 font-medium">
             <CloudRain className="w-2.5 h-2.5 text-blue-600" />
-            <span>Rain</span>
+            <span>Rain/Mo</span>
           </div>
-          <span className="text-[11px] font-bold text-slate-900 font-mono">{rainfall}mm</span>
+          <span className="text-[11px] font-bold text-blue-900 font-mono" title={`${micro.monthlyRainMm} mm in active month (${orographicStr} Orographic uplift vs Tamghas)`}>
+            {micro.monthlyRainMm}mm
+          </span>
         </div>
 
         <div>
@@ -92,13 +116,19 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({ palikaProp }) 
         </div>
       </div>
 
+      {/* Downscaled Micro-Climate Telemetry Row */}
+      <div className="flex items-center justify-between text-[9.5px] px-2 py-1 mb-2 bg-slate-100/70 rounded border border-slate-200 text-slate-600 font-mono">
+        <span>Orographic Factor: <strong className="text-slate-900">{orographicStr}</strong></span>
+        <span>Annual Rain: <strong className="text-slate-900">{micro.annualRainMm} mm</strong></span>
+      </div>
+
       {/* Feasible Crops List */}
       {topCrops.length > 0 && (
         <div className="mb-2">
           <div className="text-[10px] font-semibold text-slate-700 mb-1 flex items-center justify-between">
             <span className="flex items-center gap-1">
               <Sprout className="w-3 h-3 text-emerald-600" />
-              Top Feasible Crops
+              Calibrated Feasible Crops
             </span>
             <span className="text-[9px] font-mono text-slate-500">
               {topCrops.length} Crops

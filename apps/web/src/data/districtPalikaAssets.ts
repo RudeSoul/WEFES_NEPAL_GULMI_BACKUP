@@ -11,7 +11,7 @@ export interface PalikaFeasibleCrop {
   seasonNepali?: string;
   seasonMonths?: string;
   score: number;
-  rating: 'Optimal' | 'High' | 'Moderate';
+  rating: 'Optimal' | 'Very High' | 'High' | 'Moderate' | 'Marginal' | 'Constrained' | string;
   limitingFactor: string;
 }
 
@@ -72,7 +72,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 18.5,
     "tempMaxC": 27.5,
     "tempMinC": 7.2,
-    "rainfallMm": 1850,
+    "rainfallMm": 1980,
     "soilPh": 6.7,
     "feasibleCropsCount": 8,
     "feasibleCrops": [
@@ -85,8 +85,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 92,
-        "rating": "Optimal",
+        "score": 74,
+        "rating": "High",
         "limitingFactor": "None"
       },
       {
@@ -111,7 +111,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "कात्तिक – फागुन",
-        "score": 89,
+        "score": 94,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -124,8 +124,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे फलफूल",
         "seasonMonths": "वर्षभरि",
-        "score": 88,
-        "rating": "Optimal",
+        "score": 85,
+        "rating": "Very High",
         "limitingFactor": "None"
       },
       {
@@ -137,8 +137,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते / नगदे बाली",
         "seasonMonths": "चैत – मंसिर",
-        "score": 86,
-        "rating": "Optimal",
+        "score": 84,
+        "rating": "Very High",
         "limitingFactor": "None"
       },
       {
@@ -163,8 +163,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते बाली",
         "seasonMonths": "फागुन – जेठ",
-        "score": 88,
-        "rating": "Optimal",
+        "score": 86,
+        "rating": "Very High",
         "limitingFactor": "None"
       },
       {
@@ -176,7 +176,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 80,
+        "score": 92,
         "rating": "Optimal",
         "limitingFactor": "Soil pH"
       }
@@ -291,7 +291,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 19.4,
     "tempMaxC": 28.6,
     "tempMinC": 8,
-    "rainfallMm": 1850,
+    "rainfallMm": 1710,
     "soilPh": 6.7,
     "feasibleCropsCount": 10,
     "feasibleCrops": [
@@ -304,7 +304,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 96,
+        "score": 95,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -317,7 +317,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे फलफूल",
         "seasonMonths": "वर्षभरि",
-        "score": 96,
+        "score": 92,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -330,7 +330,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "मंसिर – फागुन",
-        "score": 96,
+        "score": 95,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -343,7 +343,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते / नगदे बाली",
         "seasonMonths": "चैत – मंसिर",
-        "score": 88,
+        "score": 91,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -369,8 +369,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "कात्तिक – फागुन",
-        "score": 89,
-        "rating": "Optimal",
+        "score": 82,
+        "rating": "Very High",
         "limitingFactor": "None"
       }
     ],
@@ -471,7 +471,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 18.8,
     "tempMaxC": 27.8,
     "tempMinC": 7.2,
-    "rainfallMm": 1850,
+    "rainfallMm": 1860,
     "soilPh": 6.5,
     "feasibleCropsCount": 9,
     "feasibleCrops": [
@@ -484,8 +484,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 93,
-        "rating": "Optimal",
+        "score": 85,
+        "rating": "Very High",
         "limitingFactor": "None"
       },
       {
@@ -497,7 +497,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते बाली",
         "seasonMonths": "फागुन – जेठ",
-        "score": 91,
+        "score": 94,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -510,7 +510,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "मंसिर – फागुन",
-        "score": 96,
+        "score": 95,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -523,7 +523,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे फलफूल",
         "seasonMonths": "वर्षभरि",
-        "score": 90,
+        "score": 98,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -536,7 +536,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "कात्तिक – फागुन",
-        "score": 89,
+        "score": 90,
         "rating": "Optimal",
         "limitingFactor": "None"
       }
@@ -638,7 +638,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 19,
     "tempMaxC": 28.2,
     "tempMinC": 8.1,
-    "rainfallMm": 1850,
+    "rainfallMm": 1820,
     "soilPh": 6.6,
     "feasibleCropsCount": 10,
     "feasibleCrops": [
@@ -651,7 +651,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 95,
+        "score": 92,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -664,7 +664,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे फलफूल",
         "seasonMonths": "वर्षभरि",
-        "score": 94,
+        "score": 90,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -677,8 +677,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते / नगदे बाली",
         "seasonMonths": "चैत – मंसिर",
-        "score": 92,
-        "rating": "Optimal",
+        "score": 88,
+        "rating": "Very High",
         "limitingFactor": "None"
       },
       {
@@ -690,7 +690,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "मंसिर – फागुन",
-        "score": 96,
+        "score": 94,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -703,8 +703,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "कात्तिक – फागुन",
-        "score": 89,
-        "rating": "Optimal",
+        "score": 86,
+        "rating": "Very High",
         "limitingFactor": "None"
       }
     ],
@@ -805,7 +805,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 18.4,
     "tempMaxC": 27.2,
     "tempMinC": 7,
-    "rainfallMm": 1850,
+    "rainfallMm": 1890,
     "soilPh": 6.4,
     "feasibleCropsCount": 9,
     "feasibleCrops": [
@@ -818,8 +818,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 91,
-        "rating": "Optimal",
+        "score": 80,
+        "rating": "Very High",
         "limitingFactor": "None"
       },
       {
@@ -831,7 +831,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते बाली",
         "seasonMonths": "फागुन – जेठ",
-        "score": 89,
+        "score": 90,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -844,7 +844,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "मंसिर – फागुन",
-        "score": 96,
+        "score": 93,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -857,7 +857,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "कात्तिक – फागुन",
-        "score": 91,
+        "score": 92,
         "rating": "Optimal",
         "limitingFactor": "None"
       }
@@ -959,7 +959,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 22,
     "tempMaxC": 32.5,
     "tempMinC": 10.2,
-    "rainfallMm": 1900,
+    "rainfallMm": 1560,
     "soilPh": 6.8,
     "feasibleCropsCount": 11,
     "feasibleCrops": [
@@ -972,8 +972,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 94,
-        "rating": "Optimal",
+        "score": 52,
+        "rating": "Marginal",
         "limitingFactor": "None"
       },
       {
@@ -985,7 +985,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते बाली",
         "seasonMonths": "फागुन – जेठ",
-        "score": 94,
+        "score": 98,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -998,8 +998,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे फलफूल",
         "seasonMonths": "वर्षभरि",
-        "score": 93,
-        "rating": "Optimal",
+        "score": 65,
+        "rating": "Moderate",
         "limitingFactor": "None"
       },
       {
@@ -1011,7 +1011,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "मंसिर – फागुन",
-        "score": 95,
+        "score": 92,
         "rating": "Optimal",
         "limitingFactor": "None"
       }
@@ -1113,7 +1113,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 17.6,
     "tempMaxC": 26.2,
     "tempMinC": 5.8,
-    "rainfallMm": 1850,
+    "rainfallMm": 2180,
     "soilPh": 6.3,
     "feasibleCropsCount": 8,
     "feasibleCrops": [
@@ -1126,7 +1126,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते बाली",
         "seasonMonths": "फागुन – जेठ",
-        "score": 94,
+        "score": 98,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -1139,8 +1139,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 88,
-        "rating": "Optimal",
+        "score": 42,
+        "rating": "Constrained",
         "limitingFactor": "None"
       },
       {
@@ -1152,8 +1152,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "मंसिर – फागुन",
-        "score": 96,
-        "rating": "Optimal",
+        "score": 88,
+        "rating": "Very High",
         "limitingFactor": "None"
       }
     ],
@@ -1254,7 +1254,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 18,
     "tempMaxC": 26.8,
     "tempMinC": 6.2,
-    "rainfallMm": 1850,
+    "rainfallMm": 2040,
     "soilPh": 6.4,
     "feasibleCropsCount": 8,
     "feasibleCrops": [
@@ -1267,8 +1267,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 90,
-        "rating": "Optimal",
+        "score": 58,
+        "rating": "Marginal",
         "limitingFactor": "None"
       },
       {
@@ -1280,8 +1280,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते बाली",
         "seasonMonths": "फागुन – जेठ",
-        "score": 90,
-        "rating": "Optimal",
+        "score": 82,
+        "rating": "Very High",
         "limitingFactor": "None"
       },
       {
@@ -1293,7 +1293,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "मंसिर – फागुन",
-        "score": 96,
+        "score": 90,
         "rating": "Optimal",
         "limitingFactor": "None"
       }
@@ -1395,7 +1395,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 19.6,
     "tempMaxC": 28.8,
     "tempMinC": 8.2,
-    "rainfallMm": 1850,
+    "rainfallMm": 1740,
     "soilPh": 6.6,
     "feasibleCropsCount": 10,
     "feasibleCrops": [
@@ -1408,8 +1408,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 94,
-        "rating": "Optimal",
+        "score": 68,
+        "rating": "Moderate",
         "limitingFactor": "None"
       },
       {
@@ -1421,8 +1421,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते / नगदे बाली",
         "seasonMonths": "चैत – मंसिर",
-        "score": 91,
-        "rating": "Optimal",
+        "score": 86,
+        "rating": "Very High",
         "limitingFactor": "None"
       },
       {
@@ -1434,7 +1434,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे फलफूल",
         "seasonMonths": "वर्षभरि",
-        "score": 93,
+        "score": 90,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -1447,7 +1447,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "मंसिर – फागुन",
-        "score": 96,
+        "score": 95,
         "rating": "Optimal",
         "limitingFactor": "None"
       }
@@ -1549,7 +1549,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 18.6,
     "tempMaxC": 27.6,
     "tempMinC": 7.2,
-    "rainfallMm": 1850,
+    "rainfallMm": 2120,
     "soilPh": 6.2,
     "feasibleCropsCount": 11,
     "feasibleCrops": [
@@ -1562,8 +1562,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 96,
-        "rating": "Optimal",
+        "score": 88,
+        "rating": "Very High",
         "limitingFactor": "None"
       },
       {
@@ -1575,7 +1575,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे फलफूल",
         "seasonMonths": "वर्षभरि",
-        "score": 95,
+        "score": 94,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -1588,8 +1588,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते / नगदे बाली",
         "seasonMonths": "चैत – मंसिर",
-        "score": 93,
-        "rating": "Optimal",
+        "score": 75,
+        "rating": "High",
         "limitingFactor": "None"
       },
       {
@@ -1601,7 +1601,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "मंसिर – फागुन",
-        "score": 96,
+        "score": 92,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -1614,7 +1614,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "कात्तिक – फागुन",
-        "score": 92,
+        "score": 95,
         "rating": "Optimal",
         "limitingFactor": "None"
       }
@@ -1716,7 +1716,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 20.8,
     "tempMaxC": 30.5,
     "tempMinC": 9,
-    "rainfallMm": 1850,
+    "rainfallMm": 1650,
     "soilPh": 6.7,
     "feasibleCropsCount": 11,
     "feasibleCrops": [
@@ -1742,8 +1742,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे फलफूल",
         "seasonMonths": "वर्षभरि",
-        "score": 96,
-        "rating": "Optimal",
+        "score": 86,
+        "rating": "Very High",
         "limitingFactor": "None"
       },
       {
@@ -1755,7 +1755,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते बाली",
         "seasonMonths": "फागुन – जेठ",
-        "score": 95,
+        "score": 92,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -1768,7 +1768,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "मंसिर – फागुन",
-        "score": 96,
+        "score": 94,
         "rating": "Optimal",
         "limitingFactor": "None"
       }
@@ -1870,7 +1870,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
     "avgTempC": 19.8,
     "tempMaxC": 29.2,
     "tempMinC": 8.4,
-    "rainfallMm": 1850,
+    "rainfallMm": 1780,
     "soilPh": 6.7,
     "feasibleCropsCount": 10,
     "feasibleCrops": [
@@ -1883,8 +1883,8 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे फलफूल",
         "seasonMonths": "वर्षभरि",
-        "score": 97,
-        "rating": "Optimal",
+        "score": 88,
+        "rating": "Very High",
         "limitingFactor": "None"
       },
       {
@@ -1896,7 +1896,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "baahramase",
         "seasonNepali": "बाह्रमासे नगदे",
         "seasonMonths": "वर्षभरि",
-        "score": 96,
+        "score": 94,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -1909,7 +1909,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "chaite",
         "seasonNepali": "चैते / नगदे बाली",
         "seasonMonths": "चैत – मंसिर",
-        "score": 92,
+        "score": 96,
         "rating": "Optimal",
         "limitingFactor": "None"
       },
@@ -1922,7 +1922,7 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> = {
         "season": "hiunde",
         "seasonNepali": "हिउँदे बाली",
         "seasonMonths": "मंसिर – फागुन",
-        "score": 96,
+        "score": 93,
         "rating": "Optimal",
         "limitingFactor": "None"
       }
