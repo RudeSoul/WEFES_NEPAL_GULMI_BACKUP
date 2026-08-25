@@ -22,6 +22,21 @@ export interface PalikaSeasonalRotations {
   baahramase?: PalikaFeasibleCrop | null;
 }
 
+export const PALIKA_GEO_CENTROIDS: Record<string, { lat: number; lng: number }> = {
+  Resunga: { lat: 28.068, lng: 83.248 },
+  Musikot: { lat: 28.167, lng: 83.267 },
+  Ruru: { lat: 27.953, lng: 83.435 },
+  Satyawati: { lat: 28.012, lng: 83.456 },
+  Kaligandaki: { lat: 28.025, lng: 83.512 },
+  Chandrakot: { lat: 28.115, lng: 83.468 },
+  Chatrakot: { lat: 28.042, lng: 83.356 },
+  Gulmidarbar: { lat: 27.994, lng: 83.278 },
+  Dhurkot: { lat: 28.125, lng: 83.189 },
+  Isma: { lat: 28.156, lng: 83.112 },
+  Malika: { lat: 28.189, lng: 83.045 },
+  Madane: { lat: 28.212, lng: 82.989 },
+};
+
 export interface DistrictPalika {
   id: string;
   name: string;

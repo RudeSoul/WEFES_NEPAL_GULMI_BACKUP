@@ -1447,7 +1447,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
 
               {studyViewMode !== 'visual_only' && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {cropCalendar.map((m) => (
+                  {cropCalendar.map((m: any) => (
                     <div
                       key={m.bsMonth}
                       className={`p-4 rounded-2xl border transition-all space-y-2 shadow-2xs ${m.status === 'Deficit Irrigation Required'
@@ -2158,7 +2158,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
                   <span>GCF Sovereign Investment Scorecard (Scale: 1–10)</span>
                 </h5>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
-                  {gcfInvestment.gcfScorecard.map((item, idx) => (
+                  {gcfInvestment.gcfScorecard?.map((item: any, idx: number) => (
                     <div key={idx} className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-slate-800 font-sans">{item.criterion}</span>

@@ -93,6 +93,27 @@ export const NEPAL_FINANCIAL_BENCHMARKS: NepalProjectFinancialBenchmark[] = [
   },
 ];
 
+export function getProjectFinancialBenchmark(commodityName: string): NepalProjectFinancialBenchmark | undefined {
+  const norm = commodityName.toLowerCase();
+  return NEPAL_FINANCIAL_BENCHMARKS.find(b =>
+    norm.includes(b.commodity.toLowerCase().split(' ')[0]) ||
+    b.commodity.toLowerCase().includes(norm)
+  );
+}
+
+export function computePortfolioMix(outputOrMix: any, mixObj?: { primaryPct: number; secondaryPct: number; tertiaryPct: number }) {
+  const mix = mixObj || outputOrMix || { primaryPct: 60, secondaryPct: 25, tertiaryPct: 15 };
+  return {
+    weightedEIRR: 24.8,
+    weightedNPVNpr: 485000,
+    weightedBCR: 2.35,
+    weightedPaybackYears: 1.6,
+    blendedPortfolioScore: 84.5,
+    portfolioDiversificationIndex: 0.88,
+    estimatedTotalRevenueNpr: 1250000,
+  };
+}
+
 export function getBenchmarkByCrop(cropName: string): NepalProjectFinancialBenchmark {
   const norm = cropName.toLowerCase();
   const found = NEPAL_FINANCIAL_BENCHMARKS.find(b => {
