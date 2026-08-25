@@ -1,25 +1,52 @@
 import express from 'express';
 import cors from 'cors';
-import { districtRouter } from './routes/districts';
-import { cropRouter } from './routes/crops';
-import { nexusRouter } from './routes/nexus';
+import { config } from './config';
+import { requestLogger } from './gateway/middleware/requestLogger';
+import { errorHandler } from './gateway/middleware/errorHandler';
+import { gatewayRouter } from './gateway/router';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+// Global Middleware
+app.use(cors({ origin: config.corsOrigin }));
 app.use(express.json());
+app.use(requestLogger);
 
-// API Health check
+// Health Check & Service Discovery
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', service: 'WEFES Nexus Nepal API', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    service: config.serviceName,
+    environment: config.nodeEnv,
+    timestamp: new Date().toISOString(),
+    domains: [
+      { name: 'GIS & Climate', path: '/api/v1/gis' },
+      { name: 'WEFES Nexus Engine', path: '/api/v1/nexus' },
+      { name: 'Agronomy & Soil', path: '/api/v1/agronomy' },
+      { name: 'Energy & Hydrology', path: '/api/v1/energy' },
+      { name: 'Logistics & Market', path: '/api/v1/logistics' },
+    ],
+  });
 });
 
-// API Routes
-app.use('/api/v1/districts', districtRouter);
-app.use('/api/v1/crops', cropRouter);
-app.use('/api/v1/nexus', nexusRouter);
+// Master Gateway API Router
+app.use(config.apiPrefix, gatewayRouter);
 
-app.listen(PORT, () => {
-  console.log(`🚀 WEFES Nexus Nepal API Server running on port http://localhost:${PORT}`);
+// 404 Fallback Handler
+app.use('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    statusCode: 404,
+    error: `Route '${req.originalUrl}' not found on ${config.serviceName}`,
+    availableEndpoints: `${config.apiPrefix} (gis, nexus, agronomy, energy, logistics)`,
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Centralized Error Handler
+app.use(errorHandler);
+
+app.listen(config.port, () => {
+  console.log(`🚀 ${config.serviceName} running at http://localhost:${config.port}${config.apiPrefix}`);
+  console.log(`📡 Health check active at http://localhost:${config.port}/health`);
 });
