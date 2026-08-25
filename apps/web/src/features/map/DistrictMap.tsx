@@ -14,7 +14,12 @@ import { PolicyPresetSelector } from '../simulator/PolicyPresetSelector';
 import { PalikaQuickMatrix } from '../palika/PalikaQuickMatrix';
 import { ElevationCrossSection } from './ElevationCrossSection';
 import { NexusRadarWidget } from '../nexus/NexusRadarWidget';
-import { MapPin, Sparkles, Calendar, Coins, Trees, Droplets, Zap, Sprout, Sun, Wheat, Cherry, Leaf, Thermometer, Mountain, Target, Layers, CloudRain, Wind, Activity, Globe, Compass, Check, Eye, EyeOff, Building2 } from 'lucide-react';
+import { MicroWatershedSimulator } from '../hydrology/MicroWatershedSimulator';
+import { CropClimateComparator } from '../agronomy/CropClimateComparator';
+import { RenewableEnergySizer } from '../energy/RenewableEnergySizer';
+import { PalikaBenchmarkComparator } from '../palika/PalikaBenchmarkComparator';
+import { PalikaDossierExport } from '../dossier/PalikaDossierExport';
+import { MapPin, Sparkles, Calendar, Coins, Trees, Droplets, Zap, Sprout, Sun, Wheat, Cherry, Leaf, Thermometer, Mountain, Target, Layers, CloudRain, Wind, Activity, Globe, Compass, Check, Eye, EyeOff, Building2, Waves, Scale, FileText } from 'lucide-react';
 import gulmiSoilPoints from '../../data/gulmiSoilPoints.json';
 import { PalikaHoverCard } from '../palika/PalikaHoverCard';
 import { DISTRICT_PALIKAS } from '../../data/districtPalikaAssets';
@@ -606,7 +611,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   const [lang, setLang] = useState<'en' | 'np'>('en');
   const [basemap, setBasemap] = useState<'voyager' | 'satellite' | 'terrain'>('voyager');
   const [showPalikaLabels, setShowPalikaLabels] = useState<boolean>(true);
-  const [activeDrawerTab, setActiveDrawerTab] = useState<'matrix' | 'elevation' | 'radar' | null>(null);
+  const [activeDrawerTab, setActiveDrawerTab] = useState<'matrix' | 'elevation' | 'radar' | 'watershed' | 'crop_compare' | 'energy_sizer' | 'palika_compare' | null>(null);
+  const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
 
   // Search autocomplete handler
   const handleSearchSelect = (type: 'palika' | 'filter' | 'crop', value: string) => {
@@ -2580,7 +2586,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               }`}
           >
             <Mountain className="w-3.5 h-3.5" />
-            <span>{lang === 'np' ? 'उचाइ प्रोफाइल र बाली बेल्ट' : 'Elevation Profile'}</span>
+            <span>{lang === 'np' ? 'उचाइ प्रोफाइल' : 'Elevation Profile'}</span>
           </button>
 
           <button
@@ -2591,7 +2597,59 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{lang === 'np' ? 'नेक्सस राडार सूचकांक' : 'Nexus Radar (73%)'}</span>
+            <span>{lang === 'np' ? 'नेक्सस राडार' : 'Nexus Radar'}</span>
+          </button>
+
+          <button
+            onClick={() => setActiveDrawerTab(prev => prev === 'watershed' ? null : 'watershed')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${activeDrawerTab === 'watershed'
+              ? 'bg-sky-600 text-white border-sky-700 shadow-xs ring-1 ring-sky-400'
+              : 'bg-sky-50 text-sky-800 border-sky-200 hover:bg-sky-100'
+              }`}
+          >
+            <Waves className="w-3.5 h-3.5 text-sky-600 group-hover:text-sky-800" />
+            <span>{lang === 'np' ? '💧 नदी जलाधार सिम्युलेटर' : '💧 Watershed Flow'}</span>
+          </button>
+
+          <button
+            onClick={() => setActiveDrawerTab(prev => prev === 'crop_compare' ? null : 'crop_compare')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${activeDrawerTab === 'crop_compare'
+              ? 'bg-emerald-700 text-white border-emerald-600 shadow-xs ring-1 ring-emerald-400'
+              : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
+              }`}
+          >
+            <Scale className="w-3.5 h-3.5 text-emerald-600" />
+            <span>{lang === 'np' ? '🌾 द्वि-बाली तुलना' : '🌾 Crop Comparator'}</span>
+          </button>
+
+          <button
+            onClick={() => setActiveDrawerTab(prev => prev === 'energy_sizer' ? null : 'energy_sizer')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${activeDrawerTab === 'energy_sizer'
+              ? 'bg-amber-600 text-white border-amber-700 shadow-xs ring-1 ring-amber-400'
+              : 'bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100'
+              }`}
+          >
+            <Zap className="w-3.5 h-3.5 text-amber-600" />
+            <span>{lang === 'np' ? '⚡ स्वच्छ ऊर्जा क्यालकुलेटर' : '⚡ Energy Sizer'}</span>
+          </button>
+
+          <button
+            onClick={() => setActiveDrawerTab(prev => prev === 'palika_compare' ? null : 'palika_compare')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${activeDrawerTab === 'palika_compare'
+              ? 'bg-indigo-600 text-white border-indigo-700 shadow-xs ring-1 ring-indigo-400'
+              : 'bg-indigo-50 text-indigo-900 border-indigo-200 hover:bg-indigo-100'
+              }`}
+          >
+            <Scale className="w-3.5 h-3.5 text-indigo-600" />
+            <span>{lang === 'np' ? '⚖️ स्थानीय तह तुलना' : '⚖️ Palika Compare'}</span>
+          </button>
+
+          <button
+            onClick={() => setShowDossierModal(true)}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer border bg-gradient-to-r from-emerald-600 to-teal-700 text-white border-emerald-600 shadow-xs hover:from-emerald-700 hover:to-teal-800"
+          >
+            <FileText className="w-3.5 h-3.5 text-emerald-200" />
+            <span>{lang === 'np' ? '📄 नीति प्रतिवेदन (PDF)' : '📄 Executive Dossier (PDF)'}</span>
           </button>
 
           {activeDrawerTab && (
@@ -2606,7 +2664,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         </div>
       </div>
 
-      {/* 3. Collapsible Drawer Content for Elevation and Radar: Smooth Slide-In */}
+      {/* 3. Collapsible Drawer Content for Elevation, Radar, Watershed, Crops, Energy, Palikas: Smooth Slide-In */}
       {activeDrawerTab && activeDrawerTab !== 'matrix' && (
         <div className="relative animate-fade-in-up">
           {activeDrawerTab === 'elevation' && (
@@ -2626,7 +2684,48 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               lang={lang}
             />
           )}
+
+          {activeDrawerTab === 'watershed' && (
+            <MicroWatershedSimulator
+              currentRainMm={currentRainMm}
+              climateMonth={climateMonth}
+              lang={lang}
+            />
+          )}
+
+          {activeDrawerTab === 'crop_compare' && (
+            <CropClimateComparator
+              lang={lang}
+              onSelectCropFilter={(cropId) => {
+                setSelectedPillar('food');
+                onSubFilterChange({ foodMode: 'single_crop', crop: cropId });
+              }}
+            />
+          )}
+
+          {activeDrawerTab === 'energy_sizer' && (
+            <RenewableEnergySizer
+              lang={lang}
+            />
+          )}
+
+          {activeDrawerTab === 'palika_compare' && (
+            <PalikaBenchmarkComparator
+              lang={lang}
+              initialPalika1={hoveredPalika?.name || 'Ruru'}
+              initialPalika2="Madane"
+            />
+          )}
         </div>
+      )}
+
+      {/* 4. One-Click Palika Executive Policy Dossier Export Modal */}
+      {showDossierModal && (
+        <PalikaDossierExport
+          palikaName={hoveredPalika?.name || 'Ruru'}
+          onClose={() => setShowDossierModal(false)}
+          lang={lang}
+        />
       )}
     </div>
   );
