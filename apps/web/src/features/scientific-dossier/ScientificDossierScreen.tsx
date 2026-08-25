@@ -3,43 +3,43 @@ import { WEFESOutput } from '@wefes/shared-types';
 import {
   computeDeepNexusAnalysis, simulateSensitivity, computePortfolioMix,
   DistrictBenchmarkItem, CropCalendarMonth
-} from '../utils/nexusMath';
-import { getVarietiesByCrop, NARC_VARIETAL_DATABASE } from '../utils/narcVarietalData';
-import { computeSiteSpecificFertilizer } from '../utils/fertilizerEngine';
-import { computePostHarvestLoss, NEPAL_COLD_STORAGE_REGISTRY } from '../utils/postHarvestEngine';
-import { computeNexusReadiness } from '../utils/nexusReadinessEngine';
-import { computeSentinelCropHealth } from '../utils/sentinelEngine';
-import { computePestSurveillance } from '../utils/pestSurveillanceEngine';
-import { getBenchmarkByCrop, NEPAL_FINANCIAL_BENCHMARKS } from '../utils/nepalInvestmentBenchmarks';
-import { computeGenderAndMunicipalBudget } from '../utils/genderBudgetData';
-import { computeNDCTracker } from '../utils/ndcTracker';
-import { DATA_INTEGRITY_MATRIX } from '../utils/dataIntegrityData';
-import { computeAquaCropSimulation } from '../utils/aquaCropEngine';
+} from '../../utils/nexusMath';
+import { getVarietiesByCrop, NARC_VARIETAL_DATABASE } from '../../utils/narcVarietalData';
+import { computeSiteSpecificFertilizer } from '../../utils/fertilizerEngine';
+import { computePostHarvestLoss, NEPAL_COLD_STORAGE_REGISTRY } from '../../utils/postHarvestEngine';
+import { computeNexusReadiness } from '../../utils/nexusReadinessEngine';
+import { computeSentinelCropHealth } from '../../utils/sentinelEngine';
+import { computePestSurveillance } from '../../utils/pestSurveillanceEngine';
+import { getBenchmarkByCrop, NEPAL_FINANCIAL_BENCHMARKS } from '../../utils/nepalInvestmentBenchmarks';
+import { computeGenderAndMunicipalBudget } from '../../utils/genderBudgetData';
+import { computeNDCTracker } from '../../utils/ndcTracker';
+import { DATA_INTEGRITY_MATRIX } from '../../utils/dataIntegrityData';
+import { computeAquaCropSimulation } from '../../utils/aquaCropEngine';
 import {
   computeMultiSpeciesLivestockBioeconomy,
   NEPAL_LIVESTOCK_DATABASE,
   LivestockSpeciesType,
   MultiSpeciesHerdConfig
-} from '../utils/livestockDairyEngine';
-import { computeAquacultureModel } from '../utils/aquacultureEngine';
-import { computeGroundwaterConjunctiveModel } from '../utils/groundwaterConjunctiveEngine';
-import { computeHeatStressRisk } from '../utils/heatStressEngine';
-import { computeBioenergyModel } from '../utils/bioenergyEngine';
-import { computeExportTraceability } from '../utils/exportTraceabilityEngine';
-import { computeDevelopmentPartnerAlignment } from '../utils/donorAlignmentEngine';
-import { computeAgronomicStandards } from '../utils/agronomicStandardsEngine';
+} from '../../utils/livestockDairyEngine';
+import { computeAquacultureModel } from '../../utils/aquacultureEngine';
+import { computeGroundwaterConjunctiveModel } from '../../utils/groundwaterConjunctiveEngine';
+import { computeHeatStressRisk } from '../../utils/heatStressEngine';
+import { computeBioenergyModel } from '../../utils/bioenergyEngine';
+import { computeExportTraceability } from '../../utils/exportTraceabilityEngine';
+import { computeDevelopmentPartnerAlignment } from '../../utils/donorAlignmentEngine';
+import { computeAgronomicStandards } from '../../utils/agronomicStandardsEngine';
 import { CircularBioeconomyCockpit } from './CircularBioeconomyCockpit';
-import { CircularSankeyFlow } from './visuals/CircularSankeyFlow';
-import { DonorNetworkGraph } from './visuals/DonorNetworkGraph';
-import { SunburstWaterCarbon } from './visuals/SunburstWaterCarbon';
-import { PhenologyTimelineChart } from './visuals/PhenologyTimelineChart';
-import { FinancialDcfChart } from './visuals/FinancialDcfChart';
-import { NexusRadarSpider } from './visuals/NexusRadarSpider';
-import { QueftsNutrientGauge } from './visuals/QueftsNutrientGauge';
+import { CircularSankeyFlow } from '../../components/charts/CircularSankeyFlow';
+import { DonorNetworkGraph } from '../../components/charts/DonorNetworkGraph';
+import { SunburstWaterCarbon } from '../../components/charts/SunburstWaterCarbon';
+import { PhenologyTimelineChart } from '../../components/charts/PhenologyTimelineChart';
+import { FinancialDcfChart } from '../../components/charts/FinancialDcfChart';
+import { NexusRadarSpider } from '../../components/charts/NexusRadarSpider';
+import { QueftsNutrientGauge } from '../../components/charts/QueftsNutrientGauge';
 import { PalikaFertilizerCockpit } from './PalikaFertilizerCockpit';
-import { AquacultureMetricsChart } from './visuals/AquacultureMetricsChart';
-import { SentinelNdviChart } from './visuals/SentinelNdviChart';
-import { HeatStressThermalChart } from './visuals/HeatStressThermalChart';
+import { AquacultureMetricsChart } from '../../components/charts/AquacultureMetricsChart';
+import { SentinelNdviChart } from '../../components/charts/SentinelNdviChart';
+import { HeatStressThermalChart } from '../../components/charts/HeatStressThermalChart';
 import {
   Scale, Sparkles, TrendingUp, AlertTriangle, CheckCircle2,
   Info, Cpu, Trees, Zap, Sprout, Droplets, Coins, Users,

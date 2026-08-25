@@ -7,7 +7,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip,
   ComposedChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, ReferenceLine, Cell
 } from 'recharts';
-import { arimaForecast, extractAnnualRainfallSeries, ARIMAResult } from '../utils/rainfallForecast';
+import { arimaForecast, extractAnnualRainfallSeries, ARIMAResult } from '../../utils/rainfallForecast';
 import {
   Sprout, CloudRain, Sun, Mountain, DollarSign, ArrowLeft, ChevronRight, Sparkles,
   Layers, GitCompare, Calendar, Wind, Thermometer, Gauge, Zap, X, Info, TrendingUp,
@@ -16,8 +16,8 @@ import {
 } from 'lucide-react';
 import { FeasibilityMatrix } from './FeasibilityMatrix';
 import { CropComparativeAnalysis } from './CropComparativeAnalysis';
-import { DistrictDetailMap } from './DistrictDetailMap';
-import { DISTRICT_PALIKAS, DistrictPalika } from '../data/districtPalikaAssets';
+import { DistrictDetailMap } from '../map/DistrictDetailMap';
+import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
 import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
 import { PalikaDossierExportModal } from './PalikaDossierExportModal';
 import { FileText, Printer, Scale, CheckCircle } from 'lucide-react';

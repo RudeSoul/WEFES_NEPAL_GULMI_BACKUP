@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { DistrictPalika } from '../data/districtPalikaAssets';
+import { DistrictPalika } from '../../data/districtPalikaAssets';
 import { Printer, Download, X, Mountain, CloudRain, Thermometer, Sparkles, Sprout, CheckCircle2, ShieldCheck, MapPin } from 'lucide-react';
 
 interface PalikaDossierExportModalProps {

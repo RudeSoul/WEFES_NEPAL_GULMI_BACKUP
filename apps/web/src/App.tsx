@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { District, Crop, WEFESOutput, WEFESPillar } from '@wefes/shared-types';
 import { db } from '@wefes/database';
-import { Header } from './components/Header';
-import { DistrictMap } from './components/DistrictMap';
-import { DistrictDetail } from './components/DistrictDetail';
-import { InputModal } from './components/InputModal';
-import { AnalysisDashboard } from './components/AnalysisDashboard';
-import { ScenarioSimulator } from './components/ScenarioSimulator';
-import { ScientificDossierScreen } from './components/ScientificDossierScreen';
-import { ResearchSandboxScreen } from './components/ResearchSandboxScreen';
-import { FloatingResearchLabTrigger } from './components/FloatingResearchLabTrigger';
+import { Header, InputModal, FloatingResearchLabTrigger } from './components/common';
+import { DistrictMap } from './features/map';
+import { DistrictDetail } from './features/palika';
+import { AnalysisDashboard } from './features/nexus';
+import { ScenarioSimulator } from './features/simulator';
+import { ScientificDossierScreen } from './features/scientific-dossier';
+import { ResearchSandboxScreen } from './features/research-sandbox';
 
 export function App() {
   const [activeScreen, setActiveScreen] = useState<number>(1);

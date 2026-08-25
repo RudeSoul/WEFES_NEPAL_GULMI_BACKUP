@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mountain, Users, Layers, Sprout, Search, Info, ChevronDown, ChevronUp, Globe, Sparkles } from 'lucide-react';
-import { DISTRICT_PALIKAS } from '../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS } from '../../data/districtPalikaAssets';
 
 interface ExecutiveHeroBannerProps {
   onSearchSelect: (type: 'palika' | 'filter' | 'crop', value: string) => void;

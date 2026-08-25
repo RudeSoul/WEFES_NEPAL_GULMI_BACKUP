@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { DistrictPalika, DISTRICT_PALIKAS, PalikaFeasibleCrop } from '../data/districtPalikaAssets';
+import { DistrictPalika, DISTRICT_PALIKAS, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
 import {
   Scale, Mountain, CloudRain, Thermometer, Sparkles, TrendingUp,
   Sprout, Zap, Trees, Building2, Sun, Droplets, Wind, Cloud, CheckCircle2,

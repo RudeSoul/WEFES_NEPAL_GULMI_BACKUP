@@ -18,16 +18,16 @@ import {
   DistrictLandmarks,
   RealHydropowerAsset,
   CoffeeLandmark
-} from '../data/districtRealAssets';
-import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../data/districtPalikaAssets';
+} from '../../data/districtRealAssets';
+import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
 import {
   DANGEROUS_GLACIAL_LAKES_BY_DISTRICT,
   DHM_RIVER_STATIONS_BY_DISTRICT,
   DetailedGlacialLake,
   DHMRiverStation
-} from '../data/districtHydrologyAssets';
-import { generateDistrictContours, ContourLine } from '../utils/contourGenerator';
-import gulmiSoilPoints from '../data/gulmiSoilPoints.json';
+} from '../../data/districtHydrologyAssets';
+import { generateDistrictContours, ContourLine } from '../../utils/contourGenerator';
+import gulmiSoilPoints from '../../data/gulmiSoilPoints.json';
 
 const GULMI_PALIKA_NEPALI: Record<string, string> = {
   'Resunga': 'रेसुङ्गा',

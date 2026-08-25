@@ -9,7 +9,7 @@ import {
   DISTRICTS_SEED_DATA,
   CROPS_SEED_DATA,
 } from '@wefes/database';
-import { DISTRICT_PALIKAS, DistrictPalika } from '../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
 import { calculateFertilizerNexusImpact } from '@wefes/wefes-engine';
 import {
   Truck,

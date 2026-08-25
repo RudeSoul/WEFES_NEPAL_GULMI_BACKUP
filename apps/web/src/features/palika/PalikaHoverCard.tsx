@@ -1,5 +1,5 @@
 import React from 'react';
-import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
 import { Mountain, Thermometer, CloudRain, Sparkles, Sprout, ArrowRight, Layers } from 'lucide-react';
 
 interface PalikaHoverCardProps {

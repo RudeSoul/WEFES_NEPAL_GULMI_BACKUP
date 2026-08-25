@@ -10,14 +10,14 @@ import DistrictHoverCard from './DistrictHoverCard';
 import ClimateTimeController from './ClimateTimeController';
 import { MapGestureHandler } from './MapGestureHandler';
 import { ExecutiveHeroBanner } from './ExecutiveHeroBanner';
-import { PolicyPresetSelector } from './PolicyPresetSelector';
-import { PalikaQuickMatrix } from './PalikaQuickMatrix';
+import { PolicyPresetSelector } from '../simulator/PolicyPresetSelector';
+import { PalikaQuickMatrix } from '../palika/PalikaQuickMatrix';
 import { ElevationCrossSection } from './ElevationCrossSection';
-import { NexusRadarWidget } from './NexusRadarWidget';
+import { NexusRadarWidget } from '../nexus/NexusRadarWidget';
 import { MapPin, Sparkles, Calendar, Coins, Trees, Droplets, Zap, Sprout, Sun, Wheat, Cherry, Leaf, Thermometer, Mountain, Target, Layers, CloudRain, Wind, Activity, Globe, Compass, Check, Eye, EyeOff, Building2 } from 'lucide-react';
-import gulmiSoilPoints from '../data/gulmiSoilPoints.json';
-import { PalikaHoverCard } from './PalikaHoverCard';
-import { DISTRICT_PALIKAS } from '../data/districtPalikaAssets';
+import gulmiSoilPoints from '../../data/gulmiSoilPoints.json';
+import { PalikaHoverCard } from '../palika/PalikaHoverCard';
+import { DISTRICT_PALIKAS } from '../../data/districtPalikaAssets';
 
 // Fix Leaflet default marker icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;

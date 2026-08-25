@@ -1,5 +1,5 @@
 import React from 'react';
-import { DISTRICT_PALIKAS, DistrictPalika } from '../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
 import { Mountain, CloudRain, Sprout, ArrowUpRight, CheckCircle2 } from 'lucide-react';
 import { WEFESPillar } from '@wefes/shared-types';
 
