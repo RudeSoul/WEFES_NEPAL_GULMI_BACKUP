@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CropCalendarMonth } from '../../utils/nexusMath';
+import { CropCalendarMonth } from '@wefes/wefes-engine';
 
 interface PhenologyTimelineChartProps {
   districtName: string;

@@ -7,7 +7,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, Tooltip,
   ComposedChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, ReferenceLine, Cell
 } from 'recharts';
-import { arimaForecast, extractAnnualRainfallSeries, ARIMAResult } from '../../utils/rainfallForecast';
+import { arimaForecast, extractAnnualRainfallSeries, ARIMAResult } from '@wefes/wefes-engine';
 import {
   Sprout, CloudRain, Sun, Mountain, DollarSign, ArrowLeft, ChevronRight, Sparkles,
   Layers, GitCompare, Calendar, Wind, Thermometer, Gauge, Zap, X, Info, TrendingUp,

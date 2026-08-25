@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { WEFESOutput } from '@wefes/shared-types';
-import { computeDeepNexusAnalysis, simulateSensitivity } from '../../utils/nexusMath';
+import { computeDeepNexusAnalysis, simulateSensitivity } from '@wefes/wefes-engine';
 import {
   X, Scale, Sparkles, TrendingUp, AlertTriangle, CheckCircle2,
   Info, Cpu, Trees, Zap, Sprout, Droplets, Coins, Users,

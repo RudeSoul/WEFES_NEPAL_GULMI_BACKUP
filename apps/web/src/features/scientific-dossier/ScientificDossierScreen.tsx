@@ -3,31 +3,31 @@ import { WEFESOutput } from '@wefes/shared-types';
 import {
   computeDeepNexusAnalysis, simulateSensitivity, computePortfolioMix,
   DistrictBenchmarkItem, CropCalendarMonth
-} from '../../utils/nexusMath';
-import { getVarietiesByCrop, NARC_VARIETAL_DATABASE } from '../../utils/narcVarietalData';
-import { computeSiteSpecificFertilizer } from '../../utils/fertilizerEngine';
-import { computePostHarvestLoss, NEPAL_COLD_STORAGE_REGISTRY } from '../../utils/postHarvestEngine';
-import { computeNexusReadiness } from '../../utils/nexusReadinessEngine';
-import { computeSentinelCropHealth } from '../../utils/sentinelEngine';
-import { computePestSurveillance } from '../../utils/pestSurveillanceEngine';
-import { getBenchmarkByCrop, NEPAL_FINANCIAL_BENCHMARKS } from '../../utils/nepalInvestmentBenchmarks';
-import { computeGenderAndMunicipalBudget } from '../../utils/genderBudgetData';
-import { computeNDCTracker } from '../../utils/ndcTracker';
-import { DATA_INTEGRITY_MATRIX } from '../../utils/dataIntegrityData';
-import { computeAquaCropSimulation } from '../../utils/aquaCropEngine';
+} from '@wefes/wefes-engine';
+import { getVarietiesByCrop, NARC_VARIETAL_DATABASE } from '@wefes/wefes-engine';
+import { computeSiteSpecificFertilizer } from '@wefes/wefes-engine';
+import { computePostHarvestLoss, NEPAL_COLD_STORAGE_REGISTRY } from '@wefes/wefes-engine';
+import { computeNexusReadiness } from '@wefes/wefes-engine';
+import { computeSentinelCropHealth } from '@wefes/wefes-engine';
+import { computePestSurveillance } from '@wefes/wefes-engine';
+import { getBenchmarkByCrop, NEPAL_FINANCIAL_BENCHMARKS } from '@wefes/wefes-engine';
+import { computeGenderAndMunicipalBudget } from '@wefes/wefes-engine';
+import { computeNDCTracker } from '@wefes/wefes-engine';
+import { DATA_INTEGRITY_MATRIX } from '@wefes/wefes-engine';
+import { computeAquaCropSimulation } from '@wefes/wefes-engine';
 import {
   computeMultiSpeciesLivestockBioeconomy,
   NEPAL_LIVESTOCK_DATABASE,
   LivestockSpeciesType,
   MultiSpeciesHerdConfig
-} from '../../utils/livestockDairyEngine';
-import { computeAquacultureModel } from '../../utils/aquacultureEngine';
-import { computeGroundwaterConjunctiveModel } from '../../utils/groundwaterConjunctiveEngine';
-import { computeHeatStressRisk } from '../../utils/heatStressEngine';
-import { computeBioenergyModel } from '../../utils/bioenergyEngine';
-import { computeExportTraceability } from '../../utils/exportTraceabilityEngine';
-import { computeDevelopmentPartnerAlignment } from '../../utils/donorAlignmentEngine';
-import { computeAgronomicStandards } from '../../utils/agronomicStandardsEngine';
+} from '@wefes/wefes-engine';
+import { computeAquacultureModel } from '@wefes/wefes-engine';
+import { computeGroundwaterConjunctiveModel } from '@wefes/wefes-engine';
+import { computeHeatStressRisk } from '@wefes/wefes-engine';
+import { computeBioenergyModel } from '@wefes/wefes-engine';
+import { computeExportTraceability } from '@wefes/wefes-engine';
+import { computeDevelopmentPartnerAlignment } from '@wefes/wefes-engine';
+import { computeAgronomicStandards } from '@wefes/wefes-engine';
 import { CircularBioeconomyCockpit } from './CircularBioeconomyCockpit';
 import { CircularSankeyFlow } from '../../components/charts/CircularSankeyFlow';
 import { DonorNetworkGraph } from '../../components/charts/DonorNetworkGraph';

@@ -3,7 +3,7 @@ import {
   computeCircularBioeconomy,
   CircularBioeconomyInput,
   CircularBioeconomyResult
-} from '../../utils/circularBioeconomyEngine';
+} from '@wefes/wefes-engine';
 import {
   RefreshCw, Sprout, Milk, Fish, Flame, Waves, TrendingUp,
   DollarSign, CheckCircle2, AlertTriangle, ShieldCheck, ArrowRight,

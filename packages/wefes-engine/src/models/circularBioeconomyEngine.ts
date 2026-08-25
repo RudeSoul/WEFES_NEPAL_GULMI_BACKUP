@@ -1,4 +1,4 @@
-import { DISTRICTS_SEED_DATA, CROPS_SEED_DATA } from '@wefes/database';
+import { District, Crop } from '@wefes/shared-types';
 
 export interface CircularBioeconomyInput {
   districtName: string;
@@ -90,23 +90,13 @@ export function computeCircularBioeconomy(
   } = input;
 
   const dNorm = districtName.toLowerCase();
-  const matchedDist = DISTRICTS_SEED_DATA.find(
-    d => d.name.toLowerCase() === dNorm || d.id.toLowerCase() === dNorm
-  );
-  const matchedCrop = CROPS_SEED_DATA.find(
-    c => c.name.toLowerCase() === cropName.toLowerCase() ||
-         c.id.toLowerCase() === cropName.toLowerCase()
-  );
-
-  const isTerai = matchedDist
-    ? matchedDist.ecoZone === 'Terai'
-    : ['rupandehi', 'kapilvastu', 'nawalparasi'].includes(dNorm);
+  const isTerai = ['rupandehi', 'kapilvastu', 'nawalparasi'].includes(dNorm);
 
   // 1. Crop calculations using seed data properties
   const isPaddy = cropName.toLowerCase().includes('paddy') || cropName.toLowerCase().includes('rice');
-  const baseCropYieldTonPerHa = isPaddy ? 4.8 : (matchedCrop?.baseUnitName === 'kg' ? 4.5 : 5.2);
+  const baseCropYieldTonPerHa = isPaddy ? 4.8 : 4.5;
   const totalCropBiomassKg = Math.round(cropLandHa * baseCropYieldTonPerHa * 1000);
-  const cropPricePerKg = matchedCrop?.marketValuePerUnit ?? (isPaddy ? 38 : 45);
+  const cropPricePerKg = isPaddy ? 38 : 45;
   const cropRevenue = totalCropBiomassKg * cropPricePerKg;
   const cropStrawResidueTons = Number((totalCropBiomassKg * (isPaddy ? 1.15 : 0.85) / 1000).toFixed(1)); // straw:grain ratio
 
@@ -141,7 +131,7 @@ export function computeCircularBioeconomy(
   const recycledPondWaterM3 = Math.round(aquaculturePondHa * 2800); // 2,800 m³ recycled via gravity drain
 
   // 5. Conjunctive Water Balance
-  const cropWaterPerKg = matchedCrop?.waterFootprintPerUnit ?? (isPaddy ? 1400 : 800);
+  const cropWaterPerKg = isPaddy ? 1400 : 800;
   const cropWaterM3 = Math.round((totalCropBiomassKg * cropWaterPerKg) / 1000);
   const dairyWaterM3 = Math.round(dairyHerdSize * 65 * 365 / 1000);
   const pondEvapM3 = Math.round(aquaculturePondHa * 13500);
@@ -152,7 +142,7 @@ export function computeCircularBioeconomy(
   if (aquaculturePondHa > 0) netWaterTableShiftCm += 2.5;
 
   // 6. Nutritional aggregation
-  const cropCalories = matchedCrop?.caloriesPerUnit ?? 3400;
+  const cropCalories = 3400;
   const caloricYield = Math.round(
     (totalCropBiomassKg * cropCalories) + (totalMilkLiters * 680) + (totalFishKg * 1100)
   );
@@ -161,8 +151,8 @@ export function computeCircularBioeconomy(
   );
 
   // 7. Economics & Financial OPEX
-  const laborRate = matchedDist?.laborRateNprPerDay ?? matchedDist?.agriLaborMarketRateAvgNpr ?? 750;
-  const cropOpex = Math.round(cropLandHa * (matchedCrop?.laborDaysPerUnit ? matchedCrop.laborDaysPerUnit * (totalCropBiomassKg / cropLandHa) * laborRate + 15000 : 48000));
+  const laborRate = 760;
+  const cropOpex = Math.round(cropLandHa * 48000);
   const dairyOpex = dairyHerdSize * 32000;
   const fishOpex = aquaculturePondHa * 420000;
   const biogasMaintenanceOpex = activeDigesters * 3500;

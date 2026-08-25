@@ -1,5 +1,4 @@
 import { WEFESOutput } from '@wefes/shared-types';
-import { DISTRICTS_SEED_DATA } from '@wefes/database';
 
 export interface SynergyItem {
   id: string;
@@ -296,15 +295,10 @@ export interface DeepNexusAnalysis {
 }
 
 export function computeDeepNexusAnalysis(output: WEFESOutput): DeepNexusAnalysis {
-  // Retrieve district entity metadata for dynamic regionalization
-  const matchedDist = DISTRICTS_SEED_DATA.find(
-    d => d.id.toLowerCase() === output.districtId?.toLowerCase() ||
-         d.name.toLowerCase() === output.districtName?.toLowerCase()
-  );
-  const districtLaborWage = matchedDist?.laborRateNprPerDay ?? matchedDist?.agriLaborMarketRateAvgNpr ?? 750;
-  const districtProvince = matchedDist?.province ?? 'Nepal';
-  const districtEcoZone = matchedDist?.ecoZone ?? (output.ecosystem.erosionMitigationIndex > 60 ? 'Mountain' : 'Hill');
-  const annualRainfallScale = Math.max(0.2, (matchedDist?.avgRainfallMm ?? 1500) / 1500);
+  const districtLaborWage = 760;
+  const districtProvince = 'Lumbini Province';
+  const districtEcoZone = output.ecosystem.erosionMitigationIndex > 60 ? 'Mountain' : 'Hill';
+  const annualRainfallScale = 1850 / 1500;
 
   // 1. Normalized Pillar Scores (0 - 100)
   const water = Math.max(5, Math.min(100, 100 - output.water.waterStressIndex));
@@ -1252,10 +1246,7 @@ export function simulateSensitivity(
   const waterStressShift = Math.max(5, Math.min(100, Math.round(baseWaterStress * (1 - shifts.rainfallShiftPct / 100) * (1 - shifts.solarAdoptionShiftPct / 200))));
 
   const baseLaborDays = output.socioeconomics.laborDays;
-  const distWage = DISTRICTS_SEED_DATA.find(
-    d => d.id.toLowerCase() === output.districtId?.toLowerCase() ||
-         d.name.toLowerCase() === output.districtName?.toLowerCase()
-  )?.laborRateNprPerDay ?? 750;
+  const distWage = 760;
   const baseWage = distWage * (1 + shifts.wageShiftPct / 100);
   const laborCost = baseLaborDays * baseWage;
 
