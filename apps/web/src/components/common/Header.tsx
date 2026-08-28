@@ -58,8 +58,8 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setActiveScreen(1)}
             className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${activeScreen === 1
-                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+              ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
           >
             <MapPin className="w-3.5 h-3.5 text-emerald-600" />
@@ -70,8 +70,8 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => setActiveScreen(2)}
             className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${activeScreen === 2
-                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+              ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
           >
             <span>2. Gulmi Detail</span>
@@ -82,10 +82,10 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => selectedCropName && setActiveScreen(4)}
             disabled={!selectedCropName}
             className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${activeScreen === 4
-                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-                : selectedCropName
-                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
-                  : 'text-slate-400 opacity-60 cursor-not-allowed'
+              ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+              : selectedCropName
+                ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
+                : 'text-slate-400 opacity-60 cursor-not-allowed'
               }`}
           >
             <Layers className="w-3.5 h-3.5 text-blue-600" />
@@ -97,10 +97,10 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => selectedCropName && setActiveScreen(5)}
             disabled={!selectedCropName}
             className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${activeScreen === 5
-                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-                : selectedCropName
-                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
-                  : 'text-slate-400 opacity-60 cursor-not-allowed'
+              ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+              : selectedCropName
+                ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
+                : 'text-slate-400 opacity-60 cursor-not-allowed'
               }`}
           >
             <span>4. Simulator</span>
@@ -111,10 +111,10 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => selectedCropName && setActiveScreen(6)}
             disabled={!selectedCropName}
             className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${activeScreen === 6
-                ? 'bg-emerald-700 text-white font-bold shadow-2xs'
-                : selectedCropName
-                  ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/60 font-semibold cursor-pointer'
-                  : 'text-slate-400 opacity-60 cursor-not-allowed'
+              ? 'bg-emerald-700 text-white font-bold shadow-2xs'
+              : selectedCropName
+                ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/60 font-semibold cursor-pointer'
+                : 'text-slate-400 opacity-60 cursor-not-allowed'
               }`}
           >
             <Landmark className="w-3.5 h-3.5" />
