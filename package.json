@@ -4,6 +4,7 @@
   "scripts": {
     "build": "pnpm exec turbo run build",
     "dev": "pnpm exec turbo run dev --parallel",
+    "test": "pnpm exec turbo run test",
     "lint": "pnpm exec turbo run lint",
     "clean": "pnpm exec turbo run clean"
   },

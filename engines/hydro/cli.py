@@ -26,31 +26,20 @@ import tarfile
 import urllib.request
 from pathlib import Path
 
-# Add current directory to path so `src` resolves cleanly
+# Add current directory to path so `src` resolves cleanly both standalone and in monorepo
 ENGINE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = ENGINE_DIR.parents[1]
 if str(ENGINE_DIR) not in sys.path:
     sys.path.insert(0, str(ENGINE_DIR))
 
-# Support both workspace-root analysis (VS Code Pylance) and standalone execution
-try:
-    from engines.hydro.src import (
-        run_topographic_analysis,
-        run_hydrological_estimation,
-        apply_environmental_flows,
-        simulate_energy_yield,
-        apply_spatial_screening,
-        verify_and_export
-    )
-except (ImportError, ModuleNotFoundError):
-    from src import (
-        run_topographic_analysis,
-        run_hydrological_estimation,
-        apply_environmental_flows,
-        simulate_energy_yield,
-        apply_spatial_screening,
-        verify_and_export
-    )
+from src import (
+    run_topographic_analysis,
+    run_hydrological_estimation,
+    apply_environmental_flows,
+    simulate_energy_yield,
+    apply_spatial_screening,
+    verify_and_export
+)
 
 
 def ensure_dem(dem_path: str, output_dir: str, api_key: str):
