@@ -265,3 +265,13 @@ export interface SensitivitySimulationResult {
   simulatedNetMarginPct: number;
   mrtsWaterToCapital: number;
 }
+
+export interface PortfolioBlendResult {
+  blendedNexusScore: number;
+  blendedWaterFootprintM3: number;
+  blendedRevenueNpr: number;
+  dietaryDiversityScore: number;
+  incomeStabilityIndex: number;
+  riskReductionPct: number;
+}
+

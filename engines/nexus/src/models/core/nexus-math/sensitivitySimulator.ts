@@ -1,5 +1,5 @@
 import { WEFESOutput } from '@wefes/shared-types';
-import { SensitivitySimulationResult } from './nexusMathTypes';
+import { SensitivitySimulationResult, PortfolioBlendResult } from './nexusMathTypes';
 
 export function simulateSensitivity(
   output: WEFESOutput,
@@ -46,3 +46,47 @@ export function simulateSensitivity(
     mrtsWaterToCapital,
   };
 }
+
+export function computePortfolioMix(
+  output: WEFESOutput,
+  allocations: {
+    primaryPct: number;
+    secondaryPct: number;
+    tertiaryPct: number;
+  }
+): PortfolioBlendResult {
+  const normPrimary = allocations.primaryPct / 100;
+  const normSecondary = allocations.secondaryPct / 100;
+  const normTertiary = allocations.tertiaryPct / 100;
+
+  const blendedWaterFootprintM3 = Math.round(
+    output.water.consumptionM3 * (normPrimary * 1.0 + normSecondary * 0.65 + normTertiary * 0.8)
+  );
+
+  const blendedRevenueNpr = Math.round(
+    output.socioeconomics.grossRevenueNpr * (normPrimary * 1.0 + normSecondary * 0.75 + normTertiary * 1.65)
+  );
+
+  const dietaryDiversityScore = Math.min(100, Math.round(55 + (normSecondary * 25) + (normTertiary * 20)));
+  const incomeStabilityIndex = Math.min(100, Math.round(50 + (1 - Math.abs(normPrimary - 0.5)) * 40));
+  const riskReductionPct = Math.round(normSecondary * 22 + normTertiary * 28);
+
+  const blendedNexusScore = Math.min(
+    100,
+    Math.round(
+      output.nexusBalanceIndex * normPrimary +
+      (output.nexusBalanceIndex + 14) * normSecondary +
+      (output.nexusBalanceIndex + 18) * normTertiary
+    )
+  );
+
+  return {
+    blendedNexusScore,
+    blendedWaterFootprintM3,
+    blendedRevenueNpr,
+    dietaryDiversityScore,
+    incomeStabilityIndex,
+    riskReductionPct,
+  };
+}
+
