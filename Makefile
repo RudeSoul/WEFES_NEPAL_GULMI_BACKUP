@@ -19,11 +19,11 @@ test-nexus:
 	pnpm --filter @wefes/wefes-engine test
 
 test-hydro:
-	python3 -m py_compile engines/hydro/cli.py engines/hydro/src/*.py
+	python3 -m py_compile engines/water/hydro/cli.py engines/water/hydro/src/*.py
 
 # Execute the autonomous Python Hydropower & Topographic Engine
 run-hydro:
-	python3 engines/hydro/cli.py --district Gulmi --output-dir data/calculated/hydro_reaches
+	python3 engines/water/hydro/cli.py --district Gulmi --output-dir data/calculated/hydro_reaches
 
 # Download and verify heavy binary rasters from data/manifest.json
 sync-data:
@@ -35,4 +35,4 @@ update-ai-index:
 
 # Clean build artifacts and caches
 clean:
-	rm -rf .turbo node_modules/.cache dist apps/web/dist engines/nexus/dist engines/hydro/__pycache__
+	rm -rf .turbo node_modules/.cache dist apps/web/dist engines/nexus/dist engines/water/hydro/__pycache__

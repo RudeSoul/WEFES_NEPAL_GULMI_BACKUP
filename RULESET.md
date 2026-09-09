@@ -5,18 +5,20 @@ This document serves as the absolute, non-negotiable engineering constitution fo
 ---
 
 ## Rule 1: Zero Inward Code Imports & Engine Autonomy
-- Engines (`engines/hydro`, `engines/nexus`, `engines/routing`) must be 100% headless, isolated, and domain-pure.
-- **Engines NEVER import code from `apps/` or `packages/`.**
+- Engines (`engines/water/hydro`, `engines/nexus`, `engines/energy`, `engines/food`) must be 100% headless, isolated, and domain-pure.
+- Under NO circumstances may an engine import from `apps/` or `packages/`.
+- Code flows OUTWARD ONLY: `engines/` -> `apps/` or `packages/` -> `apps/`.
 - Communication between engines, data layers, and applications occurs exclusively through:
   1. Standardized file artifacts (GeoJSON, CSV, JSON).
   2. CLI arguments and environment variables (`--input-dir`, `--output-dir`, `--district`).
   3. Clean REST/IPC APIs.
 
-### Standalone Repository Extraction Blueprint:
-To carve out any engine into its own independent GitHub repository while preserving its entire Git commit history:
+### Standalone Engine Execution & Git Subtree Splitting
+Every computational engine must be capable of running completely standalone outside of this repository.
+
 ```bash
-# Splits engines/hydro into a brand new standalone Git repository:
-git subtree split -P engines/hydro -b standalone-hydro-engine
+# Splits engines/water/hydro into a brand new standalone Git repository:
+git subtree split -P engines/water/hydro -b standalone-hydro-engine
 
 # Splits engines/nexus into its own standalone Git repository:
 git subtree split -P engines/nexus -b standalone-nexus-engine
@@ -39,7 +41,7 @@ Every module, hook, service, or script that consumes or transforms data must beg
 # Source File: data/real/hydrology/dhm_station_430_rudrabeni.csv
 # Lineage: DHM Nepal 10-year mean daily streamflow (2010–2020)
 # Confidence: HIGH (Observed hydrometric station record)
-# Consumed By: engines/hydro/src/hydrology/gauge_scaling.py
+# Consumed By: engines/water/hydro/src/hydrology/gauge_scaling.py
 # ==============================================================================
 ```
 
@@ -51,7 +53,7 @@ All project data must reside in one of three strictly governed tiers:
    - Official records from recognized agencies (DHM, MoALD, CBS, Survey Department).
    - **Immutable & Read-Only**: Code must never modify or overwrite files in this folder.
 2. `data/calculated/` (Reproducible Engine Outputs):
-   - Deterministic outputs computed by our engines (`engines/hydro`, `engines/nexus`).
+   - Deterministic outputs computed by our engines (`engines/water/hydro`, `engines/nexus`).
    - Must be completely reproducible by re-running the engine's CLI or test suites.
 3. `data/proxy/` (Surrogate Assumptions & Regional Estimates):
    - Used only when empirical data is unavailable.

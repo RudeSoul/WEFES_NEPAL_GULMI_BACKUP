@@ -28,7 +28,13 @@ from pathlib import Path
 
 # Add current directory to path so `src` resolves cleanly both standalone and in monorepo
 ENGINE_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = ENGINE_DIR.parents[1]
+# Determine monorepo root or fallback to local directory if run standalone
+if len(ENGINE_DIR.parents) >= 3 and (ENGINE_DIR.parents[2] / "data").exists():
+    PROJECT_ROOT = ENGINE_DIR.parents[2]
+elif len(ENGINE_DIR.parents) >= 2 and (ENGINE_DIR.parents[1] / "data").exists():
+    PROJECT_ROOT = ENGINE_DIR.parents[1]
+else:
+    PROJECT_ROOT = ENGINE_DIR
 if str(ENGINE_DIR) not in sys.path:
     sys.path.insert(0, str(ENGINE_DIR))
 
