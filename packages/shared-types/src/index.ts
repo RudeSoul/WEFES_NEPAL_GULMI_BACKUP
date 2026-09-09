@@ -363,3 +363,5 @@ export const ScenarioRequestSchema = z.object({
 });
 
 export type ScenarioRequest = z.infer<typeof ScenarioRequestSchema>;
+
+export * from './legend-contracts';

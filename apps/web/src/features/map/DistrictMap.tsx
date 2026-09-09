@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON, CircleMarker, Marker, Tooltip, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { District, WEFESPillar } from '@wefes/shared-types';
+import { District, WEFESPillar, SUBFILTER_LEGENDS } from '@wefes/shared-types';
 import { db } from '@wefes/database';
 import { computeCropSuitability } from '@wefes/wefes-engine';
+import { DynamicLegend } from '../../components/legend/DynamicLegend';
 import { SubFilterToolbar } from './SubFilterToolbar';
 import { PillarFilter } from './PillarFilter';
 import DistrictHoverCard from './DistrictHoverCard';
@@ -41,21 +42,15 @@ const GULMI_BOUNDS: [[number, number], [number, number]] = [
   [28.271, 83.608],
 ];
 
-// Palika centroid geographical coordinates for bilingual map labels (Exact Polygon Centroids from GeoJSON)
-const PALIKA_CENTROIDS: Record<string, { lat: number; lng: number; nepali: string }> = {
-  'Resunga': { lat: 28.0531, lng: 83.2658, nepali: 'रेसुङ्गा' },
-  'Musikot': { lat: 28.1846, lng: 83.2826, nepali: 'मुसिकोट' },
-  'Ruru': { lat: 27.9822, lng: 83.4256, nepali: 'रुरुक्षेत्र' },
-  'Satyawati': { lat: 28.0300, lng: 83.4689, nepali: 'सत्यवती' },
-  'Kaligandaki': { lat: 28.0502, lng: 83.5436, nepali: 'कालीगण्डकी' },
-  'Chandrakot': { lat: 28.1070, lng: 83.4208, nepali: 'चन्द्रकोट' },
-  'Chatrakot': { lat: 27.9862, lng: 83.3472, nepali: 'छत्रकोट' },
-  'Gulmidarbar': { lat: 28.0398, lng: 83.3167, nepali: 'गुल्मीदरबार' },
-  'Dhurkot': { lat: 28.1181, lng: 83.1408, nepali: 'धुर्कोट' },
-  'Isma': { lat: 28.1643, lng: 83.2054, nepali: 'इस्मा' },
-  'Malika': { lat: 28.2131, lng: 83.1426, nepali: 'मालिका' },
-  'Madane': { lat: 28.1750, lng: 83.0753, nepali: 'मदाने' },
-};
+// ==============================================================================
+// [DATA PROVENANCE]
+// Source File: data/real/boundaries/palika_centroids.json
+// Lineage: Survey Department / Local Government Palika Boundary Centroids
+// Consumed By: apps/web/src/features/map/DistrictMap.tsx
+// ==============================================================================
+import palikaCentroidsData from '../../data/palika_centroids.json';
+const { _provenance, ...palikaCentroidsMap } = palikaCentroidsData;
+const PALIKA_CENTROIDS = palikaCentroidsMap as unknown as Record<string, { lat: number; lng: number; nepali: string }>;
 
 function createPalikaLabelIcon(name: string, nepali: string, isHovered: boolean) {
   return L.divIcon({
@@ -1567,61 +1562,28 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         );
       }
 
-      // Default: MERRA-2 Topographically Downscaled Rainfall Legend (6 Tiers)
-      const title = `🌧️ MERRA-2 Topographically Downscaled Rainfall Micro-Climates (${MONTH_NAMES[climateMonth - 1]} ${climateMode === 'climatology' ? '39-Yr Baseline' : climateYear} - 6 Tiers):`;
-      const items: [string, string][] = [
-        ['#0369a1', `Tier 1: Peak Ridge Lekh (+20% to +24% Uplift: Madane ${Math.round(currentRainMm * 1.24)}mm, Resunga ${Math.round(currentRainMm * 1.20)}mm)`],
-        ['#0284c7', `Tier 2: High Mountain Ridge (+12% to +16%: Malika ${Math.round(currentRainMm * 1.16)}mm, Chandrakot ${Math.round(currentRainMm * 1.12)}mm)`],
-        ['#0ea5e9', `Tier 3: Upper Mid-Hill (+4% to +6%: Isma ${Math.round(currentRainMm * 1.06)}mm, Dhurkot ${Math.round(currentRainMm * 1.04)}mm)`],
-        ['#38bdf8', `Tier 4: Central Mid-Hill Baseline (-2% to +1%: Gulmidarbar ${Math.round(currentRainMm * 1.01)}mm, Satyawati ${Math.round(currentRainMm * 0.98)}mm)`],
-        ['#f59e0b', `Tier 5: Lower Valley Transition (-6% to -8%: Musikot ${Math.round(currentRainMm * 0.94)}mm, Chatrakot ${Math.round(currentRainMm * 0.92)}mm)`],
-        ['#ea580c', `Tier 6: Subtropical Riverbed (-12% to -18%: Ruru ${Math.round(currentRainMm * 0.88)}mm, Kaligandaki ${Math.round(currentRainMm * 0.82)}mm)`],
-      ];
+      // Dynamic MERRA-2 Topographically Downscaled Rainfall Legend
+      const rainfallConfig = SUBFILTER_LEGENDS['merra_rainfall'];
       return (
-        <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
-          <span className="text-slate-800 font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 text-xs">
-            <CloudRain className="w-3.5 h-3.5 text-sky-600" />
-            {title}
-          </span>
-          <div className="flex flex-wrap items-center gap-3.5">
-            {items.map(([c, l]) => (
-              <span key={l} className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-sm inline-block border border-slate-300 shadow-xs" style={{ backgroundColor: c }} />
-                <span className="text-slate-700 font-medium">{l}</span>
-              </span>
-            ))}
-          </div>
-        </div>
+        <DynamicLegend
+          config={{
+            ...rainfallConfig,
+            subtitle: `${MONTH_NAMES[climateMonth - 1]} (${climateMode === 'climatology' ? '39-Yr Climatology Baseline' : climateYear}) • Area Mean: ${Math.round(currentRainMm)}mm`
+          }}
+          className="animate-fade-in-up"
+        />
       );
     }
 
     if (selectedPillar === 'ecosystem') {
       const ecoSub = subFilters.ecoSubFilter || 'soil_ph';
       if (ecoSub === 'soil_ph') {
-        const title = '🧪 Soil Reaction (pH) & Agricultural Lime Requirement (6 Tiers):';
-        const items: [string, string][] = [
-          ['#0284c7', 'pH ≥7.0 Neutral / Slightly Alkaline River Alluvium (Ruru)'],
-          ['#059669', 'pH 6.6–6.9 Optimal Benchmark Agricultural Soil (Kaligandaki, Satyawati, Chandrakot, Musikot)'],
-          ['#10b981', 'pH 6.2–6.5 Slightly Acidic / Prime Agroforestry (Chatrakot, Gulmidarbar, Resunga)'],
-          ['#84cc16', 'pH 5.8–6.1 Moderately Acidic (Dhurkot, Isma)'],
-          ['#f59e0b', 'pH 5.4–5.7 Strongly Acidic / Agricultural Lime Recommended (Malika, Madane)'],
-          ['#ef4444', 'pH <5.4 Highly Acidic Pine / Sal Ridges (Heavy Liming Required)']
-        ];
+        const soilPhConfig = SUBFILTER_LEGENDS['soil_ph'];
         return (
-          <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
-            <span className="text-slate-800 font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 text-xs">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-              {title}
-            </span>
-            <div className="flex flex-wrap items-center gap-3.5">
-              {items.map(([c, l]) => (
-                <span key={l} className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-sm inline-block border border-slate-300 shadow-xs" style={{ backgroundColor: c }} />
-                  <span className="text-slate-700 font-medium">{l}</span>
-                </span>
-              ))}
-            </div>
-          </div>
+          <DynamicLegend
+            config={soilPhConfig}
+            className="animate-fade-in-up"
+          />
         );
       }
 
