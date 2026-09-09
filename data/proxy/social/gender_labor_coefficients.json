@@ -1,0 +1,70 @@
+{
+  "_metadata": {
+    "title": "Gender Labor & Municipal Budget Allocation Proxy Coefficients",
+    "region": "Nepal Mid-Hills (Gulmi / Gandaki Basin)",
+    "provenance": "Field surveys, MoALD Gender Equity & Social Inclusion (GESI) in Agriculture guidelines, CBS Labor Force Survey",
+    "tier": "PROXY"
+  },
+  "femaleLaborSharePct": 68,
+  "autonomousCreditAccessIndex": 64,
+  "ndcWomenRepresentationTargetPct": 50,
+  "drudgeryWeedingFraction": 0.45,
+  "dailyWorkHours": 8,
+  "womenFriendlyMicroMechanization": [
+    {
+      "toolName": "Lightweight Mini-Tiller (4.5 HP Electric/Petrol)",
+      "drudgeryReductionPct": 75,
+      "laborHoursSavedPerHa": 140,
+      "costNpr": 45000,
+      "womenCooperativeSubsidyEligibility": "85% Subsidized by Ministry"
+    },
+    {
+      "toolName": "Cono-Weeder / Rotary Mechanical Weeder",
+      "drudgeryReductionPct": 60,
+      "laborHoursSavedPerHa": 85,
+      "costNpr": 6500,
+      "womenCooperativeSubsidyEligibility": "Custom Hiring Center (CHC) Rental"
+    },
+    {
+      "toolName": "Solar-Powered Automated Drip Kit (500m²)",
+      "drudgeryReductionPct": 88,
+      "laborHoursSavedPerHa": 180,
+      "costNpr": 32000,
+      "womenCooperativeSubsidyEligibility": "50% Cooperative Loan"
+    }
+  ],
+  "defaultMunicipalBudget": {
+    "totalAnnualMunicipalBudgetNpr": 550000000,
+    "agriBudgetSharePct": 3.8,
+    "defaultSubAllocations": [
+      {
+        "program": "Women-Led Custom Hiring Centers (Mini-Tillers & Solar Kits)",
+        "currentSharePct": 15,
+        "recommendedSharePct": 35,
+        "shareMultiplier": 0.35,
+        "expectedOutcome": "Directly cuts female peak-season labor drudgery by 70% across 450 smallholder households."
+      },
+      {
+        "program": "NARC Certified Seed Multiplication & Biochar Composting",
+        "currentSharePct": 20,
+        "recommendedSharePct": 30,
+        "shareMultiplier": 0.30,
+        "expectedOutcome": "Supplies high-yielding biofortified certified seeds locally, ending dependence on adulterated open-market seeds."
+      },
+      {
+        "program": "Mulpani Springshed Recharge & Solar Micro-Irrigation Ponds",
+        "currentSharePct": 10,
+        "recommendedSharePct": 25,
+        "shareMultiplier": 0.25,
+        "expectedOutcome": "Protects 18 village drinking springs and provides gravity drip irrigation for 35 hectares of winter crops."
+      },
+      {
+        "program": "Administrative & Extension Travel Expenses",
+        "currentSharePct": 55,
+        "recommendedSharePct": 10,
+        "shareMultiplier": 0.10,
+        "expectedOutcome": "Reallocates administrative bloat into direct productive smallholder capital assets."
+      }
+    ]
+  }
+}
