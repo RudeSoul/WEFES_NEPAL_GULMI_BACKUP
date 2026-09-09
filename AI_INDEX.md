@@ -1,5 +1,5 @@
 # WEFES PLATFORM: AI CONTEXT & ARCHITECTURE MAP
-> Auto-generated on 2026-09-09 12:58. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
+> Auto-generated on 2026-09-09 13:05. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
 > This file is a high-density, token-optimized context anchor for AI assistants.
 
 ---

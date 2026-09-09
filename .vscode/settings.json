@@ -1,0 +1,10 @@
+{
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/engines/hydro",
+    "${workspaceFolder}/engines/hydro/src"
+  ],
+  "python.autoComplete.extraPaths": [
+    "${workspaceFolder}/engines/hydro",
+    "${workspaceFolder}/engines/hydro/src"
+  ]
+}
