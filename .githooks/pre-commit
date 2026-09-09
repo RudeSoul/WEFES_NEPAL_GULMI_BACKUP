@@ -26,8 +26,8 @@ while read -r added deleted filepath; do
     if [[ "$added" =~ ^[0-9]+$ ]] && [[ "$deleted" =~ ^[0-9]+$ ]]; then
         # Check if file should be exempt
         case "$filepath" in
-            *lock.yaml|*lock.json|*.lock|AI_INDEX.md|data/manifest.json|*.geojson|*.csv|data/calculated/*|dist/*)
-                # Exempt from line count limit
+            *lock.yaml|*lock.json|*.lock|AI_INDEX.md|data/manifest.json|*.geojson|*.csv|data/*|data/calculated/*|data/real/*|data/proxy/*|dist/*)
+                # Exempt from line count limit (data assets and build artifacts)
                 ;;
             *)
                 TOTAL_LINES=$((TOTAL_LINES + added + deleted))
