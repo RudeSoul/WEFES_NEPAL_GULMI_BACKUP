@@ -1,4 +1,4 @@
-import { DeepNexusAnalysis } from './nexusMath';
+import { DeepNexusAnalysis } from '../core/nexusMath';
 import { computeDevelopmentPartnerAlignment } from './donorAlignmentEngine';
 
 export interface ReadinessCriterion {

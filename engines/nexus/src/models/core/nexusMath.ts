@@ -13,7 +13,7 @@ export * from './nexus-math/couplingMatrixEngine';
 export * from './nexus-math/naturalCapitalSdgEngine';
 export * from './nexus-math/basinRusleEngine';
 export * from './nexus-math/gesiPhenologyEngine';
-export * from './nepalInvestmentBenchmarks';
+export * from '../social/nepalInvestmentBenchmarks';
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const NEP_MONTHS = ['माघ', 'फागुन', 'चैत', 'वैशाख', 'जेठ', 'असार', 'साउन', 'भदौ', 'असोज', 'कात्तिक', 'मंसिर', 'पुस'];

@@ -104,10 +104,10 @@ def main():
 
 | Engine | Language | Location | CLI / Execution Command | Primary Responsibility |
 |---|---|---|---|---|
-| **Hydro Engine** | Python | `engines/hydro/` | `python3 engines/hydro/cli.py` | 6-step D8 Priority-Flood, WECS/NEA hydrology, DOED E-flow, 500m reach energy |
-| **Nexus Engine** | TypeScript | `engines/nexus/` | `pnpm --filter @wefes/wefes-engine test` | Crop modeling, phenology, fertilizer stoichiometry, circular bioeconomy |
-| **API Service** | TypeScript | `apps/api/` | `pnpm --filter api dev` | Data delivery endpoints, query caching, simulation dispatch |
-| **Web Portal** | TypeScript | `apps/web/` | `pnpm --filter web dev` | Interactive Leaflet/MapLibre map, dynamic subfilter legends, indicators |
+| **Water (Hydro)** | Python | `engines/water/hydro/` | `python3 engines/water/hydro/cli.py` | 6-step D8 Priority-Flood, WECS/NEA hydrology, DOED E-flow, 500m reach energy |
+| **Nexus Core** | TypeScript | `engines/nexus/` | `pnpm --filter @wefes/wefes-engine test` | Cross-pillar simulation, 5-pillar domain models (Water, Food, Energy, Eco, Social) |
+| **API Gateway** | TypeScript | `apps/api/` | `pnpm --filter api dev` | Data delivery endpoints, query caching, simulation dispatch |
+| **Web Portal** | TypeScript | `apps/web/` | `pnpm --filter web dev` | Interactive Leaflet map, dynamic subfilter legends, policy simulator |
 
 ---
 
