@@ -1,0 +1,78 @@
+S.N.,District Name,Province,Primary Ecological Belt,Jilla Dar Rate Baseline (NPR/Day),Prevailing Real Market Rate Range (NPR/Day)
+1,Bhojpur,Koshi,Hills,760,700 - 850
+2,Dhankuta,Koshi,Hills,760,700 - 800
+3,Ilam,Koshi,Hills (Tea Belt),754,535 - 700
+4,Jhapa,Koshi,Tarai,754,600 - 680
+5,Khotang,Koshi,Hills,780,720 - 850
+6,Morang,Koshi,Tarai,754,600 - 680
+7,Okhaldhunga,Koshi,Hills,770,700 - 820
+8,Panchthar,Koshi,Hills,760,680 - 780
+9,Sankhuwasabha,Koshi,Mountain,850,800 - 950
+10,Solukhumbu,Koshi,Mountain,900,850 - 1000
+11,Sunsari,Koshi,Tarai,754,600 - 680
+12,Taplejung,Koshi,Mountain,850,800 - 950
+13,Terhathum,Koshi,Hills,760,680 - 780
+14,Udayapur,Koshi,Hills / Inner Tarai,760,650 - 750
+15,Bara,Madhesh,Tarai,754,550 - 650
+16,Dhanusha,Madhesh,Tarai,754,550 - 650
+17,Mahottari,Madhesh,Tarai,754,550 - 650
+18,Parsa,Madhesh,Tarai,754,570 - 650
+19,Rautahat,Madhesh,Tarai,754,550 - 650
+20,Saptari,Madhesh,Tarai,754,550 - 650
+21,Sarlahi,Madhesh,Tarai,754,550 - 650
+22,Siraha,Madhesh,Tarai,754,550 - 650
+23,Bhaktapur,Bagmati,Kathmandu Valley,890,800 - 900
+24,Chitwan,Bagmati,Inner Tarai,760,650 - 750
+25,Dhading,Bagmati,Hills,780,700 - 850
+26,Dolakha,Bagmati,Mountain,850,780 - 900
+27,Kathmandu,Bagmati,Kathmandu Valley,915,850 - 950
+28,Kavrepalanchok,Bagmati,Hills,800,750 - 880
+29,Lalitpur,Bagmati,Kathmandu Valley,890,800 - 900
+30,Makwanpur,Bagmati,Hills,770,700 - 800
+31,Nuwakot,Bagmati,Hills,785,720 - 850
+32,Ramechhap,Bagmati,Hills,780,700 - 820
+33,Rasuwa,Bagmati,Mountain,850,800 - 950
+34,Sindhuli,Bagmati,Hills,760,680 - 780
+35,Sindhupalchok,Bagmati,Mountain,850,800 - 950
+36,Baglung,Gandaki,Hills,800,750 - 900
+37,Gorkha,Gandaki,Hills / Mountain,790,720 - 880
+38,Kaski,Gandaki,Hills,850,780 - 920
+39,Lamjung,Gandaki,Hills,800,720 - 880
+40,Manang,Gandaki,High Mountain,1000,950 - 1150
+41,Mustang,Gandaki,High Mountain,1000,950 - 1150
+42,Myagdi,Gandaki,Hills,800,750 - 900
+43,Nawalpur,Gandaki,Inner Tarai,754,600 - 700
+44,Parbat,Gandaki,Hills,780,700 - 850
+45,Syangja,Gandaki,Hills,780,700 - 850
+46,Tanahun,Gandaki,Hills,780,700 - 820
+47,Arghakhanchi,Lumbini,Hills,765,700 - 820
+48,Banke,Lumbini,Tarai,754,600 - 680
+49,Bardiya,Lumbini,Tarai,754,600 - 680
+50,Dang,Lumbini,Inner Tarai,760,650 - 720
+51,Gulmi,Lumbini,Hills,770,700 - 820
+52,Kapilvastu,Lumbini,Tarai,754,550 - 650
+53,Parasi,Lumbini,Tarai,754,580 - 680
+54,Palpa,Lumbini,Hills,760,680 - 780
+55,Pyuthan,Lumbini,Hills,760,680 - 780
+56,Rolpa,Lumbini,Hills,780,700 - 850
+57,Rukum Purba,Lumbini,Hills,780,700 - 850
+58,Rupandehi,Lumbini,Tarai,754,600 - 700
+59,Dailekh,Karnali,Hills,780,700 - 850
+60,Dolpa,Karnali,Remote Mountain,950,900 - 1100
+61,Humla,Karnali,Remote Mountain,1000,950 - 1150
+62,Jajarkot,Karnali,Hills,780,700 - 850
+63,Jumla,Karnali,Mountain,850,800 - 950
+64,Kalikot,Karnali,Mountain,850,800 - 950
+65,Mugu,Karnali,Remote Mountain,950,900 - 1100
+66,Rukum Paschim,Karnali,Hills,780,700 - 850
+67,Salyan,Karnali,Hills,765,680 - 800
+68,Surkhet,Karnali,Hills / Valley,780,700 - 880
+69,Achham,Sudurpashchim,Hills,780,700 - 850
+70,Baitadi,Sudurpashchim,Hills,765,680 - 800
+71,Bajhang,Sudurpashchim,Mountain,850,800 - 950
+72,Bajura,Sudurpashchim,Mountain,850,800 - 950
+73,Dadeldhura,Sudurpashchim,Hills,765,680 - 820
+74,Darchula,Sudurpashchim,Mountain,850,800 - 950
+75,Doti,Sudurpashchim,Hills,765,680 - 820
+76,Kailali,Sudurpashchim,Tarai,754,600 - 680
+77,Kanchanpur,Sudurpashchim,Tarai,754,600 - 680

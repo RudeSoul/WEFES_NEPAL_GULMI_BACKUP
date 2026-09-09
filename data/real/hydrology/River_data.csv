@@ -1,0 +1,52 @@
+Station No.,River,Site Name,Latitude,Longitude,Elevation,Instruments,Start Date
+120,Chamelia,Karkale Gaon,29_40_20,80_33_30,685,Cable Way,1965-01-01
+169,Surnaya Gad,Gujar Gaon,29_31_00,80_35_00,1275,Cable Way,1983-05-11
+240,Karnali,Asaraghat,29_57_10,81_26_30,629,Cable Way,1961-01-01
+250,Karnali,Benighat,28_57_40,81_07_10,320,Cable Way,1963-02-01
+260,West Seti,Banga,28_58_40,81_08_40,328,Recorder- Cableway- S,1963-02-06
+270,Bheri,Jamu,28_45_20,81_21_00,246,Cable Way,1963-01-23
+286,Sarada Khola,Daredhunga,28_17_58,82_01_30,579,Cable Way,1972-01-01
+290,Babai River,Chepang,28_20_29,81_84_00,325,Cable Way,1989-10-01
+350,Rapti River,Bagasoti Gaun,27_54_00,82_51_00,381,Cableway- Recorder- Rain Gauge- V,1975-08-05
+360,Rapti River,Jalkundi,27_56_50,82_13_30,218,Cable Way,1964-04-08
+375,Rapti River,Kusum,28_00_27,82_05_35,235,W,2002-12-21
+390,Tinau,Butwal,27_42_10,83_27_50,184,Cable Way,1963-12-09
+410,Kali Gandaki,Seti Beni,28_00_30,83_36_10,546,Cable Way,1964-02-21
+415,Andhi Khola,Borlangpul,27_58_20,83_35_20,749,-,1964-04-01
+419,Kali Gandaki,Angsing,27_53_24,83_48_00,351.05,Cableway- Recorder- Rain Gauge- V,1989-04-13
+420,Kali Gandaki,Kota Gaon,27_45_00,84_20_50,198,Cable Way,1964-04-15
+439,Marsandi River,Bimalnagar,27_57_00,84_25_48,354,Cable Way,1987-03-31
+440,Chepe Khola,Garambesi,28_03_41,84_29_23,442,Cable Way,1963-11-20
+445,Budhi Gandaki,Arughat,28_02_37,84_48_59,485,Cableway- Recorder- G,1963-11-28
+446,Phalanku Khola,Betrawati,27_58_25,85_11_15,630,-,1969-04-24
+447,Trisuli River,Betrawati,27_58_08,85_11_00,600,Recorder- Cableway- Rain Gauge,1967-01-04
+448,Tadi Khola,Belkot,27_51_35,85_08_18,610,Cable Way,1968-04-17
+450,Narayani River,Devghat,27_42_30,84_25_50,180,Recorder-Cableway- Rain Gauge,1962-10-02
+460,Rapti River,Rajaiya,27_26_30,84_58_15,332,Cable Way,1963-01-01
+465,Manahari River,Manahari,27_33_00,84_48_10,305,Cable Way,1963-06-13
+470,Lothar,Lothar,27_35_40,84_43_00,336,Cable Way,1963-11-30
+505,Bagmati River,Sundarijal,27_46_30,85_25_40,1600,Cableway- Recorder,1962-12-07
+550,Bagmati River,Khokana,27_16_00,85_13_00,1255,-,1991-06-01
+589,Bagmati River,Pendheradovan,27_06_20,85_28_30,127.35,Cableway- Rain Gauge- W,1978-01-28
+600,Arun River,Uwa Goan,27_36_00,87_20_06,1294,Cable Way,1972-05-11
+602,Sabhaya Khola,Tumlingtar,27_18_20,87_13_15,305,Cable Way,1974-01-02
+602,Hinwa Khola,Pipletar,27_17_45,87_13_30,-,Cable Way,0000-00-00
+604,Arun River,Turkeghat,27_20_00,87_11_30,414,Cableway-Recorder- Rain Gauge- V,1975-05-23
+606,Arun River,Simle,26_55_30,87_09_30,152,Cable Way,0000-00-00
+610,Bhote Koshi,Barhbise,27_47_10,85_53_20,840,-,1965-02-17
+620,Balephi Khola,Jalbire,27_48_20,85_46_10,793,Cable Way,1963-12-25
+625,Sunkoshi River,Dolalghat,28_38_30,85_43_00,-,Cable Way,0000-00-00
+627,Melanchi Khola,Helambu,28_02_30,85_32_00,2134,Cable Way,0000-00-00
+629,Indrawati River,Dolalghat,27_38_20,85_42_30,-,Cable Way,1972-09-17
+630,Sunkoshi River,PachuwaRain Gaugehat,27_33_30,85_45_10,589,Cableway- Recorder- Rain Gauge-V,1964-03-26
+647,Tamakoshi River,Busti,27_38_05,86_05_12,849,Cable Way,1970-01-14
+650,Khimti Khola,Rasnalu,27_34_30,86_11_50,1520,Cable Way,1964-04-06
+652,Sunkoshi River,Khurkot,27_20_00,86_00_00,455,Cable Way,1967-07-01
+660,Likhu Khola,Sangutar,27_20_10,86_13_10,543,Cable Way,1964-03-24
+665,Sunkoshi River,Tokselghat,27_10_30,86_22_00,-,Cable Way,1986-02-20
+670,Dudhkoshi River,Rabuwa Bazar,27_16_00,86_39_50,460,Cableway- Recorder- Rain Gauge- V,1964-10-03
+684,Tamor River,Majhitar,27_09_30,87_42_45,533,Cableway- Recorder- Rain Gauge- V,0000-00-00
+690,Tamor River,Mulghat,26_55_50,87_19_45,276,-,1977-10-01
+695,Saptakoshi River,Chatara,26_52_00,87_09_30,140,Cableway- Recorder- Rain Gauge- V,1977-10-01
+738,Maikhola,Rajdwali,26_52_45,87_55_45,609,Cable Way,1983-01-01
+795,Kankai River,Mainachuli,26_41_12,87_52_42,125,Cableway- Recorder- Rain Gauge- V,1971-05-01

@@ -1,0 +1,14 @@
+{
+  "_metadata": {
+    "classification": "PROXY",
+    "description": "Default environmental flow allocation and aquatic ecosystem maintenance ratios for ungauged tributaries.",
+    "source_surrogate": "DOED Hydropower Licensing Guidelines & National Water Plan 2005",
+    "confidence": "HIGH (Statutory Benchmark)",
+    "replacement_roadmap": "Replace with site-specific Environmental Impact Assessment (EIA) minimum ecological reserve measurements."
+  },
+  "statutory_minimum_eflow_ratio": 0.10,
+  "head_loss_conveyance_factor": 0.90,
+  "commercial_ror_efficiency": 0.82,
+  "rural_micro_efficiency": 0.65,
+  "cultural_exclusion_buffer_m": 1500
+}

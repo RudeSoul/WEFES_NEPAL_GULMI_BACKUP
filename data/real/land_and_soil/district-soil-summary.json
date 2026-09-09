@@ -1,0 +1,672 @@
+{
+  "humla": {
+    "name": "Humla",
+    "count": 132,
+    "avgPh": 7.48,
+    "avgN": 0.12,
+    "avgP": 175.99,
+    "avgK": 310.02,
+    "dominantType": "Gneiss, migmatite",
+    "hasRealSoilData": true
+  },
+  "darchula": {
+    "name": "Darchula",
+    "count": 57,
+    "avgPh": 6.97,
+    "avgN": 0.14,
+    "avgP": 91.15,
+    "avgK": 373.32,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "bajhang": {
+    "name": "Bajhang",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "mugu": {
+    "name": "Mugu",
+    "count": 151,
+    "avgPh": 7.52,
+    "avgN": 0.13,
+    "avgP": 149.68,
+    "avgK": 324.08,
+    "dominantType": "Gneiss, migmatite",
+    "hasRealSoilData": true
+  },
+  "bajura": {
+    "name": "Bajura",
+    "count": 219,
+    "avgPh": 7.19,
+    "avgN": 0.16,
+    "avgP": 71.56,
+    "avgK": 426.27,
+    "dominantType": "Gneiss, migmatite",
+    "hasRealSoilData": true
+  },
+  "baitadi": {
+    "name": "Baitadi",
+    "count": 622,
+    "avgPh": 6.87,
+    "avgN": 0.1,
+    "avgP": 97.28,
+    "avgK": 553.21,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "dolpa": {
+    "name": "Dolpa",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "jumla": {
+    "name": "Jumla",
+    "count": 738,
+    "avgPh": 6,
+    "avgN": 0.19,
+    "avgP": 54.46,
+    "avgK": 444.73,
+    "dominantType": "Gneiss, migmatite",
+    "hasRealSoilData": true
+  },
+  "kalikot": {
+    "name": "Kalikot",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "doti": {
+    "name": "Doti",
+    "count": 66,
+    "avgPh": 6.23,
+    "avgN": 0.15,
+    "avgP": 77.39,
+    "avgK": 349.9,
+    "dominantType": "Quartzite",
+    "hasRealSoilData": true
+  },
+  "dadeldhura": {
+    "name": "Dadeldhura",
+    "count": 511,
+    "avgPh": 6.38,
+    "avgN": 0.14,
+    "avgP": 76.17,
+    "avgK": 384.78,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "achham": {
+    "name": "Achham",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "mustang": {
+    "name": "Mustang",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "dailekh": {
+    "name": "Dailekh",
+    "count": 3,
+    "avgPh": 6.56,
+    "avgN": 0.19,
+    "avgP": 183.84,
+    "avgK": 425.74,
+    "dominantType": "Quartzite",
+    "hasRealSoilData": true
+  },
+  "jajarkot": {
+    "name": "Jajarkot",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "kanchanpur": {
+    "name": "Kanchanpur",
+    "count": 1474,
+    "avgPh": 7.33,
+    "avgN": 0.09,
+    "avgP": 33.93,
+    "avgK": 139.78,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "kailali": {
+    "name": "Kailali",
+    "count": 2170,
+    "avgPh": 7.39,
+    "avgN": 0.09,
+    "avgP": 60.64,
+    "avgK": 201.97,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "western_rukum": {
+    "name": "Rukum",
+    "count": 340,
+    "avgPh": 6.56,
+    "avgN": 0.16,
+    "avgP": 156.24,
+    "avgK": 454.34,
+    "dominantType": "Gneiss, migmatite",
+    "hasRealSoilData": true
+  },
+  "surkhet": {
+    "name": "Surkhet",
+    "count": 377,
+    "avgPh": 7.06,
+    "avgN": 0.15,
+    "avgP": 172.15,
+    "avgK": 426.76,
+    "dominantType": "Sandstone, greywacke, arkose",
+    "hasRealSoilData": true
+  },
+  "manang": {
+    "name": "Manang",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "myagdi": {
+    "name": "Myagdi",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "gorkha": {
+    "name": "Gorkha",
+    "count": 590,
+    "avgPh": 5.7,
+    "avgN": 0.32,
+    "avgP": 41.71,
+    "avgK": 207.59,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "bardiya": {
+    "name": "Bardiya",
+    "count": 506,
+    "avgPh": 6.94,
+    "avgN": 0.09,
+    "avgP": 127.35,
+    "avgK": 242.57,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "salyan": {
+    "name": "Salyan",
+    "count": 321,
+    "avgPh": 6.61,
+    "avgN": 0.14,
+    "avgP": 166.41,
+    "avgK": 357.43,
+    "dominantType": "Quartzite",
+    "hasRealSoilData": true
+  },
+  "baglung": {
+    "name": "Baglung",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "kaski": {
+    "name": "Kaski",
+    "count": 473,
+    "avgPh": 5.67,
+    "avgN": 0.15,
+    "avgP": 66.99,
+    "avgK": 174.96,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "rolpa": {
+    "name": "Rolpa",
+    "count": 246,
+    "avgPh": 6.5,
+    "avgN": 0.14,
+    "avgP": 161,
+    "avgK": 538.79,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "lamjung": {
+    "name": "Lamjung",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "parbat": {
+    "name": "Parbat",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "rasuwa": {
+    "name": "Rasuwa",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "pyuthan": {
+    "name": "Pyuthan",
+    "count": 505,
+    "avgPh": 6.63,
+    "avgN": 0.1,
+    "avgP": 166.12,
+    "avgK": 481.12,
+    "dominantType": "Quartzite",
+    "hasRealSoilData": true
+  },
+  "dhading": {
+    "name": "Dhading",
+    "count": 91,
+    "avgPh": 5.9,
+    "avgN": 0.18,
+    "avgP": 62.51,
+    "avgK": 207.44,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "banke": {
+    "name": "Banke",
+    "count": 2505,
+    "avgPh": 7.2,
+    "avgN": 0.1,
+    "avgP": 127.67,
+    "avgK": 226.76,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "gulmi": {
+    "name": "Gulmi",
+    "count": 81,
+    "avgPh": 6.7,
+    "avgN": 0.17,
+    "avgP": 137.77,
+    "avgK": 250.19,
+    "dominantType": "Quartzite",
+    "hasRealSoilData": true
+  },
+  "dang": {
+    "name": "Dang",
+    "count": 1131,
+    "avgPh": 7.09,
+    "avgN": 0.11,
+    "avgP": 161.23,
+    "avgK": 409.38,
+    "dominantType": "Fluvial, calcareous",
+    "hasRealSoilData": true
+  },
+  "syangja": {
+    "name": "Syangja",
+    "count": 167,
+    "avgPh": 6.12,
+    "avgN": 0.15,
+    "avgP": 87.59,
+    "avgK": 213.09,
+    "dominantType": "Quartzite",
+    "hasRealSoilData": true
+  },
+  "sindhupalchok": {
+    "name": "Sindhupalchok",
+    "count": 252,
+    "avgPh": 5.95,
+    "avgN": 0.16,
+    "avgP": 55.86,
+    "avgK": 276.73,
+    "dominantType": "Gneiss, migmatite",
+    "hasRealSoilData": true
+  },
+  "dolakha": {
+    "name": "Dolakha",
+    "count": 453,
+    "avgPh": 5.63,
+    "avgN": 0.17,
+    "avgP": 77.52,
+    "avgK": 271.14,
+    "dominantType": "Gneiss, migmatite",
+    "hasRealSoilData": true
+  },
+  "tanahun": {
+    "name": "Tanahu",
+    "count": 31,
+    "avgPh": 5.96,
+    "avgN": 0.16,
+    "avgP": 74.76,
+    "avgK": 203.97,
+    "dominantType": "Quartzite",
+    "hasRealSoilData": true
+  },
+  "arghakhanchi": {
+    "name": "Arghakhanchi",
+    "count": 66,
+    "avgPh": 6.51,
+    "avgN": 0.1,
+    "avgP": 157.42,
+    "avgK": 422.14,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "solukhumbu": {
+    "name": "Solukhumbu",
+    "count": 40,
+    "avgPh": 5.3,
+    "avgN": 0.25,
+    "avgP": 146.25,
+    "avgK": 379.6,
+    "dominantType": "Gneiss, migmatite",
+    "hasRealSoilData": true
+  },
+  "nuwakot": {
+    "name": "Nuwakot",
+    "count": 98,
+    "avgPh": 5.78,
+    "avgN": 0.16,
+    "avgP": 64.85,
+    "avgK": 227.23,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "sankhuwasabha": {
+    "name": "Sankhuwasabha",
+    "count": 282,
+    "avgPh": 5.52,
+    "avgN": 0.2,
+    "avgP": 59.06,
+    "avgK": 377.2,
+    "dominantType": "Quartzite",
+    "hasRealSoilData": true
+  },
+  "palpa": {
+    "name": "Palpa",
+    "count": 489,
+    "avgPh": 6.45,
+    "avgN": 0.14,
+    "avgP": 101.23,
+    "avgK": 272.14,
+    "dominantType": "Quartzite",
+    "hasRealSoilData": true
+  },
+  "taplejung": {
+    "name": "Taplejung",
+    "count": 215,
+    "avgPh": 5.74,
+    "avgN": 0.1,
+    "avgP": 135.46,
+    "avgK": 267.05,
+    "dominantType": "Gneiss, migmatite",
+    "hasRealSoilData": true
+  },
+  "chitwan": {
+    "name": "Chitwan",
+    "count": 760,
+    "avgPh": 6.47,
+    "avgN": 0.1,
+    "avgP": 106.88,
+    "avgK": 127.84,
+    "dominantType": "Colluvial, calcareous",
+    "hasRealSoilData": true
+  },
+  "nawalpur": {
+    "name": "Nawalparasi",
+    "count": 533,
+    "avgPh": 7.34,
+    "avgN": 0.09,
+    "avgP": 52.14,
+    "avgK": 113.11,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "kapilvastu": {
+    "name": "Kapilbastu",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "ramechhap": {
+    "name": "Ramechhap",
+    "count": 1479,
+    "avgPh": 6.02,
+    "avgN": 0.15,
+    "avgP": 79.4,
+    "avgK": 296.08,
+    "dominantType": "Quartzite",
+    "hasRealSoilData": true
+  },
+  "kathmandu": {
+    "name": "Kathmandu",
+    "count": 849,
+    "avgPh": 5.67,
+    "avgN": 0.16,
+    "avgP": 110.79,
+    "avgK": 266.53,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "rupandehi": {
+    "name": "Rupandehi",
+    "count": 1544,
+    "avgPh": 6.75,
+    "avgN": 0.1,
+    "avgP": 73.06,
+    "avgK": 90.62,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "kavrepalanchok": {
+    "name": "Kavre",
+    "count": 936,
+    "avgPh": 5.98,
+    "avgN": 0.15,
+    "avgP": 89.93,
+    "avgK": 298.26,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "bhaktapur": {
+    "name": "Bhaktapur",
+    "count": 351,
+    "avgPh": 5.62,
+    "avgN": 0.14,
+    "avgP": 175.38,
+    "avgK": 285.46,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "makwanpur": {
+    "name": "Makwanpur",
+    "count": 990,
+    "avgPh": 5.81,
+    "avgN": 0.13,
+    "avgP": 115.12,
+    "avgK": 251.03,
+    "dominantType": "Sandstone, greywacke, arkose",
+    "hasRealSoilData": true
+  },
+  "lalitpur": {
+    "name": "Lalitpur",
+    "count": 495,
+    "avgPh": 5.8,
+    "avgN": 0.17,
+    "avgP": 77.41,
+    "avgK": 309.24,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "okhaldhunga": {
+    "name": "Okhaldhunga",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "bhojpur": {
+    "name": "Bhojpur",
+    "count": 18,
+    "avgPh": 6.22,
+    "avgN": 0.14,
+    "avgP": 115.41,
+    "avgK": 408.54,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "parsa": {
+    "name": "Parsa",
+    "count": 1090,
+    "avgPh": 6.06,
+    "avgN": 0.08,
+    "avgP": 30.43,
+    "avgK": 102.84,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "sindhuli": {
+    "name": "Sindhuli",
+    "count": 879,
+    "avgPh": 6.01,
+    "avgN": 0.11,
+    "avgP": 58.24,
+    "avgK": 271.88,
+    "dominantType": "Quartzite",
+    "hasRealSoilData": true
+  },
+  "khotang": {
+    "name": "Khotang",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "panchthar": {
+    "name": "Panchthar",
+    "count": 170,
+    "avgPh": 6.28,
+    "avgN": 0.12,
+    "avgP": 201.1,
+    "avgK": 297.01,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "bara": {
+    "name": "Bara",
+    "count": 1960,
+    "avgPh": 6.91,
+    "avgN": 0.11,
+    "avgP": 46.72,
+    "avgK": 154.69,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "terhathum": {
+    "name": "Tehrathum",
+    "count": 798,
+    "avgPh": 6.11,
+    "avgN": 0.1,
+    "avgP": 116.8,
+    "avgK": 297.28,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "rautahat": {
+    "name": "Rautahat",
+    "count": 1023,
+    "avgPh": 7.07,
+    "avgN": 0.1,
+    "avgP": 51.11,
+    "avgK": 140.62,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "dhankuta": {
+    "name": "Dhankuta",
+    "count": 753,
+    "avgPh": 6.29,
+    "avgN": 0.14,
+    "avgP": 98.52,
+    "avgK": 419.73,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "sarlahi": {
+    "name": "Sarlahi",
+    "count": 339,
+    "avgPh": 7,
+    "avgN": 0.1,
+    "avgP": 39.91,
+    "avgK": 228.06,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "udayapur": {
+    "name": "Udayapur",
+    "count": 28,
+    "avgPh": 6.15,
+    "avgN": 0.1,
+    "avgP": 41.78,
+    "avgK": 234.1,
+    "dominantType": "Fluvial, calcareous",
+    "hasRealSoilData": true
+  },
+  "mahottari": {
+    "name": "Mahottari",
+    "count": 3490,
+    "avgPh": 6.27,
+    "avgN": 0.09,
+    "avgP": 34.57,
+    "avgK": 84.18,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "ilam": {
+    "name": "Ilam",
+    "count": 1135,
+    "avgPh": 6.09,
+    "avgN": 0.14,
+    "avgP": 165.6,
+    "avgK": 385.51,
+    "dominantType": "slate, phyllite",
+    "hasRealSoilData": true
+  },
+  "dhanusha": {
+    "name": "Dhanusa",
+    "count": 2757,
+    "avgPh": 6.33,
+    "avgN": 0.07,
+    "avgP": 34.05,
+    "avgK": 106.76,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "siraha": {
+    "name": "Siraha",
+    "count": 0,
+    "hasRealSoilData": false
+  },
+  "saptari": {
+    "name": "Saptari",
+    "count": 1600,
+    "avgPh": 5.96,
+    "avgN": 0.08,
+    "avgP": 38.77,
+    "avgK": 144.74,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "morang": {
+    "name": "Morang",
+    "count": 1791,
+    "avgPh": 6.31,
+    "avgN": 0.09,
+    "avgP": 39.13,
+    "avgK": 159.49,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "sunsari": {
+    "name": "Sunsari",
+    "count": 2440,
+    "avgPh": 6.26,
+    "avgN": 0.09,
+    "avgP": 42.89,
+    "avgK": 165.88,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  },
+  "jhapa": {
+    "name": "Jhapa",
+    "count": 1550,
+    "avgPh": 5.7,
+    "avgN": 0.12,
+    "avgP": 57.31,
+    "avgK": 180.51,
+    "dominantType": "calcareous",
+    "hasRealSoilData": true
+  }
+}

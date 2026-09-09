@@ -1,0 +1,171 @@
+S/N,Name_of_station,Province,Location,Capacity_MW,Commissioned,Owner
+1.0,Upper Tamakoshi Project,Bagmati,Dolakha District,456.0,2021,NEA
+2.0,Kaligandaki A Hydroelectric Power Station,Gandaki,Syangja,144.0,2002,NEA
+3.0,Rasuwagadi Hydropower Project,Bagmati,Rasuwa District,111.0,2024,Chilime Hydropower Company Limited (CHPCL) and NEA
+4.0,Solukhola Dudhkoshi Hydropower Project,Koshi,Solukhumbu,86.0,2023 AD,Sahas Urja Ltd
+5.0,Likhu -1,Bagmati,Gumdel (Ramechhap District),77.0,2024,Pan Himay Energy Ltd
+6.0,Middle Tamor,Koshi,"Hangdeva, Khokling, Phurumbu, Sawadin (Taplejung)",73.0,2024,Sanima Middle Tamor Hydropower Ltd
+7.0,Nilgiri Khola-II Cascade Project,Gandaki,Narchyang (Myagdi),71.0,2024,Nilgirikhola Hydropower Company Limited
+8.0,Middle Marsyangdi Hydropower Station,Gandaki,Lamjung District,70.0,2008,NEA
+9.0,Marsyangdi Hydropower Station,Gandaki,Tanahun,69.0,1989,NEA
+10.0,Kulekhani I,Bagmati,Makwanpur,60.0,1982,NEA
+11.0,Khimti I Hydropower Plant,Bagmati,Dolkha,60.0,2000,Himal Power Ltd.
+12.0,Upper Trishuli 3A Hydropower Station,Bagmati,Rasuwa District,60.0,2019,NEA
+13.0,Likhu -2,Koshi,Gumdel (Ramechhap) Chaulakharka (Waula) (Solukhumbu),55.0,2023,Global Hydropower Associate Ltd
+14.0,Super Dordi Kha Hydropower Project,Bagmati,"Dhodeni, Faleni (Lamjung)",54.0,2023,Peoples Hydropower Company Pvt. Ltd.
+15.0,Likhu-4,Bagmati,"Ragani, Pokli (Okhaldhunga) Saibu, Bijulikot, Naga Daha, Tilpung (Ramechhap)",52.4,2021,Green Ventures Ltd
+16.0,Likhu Khola 'A',Koshi,"Chaulakharka(Waula), Goli (Solukhumbu)",51.0,2022,Numbur Himalaya Hydropower Ltd
+17.0,Upper Marsyangdi A Hydroelectric Station,Gandaki,Lamjung Marsyangdi Rural Municipality,50.0,2016,"SSPC, Power China"
+18.0,Bhote Koshi Power Plant (Upper Bhote Koshi),Bagmati,Sindhupalchowk,45.0,2001,Bhote Koshi Power Company Private Limited (BKPC)
+19.0,Super Madi,Gandaki,"Namarjung, Parche, Saimrang, Kalika (Kaski)",44.0,2023,Himal Hydro and General Construction Ltd.
+20.0,Sanjen,Bagmati,Chilime (Rasuwa),42.5,2024,Sanjen Jalvidyut Co.
+21.0,Mristi Khola,Gandaki,"Dana, Narchyang (Myagdi)",42.0,2021,Mountain Energy Nepal Limited
+22.0,Upper Chameliya HP,Sudurpashchim,"Tapoban, Latinath, Guljar, Sitaula (Darchula)",40.0,2023,Api Power Co. Ltd
+23.0,Upper Kalangad,Karnali,"Dahabagar, Khiratadi (Bajhang)",38.46,2023,Sani Gad Hydro pvt. Ltd
+24.0,Nilgiri Khola,Gandaki,Narchyang (Myagdi),38.0,2024,Nilgiri Khola Hydropower Company Pvt. Ltd.
+25.0,Upper Balephi A,Bagmati,"Golche, Pangtang, Dhumthang (Sindhupalchok)",36.0,2022,Balephi Hydropower Ltd.
+26.0,Kulekhani II,Bagmati,Makwanpur,32.0,1986,NEA
+27.0,Chameliya Khola Hydropower Station,Sudurpashchim,Darchula,30.0,2018,NEA
+28.0,Nyadi Khola,Gandaki,"Bahundada, Bhulbhule (Lamjung)",30.0,2022,Nyadi Hydropower Limited
+29.0,Lower Likhu,Bagmati,"Tarkerabari, Yasam, Gamanamatar (Okhaldhunga) Bijulikot, Gothgau (Ramechhap)",28.1,2022,Swaita Ganga Hydropower and Construction Pvt. Ltd.
+30.0,Dordi Khola,Gandaki,"Archalbot, Chiti, Dhodeni, Nauthar, Shree Banjyang, Udipur (Lamjung)",27.0,2022,Himalaya Power Partner Pvt. Ltd
+31.0,Upper Madi Hydropower Station,Gandaki,Kaski District,25.0,2017,Madi Power Pvt Ltd.
+32.0,Kabeli B1 Hydropower Station,Koshi,Panchthar District,25.0,2019,Arun Kabeli Power Limited
+33.0,Upper Dordi A HEP,Gandaki,"Dhodeni, Faleni (Lamjung)",25.0,2022,Liberty Energy Hydropower Pvt. Ltd.
+34.0,Singati Khola Hydropower Project,Bagmati,"Babare, Laduk, Lamidada (Dolakha)",25.0,2021,Singati Hydro Energy Pvt. Ltd.
+35.0,Seti Khola HPP,Gandaki,"Ghachok, Machhapuchchhre, Purachaur, Sardikhola (Kaski)",25.0,2024,Vision Lumbini Urja Company Limited
+36.0,Trishuli Hydropower Station,Bagmati,Nuwakot,24.0,1967,"NEA (Initially installed capacity was 21 MW, rehabilitated in 1995)"
+37.0,Solu Hydropower Station,Koshi,Solukhumbu District,23.5,2020,Upper Solu Hydroelectric Company Pvt Ltd
+38.0,Upper Chaku A,Bagmati,"Marbin, Fulpingkatti (Sindhupalchok)",22.2,2021,Shiva Sri Hydropower Pvt. Ltd
+39.0,Lower Hewa Khola Hydropower Project,Koshi,Panchthar District,22.1,2013,Mountain Hydro Nepal Limited
+40.0,Mai Hydropower Station,Koshi,Illam,22.0,2014,Sanima Hydropower
+41.0,Chilime Hydropower Plant,Bagmati,Rasuwa,22.0,2003,Chilime Hydropower Company Ltd.
+42.0,Bagmati Nadi Hydropower Station,Bagmati,Makawanpur District,22.0,2019,Mandu Hydropower Pvt. Ltd.
+43.0,Lower Hewa Hydropower Station,Koshi,Panchthar District,21.6,2019,Mountain Hydro Nepal (P.) Ltd
+44.0,Lower Modi Khola,Gandaki,"Durlung, Deurali, Ramja, Tilahar (Parbat)",20.0,2021,Modi Energy Pvt. Ltd
+45.0,Upper Solu Khola HPP,Koshi,"Beni, Salleri (Solukhumbu)",19.8,2023,Beni Hydropower Project
+46.0,Middle Modi,Gandaki,"Deupurkot, Tilahar (Parbat)",18.0,2022,Middle Modi Hydropower Limited
+47.0,Kalanga,Karnali,"Sunkuda, Khiratadi, Banjh (Bajhang)",15.33,2023,Kalanga Hydropower P Ltd
+48.0,Gandak Hydropower Station,Lumbini,Nawalparasi,15.0,1979,NEA
+49.0,Hewa Khola A Hydropower Station,Koshi,Panchthar District,14.9,2017,Panchthar Power Company Pvt. Ltd.
+50.0,Maya Khola Hydropower Project,Bagmati,"Mamling, Madi Rambeni, Baneswor (Sankhuwasabha)",14.9,2023,Maya Khola Hydropower Company Ltd
+51.0,Modi Khola Hydroelectric Power Plant,Gandaki,Parbat,14.8,2000,NEA
+52.0,Upper Sanjen,Bagmati,Chilime (Rasuwa),14.8,2023,Sanjen Jalvidhyut Co
+53.0,Upper Mailun Khola,Bagmati,"Gatlang, Haku, Dandagoun (Rasuwa)",14.3,2024,Upper Mailung Khola Hydropower Limited
+54.0,Devighat Hydropower Station,Bagmati,Nuwakot,14.1,1984,NEA
+55.0,Ghar Khola,Gandaki,Shikha (Myagdi),14.0,2023,Myagdi Hydropower Ltd.
+56.0,Kulekhani III,Bagmati,Makawanpur,14.0,2019[17],NEA
+,Super Kabeli Khola A HEP,Koshi,Taplejung,13.5,2024,Snow River Ltd
+57.0,Madkyu Khola Hydropower Station,Gandaki,Kaski,13.0,2018,Silkes Hydropower Pvt. Ltd. Jungey Hydropower Pvt. Ltd.
+58.0,Madkyu Khola Hydropower Station,Gandaki,Kaski District,13.0,2018,Silkes Hydropower Pvt. Ltd
+59.0,Dordi-1,Gandaki,"Chiti, Bansar, Dhodeni, Faleni (Lamjung)",12.0,2022,Dordi Khola Jalvidyut Company Limited
+60.0,Dudhkunda Khola HEP,Koshi,"Beni, Takasindu (Solukhumbu)",12.0,2024,Mount Everest Power Development P. Ltd.
+61.0,Jhimruk Khola Hydropower Station,Lumbini,Pyuthan,12.5,1994,Butwal Power Company Ltd.
+62.0,Namarjun Madi,Gandaki,"Namarjung, Sildujure (Kaski)",12.0,2020,Himalayan Hydropower Pvt. Ltd
+63.0,Upper Khimti,Bagmati,Chuchure (Ramechhap),12.0,2022,Himalaya Urja Bikas Co. Pvt. Ltd.
+64.0,Upper Mai Hydropower Station,Koshi,Illam District,12.0,2016,Mai Valley Hydropower P Ltd.
+65.0,Thapa Khola Hydropower Station,Gandaki,Mustang,11.2,2018,Mount Kailash Energy Co. Pvt. Ltd.
+66.0,Sunigad HEP,Sudurpashchim,"Bajhang, Sunikot",11.05,2022,Omega EnergyDeveloper Pvt. Ltd
+67.0,Lower Khare,Bagmati,"Bulung, Chankhu, Khare, Suriti (Dolakha)",11.0,2021,Universal Power Company P. Ltd
+68.0,Sanigad,Karnali,"Kaphalaseri, Pipalkot (Bajhang)",10.7,2023,Bungal Hydro Ltd
+69.0,Down Piluwa,Koshi,"Baneswor, Ankhibhui, Mamling (Sankhuwasabha)",10.3,2023,River Falls Hydropower Development P. Ltd.
+70.0,Sunkoshi Hydropower Station,Bagmati,Sindhupalchowk,10.05,1972,NEA
+71.0,Lower Modi I,Lumbini,Parbat,10.0,2012,United Modi Hydropower Pvt. Ltd.
+72.0,Makari Gad,Sudurpashchim,"Guljar, Khandeswori (Darchula)",10.0,2023,Makarigad Hydropower Pvt. Ltd
+73.0,Sipring Khola Hydropower Station,Bagmati,Dolakha District,10.0,2013,Synergy Power Development P Ltd
+74.0,Kabeli B1 Cascade HPP,Koshi,"Ambarpur, Nagi (Panchthar)",9.94,2022,Arun Valley Hydropower Development Company Ltd.
+75.0,Iwa Khola Hydropower Project,Koshi,Taplejung district,9.9,2015,Rairang Hydropower Development Company Ltd
+76.0,Upper Ingwa Khola,Koshi,Taplejung,9.7,2024,Ingwa Hydopower Ltd.
+77.0,Super Mai-A Hydropower Station,Koshi,Ilam District,9.6,2020,Sagarmatha Jalbidhyut Company P. Ltd.
+78.0,Mai Beni HPP,Koshi,"Namsaling, Soyang, Goduk (Ilam)",9.51,2021,Samling Power company Pvt. Ltd
+79.0,Mid Solu Khola HEP,Koshi,"Solukhumbu, Gora Khami, Salleri",9.5,2022,Mid Solu Hydropower Ltd.
+80.0,Super Chepe HEP,Gandaki,Gorkha,9.05,2024,Ridge Line Energy Pvt. Ltd
+81.0,Andhi Khola Hydropower Station,Lumbini,Syangja,9.4,1991,"Butwal Power Company Ltd. (Initially installed capacity was 5.1 MW, rehabilitated in 2016)"
+82.0,Rudi A Hydropower Station,Gandaki,Kaski District,8.8,2019,Bindhabasini Hydropower Development Company Pvt. Ltd
+83.0,Chepe Khola Small HEP,Gandaki,"Kharibot (Gorkha), Dudhpokhari (Lamjung)",8.63,2022,Aashutosh Investment Pvt. Ltd.
+84.0,Nau Gad Khola Hydropower Station,Sudurpashchim,Darchula District,8.5,2015,Api Power Company Pvt. Ltd
+85.0,Upper Hewa HPP,Koshi,"Jaljala, Siddhapokhari (Sankhuwasabha)",8.5,2022,Upper Hewa Khola Hydropower Company Pvt Ltd
+86.0,Mai Cascade Hydropower Station,Koshi,Ilam District,8.0,2018,Himal Dolkha Hydropower Company Pvt Ltd
+87.0,Taksar Pikhuwa,Koshi,"Kota, Mane Bhanjyang, Taksar, Dalgaun (Bhojpur)",8.0,2021,Taksar Pikhuwa Khola Hydropower Ltd.
+88.0,Upper Naugad Gad Hydropower Station,Sudurpashchim,Darchula District,8.0,2019,Api Power Company Ltd.
+89.0,Super Mai Hydropower Station,Koshi,Ilam District,7.8,2018,Supermai Hydropower Pvt. Ltd.
+90.0,Jogmai Khola Hydropower Station,Koshi,Ilam District,7.6,2017,Sanvi Energy Pvt. Ltd.
+91.0,Indrawati III Hydropower Station,Bagmati,Sindhupalchowk,7.5,2002,National Hydropower Co. Ltd.
+92.0,Upper Khorunga Hydropower Station,Koshi,Terhathum District,7.5,2020,Terhathum Power Company Pvt. Ltd.
+93.0,Upper Midim Khola SHP,Gandaki,Bhujung (Lamjung),7.5,2024,Bhujung Hydro Power Ltd.
+94.0,Yambaling Khola,Bagmati,"Gumba, Golche (Sindhupalchok)",7.271,2024,Yambaling Hydropower Ltd.
+95.0,Sapsup Khola Small Hydro Electric Project,Koshi,"Batase, Chhorambu, Rajapani (Khotang)",7.151,2022,Three Star Hydro Power Pvt. Ltd.
+96.0,Ankhu Khola-1 Hydropower Station,Bagmati,Dhading District,7.0,2013,Ankhu Jalvidut Co. Pvt. Ltd
+97.0,Chepe Khola HEP,Gandaki,"Thalajung, Kerabari (Gorkha)",7.0,2024,Champawati Hydro Power P. Ltd
+98.0,Suri Khola,Bagmati,Chankhu (Dolakha),7.0,2022,Suri Khola Hydropower Pvt Ltd
+99.0,Upper Khimti II,Bagmati,Chuchure (Ramechhap),7.0,2022,Himalaya Urja Bikash Company Limited
+100.0,Upper Mardi Hydropower Station,Gandaki,Kaski District,7.0,2019,United Idimardi and R.B. Hydropower Pvt Ltd
+101.0,Upper Suri Khola HPP,Bagmati,Chankhu (Dolakha),7.0,2023,Makar Jitumaya Hudropower Pvt. Ltd.
+102.0,Molun Khola Small Hydropower Station,Koshi,Okhaldhunga District,7.0,2018,Molun Hydropower Co. Pvt. Ltd
+103.0,Rudi Khola-B Hydropower Station,Gandaki,Kaski District,6.6,2020,Bindhyabasini Hydropower Development Co. Pvt Ltd
+104.0,Lower Jogmai Khola HPP,Koshi,"Namsaling, Goduk, Panchakanya (Ilam)",6.2,2021,Asian Hydropower Pvt. Ltd
+105.0,Puwa Khola Hydropower Station,Koshi,Ilam,6.2,1999,NEA
+106.0,Daraudi A Hydropower Plant,Gandaki,Gorkha District,6.0,2016,Daraundi Kalika Hydro
+107.0,Upper Mai-C Hydropower Station,Koshi,Ilam District,6.1,2017,"Mai Valley Hydropower P.L.,"
+108.0,Upper Phawa HPP,Koshi,"Sikaicha, Tiringe (Taplejung)",5.8,2024,Unitech Hydropower Company Ltd.
+109.0,Ghalemdi Khola Hydropower Station,Gandaki,Myagdi District,5.0,2020,Ghalemdi Hydro Limited
+110.0,Ghatte Khola,Bagmati,Marbu (Dolakha),5.0,2021,Mankamana Engineering HP
+111.0,Mailung Khola Hydropower Station,Bagmati,Rasuwa,5.0,2013,Mailun Khola Hydropower Pvt. Ltd.
+112.0,Richet Khola SHP,Gandaki,"Manbu, Kashigaun (Gorkha)",5.0,2021,Richet Jalbidhyut Company Pvt. Ltd.
+113.0,Rukum Gad,Karnali,"Kanda, Sobha (Rukum)",5.0,2023,Rapti Hydro and General Construction Pvt. Ltd.
+114.0,Pikhuwa Khola Hydropower Station,Koshi,Bhojpur District,5.0,2019,Eastern Hydropower P Ltd
+115.0,Phawa khola Hydropower Station,Koshi,Taplejung District,5.0,2016,Shiwani Hydropower Company
+116.0,Siuri Khola Hydropower Station,Gandaki,Lamjung District,5.0,2012,Nyadi Group Pvt Ltd
+117.0,Tadi Khola Hydropower Station,Bagmati,Nuwakot District,5.0,2002,Aadi Shakti Bidhut Bikash Co. P. Ltd
+118.0,Upper Hugdi Hydropower Station,Lumbini,Gulmi District,5.0,2015,Ruru Jalbidyut Pariyojana Pvt. Ltd
+119.0,Lower Tadi,Bagmati,"Balkumari, Samundratar, Sundaradevi, Thaprek (Nuwakot)",4.993,2022,Buddha Bhumi Nepal Hydropower Co. Pvt. ltd.
+120.0,Puwa II Hydropower Project,Koshi,"Sakhejung, Maipokhari, Barbote (Ilam)",4.96,2022,Peoples' Power Ltd
+121.0,Mardi Khola Hydropower Station,Gandaki,Kaski District,4.8,2010,Gandaki Hydropower Development Co. P. Ltd
+123.0,Padam Khola Small Hydropower Station,Karnali,Dailekh District,4.8,2019,Dolti Power Company P. Ltd
+124.0,Upper Piluwa Khola-2 SHP,Koshi,"Mawadin, Siddhakali (Sankhuwasabha)",4.72,2023,"Menchhiyam Hydropower P Ltd. Itahari, Sunsari"
+125.0,Upper Chirkhuwa Khola,Koshi,"Nepaledada, Mulpani, Khartimchcha (Bhojpur)",4.7,2024,Chirkhuwa Hydropower Company Pvt td
+126.0,Upper Machha Khola HEP,Ganaki,"Gumda, Laprak (Gorkha)",4.55,2023,Bikash Hydropower Company Pvt. Ltd.
+127.0,Bijayapur-1 Hydropower Station,Gandaki,Kaski District,4.5,2012,Bhagawati Hydropower Development Company
+128.0,Hewa Khola,Koshi,"Jaljala, Siddhapokhari (Sankhuwasabha)",4.455,2010,Barun Hydropower Development Co. Pvt. Ltd
+129.0,Radhi Small Hydropower Station,Gandaki,Lamjung District,4.4,2014,Radhi Bidyut Co. Ltd
+130.0,Tungun - Thosne Khola Hydropower Station,Bagmati,Lalitpur District,4.36,2016,Khani Khola Hydropower Company Ltd
+131.0,Baramchi Khola Hydropower Station,Bagmati,Sindhupalchok District,4.2,2015,Unique Hydel Pvt Ltd
+132.0,Khudi Khola Hydropower Station,Gandaki,Lamjung District,4.0,2006,Khudi Hydropower Limited
+133.0,Puwa Khola-1 Hydropower Station,Koshi,Ilam District,4.0,2017,Puwa Khola – 1 Hydropower Pvt. Ltd
+134.0,Sardi Khola Hydropower Station,Gandaki,Kaski District,4.0,2017,Mandakini Hydropower Pvt. Ltd.
+135.0,Upper Chhyandi Small HPP,Gandaki,"Bansar, Faleni (Lamjung)",4.0,2021,Chhyandi Hysropower Ltd
+136.0,Super Mai Khola Cascade Hydropower Station,Koshi,Ilam District,3.8,2020,Mai Khola Hydropower Pvt. Ltd.
+137.0,Dwari Khola Small Hydropower Station,Karnali,Dailekh,3.75,2017,Bhugol Energy Development Company Pvt Ltd
+138.0,Charnawati Khola Hydroelectric Project,Bagmati,Dolakha,3.52,2013,Nepal Hydro Developer Limited
+139.0,Seti Khola HPP,Gandaki,Shivalaya (Parbat),3.5,2024,Parbat Paiyu Khola Hydropower Company
+140.0,Kapadigad Hydropower Station,Sudurpashchim,Doti District,3.33,2019,Salmanidevi Hydropower Pvt Ltd
+141.0,Sabha Khola Hydropower Station,Koshi,Sankhuwasabha District,3.3,2017,Dibyaswari Hydropower P Ltd
+142.0,Chatara Hydropower Station,Koshi,Sunsari,3.2,1996,NEA
+143.0,Gelun Khola HPP,Bagmati,"Baramchi, Hagam, Jalbire (Sindhupalchok)",3.2,2023,Gelun Khola Hydropower Company Pvt Ltd
+144.0,Bhairab Kund Khola Hydropower Station,Bagmati,Sindhupalchok District,3.0,2014,Bhairabkund Hydropower Pvt. Ltd.
+145.0,Chaku Khola Hydropower Station,Bagmati,Sindhupalchok District,3.0,2005,Alliance Power Nepal
+146.0,Midim Khola Hydropower Station,Gandaki,Lamjung District,3.0,2018,Union Hydropower P. Ltd
+147.0,Piluwa Khola Hydropower Station,Koshi,Sankhuwasabha District,3.0,2003,Arun Valley Hydropower Development Company Pvt. Ltd.
+148.0,Rawa Khola,Koshi,"Sungdel, Diplung (Khotang)",3.0,2020,Rawa Energy Development Pvt Ltd
+149.0,Upper Puwa-1 Hydropower Station,Koshi,Ilam District,3.0,2o15,Joshi Hydropower Co. P. Ltd
+150.0,Chake Khola Hydropower Station,Bagmati,Ramechhap District,2.83,2017,Garjang Upatyaka HP Company Limited
+151.0,Sunkoshi Small Hydropower Plant,Bagmati,Sindhupalchowk,2.6,2005,Sanima Hydropower
+152.0,Daram Khola-A Hydropower Station,Gandaki,Baglung District,2.5,2016,Sayapatri Hydropower Pvt. Ltd.
+153.0,Upper Syange Khola SHP,Gandaki,Taghring (Lamjung),2.4,2022,Upper Syange Hydropower Pvt. Ltd.
+154.0,Jiri Khola Small Hydropower Station,Bagmati,Dolakha District,2.4,2015,Bojini Company (P.) Ltd
+155.0,Panauti (Khopasi) Hydropower,Bagmati,Kavre,2.4,1965,NEA
+156.0,Ridi Khola Hydropower Station,Lumbini,Palpa District,2.4,2009,Ridi Hydropower Development Co P Ltd
+157.0,Jhyari Khola Hydropower Station,Bagmati,Sindhupalchok District,2.0,2016,Electrocom and Research Centre
+158.0,Chhandi Khola Hydropower Station,Gandaki,Lamjung District,2.0,2016,Chhyandi Hydropower Co. P. Ltd
+159.0,Khani Khola Hydropower Station,Bagmati,Lalitpur District,2.0,2016,Khani Khola Hydropower Company Ltd
+160.0,Tatopani Hydropower Station,Gandaki,Myagdi District,2.0,1995,Nepal Electricity Authority
+161.0,Upper Richet Khola SHP,Gandaki,"Kashigaun, Manbu (Gorkha)",2.0,2024,Upper Richet Hydropower Pvt. Ltd.
+162.0,Lower Chaku Khola Hydropower Station,Bagmati,Sindhupalchok District,1.8,2013,Laughing Buddha Power Nepal Pvt. Ltd
+163.0,Middle Chaku Khola Hydropower Station,Bagmati,Sindhupalchok District,1.8,2013,Laughing Budha Power Nepal
+164.0,Thoppal Khola Hydropower Station,Bagmati,Dhading District,1.65,2007,Thoppal Khola Hydropower Company
+165.0,Seti Hydropower Station,Gandaki,Pokhara,1.5,1985,Nepal Electricity Authority
+166.0,Theule Khola Hydropower Station,Gandaki,Baglung District,1.5,2018,Barahi Hydropower Pvt Ltd
+167.0,Tinau Hydropower Plant,Lumbini,Rupandehi District,1.024,1981,Nepal Electricity Authority
+168.0,Fewa Hydropower Station,Gandaki,Pokhara,1.0,1969,Nepal Electricity Authority
+169.0,Sundarijal Small Hydropower Station,Bagmati,Kathmandu District,0.64,1934,Nepal Electricity Authority
+,,,Total,3241.584,,
