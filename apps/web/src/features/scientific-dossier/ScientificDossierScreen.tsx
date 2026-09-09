@@ -645,7 +645,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {selectedVarieties.map((v) => (
+                {selectedVarieties.map((v: any) => (
                   <div key={v.id} className="p-5 rounded-2xl border border-slate-200 bg-white shadow-2xs space-y-3">
                     <div className="flex items-start justify-between border-b pb-2.5">
                       <div>
@@ -673,7 +673,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
                     </div>
 
                     <div className="flex flex-wrap gap-1.5 text-[11px]">
-                      {v.specialTraits.map((t, idx) => (
+                      {v.specialTraits.map((t: string, idx: number) => (
                         <span key={idx} className="bg-emerald-50 text-emerald-900 border border-emerald-200 px-2 py-0.5 rounded-md font-sans">
                           ✓ {t}
                         </span>
@@ -683,7 +683,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
                     <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1.5">
                       <div className="font-bold text-slate-700 font-sans text-[11px]">Disease & Pest Vector Resistance:</div>
                       <div className="space-y-1">
-                        {v.diseasePestResistance.map((d, idx) => (
+                        {v.diseasePestResistance.map((d: any, idx: number) => (
                           <div key={idx} className="flex justify-between items-center text-[11px] font-mono">
                             <span className="text-slate-600">{d.vector}</span>
                             <span className={`px-2 py-0.2 rounded font-bold text-[10px] ${d.resistanceLevel === 'High Resistance'
