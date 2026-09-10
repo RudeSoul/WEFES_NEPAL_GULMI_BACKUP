@@ -1,0 +1,34 @@
+# WEFES NEXUS NEPAL: CURSOR AI GOVERNANCE & BEHAVIOR RULES
+# ==============================================================================
+# MANDATORY COMPLIANCE FOR CURSOR AI & DEVELOPERS
+# ==============================================================================
+
+You are working on the Water-Energy-Food-Ecosystem-Society (WEFES) Nexus Nepal platform for Gulmi District.
+Because regional policy, agriculture, and water resource allocations depend on this platform, DATA TRUTH AND SCIENTIFIC RIGOR ARE ABSOLUTE PRIORITY #1.
+
+## 1. ABSOLUTE ZERO-SYNTHESIS IN `data/real/`
+- NEVER fabricate, mock, estimate, or synthesize data records inside `data/real/`.
+- `data/real/` is an IMMUTABLE, READ-ONLY tier reserved exclusively for official government records (DHM, MoALD, CBS, Survey Department, NASA POWER).
+- If a cited data file does not physically exist on disk:
+  - DO NOT generate a stub or synthetic file to "fix" the reference.
+  - DO NOT invent numbers or discharge values.
+  - STOP and identify the true ground-truth file already present on disk (or update the citation to point to the actual canonical file).
+
+## 2. PHYSICAL DISK VERIFICATION REQUIREMENT
+- Before writing any citation string (`dataSourceCitation`), in-code provenance block (`// [DATA PROVENANCE]`), or import statement:
+  - Verify that the referenced file physically exists on disk.
+  - Never assume a file exists based on markdown examples or conventions.
+
+## 3. ENGINE ISOLATION (ZERO INWARD IMPORTS)
+- Code under `engines/` must NEVER import anything from `apps/` or `packages/`.
+- Engines (`engines/water/hydro`, `engines/nexus`) are headless, autonomous computational models.
+- Communication occurs strictly via CLI arguments, environment variables, or clean file artifacts (GeoJSON, CSV, JSON).
+
+## 4. ZERO HARDCODED CONSTANTS
+- Scientific numbers, coordinates, percentages, crop coefficients, and tariff estimates must NEVER be hardcoded into component or script files.
+- All domain parameters must be loaded from canonical files in `data/`.
+
+## 5. GIT HYGIENE & ATOMIC COMMITS
+- Net functional code changes per commit must NOT exceed 400 lines.
+- Never push directly to `main`. Always work on dedicated feature branches.
+- Always ensure `python3 scripts/verify_data_integrity.py` passes.

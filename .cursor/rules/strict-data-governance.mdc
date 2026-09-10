@@ -1,0 +1,26 @@
+---
+description: Strict Data Governance, Anti-Hallucination, and Engine Isolation Rules
+globs: **/*
+alwaysApply: true
+---
+
+# WEFES NEXUS NEPAL: MANDATORY SCIENTIFIC & DATA RULES
+
+1. **Zero-Synthesis in `data/real/`**:
+   - `data/real/` is strictly immutable empirical government records.
+   - NEVER create, estimate, or synthesize data records inside `data/real/`.
+   - If a cited data file does not physically exist on disk, DO NOT fabricate a file. STOP and report or find the true canonical file.
+
+2. **Physical Disk Verification**:
+   - Every file path cited in `dataSourceCitation`, `// [DATA PROVENANCE]`, or imports MUST be verified to exist on disk before writing or committing code.
+
+3. **Engine Isolation (Rule 1)**:
+   - Engines (`engines/water/hydro`, `engines/nexus`) must NEVER import from `apps/` or `packages/`.
+   - Flow is outward only.
+
+4. **Zero Hardcoded Numbers (Rule 2)**:
+   - All domain parameters, coordinates, crop indicators, and tariffs must be loaded from `data/`.
+
+5. **Atomic Commits & Verification**:
+   - Commits must not exceed 400 net functional lines.
+   - Run `python3 scripts/verify_data_integrity.py` before committing.
