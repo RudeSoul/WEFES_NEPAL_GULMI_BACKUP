@@ -4,7 +4,9 @@
   "scripts": {
     "build": "pnpm exec turbo run build",
     "dev": "pnpm exec turbo run dev --parallel",
-    "test": "pnpm exec turbo run test",
+    "test": "pnpm check:data && pnpm exec turbo run test",
+    "check:data": "python3 scripts/verify_data_integrity.py",
+    "prepare": "git config core.hooksPath .githooks",
     "lint": "pnpm exec turbo run lint",
     "clean": "pnpm exec turbo run clean"
   },

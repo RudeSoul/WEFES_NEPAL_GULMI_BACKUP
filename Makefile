@@ -2,7 +2,7 @@
 # WEFES NEXUS NEPAL: MASTER REPOSITORY TASK ORCHESTRATOR
 # ==============================================================================
 
-.PHONY: dev build test test-nexus test-hydro run-hydro sync-data update-ai-index clean
+.PHONY: dev build test check-data test-nexus test-hydro run-hydro sync-data update-ai-index clean
 
 # Start full web platform & API development servers
 dev:
@@ -12,8 +12,12 @@ dev:
 build:
 	pnpm build
 
-# Run polyglot automated test suites
-test: test-nexus test-hydro
+# Run polyglot automated test suites including strict data integrity
+test: check-data test-nexus test-hydro
+
+# Verify physical data paths, engine isolation, and anti-hallucination rules
+check-data:
+	python3 scripts/verify_data_integrity.py
 
 test-nexus:
 	pnpm --filter @wefes/wefes-engine test

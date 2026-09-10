@@ -2,7 +2,13 @@
 # .githooks/pre-commit
 # Enforces Atomic Commit Limit (Max 400 net lines) and auto-generates AI_INDEX.md
 
-# 1. Update AI_INDEX.md if generator script exists
+# 1. Verify Data Integrity & Anti-Hallucination Gatekeeper (Rule 1 & Rule 4)
+if [ -f "scripts/verify_data_integrity.py" ]; then
+    echo "--> [Pre-Commit] Verifying data integrity & engine isolation..."
+    python3 scripts/verify_data_integrity.py || exit 1
+fi
+
+# 2. Update AI_INDEX.md if generator script exists
 if [ -f "scripts/generate_ai_index.py" ]; then
     echo "--> [Pre-Commit] Refreshing dynamic AI_INDEX.md..."
     python3 scripts/generate_ai_index.py > /dev/null 2>&1 || true
