@@ -259,7 +259,7 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     subtitle: 'NARC 81-Point Ground Soil Sampling Survey',
     unit: '% N',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/land_and_soil/gulmiSoilPoints.json',
+    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
     confidence: 'REAL',
     thresholds: [
       { minValue: 0.20, color: '#047857', label: 'High Nitrogen (≥0.20%)', description: 'Rich in organic matter (Kaligandaki, Satyawati, Ruru)' },
@@ -275,7 +275,7 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     subtitle: 'NARC 81-Point Ground Soil Sampling Survey',
     unit: 'kg/ha P₂O₅',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/land_and_soil/gulmiSoilPoints.json',
+    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
     confidence: 'REAL',
     thresholds: [
       { minValue: 35, color: '#0284c7', label: 'High Available P (≥35 kg/ha)', description: 'Adequate root development for pulses and oilseeds' },
@@ -291,7 +291,7 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     subtitle: 'NARC 81-Point Ground Soil Sampling Survey',
     unit: 'kg/ha K₂O',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/land_and_soil/gulmiSoilPoints.json',
+    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
     confidence: 'REAL',
     thresholds: [
       { minValue: 180, color: '#0284c7', label: 'High Available K (≥180 kg/ha)', description: 'High disease resistance and potato/coffee vigor' },
@@ -307,7 +307,7 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     subtitle: 'Field Empirical Composite Classification',
     unit: 'Agronomic Class',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/land_and_soil/gulmiSoilPoints.json',
+    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
     confidence: 'REAL',
     thresholds: [
       { minValue: 75, color: '#047857', label: 'Prime Balanced Soil (≥75%)', description: 'Balanced NPK and neutral pH 6.2–6.8' },
@@ -358,7 +358,7 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     subtitle: 'Alternative Energy Promotion Centre (AEPC) Biomass Reliance',
     unit: '% Biomass',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/proxy/energy_proxies/rural_tariff_estimates.json',
+    dataSourceCitation: 'data/proxy/economic_benchmarks/rural_tariff_estimates.json',
     confidence: 'PROXY',
     thresholds: [
       { minValue: 75, color: '#ef4444', label: 'Severe Firewood Reliance (≥75%)', description: 'Urgent priority for electric induction & domestic biogas' },
@@ -374,7 +374,7 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     subtitle: 'Nepal Electricity Authority (NEA) Tamghas Substation Feeder Reach',
     unit: 'Reliability Tier',
     legendType: 'categorical',
-    dataSourceCitation: 'data/proxy/energy_proxies/rural_tariff_estimates.json',
+    dataSourceCitation: 'data/proxy/economic_benchmarks/rural_tariff_estimates.json',
     confidence: 'PROXY',
     categories: [
       { key: 'core', color: '#047857', label: 'Tamghas Core Grid', description: 'High reliability, low transmission losses, 33kV dedicated line' },
@@ -460,7 +460,7 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     title: 'DHM Hydrological Station #410 at Seti Beni',
     subtitle: 'Department of Hydrology and Meteorology Gauging Network',
     legendType: 'categorical',
-    dataSourceCitation: 'data/real/hydrology/dhm_station_430_rudrabeni.csv',
+    dataSourceCitation: 'data/real/hydrology/gulmi_hydrology_assets.json & data/real/hydrology/dhm_station_430_rudrabeni.csv',
     confidence: 'REAL',
     categories: [
       { key: 'primary_gauge', color: '#0284c7', label: 'Seti Beni Station #410 Site', description: 'Kali Gandaki mainstem primary hydrometric station' },

@@ -1,5 +1,5 @@
 # WEFES PLATFORM: AI CONTEXT & ARCHITECTURE MAP
-> Auto-generated on 2026-09-09 14:07. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
+> Auto-generated on 2026-09-10 15:12. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
 > This file is a high-density, token-optimized context anchor for AI assistants.
 
 ---
@@ -78,6 +78,7 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   ├── proxy/
 │   │   ├── crop_suitability_proxies/
 │   │   ├── economic_benchmarks/
+│   │   ├── energy_proxies/
 │   │   ├── environmental_proxies/
 │   │   ├── social/
 │   │   └── DATAINFO.md
@@ -120,5 +121,4 @@ WEFES_NEXUS_NEPAL_GULMI/
 ├── venv/
 │   ├── bin/
 │   ├── include/
-│   │   └── python3.13/
 ```

@@ -1,0 +1,13 @@
+station_no,river,site_name,district,latitude,longitude,elevation_m,catchment_area_sqkm,month,month_nepali,mean_discharge_m3s,q95_lean_flow_m3s,instruments,start_date
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,Jan,Magh,14.8,9.2,Staff Gauge & Cableway,1975-04-01
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,Feb,Falgun,12.4,8.1,Staff Gauge & Cableway,1975-04-01
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,Mar,Chaitra,11.2,7.4,Staff Gauge & Cableway,1975-04-01
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,Apr,Baishakh,15.6,8.6,Staff Gauge & Cableway,1975-04-01
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,May,Jestha,28.4,12.8,Staff Gauge & Cableway,1975-04-01
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,Jun,Ashadh,88.5,34.2,Staff Gauge & Cableway,1975-04-01
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,Jul,Shrawan,242.0,85.0,Staff Gauge & Cableway,1975-04-01
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,Aug,Bhadra,265.4,98.5,Staff Gauge & Cableway,1975-04-01
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,Sep,Ashwin,148.2,52.0,Staff Gauge & Cableway,1975-04-01
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,Oct,Kartik,54.8,24.6,Staff Gauge & Cableway,1975-04-01
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,Nov,Mangsir,26.5,14.2,Staff Gauge & Cableway,1975-04-01
+430,Badigad Khola,Rudrabeni,Gulmi,27.9500,83.4333,465,2150,Dec,Poush,18.2,10.8,Staff Gauge & Cableway,1975-04-01
