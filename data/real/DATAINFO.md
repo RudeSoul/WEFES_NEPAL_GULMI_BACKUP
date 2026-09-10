@@ -21,7 +21,7 @@
 - **Description**: Rich municipal profiles for all 12 Palikas of Gulmi including demographics, elevation, temperatures, soil pH, crop feasibility scores, and seasonal rotations.
 
 ### `hydrology/`
-- **Files**: `gulmi_hydrology_assets.json`, `dhm_station_430_rudrabeni.csv`, `River_data.csv`, `Average_rainfall_by_altitude.csv`, `glacier_and_catchment_area_having_metrological_and_hydrological_station.csv`
+- **Files**: `gulmi_hydrology_assets.json`, `River_data.csv`, `Average_rainfall_by_altitude.csv`, `glacier_and_catchment_area_having_metrological_and_hydrological_station.csv`
 - **Source**: Department of Hydrology and Meteorology (DHM) Nepal.
 - **Description**: Hydrometric station records (stations 410, 430, 435, 420), altitude-dependent rainfall profiles, and lake altitude classifications.
 

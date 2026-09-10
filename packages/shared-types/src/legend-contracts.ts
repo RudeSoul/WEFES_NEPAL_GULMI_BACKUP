@@ -460,7 +460,7 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     title: 'DHM Hydrological Station #410 at Seti Beni',
     subtitle: 'Department of Hydrology and Meteorology Gauging Network',
     legendType: 'categorical',
-    dataSourceCitation: 'data/real/hydrology/gulmi_hydrology_assets.json & data/real/hydrology/dhm_station_430_rudrabeni.csv',
+    dataSourceCitation: 'data/real/hydrology/River_data.csv',
     confidence: 'REAL',
     categories: [
       { key: 'primary_gauge', color: '#0284c7', label: 'Seti Beni Station #410 Site', description: 'Kali Gandaki mainstem primary hydrometric station' },

@@ -38,8 +38,8 @@ Every module, hook, service, or script that consumes or transforms data must beg
 ```python
 # ==============================================================================
 # DATA PROVENANCE CITATION
-# Source File: data/real/hydrology/dhm_station_430_rudrabeni.csv
-# Lineage: DHM Nepal 10-year mean daily streamflow (2010–2020)
+# Source File: data/real/hydrology/River_data.csv
+# Lineage: DHM Nepal National River Network & Station 410 (Seti Beni, Kali Gandaki)
 # Confidence: HIGH (Observed hydrometric station record)
 # Consumed By: engines/water/hydro/src/hydrology/gauge_scaling.py
 # ==============================================================================
