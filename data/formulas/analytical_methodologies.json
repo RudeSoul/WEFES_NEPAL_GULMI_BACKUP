@@ -1,0 +1,422 @@
+{
+  "version": "1.0.0",
+  "description": "Scientific calculation models, governing equations, variable definitions, and verified data provenance for WEFES Nexus Gulmi District spatial analysis.",
+  "methodologies": {
+    "merra_rainfall": {
+      "shortTitle": { "en": "Precipitation Model", "np": "वर्षा वितरण मोडल" },
+      "pillarName": { "en": "Water", "np": "जल" },
+      "model": { "en": "NASA MERRA-2 Topographic Orographic Downscaling", "np": "नासा मेर्रा-२ टोपोग्राफिक डाउनस्केलिङ" },
+      "formula": "P(z) = P_base · [1 + α · (z - z_base)]",
+      "parameter": { "en": "Lapse Rate: α = -6.5°C / 1,000m orographic gradient", "np": "ल्याप्स दर: α = -६.५°C / १००० मिटर" },
+      "variables": [
+        { "symbol": "P(z)", "definition": { "en": "Downscaled monthly precipitation at elevation z (mm/month)", "np": "उचाइ z मा डाउनस्केल गरिएको मासिक वर्षा (मिमी/महिना)" } },
+        { "symbol": "P_base", "definition": { "en": "Baseline precipitation at valley reference station (mm)", "np": "आधार उपत्यका जलमापन केन्द्रको मासिक वर्षा (मिमी)" } },
+        { "symbol": "z", "definition": { "en": "Target terrain surface elevation from 30m SRTM DEM (m)", "np": "३० मिटर SRTM DEM बाट प्राप्त भू-सतहको उचाइ (मिटर)" } },
+        { "symbol": "z_base", "definition": { "en": "Valley reference station base elevation (450m)", "np": "आधार जलमापन केन्द्रको उचाइ (४५० मिटर)" } },
+        { "symbol": "α", "definition": { "en": "Orographic lapse rate coefficient (-6.5°C/km gradient)", "np": "पहाडी टोपोग्राफिक वर्षा अवरोध तथा ल्याप्स दर गुणक" } }
+      ],
+      "description": {
+        "en": "Downscales 39-year NASA MERRA-2 monthly climatology across Gulmi's 450m–2,690m elevation span using atmospheric lapse rate (-6.5°C/km) and orographic ridge uplift.",
+        "np": "गुल्मीको ४५० देखि २,६९० मिटर उचाइको विविधता अनुसार नासा मेर्रा-२ ३९-वर्षे अभिलेखलाई टोपोग्राफिक ल्याप्स-रेट र हावाहुरीको वर्षा अवरोध अनुसार डाउनस्केल गरिएको छ।"
+      },
+      "confidence": "CALCULATED",
+      "inputs": [
+        "NASA MERRA-2 39-Yr Climatology (1981–2019)",
+        "SRTM 30m Digital Elevation Model",
+        "DHM Tamghas Gauge #725 Baseline"
+      ],
+      "citation": "Department of Hydrology and Meteorology (DHM) Nepal & NASA POWER Reanalysis",
+      "provenancePath": "data/real/climate/nasa_power_10_years_full.csv",
+      "unit": "mm/month",
+      "currentStat": "{month}: Area Mean {rainMm} mm ({rainMin}–{rainMax} mm across Palikas)"
+    },
+    "river_basins": {
+      "shortTitle": { "en": "Kali Gandaki Basin Topology", "np": "कालीगण्डकी नदी सञ्जाल" },
+      "pillarName": { "en": "Water", "np": "जल" },
+      "model": { "en": "DHM National River Hydrographic Network", "np": "जल तथा मौसम विभाग जलप्रणाली नक्सांकन" },
+      "formula": "Strahler Stream Order Routing",
+      "parameter": { "en": "Kali Gandaki Basin & 5 Perennial Tributaries", "np": "कालीगण्डकी जलाधार र ५ सहायक नदीहरू" },
+      "variables": [
+        { "symbol": "Order 1", "definition": { "en": "High mountain headwater streams and seasonal gullies", "np": "उच्च पहाडी मुहान र मौसमी खोलाहरू" } },
+        { "symbol": "Order 2–3", "definition": { "en": "Valley agricultural tributaries (Panaha, Hugdi, Chhaldi)", "np": "मध्य पहाडी सहायक नदीहरू (पनाहा, हुग्दी, छलदी)" } },
+        { "symbol": "Order 4–5", "definition": { "en": "Major perennial trunk rivers (Badigad, Ridi, Kali Gandaki)", "np": "प्रमुख सदाबहार नदीहरू (बडिगाड, रिदी, कालीगण्डकी)" } }
+      ],
+      "description": {
+        "en": "Official GIS stream network for Kali Gandaki mainstem and its 5 perennial tributaries (Badigad, Ridi, Panaha, Hugdi, Chhaldi).",
+        "np": "कालीगण्डकी मुख्य नदी र यसका ५ सहायक नदीहरू (बडिगाड, रिदी, पनाहा, हुग्दी, छलदी) को आधिकारिक जलाधार सञ्जाल।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "DHM National River Network GIS",
+        "Survey Department 1:25,000 Topographic Sheets"
+      ],
+      "citation": "Department of Hydrology and Meteorology (DHM), Nepal",
+      "provenancePath": "data/real/hydrology/River_data.csv",
+      "unit": "Hydrological Reaches",
+      "currentStat": "6 Perennial Catchments • Kali Gandaki Basin Drainage"
+    },
+    "springshed_vulnerability": {
+      "shortTitle": { "en": "Springshed Vulnerability", "np": "मुहान सुक्ने जोखिम" },
+      "pillarName": { "en": "Water", "np": "जल" },
+      "model": { "en": "ICIMOD Mid-Hill Spring Depletion Risk Protocol", "np": "इसिमोड पहाडी मुहान जल-जोखिम सूचकाङ्क" },
+      "formula": "V_spring = 0.60 · Elev* + 0.40 · (1 - Rain*)",
+      "parameter": { "en": "Elev* = (Elev-800)/1400, Rain* = Rain/2400", "np": "उचाइ र सुख्खायाम वर्षा अभाव सामान्यीकरण" },
+      "variables": [
+        { "symbol": "V_spring", "definition": { "en": "Composite springshed depletion risk index (0–100%)", "np": "मुहान सुक्ने समग्र जोखिम सूचकाङ्क (०–१००%)" } },
+        { "symbol": "Elev*", "definition": { "en": "Normalized recharge altitude gradient: (Elev - 800m) / 1,400m", "np": "सामान्यीकृत मुहान उचाइ: (उचाइ - ८००) / १४०० मिटर" } },
+        { "symbol": "Rain*", "definition": { "en": "Normalized winter dry-season precipitation: Rain / 2,400mm", "np": "सामान्यीकृत हिउँदे वर्षा: वार्षिक वर्षा / २४०० मिमी" } },
+        { "symbol": "0.60, 0.40", "definition": { "en": "ICIMOD empirical mountain weights for slope head vs rainfall deficit", "np": "इसिमोड पहाडी भू-बनोट र वर्षा अभावका भारित गुणकहरू" } }
+      ],
+      "description": {
+        "en": "Couples recharge area elevation gradient with dry-season precipitation deficit to classify mid-hill spring drying risk for municipal water supply.",
+        "np": "उचाइको भिरालोपना, सुख्खायामको वर्षा अभाव र भूगर्भको जलभण्डारण क्षमतालाई संयोजन गरी मुहान सुक्ने जोखिम मापन गरिन्छ।"
+      },
+      "confidence": "PROXY ESTIMATE",
+      "inputs": [
+        "ICIMOD Springshed Mapping Protocol",
+        "NASA MERRA-2 Dry Season Precipitation",
+        "DEM Topographic Slope"
+      ],
+      "citation": "ICIMOD Mountain Springshed Initiative & Local Government Baselines",
+      "provenancePath": "data/proxy/environmental_proxies/default_eflow_parameters.json",
+      "unit": "Risk Index %",
+      "currentStat": "Critical (>75%) to Low (<25%) Vulnerability Tiers"
+    },
+    "irrigation_potential": {
+      "shortTitle": { "en": "Irrigation Command Scoring", "np": "सिँचाइ कमान्ड क्षमता" },
+      "pillarName": { "en": "Water", "np": "जल" },
+      "model": { "en": "Riverbed Gravity Kulo vs Solar Lift Command Feasibility", "np": "कुलो गुरुत्वाकर्षण र सौर्य लिफ्ट विश्लेषण" },
+      "formula": "Command = max(15, min(95, 100 - Δz/20))",
+      "parameter": { "en": "Δz = (Elevation - 450m riverbed)", "np": "Δz = नदी सतहबाट उचाइ गिरावट (Head, m)" },
+      "variables": [
+        { "symbol": "Command", "definition": { "en": "Gravity canal feasibility score (0–100%)", "np": "परम्परागत कुलो तथा सिँचाइ सम्भाव्यता प्राप्ताङ्क" } },
+        { "symbol": "Δz", "definition": { "en": "Elevation head difference above perennial riverbed (m)", "np": "सदाबहार नदीको सतहभन्दा खेतको उचाइ गिरावट (मिटर)" } },
+        { "symbol": "15, 95", "definition": { "en": "Lower limit (lift boundary) and upper limit (riparian command)", "np": "न्यूनतम (लिफ्ट सीमा) र अधिकतम (नहर कमान्ड) सीमा" } }
+      ],
+      "description": {
+        "en": "Evaluates elevation head relative to perennial river beds to determine gravity canal vs solar lift irrigation feasibility.",
+        "np": "नदी सतहबाट उचाइको आधारमा परम्परागत कुलो सिँचाइ र सौर्य ऊर्जा लिफ्ट प्रविधिको सम्भाव्यता वर्गीकरण।"
+      },
+      "confidence": "CALCULATED",
+      "inputs": [
+        "MoALD Irrigation Master Plan",
+        "Hydrographic Reach Elevation Profiling"
+      ],
+      "citation": "Ministry of Agriculture and Livestock Development (MoALD)",
+      "provenancePath": "data/calculated/hydro_reaches/hydro_reaches.geojson",
+      "unit": "Command Score %",
+      "currentStat": "Prime Riverbed Gravity (≥80%) to Rainfed Ridges (<40%)"
+    },
+    "dhm_station": {
+      "shortTitle": { "en": "DHM River Gauging", "np": "जलमापन केन्द्र सञ्जाल" },
+      "pillarName": { "en": "Water", "np": "जल" },
+      "model": { "en": "DHM River Gauge Network & Telemetry Monitoring", "np": "जल तथा मौसम विज्ञान विभाग नदी बहाव मापन" },
+      "formula": "Q = a · (h - h0)^b",
+      "parameter": { "en": "DHM Stage-Discharge Rating Curve Baseline", "np": "डिस्चार्ज रेटिङ कर्भ (DHM जलमापन केन्द्र)" },
+      "variables": [
+        { "symbol": "Q", "definition": { "en": "River streamflow discharge rate (m³/s)", "np": "नदीको पानीको बहाव दर (घनमिटर प्रति सेकेन्ड)" } },
+        { "symbol": "h", "definition": { "en": "Observed water staff gauge stage height (m)", "np": "मापन गरिएको जल सतह वा गेजको उचाइ (मिटर)" } },
+        { "symbol": "h0", "definition": { "en": "Gauge staff datum height of zero river flow (m)", "np": "बहाव शून्य हुने गेजको आधारभूत उचाइ (मिटर)" } },
+        { "symbol": "a, b", "definition": { "en": "Empirical calibration coefficients for river cross-section geometry", "np": "नदीको चौडाइ र घर्षण अनुसारका क्यालिब्रेसन गुणांकहरू" } }
+      ],
+      "description": {
+        "en": "Hydrological streamflow gauge stations with real historical telemetry and catchment tracking.",
+        "np": "कालीगण्डकी र रिदी नदीमा स्थापित आधिकारिक जलमापन केन्द्रहरूको वास्तविक विवरण र अभिलेख।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "DHM Hydrological Station Registries",
+        "Historical River Discharge Time-Series"
+      ],
+      "citation": "Department of Hydrology and Meteorology (DHM), Nepal",
+      "provenancePath": "data/real/hydrology/glacier_and_catchment_area_having_metrological_and_hydrological_station.csv",
+      "unit": "River Discharge (m³/s)",
+      "currentStat": "Active DHM Gauge Stations in Gulmi River Basins"
+    },
+    "single_crop": {
+      "shortTitle": { "en": "{crop} Suitability", "np": "{crop} अनुकूलता" },
+      "pillarName": { "en": "Food", "np": "खाद्य" },
+      "model": { "en": "FAO-56 EcoCrop & NARC Agro-Climatic Suitability", "np": "एफएओ-५६ इकोक्रप र नार्क जैविक-जलवायु मोडल" },
+      "formula": "Suitability = min(S_temp, S_rain, S_elev, S_pH) × W_soil",
+      "parameter": { "en": "NARC Cultivar Liebig Limiting Envelope Model", "np": "नार्क सिफारिस लिबिक न्यूनतम सीमा मोडल" },
+      "variables": [
+        { "symbol": "Suitability", "definition": { "en": "Final agronomic crop feasibility index (0–100%)", "np": "अन्तिम कृषि-जलवायु बाली अनुकूलता सूचकाङ्क" } },
+        { "symbol": "S_temp", "definition": { "en": "Thermal suitability from monthly growing degree days (GDD)", "np": "तापक्रम तथा औसत ताप एकाइ अनुकूलता" } },
+        { "symbol": "S_rain", "definition": { "en": "Moisture suitability from monthly rainfall envelopes", "np": "मासिक वर्षा तथा आद्रता अनुकूलता" } },
+        { "symbol": "S_elev", "definition": { "en": "Hypsometric altitude envelope score from SRTM DEM", "np": "उचाइगत भू-बनोट अनुकूलता" } },
+        { "symbol": "S_pH", "definition": { "en": "Soil reaction suitability from 127 laboratory points", "np": "माटोको पिएच (अम्लीयता/क्षारीयता) अनुकूलता" } },
+        { "symbol": "W_soil", "definition": { "en": "Soil texture and organic matter retention multiplier", "np": "माटोको बनावट तथा जैविक पदार्थको भारित गुणक" } }
+      ],
+      "description": {
+        "en": "Evaluates limiting environmental envelopes (thermal degree days, monthly precipitation, elevation limits, soil pH) against NARC cultivar thresholds for {crop}.",
+        "np": "{crop} का लागि नार्क आधिकारिक सिफारिस अनुसार तापक्रम, वर्षा, उचाइ र माटोको पिएचलाई १२ पालिकाको सूक्ष्म जलवायुसँग तुलना गरी अनुकूलता गणना गरिएको छ।"
+      },
+      "confidence": "CALCULATED",
+      "inputs": [
+        "NARC Crop Phenology Thresholds (1999–2025)",
+        "NASA MERRA-2 Climatology",
+        "NARC 127 Soil Survey Lab Points"
+      ],
+      "citation": "Nepal Agricultural Research Council (NARC) & MoALD",
+      "provenancePath": "data/real/agriculture/crops.json",
+      "unit": "Suitability Score %",
+      "currentStat": "Prime (≥75%), Highly (60–74%), Moderate (40–59%), Marginal (<40%)"
+    },
+    "all_crops": {
+      "shortTitle": { "en": "Composite Crop Suitability", "np": "एकीकृत बाली अनुकूलता" },
+      "pillarName": { "en": "Food", "np": "खाद्य" },
+      "model": { "en": "Harmonized Multi-Crop Agronomic Diversity Index", "np": "बहु-बाली जैविक-विविधता सूचकाङ्क" },
+      "formula": "Composite Index = Σ (w_i · Suitability_i) / Σ w_i",
+      "parameter": { "en": "Weighted Multi-Crop Agronomic Diversity Index", "np": "बहु-बाली भारित कृषि विविधता सूचकाङ्क" },
+      "variables": [
+        { "symbol": "Composite Index", "definition": { "en": "District-wide agricultural diversification index (0–100)", "np": "जिल्लाव्यापी एकीकृत बाली विविधीकरण सूचकाङ्क" } },
+        { "symbol": "Suitability_i", "definition": { "en": "Individual suitability score for cultivar i (maize, paddy, coffee, etc.)", "np": "बाली i (मकै, धान, कफी आदि) को व्यक्तिगत अनुकूलता" } },
+        { "symbol": "w_i", "definition": { "en": "Economic, caloric, and local dietary importance weight", "np": "आर्थिक मूल्य तथा पोषणका आधारमा तोकिएको भार" } }
+      ],
+      "description": {
+        "en": "Aggregated agronomic potential across cereals, pulses, cash crops, and horticulture in Gulmi.",
+        "np": "मकै, धान, गहुँ, कफी, अदुवा, सुन्तला सहितका प्रमुख बालीहरूको समग्र अनुकूलता र कृषि विविधता।"
+      },
+      "confidence": "CALCULATED",
+      "inputs": [
+        "NARC Multi-Cultivar Matrix",
+        "Palika Topographic Profiles"
+      ],
+      "citation": "Nepal Agricultural Research Council (NARC)",
+      "provenancePath": "data/real/agriculture/crops.json",
+      "unit": "Composite Score (0–100)",
+      "currentStat": "District Multi-Crop Optimization & Diversity"
+    },
+    "cereal_index": {
+      "shortTitle": { "en": "Cereal Self-Sufficiency", "np": "खाद्यान्न आत्मनिर्भरता" },
+      "pillarName": { "en": "Food", "np": "खाद्य" },
+      "model": { "en": "MoALD Municipal Cereal Production Balance Model", "np": "मन्त्रालय खाद्यान्न सन्तुलन विश्लेषण" },
+      "formula": "Self-Sufficiency = Total Yield / Annual Demand",
+      "parameter": { "en": "Demand = Population × 180 kg/capita/year", "np": "माग = जनसङ्ख्या × १८० केजी/व्यक्ति/वर्ष" },
+      "variables": [
+        { "symbol": "Total Yield", "definition": { "en": "Aggregate annual cereal harvest: paddy, maize, wheat, millet (MT)", "np": "वार्षिक कुल खाद्यान्न उत्पादन: धान, मकै, गहुँ, कोदो (मेट्रिक टन)" } },
+        { "symbol": "Annual Demand", "definition": { "en": "Municipal nutritional requirement: Population × 0.180 MT/capita", "np": "स्थानीय पोषण माग: जनसङ्ख्या × १८० केजी प्रति व्यक्ति" } },
+        { "symbol": "180 kg", "definition": { "en": "National dietary consumption benchmark defined by MoALD Nepal", "np": "कृषि तथा पशुपन्छी विकास मन्त्रालयको राष्ट्रिय उपभोग मापदण्ड" } }
+      ],
+      "description": {
+        "en": "Compares annual cereal production against the national dietary standard (180 kg/capita/year).",
+        "np": "प्रत्येक पालिकाको वार्षिक खाद्यान्न उत्पादन र १८० केजी प्रतिव्यक्ति आवश्यकता बीचको सन्तुलन।"
+      },
+      "confidence": "CALCULATED",
+      "inputs": [
+        "MoALD District Agriculture Statistics",
+        "CBS Census 2021 Palika Populations"
+      ],
+      "citation": "Ministry of Agriculture and Livestock Development (MoALD)",
+      "provenancePath": "data/real/municipal/palika_profiles.json",
+      "unit": "Production Metric (MT)",
+      "currentStat": "Annual Cereal Demand vs Actual Production Balance"
+    },
+    "hydro_corridor": {
+      "shortTitle": { "en": "Hydropower Potential", "np": "जलविद्युत सम्भाव्यता" },
+      "pillarName": { "en": "Energy", "np": "ऊर्जा" },
+      "model": { "en": "Theoretical Run-of-River Power Potential (P = η·ρ·g·Q·H)", "np": "नदी बहाव जलविद्युत मोडल (P = η·ρ·g·Q·H)" },
+      "formula": "P (kW) = 9.81 × Q × Head × η",
+      "parameter": { "en": "Turbine Efficiency η = 0.82, Head (m), Q (m³/s)", "np": "टर्बाइन दक्षता η = ०.८२ • बहाव Q (m³/s)" },
+      "variables": [
+        { "symbol": "P", "definition": { "en": "Theoretical power generation potential (kW)", "np": "सम्भावित जलविद्युत उत्पादन क्षमता (किलोवाट)" } },
+        { "symbol": "9.81", "definition": { "en": "Specific weight of water: ρ · g = 1,000 kg/m³ × 9.81 m/s² / 1000", "np": "पानीको विशिष्ट तौल र गुरुत्व प्रवेग गुणनफल" } },
+        { "symbol": "Q", "definition": { "en": "Design river discharge rate at Q40 exceedance (m³/s)", "np": "४०% बहाव सम्भाव्यता भएको नदी बहाव (घनमिटर प्रति सेकेन्ड)" } },
+        { "symbol": "Head", "definition": { "en": "Gross surveyed vertical fall height from reach topology (m)", "np": "खोलाको माथिल्लो र तल्लो बिन्दु बीचको ठाडो उचाइ गिरावट (मिटर)" } },
+        { "symbol": "η", "definition": { "en": "Combined electro-mechanical efficiency of turbine and generator (0.82)", "np": "टर्बाइन र जेनेरेटरको समग्र प्राविधिक दक्षता (८२%)" } }
+      ],
+      "description": {
+        "en": "Calculates potential installed capacity across Gulmi sub-basins utilizing surveyed reach heads and Q40/Q80 flow duration curves.",
+        "np": "गुल्मीका नदी तथा खोलाहरूको उचाइ गिरावट (Head) र वार्षिक बहाव (Discharge) बाट सम्भावित विद्युत क्षमता।"
+      },
+      "confidence": "CALCULATED",
+      "inputs": [
+        "DOED Hydrographic Reach Survey",
+        "DHM River Gauging Baselines",
+        "hydro_palika_summary.json"
+      ],
+      "citation": "Department of Electricity Development (DOED) Nepal",
+      "provenancePath": "data/calculated/hydro_reaches/hydro_palika_summary.json",
+      "unit": "Installed Capacity (MW)",
+      "currentStat": "Run-of-River Reach Power Screening across 12 Palikas"
+    },
+    "solar_irradiance": {
+      "shortTitle": { "en": "Solar Irradiance (GHI)", "np": "सौर्य विकिरण मोडल" },
+      "pillarName": { "en": "Energy", "np": "ऊर्जा" },
+      "model": { "en": "NASA POWER Surface Meteorological Solar Radiation Model", "np": "नासा सौर्य विकिरण विश्लेषण" },
+      "formula": "GHI = 4.2 + (Elev / 2200) × 1.1 kWh/m²/day",
+      "parameter": { "en": "Topographic Solar Irradiance Altitude Gradient", "np": "उचाइ अनुसार सौर्य विकिरण ग्रेडिएन्ट" },
+      "variables": [
+        { "symbol": "GHI", "definition": { "en": "Global Horizontal Irradiance received on flat terrain (kWh/m²/day)", "np": "प्रतिदिन प्रतिवर्गमिटर सतहमा पर्ने कुल सौर्य ऊर्जा (kWh/m²/day)" } },
+        { "symbol": "4.2", "definition": { "en": "Subtropical valley base clear-sky solar constant (kWh/m²/day)", "np": "उपत्यकाको आधारभूत सौर्य विकिरण स्थिराङ्क" } },
+        { "symbol": "Elev", "definition": { "en": "Palika centroid altitude above sea level from SRTM DEM (m)", "np": "समुद्र सतहबाट बस्ती वा पालिकाको औसत उचाइ (मिटर)" } },
+        { "symbol": "1.1", "definition": { "en": "Atmospheric thinning clearance gradient bonus at higher ridges", "np": "उच्च पहाडी क्षेत्रमा पातलो वायुमण्डलका कारण थपिने सौर्य लाभ" } }
+      ],
+      "description": {
+        "en": "Calculates Global Horizontal Irradiance (GHI) downscaled across topographic slope and elevation.",
+        "np": "उचाइ र बादलको प्रभाव अनुसार गुल्मीका पालिकामा प्राप्त हुने दैनिक सौर्य ऊर्जा।"
+      },
+      "confidence": "CALCULATED",
+      "inputs": [
+        "NASA POWER Solar Radiation Reanalysis",
+        "DEM Elevation Profiles"
+      ],
+      "citation": "NASA POWER Agro-Climatology Database",
+      "provenancePath": "data/real/climate/nasa_power_10_years_full.csv",
+      "unit": "kWh/m²/day",
+      "currentStat": "3.7 to 5.5 kWh/m²/day across Valley and Ridge Palikas"
+    },
+    "clean_cooking_biomass": {
+      "shortTitle": { "en": "Biomass Dependency", "np": "दाउरा निर्भरता दर" },
+      "pillarName": { "en": "Energy", "np": "ऊर्जा" },
+      "model": { "en": "Rural Energy Access & Biomass Firewood Dependency", "np": "ग्रामीण ऊर्जा अभाव विश्लेषण" },
+      "formula": "Biomass % = 35 + (Elev / 2000) × 55",
+      "parameter": { "en": "Elevation Fuelwood Isolation Gradient", "np": "उचाइ र विकटता अनुसार दाउरा निर्भरता" },
+      "variables": [
+        { "symbol": "Biomass %", "definition": { "en": "Percentage of households relying primarily on firewood for cooking", "np": "खाना पकाउन परम्परागत दाउरामा निर्भर घरधुरी प्रतिशत" } },
+        { "symbol": "35%", "definition": { "en": "Urban valley floor baseline biomass consumption (LP Gas transition)", "np": "सहरी उपत्यकामा ग्यास प्रयोगपछिको न्यूनतम दाउरा निर्भरता" } },
+        { "symbol": "Elev", "definition": { "en": "Settlement mean elevation denoting road and LPG delivery friction (m)", "np": "बस्तीको उचाइ जसले सडक र एलपीजी ग्यास ढुवानीको कठिनाइ देखाउँछ" } }
+      ],
+      "description": {
+        "en": "Models traditional firewood fuel consumption based on census survey returns and geographical isolation.",
+        "np": "ग्रामीण तथा विकट वस्तीहरूमा परम्परागत दाउरा र जैविक इन्धनमा निर्भरताको दर।"
+      },
+      "confidence": "PROXY ESTIMATE",
+      "inputs": [
+        "CBS National Census 2021 Energy Profiles",
+        "Local Body Forest Biomass Inventories"
+      ],
+      "citation": "Central Bureau of Statistics (CBS) Nepal",
+      "provenancePath": "data/real/municipal/palika_profiles.json",
+      "unit": "Households %",
+      "currentStat": "40% to 92% Biomass Dependency across Palikas"
+    },
+    "soil_ph": {
+      "shortTitle": { "en": "Soil Reaction (pH)", "np": "माटोको अम्लीयता (pH)" },
+      "pillarName": { "en": "Ecosystem", "np": "पारिस्थितिकी" },
+      "model": { "en": "NARC 127 Soil Survey Point Laboratory Interpolation", "np": "नार्क १२७ माटो नमूना प्रयोगशाला इन्टरपोलेसन" },
+      "formula": "pH(x) = Σ (w_i · pH_i) / Σ w_i",
+      "parameter": { "en": "Inverse Distance Weighting (IDW) from 127 Soil Points", "np": "नार्क १२७ माटो नमूना IDW इन्टरपोलेसन" },
+      "variables": [
+        { "symbol": "pH(x)", "definition": { "en": "Interpolated soil suspension pH at coordinate position x", "np": "नक्साको कुनै पनि विन्दु x मा अनुमानित माटोको पिएच" } },
+        { "symbol": "pH_i", "definition": { "en": "Laboratory potentiometric tested pH value at survey sample point i", "np": "नार्क प्रयोगशालामा परीक्षण गरिएको वास्तविक माटो नमूना i को पिएच" } },
+        { "symbol": "w_i", "definition": { "en": "Inverse distance weight factor: w_i = 1 / d(x, x_i)²", "np": "दूरीको आधारमा निर्धारित प्रभाव भार: १ / दूरी²" } }
+      ],
+      "description": {
+        "en": "Empirical soil pH surface generated from 127 georeferenced laboratory test points across all 12 Palikas.",
+        "np": "नार्क राष्ट्रिय माटो विज्ञान अनुसन्धान केन्द्रबाट गुल्मी जिल्लाभर संकलित १२७ माटो नमूनाहरूको प्रयोगशाला विश्लेषण।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "NARC NSSRC 127 Soil Lab Profile Points",
+        "Soil Survey Department GIS Grid"
+      ],
+      "citation": "National Soil Science Research Centre (NSSRC), NARC Nepal",
+      "provenancePath": "apps/web/src/data/gulmiSoilPoints.json",
+      "unit": "pH Scale (4.5–7.8)",
+      "currentStat": "Strongly Acidic (<5.5) to Neutral (6.5–7.5)"
+    },
+    "soil_om": {
+      "shortTitle": { "en": "Soil Organic Matter", "np": "जैविक पदार्थ (SOM)" },
+      "pillarName": { "en": "Ecosystem", "np": "पारिस्थितिकी" },
+      "model": { "en": "Walkley-Black Wet Oxidation Spectrometry Surface", "np": "वाक्ली-ब्ल्याक प्रयोगशाला परीक्षण" },
+      "formula": "SOM % = Organic Carbon % × 1.724",
+      "parameter": { "en": "Van Bemmelen Factor (Walkley-Black Spectrometry)", "np": "भ्यान बेम्मेलिन रूपान्तरण गुणक (NARC)" },
+      "variables": [
+        { "symbol": "SOM %", "definition": { "en": "Total soil organic matter percentage by dry weight", "np": "माटोमा जैविक पदार्थको समग्र प्रतिशत" } },
+        { "symbol": "Organic Carbon %", "definition": { "en": "Organic carbon measured via potassium dichromate oxidation", "np": "वाक्ली-ब्ल्याक विधिबाट परीक्षण गरिएको प्राङ्गारिक कार्बन प्रतिशत" } },
+        { "symbol": "1.724", "definition": { "en": "Standard Van Bemmelen conversion factor (assuming 58% carbon in humus)", "np": "ह्युमसमा ५८% कार्बन हुने मान्यता अनुसारको अन्तर्राष्ट्रिय रूपान्तरण गुणक" } }
+      ],
+      "description": {
+        "en": "Spatial mapping of soil organic matter supporting crop root aeration and water retention.",
+        "np": "माटोको उर्वराशक्ति र जैविक पदार्थको प्रतिशत मापन।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "NARC Soil Survey Laboratory Test Database"
+      ],
+      "citation": "NARC National Soil Science Research Centre",
+      "provenancePath": "apps/web/src/data/gulmiSoilPoints.json",
+      "unit": "Organic Matter %",
+      "currentStat": "Low (<1.5%), Medium (1.5–3.0%), High (>3.0%)"
+    },
+    "local_governance": {
+      "shortTitle": { "en": "Administrative Typology", "np": "स्थानीय तह संरचना" },
+      "pillarName": { "en": "Socioeconomics", "np": "सामाजिक-आर्थिक" },
+      "model": { "en": "Constitution of Nepal 2015 Local Governance Typology", "np": "नेपालको संविधान २०७२ स्थानीय संरचना" },
+      "formula": "2 Urban (Nagarpalika) + 10 Rural (Gaunpalika)",
+      "parameter": { "en": "Constitution of Nepal 2015 Local Governance Typology", "np": "नेपालको संविधान २०७२ स्थानीय संरचना" },
+      "variables": [
+        { "symbol": "Nagarpalika", "definition": { "en": "2 Urban Municipalities: Resunga (HQ) and Musikot", "np": "२ नगरपालिका: रेसुङ्गा (सदरमुकाम) र मुसिकोट" } },
+        { "symbol": "Gaunpalika", "definition": { "en": "10 Rural Municipalities designated under 2015 Federal Constitution", "np": "१० गाउँपालिकाहरू (नेपालको संविधान २०७२ अनुसार)" } }
+      ],
+      "description": {
+        "en": "Official administrative classification under MoFAGA federal governance structure.",
+        "np": "गुल्मी जिल्लाका २ नगरपालिका र १० गाउँपालिकाहरूको प्रशासनिक संरचना।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "MoFAGA Local Government Registries",
+        "Survey Department Administrative Boundaries"
+      ],
+      "citation": "Ministry of Federal Affairs and General Administration (MoFAGA)",
+      "provenancePath": "data/real/boundaries/gulmi-palikas.json",
+      "unit": "Administrative Type",
+      "currentStat": "2 Nagarpalikas • 10 Gaunpalikas"
+    },
+    "hq_market_proximity": {
+      "shortTitle": { "en": "Market Access & HQ Distance", "np": "सदरमुकाम दूरी" },
+      "pillarName": { "en": "Socioeconomics", "np": "सामाजिक-आर्थिक" },
+      "model": { "en": "Geodesic Distance to Tamghas Administration Hub", "np": "तमघास सदरमुकाम ज्यामितीय र सडक दूरी" },
+      "formula": "D = √((Δlat·111)² + (Δlng·111·cos(θ))²) km",
+      "parameter": { "en": "Geodesic Distance to Tamghas HQ (θ = 28.065°)", "np": "सदरमुकाम तमघास ज्यामितीय दूरी (θ = 28.065°)" },
+      "variables": [
+        { "symbol": "D", "definition": { "en": "Great-circle geodesic straight-line distance to Tamghas (km)", "np": "सदरमुकाम तमघास सम्मको सिधा ज्यामितीय दूरी (किमी)" } },
+        { "symbol": "Δlat, Δlng", "definition": { "en": "Latitude and longitude degree differences from municipal centroid", "np": "पालिका केन्द्र र तमघास बीचको अक्षांश र देशान्तर फरक" } },
+        { "symbol": "111 km", "definition": { "en": "Approximate ground distance per degree of latitude near the equator", "np": "प्रति डिग्री अक्षांश बराबरको जमिनको सतह दूरी (१११ किमी)" } },
+        { "symbol": "θ", "definition": { "en": "Reference mean latitude of Gulmi District (28.065° N) for longitude projection", "np": "देशान्तर दूरी समायोजनका लागि गुल्मीको औसत अक्षांश (२८.०६५° उ.)" } }
+      ],
+      "description": {
+        "en": "Spatial accessibility matrix computing travel friction from each Palika centroid to district headquarters (Tamghas).",
+        "np": "सदरमुकाम तमघासबाट प्रत्येक पालिकाको केन्द्र सम्मको सीधा र सडक पहुँच दूरी।"
+      },
+      "confidence": "CALCULATED",
+      "inputs": [
+        "Survey Department Municipal Centroids",
+        "Gulmi Transport Master Plan"
+      ],
+      "citation": "Survey Department & District Coordination Committee Gulmi",
+      "provenancePath": "data/real/boundaries/palika_centroids.json",
+      "unit": "Kilometers (km)",
+      "currentStat": "2 km (Resunga HQ) to 75 km (Remote Western Ridges)"
+    },
+    "default": {
+      "shortTitle": { "en": "WEFES Spatial Nexus Model", "np": "नेक्सस भू-स्थानिक मोडल" },
+      "pillarName": { "en": "5 Pillars", "np": "५ स्तम्भ" },
+      "model": { "en": "Integrated Water-Energy-Food-Ecosystem Decision Support", "np": "एकीकृत जल-ऊर्जा-खाद्य-पारिस्थितिकी विश्लेषण" },
+      "formula": "WEFES Index = f(Water, Energy, Food, Ecosystem, Society)",
+      "parameter": { "en": "5-Pillar Harmonized Spatial Decision Index", "np": "५-स्तम्भ एकीकृत भू-स्थानिक सूचकाङ्क" },
+      "variables": [
+        { "symbol": "Water", "definition": { "en": "Catchment yield, springshed conservation, and irrigation access", "np": "जलाधार बहाव, मुहान संरक्षण र सिँचाइ पहुँच" } },
+        { "symbol": "Energy", "definition": { "en": "Hydropower potential, solar radiation, and clean cooking access", "np": "जलविद्युत, सौर्य विकिरण र स्वच्छ इन्धन पहुँच" } },
+        { "symbol": "Food", "definition": { "en": "NARC crop suitability, agro-biodiversity, and cereal balance", "np": "बाली अनुकूलता, कृषि विविधता र खाद्यान्न आत्मनिर्भरता" } },
+        { "symbol": "Ecosystem", "definition": { "en": "Soil pH health, organic matter percentage, and slope stability", "np": "माटोको पिएच, जैविक पदार्थ र भिरालो भू-संरक्षण" } },
+        { "symbol": "Society", "definition": { "en": "Market connectivity, transport master plan, and local governance", "np": "बजार पहुँच, यातायात दूरी र स्थानीय सरकार क्षमता" } }
+      ],
+      "description": {
+        "en": "Scientific spatial decision support system for Gulmi District, Nepal.",
+        "np": "गुल्मी जिल्लाका १२ स्थानीय तहहरूको वैज्ञानिक निर्णय समर्थन प्रणाली।"
+      },
+      "confidence": "CALCULATED",
+      "inputs": [
+        "DHM Nepal Gauge Feeds",
+        "NARC Agronomic Registries",
+        "NASA POWER 39-Yr Climatology"
+      ],
+      "citation": "DHM, MoALD, NARC, CBS, Survey Department, NASA POWER",
+      "provenancePath": "data/real/municipal/palika_profiles.json",
+      "unit": "Composite Nexus Index",
+      "currentStat": "12 Local Government Bodies (Gulmi District)"
+    }
+  }
+}

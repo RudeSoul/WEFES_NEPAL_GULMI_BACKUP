@@ -1,5 +1,5 @@
 # WEFES PLATFORM: AI CONTEXT & ARCHITECTURE MAP
-> Auto-generated on 2026-09-12 17:54. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
+> Auto-generated on 2026-09-12 21:38. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
 > This file is a high-density, token-optimized context anchor for AI assistants.
 
 ---
@@ -34,6 +34,7 @@
 | Subfolder | Classification | Description |
 |---|---|---|
 | `data/calculated` | **Calculated / Computational Engine Output** | Data Catalog: Deterministic Engine Outputs (`data/calculated/`) |
+| `data/formulas` | **CALCULATED / DOMAIN CONFIGURATION** | Data Information: `data/formulas/` |
 | `data/proxy` | **Proxy / Surrogate Assumption** | Data Catalog: Surrogate Assumptions & Proxy Benchmarks (`data/proxy/`) |
 | `data/real` | **Observed / Official Records (Empirical Ground Truth)** | Data Catalog: Observed & Official Records (`data/real/`) |
 
@@ -71,6 +72,7 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   ├── climate/
 │   ├── energy/
 │   ├── formulas/
+│   │   └── DATAINFO.md
 │   ├── geojson/
 │   ├── Gulmi_OpenTopography_data_Hillside_and_slope/
 │   ├── hydrology/
@@ -120,5 +122,4 @@ WEFES_NEXUS_NEPAL_GULMI/
 ├── scripts/
 ├── venv/
 │   ├── bin/
-│   ├── include/
 ```

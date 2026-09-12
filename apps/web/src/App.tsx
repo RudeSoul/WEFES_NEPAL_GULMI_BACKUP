@@ -143,7 +143,7 @@ export function App() {
       </main>
 
       {/* Cool Floating Research Sandbox Trigger */}
-      <FloatingResearchLabTrigger
+      {/* <FloatingResearchLabTrigger
         activeScreen={activeScreen}
         onOpenResearchLab={() => {
           setPreviousScreen(activeScreen);
@@ -152,7 +152,7 @@ export function App() {
         onExitResearchLab={() => {
           setActiveScreen(previousScreen === 7 ? 1 : previousScreen);
         }}
-      />
+      /> */}
 
       {selectedDistrict && selectedCrop && (
         <InputModal
