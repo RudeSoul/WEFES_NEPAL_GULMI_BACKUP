@@ -59,9 +59,9 @@ type BaseMapStyle = 'voyager' | 'osm' | 'opentopo' | 'satellite';
 
 const BASE_MAP_TILES: Record<BaseMapStyle, { url: string; attribution: string; name: string }> = {
   voyager: {
-    name: 'Carto Voyager Clean',
-    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    name: 'Clean Vector Base',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
   },
   osm: {
     name: 'OpenStreetMap Standard',
