@@ -1024,14 +1024,20 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         const elev = pData?.elevation || 1400;
         const rainMm = pData?.rainfallMm || 1600;
         const riskScore = Math.max(10, Math.min(95, Math.round(((elev - 800) / 1400) * 60 + (1 - rainMm / 2400) * 40)));
-        return getGradientColor(riskScore, 10, 95, COLOR_RAMPS.gnylrd);
+        if (riskScore >= 75) return '#ef4444';
+        if (riskScore >= 50) return '#f59e0b';
+        if (riskScore >= 25) return '#10b981';
+        return '#059669';
       }
 
       if (wSub === 'irrigation_potential') {
         // Riverbed lift irrigation capacity (inversely proportional to lift head above valley floor)
         const elev = pData?.elevation || 1400;
         const commandScore = Math.max(15, Math.min(95, Math.round(100 - (elev - 450) / 20)));
-        return getGradientColor(commandScore, 15, 95, COLOR_RAMPS.blues);
+        if (commandScore >= 80) return '#047857';
+        if (commandScore >= 60) return '#10b981';
+        if (commandScore >= 40) return '#f59e0b';
+        return '#ef4444';
       }
 
       // Default: Dynamic MERRA-2 Topographically Downscaled Rainfall Continuous Gradient (QGIS Style)
@@ -1217,6 +1223,68 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
           : ['musikot', 'isma'].some(n => palikaName.includes(n)) ? 'Badigad River Basin'
             : ['resunga', 'gulmidarbar', 'chatrakot', 'chandrakot'].some(n => palikaName.includes(n)) ? 'Ridi Khola Basin' : 'Panaha/Chhaldi Basin';
         metricSnippet = `<div style="color: #0284c7; font-size: 10px; margin-top: 2px;">🌊 Watershed: <strong>${basin}</strong></div>`;
+      } else if (wSub === 'irrigation_potential') {
+        const elev = pData?.elevation || 1400;
+        const commandScore = Math.max(15, Math.min(95, Math.round(100 - (elev - 450) / 20)));
+        const cat = commandScore >= 80 ? 'Prime Riverbed Gravity Kulo (≥80%)'
+          : commandScore >= 60 ? 'Mid-Hill Solar Lift Command (60–79%)'
+          : commandScore >= 40 ? 'Rainwater Harvest & Micro-Drip (40–59%)'
+          : 'Rainfed Ridge Slopes (<40%)';
+        const catColor = commandScore >= 80 ? '#047857'
+          : commandScore >= 60 ? '#10b981'
+          : commandScore >= 40 ? '#f59e0b'
+          : '#ef4444';
+        const liftHead = Math.max(0, elev - 450);
+        metricSnippet = `
+          <div style="color: ${catColor}; font-weight: 700; font-size: 10px; margin-top: 2px;">
+            🌾 Irrigation Feasibility: <strong>${commandScore}%</strong>
+          </div>
+          <div style="color: #334155; font-size: 9.5px; margin-top: 1px;">
+            Category: <strong>${cat}</strong>
+          </div>
+          <div style="color: #64748b; font-size: 9px; margin-top: 1px;">
+            Terrain Elev: ${elev}m • Valley Lift Head: ~${liftHead}m
+          </div>
+        `;
+      } else if (wSub === 'spring_vulnerability') {
+        const elev = pData?.elevation || 1400;
+        const rainMm = pData?.rainfallMm || 1600;
+        const riskScore = Math.max(10, Math.min(95, Math.round(((elev - 800) / 1400) * 60 + (1 - rainMm / 2400) * 40)));
+        const cat = riskScore >= 75 ? 'Critical Vulnerability (>75%)'
+          : riskScore >= 50 ? 'High Vulnerability (50–75%)'
+          : riskScore >= 25 ? 'Moderate Vulnerability (25–50%)'
+          : 'Low Vulnerability (<25%)';
+        const catColor = riskScore >= 75 ? '#ef4444'
+          : riskScore >= 50 ? '#f59e0b'
+          : riskScore >= 25 ? '#10b981'
+          : '#059669';
+        metricSnippet = `
+          <div style="color: ${catColor}; font-weight: 700; font-size: 10px; margin-top: 2px;">
+            🏔️ Spring Drying Risk: <strong>${riskScore}%</strong>
+          </div>
+          <div style="color: #334155; font-size: 9.5px; margin-top: 1px;">
+            Status: <strong>${cat}</strong>
+          </div>
+          <div style="color: #64748b; font-size: 9px; margin-top: 1px;">
+            Ridge Elev: ${elev}m • Mean Rain: ${rainMm} mm/yr
+          </div>
+        `;
+      } else if (wSub === 'dhm_station') {
+        const stationDesc = ['kaligandaki', 'satyawati'].some(n => palikaName.includes(n))
+          ? 'Kali Gandaki (Station #410 Seti Beni)'
+          : ['musikot', 'ruru'].some(n => palikaName.includes(n))
+            ? 'Badigad Khola (Station #430 Rudrabeni)'
+            : ['resunga', 'gulmidarbar'].some(n => palikaName.includes(n))
+              ? 'Panaha Khola (Station #435 Tamghas)'
+              : 'Tributary Streams (Chhaldi, Hugdi)';
+        metricSnippet = `
+          <div style="color: #0284c7; font-weight: 700; font-size: 10px; margin-top: 2px;">
+            💧 Gauge Catchment: <strong>${stationDesc}</strong>
+          </div>
+          <div style="color: #64748b; font-size: 9px; margin-top: 1px;">
+            Hydrology Station & Real River Network Monitoring
+          </div>
+        `;
       } else {
         const micro = getPalikaMicroClimate(palikaName, currentRainMm, currentTempC, climateMonth, pData?.elevation);
         const orographicDiff = Math.round((micro.orographicFactor - 1) * 100);
@@ -1800,7 +1868,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             )}
 
             {/* Contextual Layer Isolation 2.5: Real River Network Vector Polylines */}
-            {selectedPillar === 'water' && gulmiRivers && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterClimateMetric === 'dhm_stations') && (
+            {selectedPillar === 'water' && gulmiRivers && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterSubFilter === 'irrigation_potential' || subFilters.waterClimateMetric === 'dhm_stations') && (
               <GeoJSON
                 key={`gulmi-rivers-vector-${subFilters.waterSubFilter}`}
                 data={gulmiRivers}
@@ -1811,7 +1879,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                   const isMajor = p.order === 2;
                   return {
                     color: isMain ? '#0284c7' : isMajor ? '#0ea5e9' : '#38bdf8',
-                    weight: isMain ? 3.8 : isMajor ? 2.8 : 1.8,
+                    weight: isMain ? 4 : isMajor ? 3 : 2,
                     opacity: 0.95,
                     dashArray: '',
                   };
