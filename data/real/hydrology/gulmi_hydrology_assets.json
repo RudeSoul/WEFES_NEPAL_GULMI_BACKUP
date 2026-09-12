@@ -1,0 +1,79 @@
+{
+  "_metadata": {
+    "title": "Gulmi Hydrology, Lakes & River Gauges Dataset",
+    "source": "DHM National River Network & Kali Gandaki / Badigad Catchments",
+    "tier": "OBSERVED REAL"
+  },
+  "dangerousGlacialLakesByDistrict": {
+    "gulmi": [],
+    "palpa": [],
+    "rupandehi": [],
+    "arghakhanchi": []
+  },
+  "lakeAltitudeDistributionByDistrict": {
+    "gulmi": {
+      "totalLakes": 11,
+      "lowlandUnder100m": 0,
+      "foothill100to499m": 0,
+      "midHill500to1999m": 7,
+      "montane2000to2999m": 4,
+      "alpine3000to4999m": 0,
+      "highNivalAbove5000m": 0
+    },
+    "palpa": {
+      "totalLakes": 12,
+      "lowlandUnder100m": 0,
+      "foothill100to499m": 0,
+      "midHill500to1999m": 12,
+      "montane2000to2999m": 0,
+      "alpine3000to4999m": 0,
+      "highNivalAbove5000m": 0
+    }
+  },
+  "dhmRiverStationsByDistrict": {
+    "gulmi": [
+      {
+        "stationNo": "410",
+        "river": "Kali Gandaki",
+        "siteName": "Seti Beni / Ruru Confluence",
+        "lat": 28.0167,
+        "lng": 83.5833,
+        "elevation": 546,
+        "instruments": "Cable Way & Automated Logger",
+        "startDate": "1964-02-21"
+      },
+      {
+        "stationNo": "430",
+        "river": "Badigad Khola",
+        "siteName": "Rudrabeni / Ridi",
+        "lat": 27.95,
+        "lng": 83.4333,
+        "elevation": 465,
+        "instruments": "Staff Gauge & Discharge Measurement",
+        "startDate": "1975-04-01"
+      },
+      {
+        "stationNo": "435",
+        "river": "Panaha Khola",
+        "siteName": "Tamghas Basin Station",
+        "lat": 28.065,
+        "lng": 83.245,
+        "elevation": 1480,
+        "instruments": "Staff Gauge",
+        "startDate": "1988-06-15"
+      }
+    ],
+    "palpa": [
+      {
+        "stationNo": "420",
+        "river": "Kali Gandaki",
+        "siteName": "Ramdi Ghat",
+        "lat": 27.8833,
+        "lng": 83.65,
+        "elevation": 420,
+        "instruments": "Cable Way",
+        "startDate": "1968-01-01"
+      }
+    ]
+  }
+}

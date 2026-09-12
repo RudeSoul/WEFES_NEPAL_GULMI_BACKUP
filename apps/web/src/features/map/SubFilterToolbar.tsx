@@ -37,9 +37,9 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
               onChange={handleChange}
             >
               <optgroup label="🌧️ Precipitation & Watersheds">
-                <option value="merra_rainfall">🌧️ Dynamic Monthly Rainfall (MERRA-2 Time-Series)</option>
-                <option value="river_basins">🌊 Named River Basins (Kali Gandaki, Badigad, Ridi, Panaha)</option>
-                <option value="dhm_station">💧 DHM Station #410 at Seti Beni (Kali Gandaki Gauge)</option>
+                <option value="merra_rainfall">🌧️ Dynamic Monthly Rainfall (MERRA-2 Topographic Downscaling)</option>
+                <option value="river_basins">🌊 Gandaki Basin Drainage Corridors (Kali Gandaki, Badigad, Ridi)</option>
+                <option value="dhm_station">💧 River Network & DHM Gauging Stations (Stations #410, #430, #435)</option>
               </optgroup>
               <optgroup label="⛰️ Terrain Water Security">
                 <option value="spring_vulnerability">🏔️ Spring Scarcity Risk (मुहान सुक्ने जोखिम - Ridge vs Valley)</option>
@@ -178,10 +178,6 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
 
   return (
     <div className="glass-panel px-4 py-2.5 rounded-xl flex flex-wrap items-center gap-3 border border-slate-200 shadow-sm animate-fade-in-up bg-white/95">
-      <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-800 shrink-0">
-        {iconMap[selectedPillar] || <Layers className="w-3.5 h-3.5 text-slate-500" />}
-        Gulmi Focus Layer:
-      </span>
       {renderFilters()}
     </div>
   );

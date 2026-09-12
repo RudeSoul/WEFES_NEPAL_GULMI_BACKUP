@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { District, Crop } from '@wefes/shared-types';
 import { db } from '@wefes/database';
-import { DISTRICT_PALIKAS, PALIKA_GEO_CENTROIDS, DistrictPalika } from '../../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS, PALIKA_GEO_CENTROIDS, DistrictPalika, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 import { extractAnnualRainfallSeries, arimaForecast } from '@wefes/wefes-engine';
 import { CloudRain, Mountain, Sparkles, Thermometer, ArrowLeft, ArrowUp } from 'lucide-react';
 import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
@@ -17,29 +17,17 @@ import { PalikaCropSuitabilityGrid } from './components/PalikaCropSuitabilityGri
 export interface DistrictDetailProps {
   district: District;
   initialPalikaName?: string;
+  onSelectPalika?: (palikaName: string) => void;
   onSelectCrop: (crop: Crop) => void;
   onBackToMap: () => void;
   climateDataset?: any;
 }
 
-const GULMI_PALIKA_NEPALI: Record<string, string> = {
-  Resunga: 'रेसुङ्गा',
-  Musikot: 'मुसिकोट',
-  Ruru: 'रुरुक्षेत्र',
-  Satyawati: 'सत्यवती',
-  Kaligandaki: 'कालीगण्डकी',
-  Chandrakot: 'चन्द्रकोट',
-  Chatrakot: 'छत्रकोट',
-  Gulmidarbar: 'गुल्मीदरबार',
-  Dhurkot: 'धुर्कोट',
-  Isma: 'इस्मा',
-  Malika: 'मालिका',
-  Madane: 'मदाने',
-};
 
 export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   district,
   initialPalikaName,
+  onSelectPalika,
   onSelectCrop,
   onBackToMap,
   climateDataset: initialClimateDataset,
@@ -53,10 +41,15 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   const [activeHoverCrop, setActiveHoverCrop] = useState<Crop | null>(displayedDistrictCrops[0]?.crop || null);
   const [climateDataset, setClimateDataset] = useState<any>(initialClimateDataset || null);
   const [openModal, setOpenModal] = useState<ModalKey>(null);
-  const [activePalikaName, setActivePalikaName] = useState<string>(initialPalikaName || 'Resunga');
+  const [activePalikaName, setActivePalikaNameState] = useState<string>(initialPalikaName || 'Resunga');
   const [isDossierModalOpen, setIsDossierModalOpen] = useState<boolean>(false);
   const [palikaWeather, setPalikaWeather] = useState<PalikaLiveWeather | null>(null);
   const [weatherTelemetryMode, setWeatherTelemetryMode] = useState<'live' | 'archive'>('live');
+
+  const setActivePalikaName = (pName: string) => {
+    setActivePalikaNameState(pName);
+    if (onSelectPalika) onSelectPalika(pName);
+  };
 
   useEffect(() => {
     if (initialClimateDataset) {

@@ -1,0 +1,14 @@
+{
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/engines/water/hydro",
+    "${workspaceFolder}/engines/water/hydro/src",
+    "${workspaceFolder}/WEFES_NEXUS_NEPAL_GULMI/engines/water/hydro",
+    "${workspaceFolder}/WEFES_NEXUS_NEPAL_GULMI/engines/water/hydro/src"
+  ],
+  "python.autoComplete.extraPaths": [
+    "${workspaceFolder}/engines/water/hydro",
+    "${workspaceFolder}/engines/water/hydro/src",
+    "${workspaceFolder}/WEFES_NEXUS_NEPAL_GULMI/engines/water/hydro",
+    "${workspaceFolder}/WEFES_NEXUS_NEPAL_GULMI/engines/water/hydro/src"
+  ]
+}

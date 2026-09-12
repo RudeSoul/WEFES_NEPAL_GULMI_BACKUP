@@ -12,6 +12,7 @@ interface HeaderProps {
   setSelectedPillar?: (pillar: WEFESPillar) => void;
   selectedDistrictName?: string;
   selectedCropName?: string;
+  selectedPalikaName?: string | null;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -21,6 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
   setSelectedPillar,
   selectedDistrictName = 'Gulmi',
   selectedCropName,
+  selectedPalikaName,
 }) => {
   return (
     <header className="sticky top-0 z-40 glass-panel border-b border-slate-200/90 px-4 lg:px-8 py-2.5 bg-white/95 shadow-xs backdrop-blur-md">
@@ -63,18 +65,22 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
           >
             <MapPin className="w-3.5 h-3.5 text-emerald-600" />
-            <span>1. Gulmi Map</span>
+            <span>Map</span>
           </button>
 
-          {/* Step 2: District */}
+          {/* Step 2: Palika Detail */}
           <button
-            onClick={() => setActiveScreen(2)}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${activeScreen === 2
+            onClick={() => selectedPalikaName && setActiveScreen(2)}
+            disabled={!selectedPalikaName}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${activeScreen === 2
               ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+              : selectedPalikaName
+                ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
+                : 'text-slate-400 opacity-60 cursor-not-allowed'
               }`}
+            title={selectedPalikaName ? `View ${selectedPalikaName} Palika Details` : 'Select a Palika from the map or search to view details'}
           >
-            <span>2. Gulmi Detail</span>
+            <span>{selectedPalikaName ? `${selectedPalikaName} Palika` : '____ Palika'}</span>
           </button>
 
           {/* Step 3: Analysis */}
@@ -89,7 +95,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
           >
             <Layers className="w-3.5 h-3.5 text-blue-600" />
-            <span>3. {selectedCropName ? `${selectedCropName} Report` : 'Analysis'}</span>
+            <span>Analysis</span>
           </button>
 
           {/* Step 4: Simulator */}
@@ -103,22 +109,7 @@ export const Header: React.FC<HeaderProps> = ({
                 : 'text-slate-400 opacity-60 cursor-not-allowed'
               }`}
           >
-            <span>4. Simulator</span>
-          </button>
-
-          {/* Step 5: Sovereign Dossier */}
-          <button
-            onClick={() => selectedCropName && setActiveScreen(6)}
-            disabled={!selectedCropName}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${activeScreen === 6
-              ? 'bg-emerald-700 text-white font-bold shadow-2xs'
-              : selectedCropName
-                ? 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/60 font-semibold cursor-pointer'
-                : 'text-slate-400 opacity-60 cursor-not-allowed'
-              }`}
-          >
-            <Landmark className="w-3.5 h-3.5" />
-            <span>5. Sovereign Dossier</span>
+            <span>Simulator</span>
           </button>
         </div>
 

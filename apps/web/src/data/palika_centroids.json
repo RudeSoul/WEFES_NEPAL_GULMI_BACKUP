@@ -1,0 +1,20 @@
+{
+  "_provenance": {
+    "source": "data/real/boundaries/gulmi-palikas.json",
+    "description": "Calculated polygon centroids for bilingual map labels in Gulmi District",
+    "crs": "EPSG:4326 (WGS 84)",
+    "confidence": "HIGH (Derived directly from official Survey Department vector polygon geometries)"
+  },
+  "Resunga": { "lat": 28.0531, "lng": 83.2658, "nepali": "रेसुङ्गा" },
+  "Musikot": { "lat": 28.1846, "lng": 83.2826, "nepali": "मुसिकोट" },
+  "Ruru": { "lat": 27.9822, "lng": 83.4256, "nepali": "रुरुक्षेत्र" },
+  "Satyawati": { "lat": 28.0300, "lng": 83.4689, "nepali": "सत्यवती" },
+  "Kaligandaki": { "lat": 28.0502, "lng": 83.5436, "nepali": "कालीगण्डकी" },
+  "Chandrakot": { "lat": 28.1070, "lng": 83.4208, "nepali": "चन्द्रकोट" },
+  "Chatrakot": { "lat": 27.9862, "lng": 83.3472, "nepali": "छत्रकोट" },
+  "Gulmidarbar": { "lat": 28.0398, "lng": 83.3167, "nepali": "गुल्मीदरबार" },
+  "Dhurkot": { "lat": 28.1181, "lng": 83.1408, "nepali": "धुर्कोट" },
+  "Isma": { "lat": 28.1643, "lng": 83.2054, "nepali": "इस्मा" },
+  "Malika": { "lat": 28.2131, "lng": 83.1426, "nepali": "मालिका" },
+  "Madane": { "lat": 28.1750, "lng": 83.0753, "nepali": "मदाने" }
+}

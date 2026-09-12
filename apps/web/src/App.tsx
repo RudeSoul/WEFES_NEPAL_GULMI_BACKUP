@@ -74,6 +74,7 @@ export function App() {
         setSelectedPillar={handlePillarChange}
         selectedDistrictName={selectedDistrict?.name}
         selectedCropName={selectedCrop?.name}
+        selectedPalikaName={selectedPalikaName}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
@@ -94,6 +95,7 @@ export function App() {
           <DistrictDetail
             district={selectedDistrict}
             initialPalikaName={selectedPalikaName || undefined}
+            onSelectPalika={setSelectedPalikaName}
             onSelectCrop={handleSelectCropFromMatrix}
             onBackToMap={() => setActiveScreen(1)}
             climateDataset={climateDataset}

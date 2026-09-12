@@ -1,0 +1,731 @@
+[
+  {
+    "lat": 27.9683,
+    "lon": 83.5283,
+    "nitrogen": 0.14,
+    "phosphorus": 126.61,
+    "potassium": 242.66,
+    "ph": 6.7,
+    "soilType": "Fluvial non calcareous"
+  },
+  {
+    "lat": 27.9783,
+    "lon": 83.5333,
+    "nitrogen": 0.16,
+    "phosphorus": 116.19,
+    "potassium": 229.17,
+    "ph": 6.87,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9733,
+    "lon": 83.5283,
+    "nitrogen": 0.16,
+    "phosphorus": 118.69,
+    "potassium": 235.64,
+    "ph": 6.82,
+    "soilType": "Fluvial non calcareous"
+  },
+  {
+    "lat": 27.9783,
+    "lon": 83.5283,
+    "nitrogen": 0.16,
+    "phosphorus": 118.75,
+    "potassium": 227.31,
+    "ph": 6.83,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9833,
+    "lon": 83.5233,
+    "nitrogen": 0.17,
+    "phosphorus": 131.63,
+    "potassium": 228.49,
+    "ph": 6.91,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9883,
+    "lon": 83.5233,
+    "nitrogen": 0.19,
+    "phosphorus": 145.65,
+    "potassium": 287.46,
+    "ph": 6.75,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9883,
+    "lon": 83.5433,
+    "nitrogen": 0.16,
+    "phosphorus": 119.22,
+    "potassium": 240.07,
+    "ph": 6.73,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9783,
+    "lon": 83.5133,
+    "nitrogen": 0.17,
+    "phosphorus": 129.94,
+    "potassium": 280.85,
+    "ph": 6.69,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9933,
+    "lon": 83.5233,
+    "nitrogen": 0.18,
+    "phosphorus": 134.87,
+    "potassium": 279.26,
+    "ph": 6.73,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9833,
+    "lon": 83.5133,
+    "nitrogen": 0.17,
+    "phosphorus": 155.12,
+    "potassium": 301.7,
+    "ph": 6.69,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9783,
+    "lon": 83.5583,
+    "nitrogen": 0.15,
+    "phosphorus": 113.86,
+    "potassium": 237.65,
+    "ph": 6.88,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0033,
+    "lon": 83.5383,
+    "nitrogen": 0.19,
+    "phosphorus": 134.58,
+    "potassium": 258.3,
+    "ph": 6.71,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9983,
+    "lon": 83.5233,
+    "nitrogen": 0.19,
+    "phosphorus": 147.23,
+    "potassium": 255.02,
+    "ph": 6.68,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0133,
+    "lon": 83.5333,
+    "nitrogen": 0.18,
+    "phosphorus": 140.5,
+    "potassium": 260.78,
+    "ph": 6.59,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0033,
+    "lon": 83.5233,
+    "nitrogen": 0.17,
+    "phosphorus": 140.07,
+    "potassium": 239.55,
+    "ph": 6.74,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9883,
+    "lon": 83.5583,
+    "nitrogen": 0.18,
+    "phosphorus": 125.0,
+    "potassium": 280.68,
+    "ph": 6.69,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0133,
+    "lon": 83.5383,
+    "nitrogen": 0.17,
+    "phosphorus": 138.36,
+    "potassium": 243.66,
+    "ph": 6.59,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0083,
+    "lon": 83.5233,
+    "nitrogen": 0.16,
+    "phosphorus": 146.96,
+    "potassium": 236.43,
+    "ph": 6.65,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9983,
+    "lon": 83.5533,
+    "nitrogen": 0.22,
+    "phosphorus": 137.63,
+    "potassium": 273.19,
+    "ph": 6.63,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9883,
+    "lon": 83.5033,
+    "nitrogen": 0.17,
+    "phosphorus": 142.24,
+    "potassium": 269.65,
+    "ph": 6.78,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9833,
+    "lon": 83.4983,
+    "nitrogen": 0.16,
+    "phosphorus": 141.09,
+    "potassium": 282.64,
+    "ph": 6.71,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9833,
+    "lon": 83.5683,
+    "nitrogen": 0.15,
+    "phosphorus": 119.44,
+    "potassium": 278.02,
+    "ph": 6.62,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9783,
+    "lon": 83.5733,
+    "nitrogen": 0.15,
+    "phosphorus": 108.83,
+    "potassium": 229.8,
+    "ph": 6.92,
+    "soilType": "Fluvial non calcareous"
+  },
+  {
+    "lat": 27.9883,
+    "lon": 83.4983,
+    "nitrogen": 0.18,
+    "phosphorus": 147.78,
+    "potassium": 239.93,
+    "ph": 6.57,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9833,
+    "lon": 83.4933,
+    "nitrogen": 0.17,
+    "phosphorus": 122.52,
+    "potassium": 258.96,
+    "ph": 6.8,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9833,
+    "lon": 83.5733,
+    "nitrogen": 0.15,
+    "phosphorus": 120.57,
+    "potassium": 252.75,
+    "ph": 6.73,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0033,
+    "lon": 83.5583,
+    "nitrogen": 0.18,
+    "phosphorus": 148.67,
+    "potassium": 328.45,
+    "ph": 6.37,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9933,
+    "lon": 83.4983,
+    "nitrogen": 0.17,
+    "phosphorus": 141.07,
+    "potassium": 268.14,
+    "ph": 6.73,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9883,
+    "lon": 83.5733,
+    "nitrogen": 0.16,
+    "phosphorus": 103.85,
+    "potassium": 259.06,
+    "ph": 6.58,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0283,
+    "lon": 83.5383,
+    "nitrogen": 0.18,
+    "phosphorus": 143.26,
+    "potassium": 257.38,
+    "ph": 6.67,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0183,
+    "lon": 83.5183,
+    "nitrogen": 0.16,
+    "phosphorus": 142.35,
+    "potassium": 205.77,
+    "ph": 6.71,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9933,
+    "lon": 83.4933,
+    "nitrogen": 0.17,
+    "phosphorus": 137.65,
+    "potassium": 260.82,
+    "ph": 6.7,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9933,
+    "lon": 83.5733,
+    "nitrogen": 0.19,
+    "phosphorus": 126.11,
+    "potassium": 253.07,
+    "ph": 6.56,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9883,
+    "lon": 83.4883,
+    "nitrogen": 0.17,
+    "phosphorus": 148.52,
+    "potassium": 270.88,
+    "ph": 6.68,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9783,
+    "lon": 83.4783,
+    "nitrogen": 0.16,
+    "phosphorus": 122.32,
+    "potassium": 249.3,
+    "ph": 6.83,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9683,
+    "lon": 83.4683,
+    "nitrogen": 0.16,
+    "phosphorus": 124.27,
+    "potassium": 237.04,
+    "ph": 6.79,
+    "soilType": "slate, phyllite"
+  },
+  {
+    "lat": 27.9533,
+    "lon": 83.4533,
+    "nitrogen": 0.15,
+    "phosphorus": 118.12,
+    "potassium": 207.31,
+    "ph": 6.95,
+    "soilType": "slate, phyllite"
+  },
+  {
+    "lat": 27.9483,
+    "lon": 83.4483,
+    "nitrogen": 0.14,
+    "phosphorus": 127.43,
+    "potassium": 223.02,
+    "ph": 6.82,
+    "soilType": "slate, phyllite"
+  },
+  {
+    "lat": 27.9383,
+    "lon": 83.4383,
+    "nitrogen": 0.15,
+    "phosphorus": 117.95,
+    "potassium": 237.63,
+    "ph": 6.8,
+    "soilType": "slate, phyllite"
+  },
+  {
+    "lat": 28.0383,
+    "lon": 83.5333,
+    "nitrogen": 0.25,
+    "phosphorus": 189.53,
+    "potassium": 305.4,
+    "ph": 6.7,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0183,
+    "lon": 83.5133,
+    "nitrogen": 0.14,
+    "phosphorus": 155.87,
+    "potassium": 236.29,
+    "ph": 6.68,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9933,
+    "lon": 83.4883,
+    "nitrogen": 0.16,
+    "phosphorus": 127.66,
+    "potassium": 217.28,
+    "ph": 6.9,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9933,
+    "lon": 83.5783,
+    "nitrogen": 0.18,
+    "phosphorus": 114.32,
+    "potassium": 286.96,
+    "ph": 6.56,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9783,
+    "lon": 83.4733,
+    "nitrogen": 0.14,
+    "phosphorus": 91.85,
+    "potassium": 209.67,
+    "ph": 6.77,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9633,
+    "lon": 83.4583,
+    "nitrogen": 0.16,
+    "phosphorus": 151.38,
+    "potassium": 303.37,
+    "ph": 6.69,
+    "soilType": "slate, phyllite"
+  },
+  {
+    "lat": 27.9433,
+    "lon": 83.4383,
+    "nitrogen": 0.13,
+    "phosphorus": 148.76,
+    "potassium": 305.91,
+    "ph": 6.65,
+    "soilType": "slate, phyllite"
+  },
+  {
+    "lat": 28.0233,
+    "lon": 83.5533,
+    "nitrogen": 0.16,
+    "phosphorus": 118.75,
+    "potassium": 199.82,
+    "ph": 6.78,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0133,
+    "lon": 83.5033,
+    "nitrogen": 0.17,
+    "phosphorus": 173.56,
+    "potassium": 222.89,
+    "ph": 6.8,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0083,
+    "lon": 83.4983,
+    "nitrogen": 0.14,
+    "phosphorus": 194.43,
+    "potassium": 217.83,
+    "ph": 6.63,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9783,
+    "lon": 83.4683,
+    "nitrogen": 0.16,
+    "phosphorus": 127.88,
+    "potassium": 234.3,
+    "ph": 6.83,
+    "soilType": "Fluvial non calcareous"
+  },
+  {
+    "lat": 27.9533,
+    "lon": 83.4433,
+    "nitrogen": 0.15,
+    "phosphorus": 114.39,
+    "potassium": 216.19,
+    "ph": 6.86,
+    "soilType": "slate, phyllite"
+  },
+  {
+    "lat": 28.0483,
+    "lon": 83.5333,
+    "nitrogen": 0.18,
+    "phosphorus": 128.64,
+    "potassium": 230.42,
+    "ph": 6.6,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0433,
+    "lon": 83.5283,
+    "nitrogen": 0.17,
+    "phosphorus": 139.04,
+    "potassium": 206.95,
+    "ph": 6.57,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0183,
+    "lon": 83.5033,
+    "nitrogen": 0.18,
+    "phosphorus": 193.34,
+    "potassium": 300.04,
+    "ph": 6.72,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0133,
+    "lon": 83.5683,
+    "nitrogen": 0.16,
+    "phosphorus": 92.72,
+    "potassium": 220.14,
+    "ph": 6.74,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0083,
+    "lon": 83.5733,
+    "nitrogen": 0.17,
+    "phosphorus": 97.82,
+    "potassium": 229.91,
+    "ph": 6.57,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9983,
+    "lon": 83.5833,
+    "nitrogen": 0.16,
+    "phosphorus": 101.04,
+    "potassium": 240.17,
+    "ph": 6.49,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9883,
+    "lon": 83.4733,
+    "nitrogen": 0.14,
+    "phosphorus": 125.22,
+    "potassium": 241.56,
+    "ph": 6.62,
+    "soilType": "Fluvial non calcareous"
+  },
+  {
+    "lat": 27.9483,
+    "lon": 83.4333,
+    "nitrogen": 0.15,
+    "phosphorus": 115.02,
+    "potassium": 246.01,
+    "ph": 6.9,
+    "soilType": "slate, phyllite"
+  },
+  {
+    "lat": 28.0433,
+    "lon": 83.5233,
+    "nitrogen": 0.16,
+    "phosphorus": 147.8,
+    "potassium": 219.54,
+    "ph": 6.52,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0283,
+    "lon": 83.5083,
+    "nitrogen": 0.18,
+    "phosphorus": 164.38,
+    "potassium": 258.78,
+    "ph": 6.66,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0233,
+    "lon": 83.5033,
+    "nitrogen": 0.19,
+    "phosphorus": 193.36,
+    "potassium": 285.7,
+    "ph": 6.6,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0183,
+    "lon": 83.4983,
+    "nitrogen": 0.18,
+    "phosphorus": 178.44,
+    "potassium": 291.0,
+    "ph": 6.77,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0133,
+    "lon": 83.4933,
+    "nitrogen": 0.17,
+    "phosphorus": 186.02,
+    "potassium": 246.94,
+    "ph": 6.69,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0133,
+    "lon": 83.5733,
+    "nitrogen": 0.17,
+    "phosphorus": 93.84,
+    "potassium": 221.17,
+    "ph": 6.61,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0083,
+    "lon": 83.4883,
+    "nitrogen": 0.2,
+    "phosphorus": 178.83,
+    "potassium": 271.64,
+    "ph": 6.65,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0083,
+    "lon": 83.5783,
+    "nitrogen": 0.17,
+    "phosphorus": 84.8,
+    "potassium": 226.35,
+    "ph": 6.6,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0233,
+    "lon": 83.4983,
+    "nitrogen": 0.28,
+    "phosphorus": 199.41,
+    "potassium": 278.32,
+    "ph": 6.63,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0183,
+    "lon": 83.4933,
+    "nitrogen": 0.19,
+    "phosphorus": 194.83,
+    "potassium": 285.76,
+    "ph": 6.57,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0183,
+    "lon": 83.5733,
+    "nitrogen": 0.16,
+    "phosphorus": 124.38,
+    "potassium": 266.97,
+    "ph": 6.55,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0133,
+    "lon": 83.4883,
+    "nitrogen": 0.18,
+    "phosphorus": 184.69,
+    "potassium": 259.03,
+    "ph": 6.65,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0083,
+    "lon": 83.4833,
+    "nitrogen": 0.2,
+    "phosphorus": 164.47,
+    "potassium": 259.09,
+    "ph": 6.69,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 27.9733,
+    "lon": 83.4483,
+    "nitrogen": 0.16,
+    "phosphorus": 125.48,
+    "potassium": 256.78,
+    "ph": 6.76,
+    "soilType": "slate, phyllite"
+  },
+  {
+    "lat": 27.9433,
+    "lon": 83.4183,
+    "nitrogen": 0.16,
+    "phosphorus": 109.36,
+    "potassium": 249.15,
+    "ph": 6.85,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0533,
+    "lon": 83.5433,
+    "nitrogen": 0.17,
+    "phosphorus": 125.36,
+    "potassium": 214.82,
+    "ph": 6.72,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0483,
+    "lon": 83.5483,
+    "nitrogen": 0.19,
+    "phosphorus": 124.97,
+    "potassium": 185.53,
+    "ph": 6.82,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0433,
+    "lon": 83.5533,
+    "nitrogen": 0.15,
+    "phosphorus": 112.55,
+    "potassium": 228.33,
+    "ph": 6.86,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0283,
+    "lon": 83.4983,
+    "nitrogen": 0.23,
+    "phosphorus": 191.47,
+    "potassium": 275.89,
+    "ph": 6.52,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0233,
+    "lon": 83.4933,
+    "nitrogen": 0.17,
+    "phosphorus": 181.09,
+    "potassium": 250.73,
+    "ph": 6.64,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0233,
+    "lon": 83.5733,
+    "nitrogen": 0.17,
+    "phosphorus": 93.95,
+    "potassium": 223.28,
+    "ph": 6.69,
+    "soilType": "Quartzite"
+  },
+  {
+    "lat": 28.0183,
+    "lon": 83.4883,
+    "nitrogen": 0.16,
+    "phosphorus": 173.64,
+    "potassium": 232.36,
+    "ph": 6.66,
+    "soilType": "Quartzite"
+  }
+]

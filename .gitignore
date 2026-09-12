@@ -11,3 +11,19 @@ build
 data/transport/*.gpkg
 data/**/*.gpkg
 *.gpkg
+
+# Heavy binary rasters (tracked via data/manifest.json)
+*.tif
+*.tiff
+*.geotiff
+
+# Python artifacts
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+
+# Legacy unorganized directory
+data/Gulmi_OpenTopography_data_Hillside_and_slope/
+
+node_modules

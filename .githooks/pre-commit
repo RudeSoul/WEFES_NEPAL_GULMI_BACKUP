@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# .githooks/pre-commit
+# Enforces Atomic Commit Limit (Max 400 net lines) and auto-generates AI_INDEX.md
+
+# 0. Branch Protection (Rule 6: Never commit directly to main or master)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$CURRENT_BRANCH" = "main" ] || [ "$CURRENT_BRANCH" = "master" ]; then
+    echo "=================================================================="
+    echo " ❌ COMMIT REJECTED: Direct commits to '$CURRENT_BRANCH' are forbidden!"
+    echo " Rule 6 of RULESET.md mandates working on a feature branch."
+    echo " Create a branch: git checkout -b feat/your-feature"
+    echo "=================================================================="
+    exit 1
+fi
+
+# 1. Verify 6-Tier Data Integrity & Governance Gatekeeper (Rules 1-6)
+if [ -f "scripts/verify_data_integrity.py" ]; then
+    echo "--> [Pre-Commit] Verifying 6-tier data integrity & platform rules..."
+    python3 scripts/verify_data_integrity.py || exit 1
+fi
+
+
+# 2. Update AI_INDEX.md if generator script exists
+if [ -f "scripts/generate_ai_index.py" ]; then
+    echo "--> [Pre-Commit] Refreshing dynamic AI_INDEX.md..."
+    python3 scripts/generate_ai_index.py > /dev/null 2>&1 || true
+    if [ -f "AI_INDEX.md" ]; then
+        git add AI_INDEX.md
+    fi
+fi
+
+# 2. Check Atomic Commit Limit (Rule 7 of RULESET.md)
+if [ "$ALLOW_LARGE_COMMIT" = "1" ]; then
+    echo "--> [Pre-Commit] ALLOW_LARGE_COMMIT=1 set; bypassing commit size check."
+    exit 0
+fi
+
+MAX_LINES=400
+TOTAL_LINES=0
+
+# Sum up added and deleted lines, excluding manifests, lockfiles, and data tables
+while read -r added deleted filepath; do
+    # Skip non-numeric entries (e.g. binary files)
+    if [[ "$added" =~ ^[0-9]+$ ]] && [[ "$deleted" =~ ^[0-9]+$ ]]; then
+        # Check if file should be exempt
+        case "$filepath" in
+            *lock.yaml|*lock.json|*.lock|AI_INDEX.md|data/manifest.json|*.geojson|*.csv|data/*|data/calculated/*|data/real/*|data/proxy/*|dist/*|*public/geojson/*)
+                # Exempt from line count limit (data assets and build artifacts)
+                ;;
+            *)
+                TOTAL_LINES=$((TOTAL_LINES + added + deleted))
+                ;;
+        esac
+    fi
+done < <(git diff --cached --numstat)
+
+if [ "$TOTAL_LINES" -gt "$MAX_LINES" ]; then
+    echo ""
+    echo "=================================================================="
+    echo " ❌ COMMIT REJECTED: Atomic Commit Rule Exceeded!"
+    echo "=================================================================="
+    echo " This commit modifies $TOTAL_LINES net functional code lines (limit: $MAX_LINES)."
+    echo " Rule 7 of RULESET.md requires atomic commits to keep reviews manageable."
+    echo ""
+    echo " Please split your staged changes into smaller commits:"
+    echo "   git reset HEAD <files>"
+    echo "   git commit -m 'feat: step 1 schema & interfaces'"
+    echo ""
+    echo " (If this is a major architectural scaffolding or initial commit,"
+    echo "  you can bypass once with: ALLOW_LARGE_COMMIT=1 git commit -m '...')"
+    echo "=================================================================="
+    echo ""
+    exit 1
+fi
+
+exit 0

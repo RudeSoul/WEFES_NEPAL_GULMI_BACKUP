@@ -1,0 +1,22 @@
+{
+  "_metadata": {
+    "classification": "PROXY",
+    "description": "Off-grid rural micro-hydro tariffs and penstock capital costs in Western Mid-Hills Nepal.",
+    "source_surrogate": "Nepal Electricity Authority (NEA) Off-Grid Guidelines & AEPC Subsidy Policy 2078",
+    "confidence": "MEDIUM (Regional Estimate)",
+    "replacement_roadmap": "Replace with Gulmi Palika local fiscal budgets and user committee tariff records when surveyed."
+  },
+  "commercial_ror_tariff_npr_per_kwh": {
+    "wet_season": 4.80,
+    "dry_season": 8.40
+  },
+  "micro_hydro_tariff_npr_per_kwh": {
+    "domestic_flat": 7.00,
+    "commercial_milling": 10.50
+  },
+  "capital_cost_usd_per_kw": {
+    "commercial_ror": 1800.0,
+    "micro_hydro_penstock": 2500.0
+  },
+  "om_annual_cost_ratio": 0.03
+}

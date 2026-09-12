@@ -1,0 +1,19 @@
+# WEFES NEXUS NEPAL: WINDSURF / CODEIUM RULES
+# ==============================================================================
+
+1. ZERO-SYNTHESIS IN data/real/:
+   - data/real/ is strictly immutable empirical government records.
+   - NEVER create, estimate, or synthesize data records inside data/real/.
+   - If a referenced data file does not exist, DO NOT fabricate a file. Report it or link to the verified file.
+
+2. PHYSICAL DISK VERIFICATION:
+   - Before citing or importing any data file, verify that it physically exists on disk.
+
+3. ENGINE ISOLATION:
+   - engines/ must NEVER import from apps/ or packages/.
+
+4. ZERO HARDCODING:
+   - Domain constants, coordinates, and thresholds must be loaded from data/.
+
+5. ATOMIC COMMITS:
+   - Maximum 400 net functional lines per commit. Run `python3 scripts/verify_data_integrity.py`.
