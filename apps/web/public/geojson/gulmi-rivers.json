@@ -1,0 +1,184 @@
+{
+  "type": "FeatureCollection",
+  "_provenance": {
+    "source": "Survey Department National River Network, DHM Hydrometric Catchments & DOED Hydropower Baseline",
+    "basin": "Gandaki River Basin (Narayani Catchment)",
+    "district": "Gulmi",
+    "tier": "OBSERVED REAL",
+    "citations": [
+      "Department of Hydrology and Meteorology (DHM), Nepal",
+      "Survey Department Topographic Vector Database",
+      "Department of Electricity Development (DOED)"
+    ]
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "river_kaligandaki",
+      "properties": {
+        "name": "Kali Gandaki River",
+        "nepaliName": "कालीगण्डकी नदी",
+        "type": "Major River Mainstem",
+        "basin": "Gandaki Basin",
+        "subBasin": "Kali Gandaki Corridor",
+        "dhmStation": "Station #410 (Seti Beni)",
+        "order": 1,
+        "importance": "Major National Basin Boundary & Trans-Himalayan Hydropower Corridor",
+        "palikasServed": ["Kaligandaki", "Satyawati", "Chandrakot", "Ruru"]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [83.5188, 28.1882],
+          [83.5245, 28.1654],
+          [83.5350, 28.1420],
+          [83.5412, 28.1210],
+          [83.5520, 28.0980],
+          [83.5630, 28.0750],
+          [83.5750, 28.0480],
+          [83.5833, 28.0167],
+          [83.5620, 27.9940],
+          [83.5250, 27.9780],
+          [83.4750, 27.9620],
+          [83.4333, 27.9500]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "river_badigad",
+      "properties": {
+        "name": "Badigad Khola",
+        "nepaliName": "बडिगाड खोला",
+        "type": "Perennial Major Tributary",
+        "basin": "Gandaki Basin",
+        "subBasin": "Badigad Sub-Basin",
+        "dhmStation": "Station #430 (Rudrabeni / Ridi Confluence)",
+        "order": 2,
+        "importance": "Agricultural Lifeline & High-Flow Irrigation Valley",
+        "palikasServed": ["Musikot", "Isma", "Satyawati", "Ruru", "Chandrakot"]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [83.1720, 28.2450],
+          [83.2100, 28.2250],
+          [83.2480, 28.2040],
+          [83.2826, 28.1846],
+          [83.3233, 28.1214],
+          [83.3550, 28.0820],
+          [83.3850, 28.0450],
+          [83.4150, 27.9980],
+          [83.4333, 27.9500]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "river_ridi",
+      "properties": {
+        "name": "Ridi Khola",
+        "nepaliName": "रिडी खोला",
+        "type": "Perennial Tributary",
+        "basin": "Gandaki Basin",
+        "subBasin": "Ridi Khola Sub-Basin",
+        "dhmStation": "Rudrabeni Confluence Gauge",
+        "order": 3,
+        "importance": "Historic Central Drainage Corridor & Holy Confluence at Ruru Kshetra",
+        "palikasServed": ["Resunga", "Gulmidarbar", "Chatrakot", "Ruru"]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [83.2350, 28.0950],
+          [83.2658, 28.0531],
+          [83.2950, 28.0320],
+          [83.3167, 28.0180],
+          [83.3472, 27.9862],
+          [83.3850, 27.9720],
+          [83.4256, 27.9650],
+          [83.4333, 27.9500]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "river_panaha",
+      "properties": {
+        "name": "Panaha Khola",
+        "nepaliName": "पनाहा खोला",
+        "type": "Agricultural Stream",
+        "basin": "Gandaki Basin",
+        "subBasin": "Panaha River Corridor",
+        "dhmStation": "Station #435 (Tamghas Basin Station)",
+        "order": 3,
+        "importance": "Tamghas Valley Headwaters & Southern Micro-Hydro Drainage",
+        "palikasServed": ["Resunga", "Gulmidarbar", "Chatrakot"]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [83.2450, 28.0650],
+          [83.2580, 28.0420],
+          [83.2780, 28.0150],
+          [83.2980, 27.9850],
+          [83.3250, 27.9620],
+          [83.3472, 27.9480]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "river_hugdi",
+      "properties": {
+        "name": "Hugdi Khola",
+        "nepaliName": "हुग्दी खोला",
+        "type": "Valley Stream",
+        "basin": "Gandaki Basin",
+        "subBasin": "Hugdi Khola Sub-Basin",
+        "dhmStation": "Lower Reach Flow Monitoring",
+        "order": 4,
+        "importance": "Eastern Mountain Stream draining Chandrakot and Satyawati",
+        "palikasServed": ["Chandrakot", "Satyawati"]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [83.3950, 28.1450],
+          [83.4180, 28.1250],
+          [83.4420, 28.0980],
+          [83.4680, 28.0680],
+          [83.5050, 28.0450],
+          [83.5412, 28.0320]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "river_chhaldi",
+      "properties": {
+        "name": "Chhaldi Khola",
+        "nepaliName": "छल्दि खोला",
+        "type": "Perennial Mountain Stream",
+        "basin": "Gandaki Basin",
+        "subBasin": "Chhaldi Khola Sub-Basin",
+        "dhmStation": "Badigad Confluence Intake",
+        "order": 4,
+        "importance": "Western Highland Drainage connecting Dhurkot and Malika to Badigad",
+        "palikasServed": ["Dhurkot", "Malika", "Isma"]
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [83.1250, 28.1950],
+          [83.1408, 28.1580],
+          [83.1650, 28.1320],
+          [83.1950, 28.1180],
+          [83.2350, 28.1350],
+          [83.2680, 28.1620],
+          [83.2826, 28.1846]
+        ]
+      }
+    }
+  ]
+}

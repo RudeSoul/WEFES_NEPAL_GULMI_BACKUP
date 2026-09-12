@@ -37,9 +37,9 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
               onChange={handleChange}
             >
               <optgroup label="🌧️ Precipitation & Watersheds">
-                <option value="merra_rainfall">🌧️ Dynamic Monthly Rainfall (MERRA-2 Time-Series)</option>
-                <option value="river_basins">🌊 Named River Basins (Kali Gandaki, Badigad, Ridi, Panaha)</option>
-                <option value="dhm_station">💧 DHM Station #410 at Seti Beni (Kali Gandaki Gauge)</option>
+                <option value="merra_rainfall">🌧️ Dynamic Monthly Rainfall (MERRA-2 Topographic Downscaling)</option>
+                <option value="river_basins">🌊 Gandaki Basin Drainage Corridors (Kali Gandaki, Badigad, Ridi)</option>
+                <option value="dhm_station">💧 River Network & DHM Gauging Stations (Stations #410, #430, #435)</option>
               </optgroup>
               <optgroup label="⛰️ Terrain Water Security">
                 <option value="spring_vulnerability">🏔️ Spring Scarcity Risk (मुहान सुक्ने जोखिम - Ridge vs Valley)</option>

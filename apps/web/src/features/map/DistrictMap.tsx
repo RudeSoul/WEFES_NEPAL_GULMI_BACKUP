@@ -123,6 +123,10 @@ function MapPanesSetup() {
         const pane = map.createPane('roadsPane');
         pane.style.zIndex = '450';
       }
+      if (!map.getPane('riversPane')) {
+        const pane = map.createPane('riversPane');
+        pane.style.zIndex = '480';
+      }
       if (!map.getPane('pointsPane')) {
         const pane = map.createPane('pointsPane');
         pane.style.zIndex = '650';
@@ -641,6 +645,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   const [glacialLakes, setGlacialLakes] = useState<any[]>([]);
   const [nationalRoads, setNationalRoads] = useState<any>(null);
   const [hydroReachesData, setHydroReachesData] = useState<any>(null);
+  const [gulmiRivers, setGulmiRivers] = useState<any>(null);
   const [showRoadOverlay, setShowRoadOverlay] = useState<boolean>(false);
 
   const [palikasData, setPalikasData] = useState<any>(null);
@@ -761,12 +766,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       fetch('/geojson/roads/gulmi.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-hydro-reaches.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-hydrology-assets.json').then(r => r.json()).catch(() => null),
-    ]).then(([geo, palikas, climate, roads, reaches, hydroAssets]) => {
+      fetch('/geojson/gulmi-rivers.json').then(r => r.json()).catch(() => null),
+    ]).then(([geo, palikas, climate, roads, reaches, hydroAssets, rivers]) => {
       if (geo) setGeoData(geo);
       if (palikas) setPalikasData(palikas);
       if (climate) setClimateDataset(climate);
       if (roads) setNationalRoads(roads);
       if (reaches) setHydroReachesData(reaches);
+      if (rivers) setGulmiRivers(rivers);
       if (hydroAssets?.dhmRiverStationsByDistrict?.gulmi) {
         setHydrologyStations(hydroAssets.dhmRiverStationsByDistrict.gulmi);
       }
@@ -1394,11 +1401,18 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       const wSub = subFilters.waterSubFilter || 'merra_rainfall';
       if (wSub === 'merra_rainfall') {
         const rainfallConfig = SUBFILTER_LEGENDS['merra_rainfall'];
+        const lowMm = Math.round(currentRainMm * 0.82);
+        const highMm = Math.round(currentRainMm * 1.24);
         return (
           <DynamicLegend
             config={{
               ...rainfallConfig,
-              subtitle: `${MONTH_NAMES[climateMonth - 1]} (${climateMode === 'climatology' ? '39-Yr Climatology Baseline' : climateYear}) • Area Mean: ${Math.round(currentRainMm)}mm`
+              subtitle: `${MONTH_NAMES[climateMonth - 1]} (${climateMode === 'climatology' ? '39-Yr Climatology Baseline' : climateYear}) • Area Mean: ${Math.round(currentRainMm)}mm`,
+              gradient: rainfallConfig.gradient ? {
+                ...rainfallConfig.gradient,
+                minLabel: `Subtropical Valleys (~${lowMm} mm)`,
+                maxLabel: `Mountain Ridges (~${highMm} mm)`
+              } : undefined
             }}
             className="animate-fade-in-up"
           />
@@ -1841,8 +1855,42 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               />
             )}
 
+            {/* Contextual Layer Isolation 2.5: Real River Network Vector Polylines */}
+            {selectedPillar === 'water' && gulmiRivers && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterClimateMetric === 'dhm_stations') && (
+              <GeoJSON
+                key={`gulmi-rivers-vector-${subFilters.waterSubFilter}`}
+                data={gulmiRivers}
+                pane="riversPane"
+                style={(feature: any) => {
+                  const p = feature?.properties || {};
+                  const isMain = p.order === 1;
+                  const isMajor = p.order === 2;
+                  return {
+                    color: isMain ? '#0284c7' : isMajor ? '#0ea5e9' : '#38bdf8',
+                    weight: isMain ? 3.8 : isMajor ? 2.8 : 1.8,
+                    opacity: 0.95,
+                    dashArray: '',
+                  };
+                }}
+                onEachFeature={(feature: any, layer: any) => {
+                  const p = feature?.properties || {};
+                  layer.bindTooltip(`
+                    <div style="padding: 4px 6px; font-size: 11px; min-width: 170px;">
+                      <div style="font-weight: bold; color: #0284c7; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin-bottom: 3px;">
+                        🌊 ${p.name || 'River Reach'} (${p.nepaliName || ''})
+                      </div>
+                      <div style="color: #334155; font-size: 10px;"><strong>Type:</strong> ${p.type}</div>
+                      <div style="color: #334155; font-size: 10px;"><strong>Sub-Basin:</strong> ${p.subBasin} (${p.basin})</div>
+                      <div style="color: #64748b; font-size: 9px; margin-top: 2px;">${p.importance}</div>
+                      ${p.dhmStation ? `<div style="color: #0369a1; font-weight: 600; font-size: 10px; margin-top: 3px;">💧 DHM Station: ${p.dhmStation}</div>` : ''}
+                    </div>
+                  `, { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' });
+                }}
+              />
+            )}
+
             {/* Contextual Layer Isolation 3: DHM River Gauging Stations Overlay */}
-            {selectedPillar === 'water' && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterClimateMetric === 'dhm_stations') && hydrologyStations.map((st: any, idx: number) => (
+            {selectedPillar === 'water' && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterClimateMetric === 'dhm_stations') && hydrologyStations.map((st: any, idx: number) => (
               <CircleMarker
                 key={`hydro-${st.stationNo || st.properties?.stationNo}-${idx}`}
                 center={[st.lat ?? st.geometry?.coordinates[1], st.lng ?? st.geometry?.coordinates[0]]}

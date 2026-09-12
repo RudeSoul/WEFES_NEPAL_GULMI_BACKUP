@@ -64,32 +64,32 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     subtitle: 'Topographically Downscaled (Lapse-Rate & Ridge Uplift)',
     unit: 'mm',
     legendType: 'continuous_gradient',
-    dataSourceCitation: 'data/real/climate/nasa_power_10_years_full.csv & DHM station baselines',
+    dataSourceCitation: 'data/real/climate/nasa_power_10_years_full.csv',
     confidence: 'CALCULATED',
     gradient: {
       minColor: '#ea580c',
       midColor: '#0ea5e9',
       maxColor: '#0369a1',
-      minLabel: 'Subtropical Low Valley (-15%)',
-      maxLabel: 'High Mountain Ridge (+24% Uplift)'
+      minLabel: 'Subtropical Low Valleys (Lower mm)',
+      maxLabel: 'High Mountain Ridges (Higher mm Uplift)'
     }
   },
 
   river_basins: {
     id: 'river_basins',
     pillar: 'water',
-    title: 'Major Catchments & River Basins',
-    subtitle: 'Gulmi Hydrological Drainage Corridors',
+    title: 'Gandaki Basin Drainage Corridors',
+    subtitle: 'Kali Gandaki Mainstem & Perennial Sub-Basins',
     legendType: 'categorical',
-    dataSourceCitation: 'data/real/hydrology/River_data.csv',
+    dataSourceCitation: 'data/real/boundaries/gulmi-palikas.json',
     confidence: 'REAL',
     categories: [
-      { key: 'kaligandaki', color: '#0369a1', label: 'Kali Gandaki Basin', description: 'Trans-Himalayan major river system & hydro corridor' },
-      { key: 'badigad', color: '#0ea5e9', label: 'Badigad River Valley', description: 'Irrigation lifeline corridor for Musikot and Isma' },
-      { key: 'ridi', color: '#06b6d4', label: 'Ridi Khola Catchment', description: 'Historic central drainage for Resunga and Gulmidarbar' },
-      { key: 'panaha', color: '#d97706', label: 'Panaha River Corridor', description: 'Southern agro-ecological drainage' },
-      { key: 'hugdi', color: '#38bdf8', label: 'Hugdi Khola Catchment', description: 'Eastern agricultural basin in Chandrakot' },
-      { key: 'chhaldi', color: '#0891b2', label: 'Chhaldi Khola Sub-Basin', description: 'Western watershed connecting Dhurkot' }
+      { key: 'kaligandaki', color: '#0369a1', label: 'Kali Gandaki Corridor', description: 'Trans-Himalayan major river system & hydro corridor' },
+      { key: 'badigad', color: '#0ea5e9', label: 'Badigad Sub-Basin', description: 'Agricultural lifeline drainage for Musikot and Isma' },
+      { key: 'ridi', color: '#06b6d4', label: 'Ridi Khola Sub-Basin', description: 'Historic central drainage for Resunga, Gulmidarbar, and Ruru' },
+      { key: 'panaha', color: '#d97706', label: 'Panaha River Corridor', description: 'Tamghas valley & southern agro-ecological drainage' },
+      { key: 'hugdi', color: '#38bdf8', label: 'Hugdi Khola Sub-Basin', description: 'Eastern agricultural catchment in Chandrakot & Satyawati' },
+      { key: 'chhaldi', color: '#0891b2', label: 'Chhaldi Khola Sub-Basin', description: 'Western watershed connecting Dhurkot & Malika' }
     ]
   },
 
@@ -457,17 +457,16 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
   dhm_station: {
     id: 'dhm_station',
     pillar: 'water',
-    title: 'DHM Hydrological Station #410 at Seti Beni',
-    subtitle: 'Department of Hydrology and Meteorology Gauging Network',
+    title: 'River Network & DHM Hydrometric Stations',
+    subtitle: 'Department of Hydrology and Meteorology Gauge Baselines',
     legendType: 'categorical',
-    dataSourceCitation: 'data/real/hydrology/River_data.csv',
+    dataSourceCitation: 'data/real/hydrology/gulmi_hydrology_assets.json',
     confidence: 'REAL',
     categories: [
-      { key: 'primary_gauge', color: '#0284c7', label: 'Seti Beni Station #410 Site', description: 'Kali Gandaki mainstem primary hydrometric station' },
-      { key: 'direct_catchment', color: '#0ea5e9', label: 'Downstream Direct Catchment', description: 'Satyawati and Ruru river reach inflows' },
-      { key: 'badigad_inflow', color: '#06b6d4', label: 'Badigad Inflow Corridor', description: 'Major agricultural drainage inflow from Musikot and Isma' },
-      { key: 'secondary_catchment', color: '#38bdf8', label: 'Middle Tributaries', description: 'Chandrakot and Chatrakot stream systems' },
-      { key: 'headwater_divides', color: '#64748b', label: 'Highland Headwaters', description: 'Madane, Malika, and Resunga mountain ridgelines' }
+      { key: 'primary_gauge', color: '#0284c7', label: 'Kali Gandaki (Station #410 Seti Beni)', description: 'Cable way hydrometric station at Seti Beni / Ruru confluence' },
+      { key: 'badigad_gauge', color: '#0ea5e9', label: 'Badigad Khola (Station #430 Rudrabeni)', description: 'Staff gauge & discharge measurement station at Rudrabeni' },
+      { key: 'panaha_gauge', color: '#06b6d4', label: 'Panaha Khola (Station #435 Tamghas)', description: 'Staff gauge & hydro-meteorological basin station at Tamghas' },
+      { key: 'secondary_corridor', color: '#38bdf8', label: 'Tributary Streams (Hugdi, Chhaldi)', description: 'Perennial flow feeders contributing to Gandaki river network' }
     ]
   }
 };
