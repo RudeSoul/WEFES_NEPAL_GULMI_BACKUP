@@ -1595,6 +1595,19 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               <span className="bg-sky-50 text-sky-800 border border-sky-300 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
                 {currentSeason}
               </span>
+              {/* Interactive Calendar Month Picker */}
+              <select
+                value={climateMonth}
+                onChange={e => setClimateMonth(Number(e.target.value))}
+                className="bg-white text-slate-800 text-[11px] font-semibold font-sans px-2 py-0.5 rounded-lg border border-sky-300 shadow-2xs hover:border-sky-500 focus:ring-1 focus:ring-sky-500 cursor-pointer transition-colors"
+                title="Select Climatology Month to see downscaled spatial rainfall across Palikas"
+              >
+                {MONTH_NAMES.map((mName, idx) => (
+                  <option key={mName} value={idx + 1}>
+                    📅 {mName}
+                  </option>
+                ))}
+              </select>
             </>
           )}
 
@@ -1603,8 +1616,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             <button
               onClick={() => setWeatherMode(prev => prev === 'live' ? 'archive' : 'live')}
               className="ml-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 cursor-pointer transition-colors"
+              title={weatherMode === 'live' ? 'Switch to 39-Year NASA Climatology by Month' : 'Switch to Today Live Satellite Weather'}
             >
-              {weatherMode === 'live' ? '⇄ 39-Yr Archive' : '⇄ 🟢 Live Weather'}
+              {weatherMode === 'live' ? '⇄ 39-Yr Monthly Archive' : '⇄ 🟢 Live Weather'}
             </button>
           )}
         </div>
@@ -1647,8 +1661,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             <>
               <div className="flex items-center gap-1.5" title="Estimated Monthly Precipitation across Gulmi & 12 Palikas">
                 <CloudRain className="w-3.5 h-3.5 text-sky-600" />
-                <span className="text-slate-500">District Avg Rain:</span>
-                <strong className="text-sky-900 font-bold">{currentRainMm} mm/mo</strong>
+                <span className="text-slate-500">{MONTH_NAMES[climateMonth - 1]} Rain:</span>
+                <strong className="text-sky-900 font-bold">{currentRainMm} mm</strong>
                 <span className="text-[10px] text-sky-700 bg-sky-100/80 px-1.5 py-0.2 rounded font-sans font-semibold">
                   ({Math.round(currentRainMm * 0.82)}–{Math.round(currentRainMm * 1.24)} mm across Palikas)
                 </span>

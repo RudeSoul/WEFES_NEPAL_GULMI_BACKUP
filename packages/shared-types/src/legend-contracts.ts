@@ -67,9 +67,9 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/climate/nasa_power_10_years_full.csv',
     confidence: 'CALCULATED',
     gradient: {
-      minColor: '#ea580c',
-      midColor: '#0ea5e9',
-      maxColor: '#0369a1',
+      minColor: '#fed7aa',
+      midColor: '#38bdf8',
+      maxColor: '#1e3a8a',
       minLabel: 'Subtropical Low Valleys (Lower mm)',
       maxLabel: 'High Mountain Ridges (Higher mm Uplift)'
     }
