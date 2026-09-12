@@ -1700,14 +1700,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 basemap === 'satellite'
                   ? '&copy; <a href="https://www.esri.com/">Esri World Imagery</a>'
                   : basemap === 'terrain'
-                    ? '&copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+                    ? '&copy; <a href="https://www.esri.com/">Esri World Topographic</a>'
                     : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
               }
               url={
                 basemap === 'satellite'
                   ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
                   : basemap === 'terrain'
-                    ? 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png'
+                    ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
                     : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
               }
             />
