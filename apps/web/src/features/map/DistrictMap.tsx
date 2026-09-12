@@ -114,10 +114,20 @@ function GulmiBoundsController({ resetTrigger, activeDrawerTab }: { resetTrigger
 function MapPanesSetup() {
   const map = useMap();
   useEffect(() => {
-    if (map && !map.getPane('roadsPane')) {
-      const pane = map.createPane('roadsPane');
-      pane.style.zIndex = '450';
-      pane.style.pointerEvents = 'auto';
+    if (map) {
+      if (!map.getPane('palikasPane')) {
+        const pane = map.createPane('palikasPane');
+        pane.style.zIndex = '350';
+      }
+      if (!map.getPane('roadsPane')) {
+        const pane = map.createPane('roadsPane');
+        pane.style.zIndex = '450';
+      }
+      if (!map.getPane('pointsPane')) {
+        const pane = map.createPane('pointsPane');
+        pane.style.zIndex = '650';
+        pane.style.pointerEvents = 'auto';
+      }
     }
   }, [map]);
   return null;
@@ -1707,6 +1717,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               <GeoJSON
                 key={`gulmi-palikas-${selectedPillar}-${selectedMapCropId}-${subFilters.crop || ''}-${subFilters.foodMode || ''}-${subFilters.foodOverlayType || ''}-${subFilters.waterSubFilter || ''}-${subFilters.ecoSubFilter || ''}-${subFilters.energySubFilter || ''}-${subFilters.socioSubFilter || ''}-${climateMonth}-${climateYear}-${climateMode}-${currentRainMm}-${hoveredPalika?.name || ''}`}
                 data={palikasData}
+                pane="palikasPane"
                 style={(feature: any) => {
                   const pName = (feature?.properties?.name || '').toLowerCase();
                   const isHovered = hoveredPalika?.name && (
@@ -1791,25 +1802,26 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               />
             )}
 
-            {/* Contextual Layer Isolation 2: Run-of-River & Micro-Hydro Screened Reaches */}
+            {/* Contextual Layer Isolation 2: Run-of-River & Micro-Hydro Screened Reaches (Strictly on Energy Run-of-River) */}
             {hydroReachesData && (
-              (selectedPillar === 'energy' && (!subFilters.energySubFilter || subFilters.energySubFilter === 'hydro_corridor')) ||
-              (selectedPillar === 'water' && subFilters.waterSubFilter === 'river_basins')
+              selectedPillar === 'energy' && (!subFilters.energySubFilter || subFilters.energySubFilter === 'hydro_corridor')
             ) && (
               <GeoJSON
                 key={`screened-hydro-reaches-${selectedPillar}`}
                 data={hydroReachesData}
+                pane="pointsPane"
                 pointToLayer={(feature: any, latlng: any) => {
                   const pKw = feature?.properties?.power_kW || 10;
                   const isRoR = pKw >= 100;
-                  const radius = isRoR ? 6 : 4;
+                  const radius = isRoR ? 6 : 4.5;
                   const fillColor = isRoR ? '#8b5cf6' : '#06b6d4';
                   return L.circleMarker(latlng, {
                     radius,
                     fillColor,
-                    fillOpacity: 0.9,
+                    fillOpacity: 0.95,
                     color: '#ffffff',
-                    weight: 1.5,
+                    weight: 2,
+                    pane: 'pointsPane',
                   });
                 }}
                 onEachFeature={(feature: any, layer: any) => {
@@ -1826,7 +1838,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                     </div>
                   `, { direction: 'top', offset: [0, -6], opacity: 0.98, pane: 'popupPane' });
                 }}
-                pane="markerPane"
               />
             )}
 
@@ -1835,13 +1846,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               <CircleMarker
                 key={`hydro-${st.stationNo || st.properties?.stationNo}-${idx}`}
                 center={[st.lat ?? st.geometry?.coordinates[1], st.lng ?? st.geometry?.coordinates[0]]}
-                radius={8}
-                pane="markerPane"
+                radius={8.5}
+                pane="pointsPane"
                 pathOptions={{
                   fillColor: '#0284c7',
-                  fillOpacity: 0.95,
+                  fillOpacity: 0.98,
                   color: '#ffffff',
                   weight: 2.5,
+                  pane: 'pointsPane',
                 }}
               >
                 <Tooltip direction="top" offset={[0, -8]} opacity={0.98} pane="popupPane">
