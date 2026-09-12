@@ -178,10 +178,6 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
 
   return (
     <div className="glass-panel px-4 py-2.5 rounded-xl flex flex-wrap items-center gap-3 border border-slate-200 shadow-sm animate-fade-in-up bg-white/95">
-      <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-800 shrink-0">
-        {iconMap[selectedPillar] || <Layers className="w-3.5 h-3.5 text-slate-500" />}
-        Gulmi Focus Layer:
-      </span>
       {renderFilters()}
     </div>
   );
