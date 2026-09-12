@@ -95,6 +95,7 @@ export function App() {
           <DistrictDetail
             district={selectedDistrict}
             initialPalikaName={selectedPalikaName || undefined}
+            onSelectPalika={setSelectedPalikaName}
             onSelectCrop={handleSelectCropFromMatrix}
             onBackToMap={() => setActiveScreen(1)}
             climateDataset={climateDataset}

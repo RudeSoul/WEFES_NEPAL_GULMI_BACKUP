@@ -70,13 +70,17 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Step 2: Palika Detail */}
           <button
-            onClick={() => setActiveScreen(2)}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${activeScreen === 2
+            onClick={() => selectedPalikaName && setActiveScreen(2)}
+            disabled={!selectedPalikaName}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${activeScreen === 2
               ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+              : selectedPalikaName
+                ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
+                : 'text-slate-400 opacity-60 cursor-not-allowed'
               }`}
+            title={selectedPalikaName ? `View ${selectedPalikaName} Palika Details` : 'Select a Palika from the map or search to view details'}
           >
-            <span>{selectedPalikaName ? `${selectedPalikaName} Palika` : 'Gulmi Palikas'}</span>
+            <span>{selectedPalikaName ? `${selectedPalikaName} Palika` : '____ Palika'}</span>
           </button>
 
           {/* Step 3: Analysis */}

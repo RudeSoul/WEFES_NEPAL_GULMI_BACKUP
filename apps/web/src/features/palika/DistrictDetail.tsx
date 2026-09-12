@@ -17,6 +17,7 @@ import { PalikaCropSuitabilityGrid } from './components/PalikaCropSuitabilityGri
 export interface DistrictDetailProps {
   district: District;
   initialPalikaName?: string;
+  onSelectPalika?: (palikaName: string) => void;
   onSelectCrop: (crop: Crop) => void;
   onBackToMap: () => void;
   climateDataset?: any;
@@ -40,6 +41,7 @@ const GULMI_PALIKA_NEPALI: Record<string, string> = {
 export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   district,
   initialPalikaName,
+  onSelectPalika,
   onSelectCrop,
   onBackToMap,
   climateDataset: initialClimateDataset,
@@ -53,10 +55,15 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   const [activeHoverCrop, setActiveHoverCrop] = useState<Crop | null>(displayedDistrictCrops[0]?.crop || null);
   const [climateDataset, setClimateDataset] = useState<any>(initialClimateDataset || null);
   const [openModal, setOpenModal] = useState<ModalKey>(null);
-  const [activePalikaName, setActivePalikaName] = useState<string>(initialPalikaName || 'Resunga');
+  const [activePalikaName, setActivePalikaNameState] = useState<string>(initialPalikaName || 'Resunga');
   const [isDossierModalOpen, setIsDossierModalOpen] = useState<boolean>(false);
   const [palikaWeather, setPalikaWeather] = useState<PalikaLiveWeather | null>(null);
   const [weatherTelemetryMode, setWeatherTelemetryMode] = useState<'live' | 'archive'>('live');
+
+  const setActivePalikaName = (pName: string) => {
+    setActivePalikaNameState(pName);
+    if (onSelectPalika) onSelectPalika(pName);
+  };
 
   useEffect(() => {
     if (initialClimateDataset) {
