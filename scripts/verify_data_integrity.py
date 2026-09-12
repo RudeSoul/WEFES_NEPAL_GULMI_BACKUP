@@ -70,12 +70,29 @@ def check_data_references() -> list[str]:
                     physical_path = REPO_ROOT / rel_data_path
 
                     if not physical_path.exists():
-                        # Calculate line number
-                        line_num = content[:match.start()].count("\n") + 1
-                        errors.append(
-                            f"❌ Missing Data File: '{rel_data_path}' cited at "
-                            f"{file_path.relative_to(REPO_ROOT)}:{line_num} does not exist on disk!"
-                        )
+                        # Check if this asset is a tracked heavy binary defined in data/manifest.json
+                        manifest_path = REPO_ROOT / "data" / "manifest.json"
+                        is_manifest_asset = False
+                        if manifest_path.exists():
+                            try:
+                                import json
+                                with open(manifest_path, "r", encoding="utf-8") as mf:
+                                    manifest_data = json.load(mf)
+                                    assets = manifest_data.get("assets", {})
+                                    for asset_info in assets.values():
+                                        if asset_info.get("destination_path") == rel_data_path:
+                                            is_manifest_asset = True
+                                            break
+                            except Exception:
+                                pass
+
+                        if not is_manifest_asset:
+                            # Calculate line number
+                            line_num = content[:match.start()].count("\n") + 1
+                            errors.append(
+                                f"❌ Missing Data File: '{rel_data_path}' cited at "
+                                f"{file_path.relative_to(REPO_ROOT)}:{line_num} does not exist on disk!"
+                            )
 
     return errors, checked_paths
 
