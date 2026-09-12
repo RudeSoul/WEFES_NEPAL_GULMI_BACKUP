@@ -2,11 +2,23 @@
 # .githooks/pre-commit
 # Enforces Atomic Commit Limit (Max 400 net lines) and auto-generates AI_INDEX.md
 
-# 1. Verify Data Integrity & Anti-Hallucination Gatekeeper (Rule 1 & Rule 4)
+# 0. Branch Protection (Rule 6: Never commit directly to main or master)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$CURRENT_BRANCH" = "main" ] || [ "$CURRENT_BRANCH" = "master" ]; then
+    echo "=================================================================="
+    echo " ❌ COMMIT REJECTED: Direct commits to '$CURRENT_BRANCH' are forbidden!"
+    echo " Rule 6 of RULESET.md mandates working on a feature branch."
+    echo " Create a branch: git checkout -b feat/your-feature"
+    echo "=================================================================="
+    exit 1
+fi
+
+# 1. Verify 6-Tier Data Integrity & Governance Gatekeeper (Rules 1-6)
 if [ -f "scripts/verify_data_integrity.py" ]; then
-    echo "--> [Pre-Commit] Verifying data integrity & engine isolation..."
+    echo "--> [Pre-Commit] Verifying 6-tier data integrity & platform rules..."
     python3 scripts/verify_data_integrity.py || exit 1
 fi
+
 
 # 2. Update AI_INDEX.md if generator script exists
 if [ -f "scripts/generate_ai_index.py" ]; then

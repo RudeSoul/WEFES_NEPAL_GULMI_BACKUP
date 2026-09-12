@@ -3,8 +3,14 @@
  * =============================================
  * Scientific and metadata-driven contracts for dynamic map legends.
  * Replaces legacy hardcoded 6-tier arrays with data-driven threshold models.
- * Complies with Rule 6 of RULESET.md.
+ * Complies with Rule 2 and Rule 6 of RULESET.md.
+ *
+ * [DATA PROVENANCE]
+ * Data Source: data/real/boundaries/gulmi-palikas.json, data/real/hydrology/gulmi_hydrology_assets.json
+ * Classification: OBSERVED REAL & CALCULATED BASELINES
+ * Citations: Survey Department Nepal, Department of Hydrology and Meteorology (DHM)
  */
+
 
 export type LegendType =
   | 'categorical'

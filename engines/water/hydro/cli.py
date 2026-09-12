@@ -3,7 +3,12 @@
 engines/hydro/cli.py
 ====================
 CLI entry point for the Autonomous WEFES Hydropower & Topographic Engine.
-Complies with Rule 1 of RULESET.md (Zero Inward Code Imports).
+Complies with Rule 1 of RULESET.md (Zero Inward Code Imports) and Rule 2 (Data Provenance).
+
+[DATA PROVENANCE]
+Data Source: data/calculated/hydro_reaches, data/real/hydrology/gulmi_hydrology_assets.json
+Classification: CALCULATED BASELINES & OBSERVED REAL
+Citations: Department of Hydrology and Meteorology (DHM), Copernicus DEM 30m
 
 Usage:
   python3 engines/hydro/cli.py --district Gulmi --output-dir data/calculated/hydro_reaches

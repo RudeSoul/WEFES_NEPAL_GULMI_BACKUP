@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { District, Crop } from '@wefes/shared-types';
 import { db } from '@wefes/database';
-import { DISTRICT_PALIKAS, PALIKA_GEO_CENTROIDS, DistrictPalika } from '../../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS, PALIKA_GEO_CENTROIDS, DistrictPalika, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 import { extractAnnualRainfallSeries, arimaForecast } from '@wefes/wefes-engine';
 import { CloudRain, Mountain, Sparkles, Thermometer, ArrowLeft, ArrowUp } from 'lucide-react';
 import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
@@ -23,20 +23,6 @@ export interface DistrictDetailProps {
   climateDataset?: any;
 }
 
-const GULMI_PALIKA_NEPALI: Record<string, string> = {
-  Resunga: 'रेसुङ्गा',
-  Musikot: 'मुसिकोट',
-  Ruru: 'रुरुक्षेत्र',
-  Satyawati: 'सत्यवती',
-  Kaligandaki: 'कालीगण्डकी',
-  Chandrakot: 'चन्द्रकोट',
-  Chatrakot: 'छत्रकोट',
-  Gulmidarbar: 'गुल्मीदरबार',
-  Dhurkot: 'धुर्कोट',
-  Isma: 'इस्मा',
-  Malika: 'मालिका',
-  Madane: 'मदाने',
-};
 
 export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   district,
