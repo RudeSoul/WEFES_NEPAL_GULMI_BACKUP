@@ -804,7 +804,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 
   const [liveWeather, setLiveWeather] = useState<LiveGulmiWeather | null>(null);
   const [liveWeatherLoading, setLiveWeatherLoading] = useState<boolean>(true);
-  const [isAgroMeteoOpen, setIsAgroMeteoOpen] = useState<boolean>(true);
+  const [isAgroMeteoOpen, setIsAgroMeteoOpen] = useState<boolean>(false);
 
   // Fetch real-time live satellite weather for Gulmi district coordinates
   useEffect(() => {
