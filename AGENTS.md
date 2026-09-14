@@ -38,7 +38,12 @@ Before writing any citation string or import statement:
 - Domain constants, coordinates, thresholds, crop profiles, and tariffs must be loaded from `data/`.
 - Never hardcode 6-tier arrays, palika metrics, or financial benchmarks directly in component files.
 
-## 6. Git Hygiene & Branch Protection
+## 6. Git Hygiene, 1-File Commits & Build-Flow Sequencing
 - Strict branch protection: Never push directly to `main`.
-- Keep all commits atomic: Max 400 net functional lines per commit (enforced by `.githooks/pre-commit`).
-- Always run `python3 scripts/generate_ai_index.py` before committing.
+- **1-File-Per-Commit**: Every commit must modify exactly 1 functional file (enforced by `.githooks/pre-commit`).
+- **Build-Flow Sequence**: Multi-file deliveries must flow in architectural dependency order:
+  `Types -> Engines -> Database -> API -> Web -> Tests -> Tooling/Governance`.
+- **Conventional Commits**: Commit messages must conform to `<type>(<scope>): <subject>` (enforced by `.githooks/commit-msg`).
+- Keep all commits atomic: Max 400 net functional lines per commit.
+- Always run `python3 scripts/generate_ai_index.py` before committing (or use `pnpm commit:flow`).
+
