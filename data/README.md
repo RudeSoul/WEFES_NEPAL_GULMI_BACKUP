@@ -31,6 +31,6 @@ data/
 ---
 
 ## 2. Heavy Binary Raster Git Policy
-- All binary GeoTIFF files (`*.tif`, `*.geotiff`) > 10 MB are strictly `.gitignore`d.
+- All binary GeoTIFF files (`*.tif`, `*.geotiff`) > 40 MB are strictly `.gitignore`d.
 - They are cryptographically cataloged in `data/manifest.json`.
 - Run `python3 scripts/sync_data.py` (or `make sync-data`) to automatically download and verify local rasters.
