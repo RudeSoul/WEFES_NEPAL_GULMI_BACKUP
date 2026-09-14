@@ -21,6 +21,7 @@ import { PalikaHoverCard } from '../palika/PalikaHoverCard';
 import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../../data/districtPalikaAssets';
 import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../../utils/climateDownscaling';
 import { resolveCalculationMethodology } from '../../data/districtCalculationAssets';
+import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
 
 
 
@@ -1063,235 +1064,21 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         ? 'Winter Dry'
         : 'Pre-Monsoon Spring';
 
-  // Dynamic Palika Color Resolution based on active Gulmi Micro-Intelligence Suite
-  const getGulmiPalikaColor = (props: any) => {
-    if (!props) return '#059669';
-    const palikaName = (props.name || '').toLowerCase();
-    const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
-    const pData = gulmiPalikas.find(
-      p => p.name.toLowerCase() === palikaName ||
-        palikaName.includes(p.name.toLowerCase()) ||
-        p.name.toLowerCase().includes(palikaName)
-    );
-
-    // ==========================================
-    // 1. FOOD PILLAR (Gulmi Signature Agro-Economy)
-    // ==========================================
-    if (selectedPillar === 'food') {
-      const foodMode = subFilters.foodMode || (selectedMapCropId ? 'single_crop' : 'single_crop');
-
-      if (foodMode === 'single_crop') {
-        const cropId = selectedMapCropId || subFilters.crop || 'coffee';
-        if (pData?.feasibleCrops) {
-          const c = pData.feasibleCrops.find(
-            fc => fc.cropId.toLowerCase() === cropId.toLowerCase() ||
-              cropId.toLowerCase().includes(fc.cropId.toLowerCase())
-          );
-          if (c) {
-            return getGradientColor(c.score, 40, 95, COLOR_RAMPS.rdylgn);
-          }
-        }
-        // Baseline suitability score based on palika elevation & thermal suitability
-        const elev = pData?.elevation || 1400;
-        const baselineScore = Math.max(45, Math.min(92, Math.round(90 - Math.abs(elev - 1350) / 18)));
-        return getGradientColor(baselineScore, 40, 95, COLOR_RAMPS.rdylgn);
-      }
-
-      if (foodMode === 'barkhe_summer') {
-        const count = pData?.feasibleCrops?.filter(fc => fc.season === 'barkhe')?.length || 5;
-        return getGradientColor(count, 2, 8, COLOR_RAMPS.ylgn);
-      }
-
-      if (foodMode === 'hiunde_winter') {
-        const count = pData?.feasibleCrops?.filter(fc => fc.season === 'hiunde')?.length || 4;
-        return getGradientColor(count, 1, 6, COLOR_RAMPS.ylgn);
-      }
-
-      if (foodMode === 'double_cropping') {
-        const intensity = (pData?.feasibleCropsCount || 10) * 18;
-        return getGradientColor(intensity, 100, 300, COLOR_RAMPS.ylgn);
-      }
-
-      return '#059669';
-    }
-
-    // ==========================================
-    // 2. WATER PILLAR (Gulmi Hydrology & Basins)
-    // ==========================================
-    if (selectedPillar === 'water') {
-      const wSub = subFilters.waterSubFilter || 'merra_rainfall';
-
-      if (wSub === 'river_basins') {
-        // Hydrological sub-basin drainage classification
-        if (palikaName.includes('kaligandaki')) return '#0369a1';
-        if (palikaName.includes('satyawati') || palikaName.includes('ruru')) return '#0284c7';
-        if (palikaName.includes('musikot') || palikaName.includes('isma')) return '#0ea5e9';
-        if (palikaName.includes('resunga') || palikaName.includes('gulmidarbar') || palikaName.includes('chatrakot')) return '#06b6d4';
-        if (palikaName.includes('chandrakot')) return '#38bdf8';
-        return '#3b82f6';
-      }
-
-      if (wSub === 'dhm_station') {
-        // Clean neutral basemap so rivers & DHM stations stand out as primary heroes
-        return '#f8fafc';
-      }
-
-      if (wSub === 'spring_vulnerability') {
-        // Continuous Springshed Depletion Risk: higher ridge elevation = greater recharge dependency
-        const elev = pData?.elevation || 1400;
-        const rainMm = pData?.rainfallMm || 1600;
-        const riskScore = Math.max(10, Math.min(95, Math.round(((elev - 800) / 1400) * 60 + (1 - rainMm / 2400) * 40)));
-        if (riskScore >= 75) return '#ef4444';
-        if (riskScore >= 50) return '#f59e0b';
-        if (riskScore >= 25) return '#10b981';
-        return '#059669';
-      }
-
-      if (wSub === 'irrigation_potential') {
-        // Riverbed lift irrigation capacity (inversely proportional to lift head above valley floor)
-        const elev = pData?.elevation || 1400;
-        const commandScore = Math.max(15, Math.min(95, Math.round(100 - (elev - 450) / 20)));
-        if (commandScore >= 80) return '#047857';
-        if (commandScore >= 60) return '#10b981';
-        if (commandScore >= 40) return '#f59e0b';
-        return '#ef4444';
-      }
-
-      // Default: Dynamic MERRA-2 Topographically Downscaled Rainfall Continuous Gradient (QGIS Style)
-      const micro = getPalikaMicroClimate(palikaName, currentRainMm, currentTempC, climateMonth, pData?.elevation);
-      return getGradientColor(micro.orographicFactor, 0.82, 1.25, COLOR_RAMPS.rainfall);
-    }
-
-    // ==========================================
-    // 3. ECOSYSTEM & SOIL PILLAR (Gulmi Relief & Soils)
-    // ==========================================
-    if (selectedPillar === 'ecosystem') {
-      const ecoSub = subFilters.ecoSubFilter || 'soil_ph';
-
-      if (ecoSub === 'soil_ph') {
-        const ph = pData?.soilPh || 6.4;
-        return getGradientColor(ph, 5.2, 7.3, COLOR_RAMPS.soilPh);
-      }
-
-      if (ecoSub === 'elevation_zones') {
-        const elev = pData?.elevation || 1400;
-        return getGradientColor(elev, 850, 1850, COLOR_RAMPS.viridis);
-      }
-
-      if (ecoSub === 'agroforestry_belt') {
-        // High-altitude ridge forest canopy vs valley agriculture
-        const elev = pData?.elevation || 1400;
-        const forestPct = Math.max(15, Math.min(75, Math.round((elev / 2200) * 80)));
-        return getGradientColor(forestPct, 15, 75, COLOR_RAMPS.ylgn);
-      }
-
-      if (ecoSub === 'soil_nitrogen') {
-        // Soil organic nitrogen proxy from elevation & rainfall
-        const elev = pData?.elevation || 1400;
-        const nVal = Math.max(0.04, Math.min(0.24, 0.05 + (elev / 2000) * 0.18));
-        return getGradientColor(nVal, 0.03, 0.24, COLOR_RAMPS.ylgn);
-      }
-
-      if (ecoSub === 'soil_phosphorus') {
-        const ph = pData?.soilPh || 6.4;
-        const pVal = Math.max(8, Math.min(48, Math.round(ph * 6.5)));
-        return getGradientColor(pVal, 5, 50, COLOR_RAMPS.blues);
-      }
-
-      if (ecoSub === 'soil_potassium') {
-        const elev = pData?.elevation || 1400;
-        const kVal = Math.max(65, Math.min(245, Math.round(260 - (elev / 2000) * 180)));
-        return getGradientColor(kVal, 60, 250, COLOR_RAMPS.purples);
-      }
-
-      return '#059669';
-    }
-
-    // ==========================================
-    // 4. ENERGY PILLAR (Gulmi Energy Infrastructure)
-    // ==========================================
-    if (selectedPillar === 'energy') {
-      const eSub = subFilters.energySubFilter || 'hydro_corridor';
-
-      if (eSub === 'hydro_corridor') {
-        // Calculated hydro potential capacity (MW) from hydro_palika_summary.json
-        const hydroItem = (HYDRO_PALIKA_SUMMARY as any[]).find(
-          h => h.palika.toLowerCase() === palikaName || palikaName.includes(h.palika.toLowerCase())
-        );
-
-        const capMw = hydroItem?.total_installed_capacity_MW || 5.0;
-        return getGradientColor(Math.log10(capMw * 1000), 1.5, 4.8, COLOR_RAMPS.purples);
-      }
-
-      if (eSub === 'solar_irradiance') {
-        // NASA POWER downscaled surface solar irradiance (kWh/m²/day)
-        const elev = pData?.elevation || 1400;
-        const solarKwh = 4.2 + (elev / 2200) * 1.1;
-        return getGradientColor(solarKwh, 3.7, 5.5, ['#fde047', '#f59e0b', '#d97706', '#b45309']);
-      }
-
-      if (eSub === 'clean_cooking_biomass') {
-        // Biomass firewood dependency based on rural terrain isolation
-        const elev = pData?.elevation || 1400;
-        const firewoodPct = Math.max(42, Math.min(92, Math.round(35 + (elev / 2000) * 55)));
-        return getGradientColor(firewoodPct, 40, 95, COLOR_RAMPS.gnylrd);
-      }
-
-      if (eSub === 'grid_electrification') {
-        // Grid coverage (valley corridors higher, high ridge settlements lower)
-        const elev = pData?.elevation || 1400;
-        const gridPct = Math.max(58, Math.min(99, Math.round(102 - (elev / 2000) * 42)));
-        return getGradientColor(gridPct, 55, 100, COLOR_RAMPS.rdylgn);
-      }
-
-      return '#6d28d9';
-    }
-
-    // ==========================================
-    // 5. SOCIOECONOMICS PILLAR (Gulmi Governance & Roads)
-    // ==========================================
-    if (selectedPillar === 'socioeconomics') {
-      const sSub = subFilters.socioSubFilter || 'local_governance';
-
-      if (sSub === 'local_governance') {
-        if (pData?.unitType === 'Nagarpalika') return '#3730a3';
-        return '#059669';
-      }
-
-      if (sSub === 'hq_market_proximity') {
-        // Real geometric distance to district HQ (Tamghas at lat: 28.065, lng: 83.245)
-        const coords = pData?.coordinates || [28.06, 83.25];
-        const dLat = (coords[0] - 28.065) * 111;
-        const dLng = (coords[1] - 83.245) * 111 * Math.cos(28.065 * (Math.PI / 180));
-        const distKm = Math.round(Math.sqrt(dLat * dLat + dLng * dLng));
-        return getGradientColor(distKm, 2, 75, COLOR_RAMPS.gnylrd);
-      }
-
-      if (sSub === 'agri_landholding') {
-        // Landholding density from CBS 2021 municipal profiles (ha/household)
-        const elev = pData?.elevation || 1400;
-        const landHa = Math.max(0.18, Math.min(0.85, 0.20 + ((elev - 700) / 1500) * 0.6));
-        return getGradientColor(landHa, 0.15, 0.85, COLOR_RAMPS.ylgn);
-      }
-
-      if (sSub === 'labor_wages') {
-        // Official Jilla Dar Rate baseline (770 NPR/day) with urban proximity adjustment
-        const coords = pData?.coordinates || [28.06, 83.25];
-        const dist = Math.sqrt(Math.pow((coords[0] - 28.065) * 111, 2) + Math.pow((coords[1] - 83.245) * 98, 2));
-        const wage = Math.round(770 + (dist < 10 ? 90 : dist < 25 ? 30 : -50));
-        return getGradientColor(wage, 580, 930, COLOR_RAMPS.blues);
-      }
-
-      return '#4f46e5';
-    }
-
-    return '#059669';
-  };
+  // Track B: Dynamic Palika Attribute Joining Hook
+  const choropleth = usePalikaChoropleth({
+    rawGeoJson: palikasData,
+    selectedPillar,
+    subFilters,
+    selectedCropId: selectedMapCropId || undefined,
+    climateMonth,
+    currentRainMm,
+    currentTempC,
+  });
 
   const getPalikaStyle = (feature: any) => {
     const props = feature?.properties;
     const isHovered = hoveredPalika?.name === props?.name;
-    const fillColor = getGulmiPalikaColor(props);
+    const fillColor = choropleth.getColor(props?.name || '');
 
     return {
       fillColor,
@@ -1306,122 +1093,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     const props = feature.properties;
     if (!props) return;
 
-    const palikaName = (props.name || '').toLowerCase();
-    const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
-    const pData = gulmiPalikas.find(
-      p => p.name.toLowerCase() === palikaName ||
-        palikaName.includes(p.name.toLowerCase()) ||
-        p.name.toLowerCase().includes(palikaName)
-    );
-
-    let metricSnippet = '';
-    if (selectedPillar === 'food') {
-      const cropId = selectedMapCropId || subFilters.crop || 'coffee';
-      if (pData?.feasibleCrops) {
-        const c = pData.feasibleCrops.find(
-          fc => fc.cropId.toLowerCase() === cropId.toLowerCase() ||
-            cropId.toLowerCase().includes(fc.cropId.toLowerCase())
-        );
-        if (c) {
-          metricSnippet = `
-            <div style="color: #059669; font-weight: 600; font-size: 10px; margin-top: 2px;">
-              ${c.emoji} ${c.cropName.split('(')[0].trim()}: <strong>${c.score}% Suitability</strong> (${c.rating})
-            </div>
-            <div style="color: #64748b; font-size: 9px;">
-              Biophysical: ${pData?.elevation || 1450}m Elev • pH ${pData?.soilPh || 6.5}
-            </div>
-          `;
-        }
-      }
-    } else if (selectedPillar === 'water') {
-      const wSub = subFilters.waterSubFilter || 'merra_rainfall';
-      if (wSub === 'river_basins') {
-        const basin = ['kaligandaki', 'satyawati', 'ruru'].some(n => palikaName.includes(n)) ? 'Kali Gandaki Basin'
-          : ['musikot', 'isma'].some(n => palikaName.includes(n)) ? 'Badigad River Basin'
-            : ['resunga', 'gulmidarbar', 'chatrakot', 'chandrakot'].some(n => palikaName.includes(n)) ? 'Ridi Khola Basin' : 'Panaha/Chhaldi Basin';
-        metricSnippet = `<div style="color: #0284c7; font-size: 10px; margin-top: 2px;">🌊 Watershed: <strong>${basin}</strong></div>`;
-      } else if (wSub === 'irrigation_potential') {
-        const elev = pData?.elevation || 1400;
-        const commandScore = Math.max(15, Math.min(95, Math.round(100 - (elev - 450) / 20)));
-        const cat = commandScore >= 80 ? 'Prime Riverbed Gravity Kulo (≥80%)'
-          : commandScore >= 60 ? 'Mid-Hill Solar Lift Command (60–79%)'
-            : commandScore >= 40 ? 'Rainwater Harvest & Micro-Drip (40–59%)'
-              : 'Rainfed Ridge Slopes (<40%)';
-        const catColor = commandScore >= 80 ? '#047857'
-          : commandScore >= 60 ? '#10b981'
-            : commandScore >= 40 ? '#f59e0b'
-              : '#ef4444';
-        const liftHead = Math.max(0, elev - 450);
-        metricSnippet = `
-          <div style="color: ${catColor}; font-weight: 700; font-size: 10px; margin-top: 2px;">
-            🌾 Irrigation Feasibility: <strong>${commandScore}%</strong>
-          </div>
-          <div style="color: #334155; font-size: 9.5px; margin-top: 1px;">
-            Category: <strong>${cat}</strong>
-          </div>
-          <div style="color: #64748b; font-size: 9px; margin-top: 1px;">
-            Terrain Elev: ${elev}m • Valley Lift Head: ~${liftHead}m
-          </div>
-        `;
-      } else if (wSub === 'spring_vulnerability') {
-        const elev = pData?.elevation || 1400;
-        const rainMm = pData?.rainfallMm || 1600;
-        const riskScore = Math.max(10, Math.min(95, Math.round(((elev - 800) / 1400) * 60 + (1 - rainMm / 2400) * 40)));
-        const cat = riskScore >= 75 ? 'Critical Vulnerability (>75%)'
-          : riskScore >= 50 ? 'High Vulnerability (50–75%)'
-            : riskScore >= 25 ? 'Moderate Vulnerability (25–50%)'
-              : 'Low Vulnerability (<25%)';
-        const catColor = riskScore >= 75 ? '#ef4444'
-          : riskScore >= 50 ? '#f59e0b'
-            : riskScore >= 25 ? '#10b981'
-              : '#059669';
-        metricSnippet = `
-          <div style="color: ${catColor}; font-weight: 700; font-size: 10px; margin-top: 2px;">
-            🏔️ Spring Drying Risk: <strong>${riskScore}%</strong>
-          </div>
-          <div style="color: #334155; font-size: 9.5px; margin-top: 1px;">
-            Status: <strong>${cat}</strong>
-          </div>
-          <div style="color: #64748b; font-size: 9px; margin-top: 1px;">
-            Ridge Elev: ${elev}m • Mean Rain: ${rainMm} mm/yr
-          </div>
-        `;
-      } else if (wSub === 'dhm_station') {
-        const stationDesc = ['kaligandaki', 'satyawati'].some(n => palikaName.includes(n))
-          ? 'Kali Gandaki (Station #410 Seti Beni)'
-          : ['musikot', 'ruru'].some(n => palikaName.includes(n))
-            ? 'Badigad Khola (Station #430 Rudrabeni)'
-            : ['resunga', 'gulmidarbar'].some(n => palikaName.includes(n))
-              ? 'Panaha Khola (Station #435 Tamghas)'
-              : 'Tributary Streams (Chhaldi, Hugdi)';
-        metricSnippet = `
-          <div style="color: #0284c7; font-weight: 700; font-size: 10px; margin-top: 2px;">
-            💧 Gauge Catchment: <strong>${stationDesc}</strong>
-          </div>
-          <div style="color: #64748b; font-size: 9px; margin-top: 1px;">
-            Hydrology Station & Real River Network Monitoring
-          </div>
-        `;
-      } else {
-        const micro = getPalikaMicroClimate(palikaName, currentRainMm, currentTempC, climateMonth, pData?.elevation);
-        const orographicDiff = Math.round((micro.orographicFactor - 1) * 100);
-        const orographicStr = orographicDiff >= 0 ? `+${orographicDiff}%` : `${orographicDiff}%`;
-        metricSnippet = `
-          <div style="color: #0284c7; font-size: 10px; margin-top: 2px;">
-            🌧️ Downscaled Rain: <strong>${micro.monthlyRainMm} mm/mo</strong> (${orographicStr} Orographic)
-          </div>
-          <div style="color: #475569; font-size: 9.5px; margin-top: 1px;">
-            🌡️ Micro-Temp: <strong>${micro.monthlyTempC}°C</strong> • Baseline: <strong>${micro.annualRainMm} mm/yr</strong>
-          </div>
-        `;
-      }
-    } else if (selectedPillar === 'ecosystem') {
-      metricSnippet = `<div style="color: #059669; font-size: 10px; margin-top: 2px;">🧪 Soil pH: <strong>${pData?.soilPh || 6.5}</strong> • Elev: <strong>${pData?.elevation || 1450}m</strong></div>`;
-    } else if (selectedPillar === 'energy') {
-      metricSnippet = `<div style="color: #7c3aed; font-size: 10px; margin-top: 2px;">⚡ Renewable Pot.: <strong>Solar & Micro-Hydro</strong></div>`;
-    } else if (selectedPillar === 'socioeconomics') {
-      metricSnippet = `<div style="color: #4f46e5; font-size: 10px; margin-top: 2px;">🏛️ Governance: <strong>${props.type || 'Palika'}</strong></div>`;
-    }
+    const metricSnippet = choropleth.getTooltipHtml(props.name || '');
 
     layer.bindTooltip(`
       <div style="font-family: sans-serif; font-size: 11px; padding: 3px 5px;">
@@ -1430,6 +1102,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         ${metricSnippet}
       </div>
     `, { sticky: true, direction: 'top', opacity: 0.95 });
+
 
     layer.on({
       click: () => {
@@ -2002,7 +1675,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                       hoveredPalika.name.toLowerCase().includes(pName)
                     );
                     return {
-                      fillColor: getGulmiPalikaColor(feature?.properties),
+                      fillColor: choropleth.getColor(feature?.properties?.name || ''),
                       fillOpacity: isHovered ? 0.92 : 0.72,
                       color: isHovered ? '#10b981' : '#ffffff',
                       weight: isHovered ? 3.5 : 1.8,
