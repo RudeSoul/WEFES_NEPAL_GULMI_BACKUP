@@ -76,14 +76,20 @@ All project data must reside in one of three strictly governed tiers:
 
 ---
 
-## Rule 7: The Atomic Commit Limit (Max 400 Lines per Commit)
-- Commits must represent atomic, single-intent units of work.
-- Net functional code changes per commit must **NOT exceed 400 lines** (additions + deletions).
-- *Exempted files*: Lockfiles (`pnpm-lock.yaml`), generated assets (`dist/`), data tables (`.csv`, `.geojson`), manifests (`AI_INDEX.md`, `data/manifest.json`).
-- Commits exceeding this threshold are blocked by the `.githooks/pre-commit` hook. Split work into logical chunks:
-  1. Commit 1: Data schemas and contracts.
-  2. Commit 2: Engine computation logic.
-  3. Commit 3: Unit tests and documentation.
+## Rule 7: 1-File-Per-Commit & Build-Flow Dependency Sequencing
+- **1-File-Per-Commit Enforcement**: Every commit must modify exactly **1 functional file** (enforced by `.githooks/pre-commit`), guaranteeing granular bisectability and exact rollbacks.
+- **Architectural Build-Flow Order**: When committing changes across multiple files, commits MUST flow strictly in dependency sequence:
+  1. **Tier 1: Contracts & Types** (`packages/shared-types`, `data/schemas`)
+  2. **Tier 2: Computational Engines** (`engines/nexus`, `engines/water/hydro`)
+  3. **Tier 3: Database & Models** (`packages/database`)
+  4. **Tier 4: Backend API Services** (`apps/api`)
+  5. **Tier 5: Frontend UI & GIS** (`apps/web`)
+  6. **Tier 6: Automated Test Suites** (`*__tests__*`, `*.test.ts`)
+  7. **Tier 7: Tooling & Governance** (`.githooks`, `scripts`, documentation, root configs)
+- **Conventional Commits Hook**: Commit messages must conform to `<type>(<scope>): <subject>` (enforced by `.githooks/commit-msg`).
+- **Atomic Size Limit**: Net functional code changes per commit must **NOT exceed 400 lines**.
+- **Automated Workflow**: Run `pnpm commit:flow` or `make commit-flow` to automatically sort and commit pending files in build-flow sequence.
+- *(Emergency bypass for large scaffolding or multi-file renames: `ALLOW_MULTI_FILE_COMMIT=1 git commit -m "..."`)*.
 
 ---
 
