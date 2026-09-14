@@ -64,7 +64,7 @@ All project data must reside in one of three strictly governed tiers:
 ---
 
 ## Rule 5: Large Raster & Binary Git Hygiene
-- Binary rasters (`*.tif`, `*.nc`, `*.h5`, `*.geotiff`) > 10 MB must **NEVER** be committed directly to Git.
+- Binary rasters (`*.tif`, `*.nc`, `*.h5`, `*.geotiff`) > 40 MB must **NEVER** be committed directly to Git.
 - Binary rasters are tracked via `data/manifest.json` with cryptographic SHA-256 checksums and automated download scripts (`scripts/sync_data.py`).
 - Developers can clone the repository in seconds and run `make sync-data` to retrieve heavy assets locally.
 
