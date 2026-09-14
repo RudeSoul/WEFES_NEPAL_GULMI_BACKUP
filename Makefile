@@ -2,7 +2,7 @@
 # WEFES NEXUS NEPAL: MASTER REPOSITORY TASK ORCHESTRATOR
 # ==============================================================================
 
-.PHONY: dev build test check-data test-nexus test-hydro run-hydro sync-data update-ai-index clean
+.PHONY: dev build test check-data test-nexus test-api test-hydro run-hydro sync-data update-ai-index commit-flow clean
 
 # Start full web platform & API development servers
 dev:
@@ -13,7 +13,7 @@ build:
 	pnpm build
 
 # Run polyglot automated test suites including strict data integrity
-test: check-data test-nexus test-hydro
+test: check-data test-nexus test-api test-hydro
 
 # Verify physical data paths, engine isolation, and anti-hallucination rules
 check-data:
@@ -22,8 +22,15 @@ check-data:
 test-nexus:
 	pnpm --filter @wefes/wefes-engine test
 
+test-api:
+	pnpm --filter @wefes/api test
+
 test-hydro:
 	python3 -m py_compile engines/water/hydro/cli.py engines/water/hydro/src/*.py
+
+# Step through and commit changes 1-by-1 in architectural build-flow sequence
+commit-flow:
+	python3 scripts/flow_commit.py
 
 # Execute the autonomous Python Hydropower & Topographic Engine
 run-hydro:
