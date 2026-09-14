@@ -20,5 +20,5 @@
   4. Field Data Dictionary
 
 ## 5. Binary File Size Limits
-- Files larger than 10 MB must NOT be committed to Git.
+- Files larger than 40 MB must NOT be committed to Git.
 - Add their SHA-256 and download URL to `data/manifest.json`.
