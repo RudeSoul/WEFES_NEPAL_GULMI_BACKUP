@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """
-# ==============================================================================
-# DATA PROVENANCE CITATION
-# Source File: data/hydrology/River_data.csv & DHM Meteorological/Hydrometric Catalogs
-# Classification: OBSERVED REAL (Department of Hydrology and Meteorology, Nepal)
-# Purpose: Compiles raw DMS coordinate river gauging stations and verified regional
-#          monitoring stations into standard GeoJSON with explicit geographic labels.
+# ===========================================================================
+# DATA PROVENANCE
+# ---------------------------------------------------------------------------
+# River stations source:
+#   Data Source: data/hydrology/River_data.csv
+#   Classification: OBSERVED REAL (Department of Hydrology and Meteorology, Nepal)
+#   Citations: Department of Hydrology and Meteorology (DHM), Nepal
+# ---------------------------------------------------------------------------
+# Purpose: Compiles spatial assets (river stations) into GeoJSON
+#          for consumption by the web frontend.
 # Consumed By: apps/web (DistrictMap Leaflet spatial layer)
-# ==============================================================================
+# ===========================================================================
 """
 
 import os
@@ -240,20 +244,22 @@ def parse_river_stations(csv_path: Path) -> List[Dict[str, Any]]:
 
     return features
 
-
 def main():
     write_mode = "--write" in sys.argv
-    csv_file = REPO_ROOT / "data" / "hydrology" / "River_data.csv"
-    output_file = REPO_ROOT / "apps" / "web" / "public" / "geojson" / "gulmi-dhm-stations.json"
+
+    # Path for the DHM dataset
+    dhm_csv = REPO_ROOT / "data" / "hydrology" / "River_data.csv"
+    dhm_output = REPO_ROOT / "apps" / "web" / "public" / "geojson" / "gulmi-dhm-stations.json"
 
     print("==================================================================")
     print(" 💧 WEFES NEXUS NEPAL: SPATIAL GEOJSON COMPILER")
     print("==================================================================")
-    print(f" Source CSV: {csv_file.relative_to(REPO_ROOT)}")
-    print(f" Target File: {output_file.relative_to(REPO_ROOT)}\n")
+    print(f" Source CSV (DHM): {dhm_csv.relative_to(REPO_ROOT)}")
+    print(f" Target File (DHM): {dhm_output.relative_to(REPO_ROOT)}\n")
 
-    features = parse_river_stations(csv_file)
-    feature_collection = {
+    # Process DHM stations
+    dhm_features = parse_river_stations(dhm_csv)
+    dhm_collection = {
         "type": "FeatureCollection",
         "_metadata": {
             "title": "DHM River Gauging & Climate Stations (Gulmi & Regional Basin)",
@@ -262,11 +268,22 @@ def main():
             "crs": "EPSG:4326 (WGS84)",
             "description": "Includes in-district trunk river stations (#430, #435), Ridi catchment stations (#233/418, #837/0701), and regional border inflow stations (#415, #410)"
         },
-        "features": features
+        "features": dhm_features
     }
 
-    print(f"--> Compiled {len(features)} station(s):")
-    for idx, feat in enumerate(features, 1):
+    # Output DHM GeoJSON
+    if write_mode:
+        dhm_output.parent.mkdir(parents=True, exist_ok=True)
+        with open(dhm_output, "w", encoding="utf-8") as out:
+            json.dump(dhm_collection, out, indent=2)
+        print(f"✅ [SUCCESS] Written DHM GeoJSON to {dhm_output.relative_to(REPO_ROOT)}")
+    else:
+        print("ℹ️  DHM DRY‑RUN COMPLETE. No DHM files were written.")
+        print("   To generate the DHM GeoJSON file, re‑run with: --write")
+
+    # Summary printout
+    print(f"--> Compiled {len(dhm_features)} DHM station(s):")
+    for idx, feat in enumerate(dhm_features, 1):
         props = feat["properties"]
         coords = feat["geometry"]["coordinates"]
         loc_tag = "[IN-DISTRICT GULMI]" if props["isInGulmi"] else "[REGIONAL INFLOW/BORDER]"
@@ -276,14 +293,6 @@ def main():
         print(f"      District/Location: {props['district']}")
         print(f"      Instruments: {props['instruments']}\n")
 
-    if write_mode:
-        output_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_file, "w", encoding="utf-8") as out:
-            json.dump(feature_collection, out, indent=2)
-        print(f"✅ [SUCCESS] Written GeoJSON to {output_file.relative_to(REPO_ROOT)}")
-    else:
-        print("ℹ️  DRY-RUN COMPLETE. No files were written.")
-        print("   To generate the physical GeoJSON file, re-run with: --write")
     print("==================================================================\n")
 
 
