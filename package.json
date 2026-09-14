@@ -8,6 +8,7 @@
     "check:data": "python3 scripts/verify_data_integrity.py",
     "prepare": "git config core.hooksPath .githooks",
     "lint": "pnpm exec turbo run lint",
+    "commit:flow": "python3 scripts/flow_commit.py",
     "clean": "pnpm exec turbo run clean"
   },
   "devDependencies": {
