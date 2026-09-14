@@ -1,7 +1,7 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/boundaries/gulmi-palikas.json
+// Data Source: data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/boundaries/gulmi-palikas.json, apps/web/public/geojson/gulmi-contours.json
 // Classification: OBSERVED REAL & CALCULATED BASELINES
-// Citations: Ministry of Federal Affairs and General Administration (MoFAGA), DHM Nepal, Survey Department
+// Citations: Ministry of Federal Affairs and General Administration (MoFAGA), DHM Nepal, Survey Department of Nepal
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON, CircleMarker, Marker, Tooltip, useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -224,6 +224,10 @@ function MapPanesSetup() {
       if (!map.getPane('palikasPane')) {
         const pane = map.createPane('palikasPane');
         pane.style.zIndex = '350';
+      }
+      if (!map.getPane('contoursPane')) {
+        const pane = map.createPane('contoursPane');
+        pane.style.zIndex = '380';
       }
       if (!map.getPane('roadsPane')) {
         const pane = map.createPane('roadsPane');
@@ -752,6 +756,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   const [nationalRoads, setNationalRoads] = useState<any>(null);
   const [hydroReachesData, setHydroReachesData] = useState<any>(null);
   const [gulmiRivers, setGulmiRivers] = useState<any>(null);
+  const [contoursData, setContoursData] = useState<any>(null);
+  const [showContours, setShowContours] = useState<boolean>(false);
   const [showRoadOverlay, setShowRoadOverlay] = useState<boolean>(false);
 
   const [palikasData, setPalikasData] = useState<any>(null);
@@ -889,13 +895,15 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       fetch('/geojson/gulmi-hydro-reaches.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-dhm-stations.json').then(r => r.json()).catch(() => fetch('/geojson/gulmi-hydrology-assets.json').then(r => r.json())).catch(() => null),
       fetch('/geojson/gulmi-rivers.json').then(r => r.json()).catch(() => null),
-    ]).then(([geo, palikas, climate, roads, reaches, hydroAssets, rivers]) => {
+      fetch('/geojson/gulmi-contours.json').then(r => r.json()).catch(() => null),
+    ]).then(([geo, palikas, climate, roads, reaches, hydroAssets, rivers, contours]) => {
       if (geo) setGeoData(geo);
       if (palikas) setPalikasData(palikas);
       if (climate) setClimateDataset(climate);
       if (roads) setNationalRoads(roads);
       if (reaches) setHydroReachesData(reaches);
       if (rivers) setGulmiRivers(rivers);
+      if (contours) setContoursData(contours);
       if (hydroAssets?.type === 'FeatureCollection' && Array.isArray(hydroAssets.features)) {
         setHydrologyStations(hydroAssets.features);
       } else if (hydroAssets?.dhmRiverStationsByDistrict?.gulmi) {
@@ -1610,6 +1618,19 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 <span>Labels</span>
               </button>
 
+              {/* Topographic Contours Toggle */}
+              <button
+                onClick={() => setShowContours(prev => !prev)}
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${showContours || basemap === 'terrain'
+                  ? 'bg-emerald-800 text-white border-emerald-700 shadow-2xs'
+                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                title="Toggle 200m Topographic Elevation Contours & Life Zones"
+              >
+                <Mountain className="w-3.5 h-3.5 text-amber-300" />
+                <span>Contours</span>
+              </button>
+
               {/* Recenter Camera Button */}
               <button
                 onClick={() => setResetTrigger(prev => prev + 1)}
@@ -1674,9 +1695,11 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                       pName.includes(hoveredPalika.name.toLowerCase()) ||
                       hoveredPalika.name.toLowerCase().includes(pName)
                     );
+                    const isContourActive = showContours || basemap === 'terrain';
+                    const baseOpacity = isContourActive ? 0.45 : 0.72;
                     return {
                       fillColor: choropleth.getColor(feature?.properties?.name || ''),
-                      fillOpacity: isHovered ? 0.92 : 0.72,
+                      fillOpacity: isHovered ? Math.min(0.92, baseOpacity + 0.3) : baseOpacity,
                       color: isHovered ? '#10b981' : '#ffffff',
                       weight: isHovered ? 3.5 : 1.8,
                       dashArray: '',
@@ -1697,6 +1720,36 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                         if (gulmiDistrict) onSelectDistrict(gulmiDistrict, name);
                       }
                     });
+                  }}
+                />
+              )}
+
+              {/* Vector Topographic Contours (200m interval isolines with elevation & life zones) */}
+              {contoursData && (showContours || basemap === 'terrain') && (
+                <GeoJSON
+                  key="gulmi-contours-layer"
+                  data={contoursData}
+                  pane="contoursPane"
+                  style={(feature: any) => {
+                    const p = feature?.properties || {};
+                    return {
+                      color: p.color || '#0284c7',
+                      weight: p.weight || 1.5,
+                      opacity: p.opacity || 0.8,
+                    };
+                  }}
+                  onEachFeature={(feature: any, layer: any) => {
+                    const p = feature?.properties || {};
+                    layer.bindTooltip(`
+                      <div style="padding: 4px 6px; font-size: 11px; min-width: 170px;">
+                        <div style="font-weight: 800; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin-bottom: 3px;">
+                          ⛰️ ${p.elevation}m masl ${p.isIndex ? '(Index Contour)' : ''}
+                        </div>
+                        <div style="color: #0369a1; font-weight: 600; font-size: 10px;">${p.lifeZone || 'Mid-Hills'}</div>
+                        <div style="color: #475569; font-size: 9.5px; margin-top: 1px;">Lapse Temp: <strong>${p.temperatureC ?? 16}°C</strong></div>
+                        ${p.feasibleCrops?.length ? `<div style="color: #15803d; font-size: 9px; margin-top: 2px; line-height: 1.2;">🌾 Crops: ${p.feasibleCrops.slice(0, 3).join(', ')}</div>` : ''}
+                      </div>
+                    `, { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' });
                   }}
                 />
               )}
