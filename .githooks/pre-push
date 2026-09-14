@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # .githooks/pre-push
-# Blocks direct git push to main / master
+# 1. Blocks direct git push to main / master
+# 2. Runs automated tests before code leaves local machine
 
 while read local_ref local_sha remote_ref remote_sha
 do
@@ -19,5 +20,19 @@ do
         exit 1
     fi
 done
+
+# Run full test suite before push
+if [ "$SKIP_TESTS" != "1" ]; then
+    echo "--> [Pre-Push] Running test suite & data integrity verification..."
+    pnpm test || {
+        echo ""
+        echo "=================================================================="
+        echo " ❌ PUSH REJECTED: Test suite failed!"
+        echo " Fix the failing tests or run 'pnpm test' to inspect failures."
+        echo "=================================================================="
+        echo ""
+        exit 1
+    }
+fi
 
 exit 0
