@@ -886,7 +886,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       initialClimateDataset ? Promise.resolve(initialClimateDataset) : fetch('/geojson/gulmi-climate-monthly.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/roads/gulmi.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-hydro-reaches.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/gulmi-hydrology-assets.json').then(r => r.json()).catch(() => null),
+      fetch('/geojson/gulmi-dhm-stations.json').then(r => r.json()).catch(() => fetch('/geojson/gulmi-hydrology-assets.json').then(r => r.json())).catch(() => null),
       fetch('/geojson/gulmi-rivers.json').then(r => r.json()).catch(() => null),
     ]).then(([geo, palikas, climate, roads, reaches, hydroAssets, rivers]) => {
       if (geo) setGeoData(geo);
@@ -895,7 +895,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       if (roads) setNationalRoads(roads);
       if (reaches) setHydroReachesData(reaches);
       if (rivers) setGulmiRivers(rivers);
-      if (hydroAssets?.dhmRiverStationsByDistrict?.gulmi) {
+      if (hydroAssets?.type === 'FeatureCollection' && Array.isArray(hydroAssets.features)) {
+        setHydrologyStations(hydroAssets.features);
+      } else if (hydroAssets?.dhmRiverStationsByDistrict?.gulmi) {
         setHydrologyStations(hydroAssets.dhmRiverStationsByDistrict.gulmi);
       }
       setGeoLoading(false);
@@ -2151,36 +2153,55 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               )}
 
               {/* Contextual Layer Isolation 3: DHM River Gauging Stations Overlay */}
-              {selectedPillar === 'water' && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterClimateMetric === 'dhm_stations') && hydrologyStations.map((st: any, idx: number) => (
-                <CircleMarker
-                  key={`hydro-${st.stationNo || st.properties?.stationNo}-${idx}`}
-                  center={[st.lat ?? st.geometry?.coordinates[1], st.lng ?? st.geometry?.coordinates[0]]}
-                  radius={8.5}
-                  pane="pointsPane"
-                  pathOptions={{
-                    fillColor: '#0284c7',
-                    fillOpacity: 0.98,
-                    color: '#ffffff',
-                    weight: 2.5,
-                    pane: 'pointsPane',
-                  }}
-                >
-                  <Tooltip direction="top" offset={[0, -8]} opacity={0.98} pane="popupPane">
-                    <div className="text-xs p-1.5 min-w-[210px] bg-white rounded shadow-md border border-sky-200">
-                      <div className="font-bold text-sky-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
-                        <span className="flex items-center gap-1">💧 DHM Station #{st.stationNo || st.properties?.stationNo}</span>
-                        <span className="text-[9px] bg-sky-100 text-sky-800 px-1.5 py-0.5 rounded font-mono font-bold">Active</span>
+              {selectedPillar === 'water' && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterClimateMetric === 'dhm_stations') && hydrologyStations.map((st: any, idx: number) => {
+                const props = st.properties || st;
+                const isRegional = props.isInGulmi === false || props.district?.includes('Syangja');
+                const isMet = props.stationType === 'meteorological' || props.stationNo?.includes('0701');
+                const markerColor = isRegional ? '#f59e0b' : isMet ? '#8b5cf6' : '#0284c7';
+                const badgeLabel = isRegional ? 'Regional Inflow' : isMet ? 'Meteorological' : 'Active Hydrometric';
+                const badgeBg = isRegional ? 'bg-amber-100 text-amber-800' : isMet ? 'bg-purple-100 text-purple-800' : 'bg-sky-100 text-sky-800';
+
+                return (
+                  <CircleMarker
+                    key={`hydro-${props.stationNo}-${idx}`}
+                    center={[st.lat ?? st.geometry?.coordinates[1], st.lng ?? st.geometry?.coordinates[0]]}
+                    radius={isRegional ? 8.5 : 8}
+                    pane="pointsPane"
+                    pathOptions={{
+                      fillColor: markerColor,
+                      fillOpacity: 0.98,
+                      color: '#ffffff',
+                      weight: 2.5,
+                      pane: 'pointsPane',
+                    }}
+                  >
+                    <Tooltip direction="top" offset={[0, -8]} opacity={0.98} pane="popupPane">
+                      <div className="text-xs p-1.5 min-w-[220px] bg-white rounded shadow-md border border-slate-200">
+                        <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
+                          <span className="flex items-center gap-1 font-outfit">
+                            {isMet ? '🌤️' : '💧'} Station #{props.stationNo}
+                          </span>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${badgeBg}`}>
+                            {badgeLabel}
+                          </span>
+                        </div>
+                        <div className="font-semibold text-slate-900 text-xs">
+                          {props.displayLabel || `${props.river} (${props.siteName})`}
+                        </div>
+                        <div className="text-slate-600 text-[10px] mt-0.5">
+                          Location: <strong>{props.district || 'Gulmi'}</strong> • Elev: <strong>{props.elevation ? `${props.elevation}m` : 'N/A'}</strong>
+                        </div>
+                        <div className="text-slate-500 text-[10px] mt-1 bg-slate-50 p-1 rounded font-mono break-words">
+                          Equip: {props.instruments}
+                        </div>
+                        {props.startDate && (
+                          <div className="text-slate-400 text-[9px] mt-0.5">Established: {props.startDate}</div>
+                        )}
                       </div>
-                      <div className="font-semibold text-slate-900 text-xs">{st.river || st.properties?.river} ({st.siteName || st.properties?.siteName})</div>
-                      <div className="text-slate-600 text-[10px] mt-0.5">District: <strong>{st.district || st.properties?.district || 'Gulmi'}</strong> • Elevation: <strong>{st.elevation || st.properties?.elevation ? `${st.elevation || st.properties?.elevation}m` : 'N/A'}</strong></div>
-                      <div className="text-slate-500 text-[10px] mt-1 bg-slate-50 p-1 rounded font-mono">Equip: {st.instruments || st.properties?.instruments}</div>
-                      {(st.startDate || st.properties?.startDate) && (
-                        <div className="text-slate-400 text-[9px] mt-0.5">Established: {st.startDate || st.properties?.startDate}</div>
-                      )}
-                    </div>
-                  </Tooltip>
-                </CircleMarker>
-              ))}
+                    </Tooltip>
+                  </CircleMarker>
+                );
+              })}
 
               {/* 20 Potentially Dangerous Glacial Lakes Overlay */}
               {selectedPillar === 'water' && subFilters.waterClimateMetric === 'glof_lakes' && glacialLakes.map((l: any, idx: number) => (
