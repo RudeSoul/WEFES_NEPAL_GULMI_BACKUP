@@ -1,0 +1,228 @@
+{
+  "type": "FeatureCollection",
+  "_metadata": {
+    "title": "DHM River Gauging & Climate Stations (Gulmi & Regional Basin)",
+    "source": "Department of Hydrology and Meteorology (DHM), Nepal",
+    "tier": "OBSERVED REAL",
+    "crs": "EPSG:4326 (WGS84)",
+    "description": "Includes in-district trunk river stations (#430, #435), Ridi catchment stations (#233/418, #837/0701), and regional border inflow stations (#415, #410)"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.85,
+          27.9
+        ]
+      },
+      "properties": {
+        "stationNo": "350",
+        "river": "Rapti River",
+        "siteName": "Bagasoti Gaun",
+        "displayLabel": "Rapti River at Bagasoti Gaun (#350)",
+        "elevation": 381.0,
+        "instruments": "Cableway- Recorder- Rain Gauge- V",
+        "startDate": "1975-08-05",
+        "district": "Regional Basin (Gandaki)",
+        "stationType": "hydrometric",
+        "isInGulmi": false,
+        "_rawDms": "Lat: 27_54_00, Lon: 82_51_00",
+        "_provenance": "DHM Nepal National River Network (data/hydrology/River_data.csv)"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.463889,
+          27.702778
+        ]
+      },
+      "properties": {
+        "stationNo": "390",
+        "river": "Tinau",
+        "siteName": "Butwal",
+        "displayLabel": "Tinau at Butwal (#390)",
+        "elevation": 184.0,
+        "instruments": "Cable Way",
+        "startDate": "1963-12-09",
+        "district": "Regional Basin (Gandaki)",
+        "stationType": "hydrometric",
+        "isInGulmi": false,
+        "_rawDms": "Lat: 27_42_10, Lon: 83_27_50",
+        "_provenance": "DHM Nepal National River Network (data/hydrology/River_data.csv)"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.602778,
+          28.008333
+        ]
+      },
+      "properties": {
+        "stationNo": "410",
+        "river": "Kali Gandaki",
+        "siteName": "Seti Beni",
+        "displayLabel": "Kali Gandaki at Seti Beni (#410)",
+        "elevation": 546.0,
+        "instruments": "Cable Way",
+        "startDate": "1964-02-21",
+        "district": "Gulmi / Parbat Border (Seti Beni)",
+        "stationType": "hydrometric",
+        "isInGulmi": true,
+        "_rawDms": "Lat: 28_00_30, Lon: 83_36_10",
+        "_provenance": "DHM Nepal National River Network (data/hydrology/River_data.csv)"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.588889,
+          27.972222
+        ]
+      },
+      "properties": {
+        "stationNo": "415",
+        "river": "Andhi Khola",
+        "siteName": "Borlangpul",
+        "displayLabel": "Regional Inflow Station (Syangja - 740m from border)",
+        "elevation": 749.0,
+        "instruments": "-",
+        "startDate": "1964-04-01",
+        "district": "Syangja (740m east of Gulmi border)",
+        "stationType": "hydrometric",
+        "isInGulmi": false,
+        "_rawDms": "Lat: 27_58_20, Lon: 83_35_20",
+        "_provenance": "DHM Nepal National River Network (data/hydrology/River_data.csv)"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.8,
+          27.89
+        ]
+      },
+      "properties": {
+        "stationNo": "419",
+        "river": "Kali Gandaki",
+        "siteName": "Angsing",
+        "displayLabel": "Kali Gandaki at Angsing (#419)",
+        "elevation": 351.05,
+        "instruments": "Cableway- Recorder- Rain Gauge- V",
+        "startDate": "1989-04-13",
+        "district": "Regional Basin (Downstream Kali Gandaki)",
+        "stationType": "hydrometric",
+        "isInGulmi": false,
+        "_rawDms": "Lat: 27_53_24, Lon: 83_48_00",
+        "_provenance": "DHM Nepal National River Network (data/hydrology/River_data.csv)"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.3877,
+          27.9512
+        ]
+      },
+      "properties": {
+        "stationNo": "233 / 418",
+        "river": "Ridi Khola",
+        "siteName": "Satmure (Ridi Catchment)",
+        "displayLabel": "Ridi Khola at Satmure (#233 / #418)",
+        "elevation": 485,
+        "instruments": "Staff Gauge & Automated Water Level Logger",
+        "startDate": "1978-05-15",
+        "district": "Gulmi / Palpa Border (Satyawati-Ruru)",
+        "stationType": "hydrometric",
+        "isInGulmi": true,
+        "_rawDms": "Lat: 27_57_04, Lon: 83_23_16",
+        "_provenance": "DHM Hydrometric Station Catalog & PPCR Catchment Baseline"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.4333,
+          27.9333
+        ]
+      },
+      "properties": {
+        "stationNo": "837 / 0701",
+        "river": "Ruru Pilgrimage Basin",
+        "siteName": "Ridi Bazar (Meteorological Station)",
+        "displayLabel": "Ridi Station (#837 / #0701)",
+        "elevation": 494,
+        "instruments": "Standard Rain Gauge, Max-Min Thermometer & Climatological Sensor",
+        "startDate": "1971-01-01",
+        "district": "Ruru Kshetra / Gulmi",
+        "stationType": "meteorological",
+        "isInGulmi": true,
+        "_rawDms": "Lat: 27_56_00, Lon: 83_26_00",
+        "_provenance": "DHM National Climatological & Precipitation Index #0701"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.4333,
+          27.95
+        ]
+      },
+      "properties": {
+        "stationNo": "430",
+        "river": "Badigad Khola",
+        "siteName": "Rudrabeni / Ridi Confluence",
+        "displayLabel": "Badigad Khola at Rudrabeni (#430)",
+        "elevation": 465,
+        "instruments": "Staff Gauge & Discharge Measurement Cableway",
+        "startDate": "1975-04-01",
+        "district": "Gulmi (Satyawati / Chandrakot)",
+        "stationType": "hydrometric",
+        "isInGulmi": true,
+        "_rawDms": "Lat: 27_57_00, Lon: 83_26_00",
+        "_provenance": "DHM Nepal National River Network (Station #430)"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.245,
+          28.065
+        ]
+      },
+      "properties": {
+        "stationNo": "435",
+        "river": "Panaha Khola",
+        "siteName": "Tamghas Basin Station",
+        "displayLabel": "Panaha Khola at Tamghas (#435)",
+        "elevation": 1480,
+        "instruments": "Staff Gauge & Automated Level Sensor",
+        "startDate": "1988-06-15",
+        "district": "Gulmi (Resunga)",
+        "stationType": "hydrometric",
+        "isInGulmi": true,
+        "_rawDms": "Lat: 28_03_54, Lon: 83_14_42",
+        "_provenance": "DHM Nepal National River Network (Station #435)"
+      }
+    }
+  ]
+}
