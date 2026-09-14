@@ -66,7 +66,28 @@ if [ "$ALLOW_MULTI_FILE_COMMIT" != "1" ]; then
     fi
 fi
 
-# 3. Update AI_INDEX.md if generator script exists
+# 3. Check Binary File Size Limit (Rule 5: Max 40 MB per file)
+MAX_FILE_BYTES=$((40 * 1024 * 1024))
+while IFS= read -r file; do
+    if [ -f "$file" ]; then
+        FILE_SIZE=$(wc -c < "$file" | tr -d ' ')
+        if [ "$FILE_SIZE" -gt "$MAX_FILE_BYTES" ]; then
+            FILE_MB=$((FILE_SIZE / 1024 / 1024))
+            echo ""
+            echo "=================================================================="
+            echo " ❌ COMMIT REJECTED: File size exceeds 40 MB limit!"
+            echo "=================================================================="
+            echo " '$file' is ${FILE_MB} MB (maximum allowed is 40 MB)."
+            echo " Rule 5 of RULESET.md mandates tracking large binary rasters in"
+            echo " 'data/manifest.json' and downloading them via 'scripts/sync_data.py'."
+            echo "=================================================================="
+            echo ""
+            exit 1
+        fi
+    fi
+done < <(git diff --cached --name-only)
+
+# 4. Update AI_INDEX.md if generator script exists
 if [ -f "scripts/generate_ai_index.py" ]; then
     echo "--> [Pre-Commit] Refreshing dynamic AI_INDEX.md..."
     python3 scripts/generate_ai_index.py > /dev/null 2>&1 || true

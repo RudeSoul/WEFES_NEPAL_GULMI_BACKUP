@@ -1,5 +1,5 @@
 # WEFES PLATFORM: AI CONTEXT & ARCHITECTURE MAP
-> Auto-generated on 2026-09-14 09:40. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
+> Auto-generated on 2026-09-14 09:46. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
 > This file is a high-density, token-optimized context anchor for AI assistants.
 
 ---
@@ -44,7 +44,7 @@
 1. **Zero Inward Code Imports**: Engines NEVER import code from `apps/` or `packages/`.
 2. **Zero Hardcoded Data**: All domain constants, coordinates, and thresholds MUST be read from `data/`.
 3. **In-Code Provenance**: Every file consuming data MUST have a top-level `// [DATA PROVENANCE]` comment.
-4. **Git Hygiene**: Never commit rasters >10 MB (use `data/manifest.json`). No direct pushes to `main`.
+4. **Git Hygiene**: Never commit rasters >40 MB (use `data/manifest.json`). No direct pushes to `main`.
 5. **Atomic Commits**: Maximum 400 net lines of change per commit.
 6. **Dual Documentation**: Every directory must contain `README.md` and `RULES.md`.
 
