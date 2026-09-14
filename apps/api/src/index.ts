@@ -46,7 +46,13 @@ app.use('*', (req, res) => {
 // Centralized Error Handler
 app.use(errorHandler);
 
-app.listen(config.port, () => {
-  console.log(`🚀 ${config.serviceName} running at http://localhost:${config.port}${config.apiPrefix}`);
-  console.log(`📡 Health check active at http://localhost:${config.port}/health`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(config.port, () => {
+    console.log(`🚀 ${config.serviceName} running at http://localhost:${config.port}${config.apiPrefix}`);
+    console.log(`📡 Health check active at http://localhost:${config.port}/health`);
+  });
+}
+
+export { app };
+export default app;
+
