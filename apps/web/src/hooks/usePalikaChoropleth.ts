@@ -9,6 +9,7 @@ import {
   PalikaChoroplethResult,
   JoinedPalikaData,
   PalikaChoroplethMetricConfig,
+  SUBFILTER_LEGENDS,
 } from '@wefes/shared-types';
 import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../data/districtPalikaAssets';
 import { getPalikaMicroClimate } from '../utils/climateDownscaling';
@@ -193,7 +194,7 @@ export function computePalikaChoropleth({
           unit: '%',
           min: 40,
           max: 95,
-          colorRamp: CHOROPLETH_RAMPS.rdylgn,
+          colorRamp: ['#ef4444', '#f59e0b', '#84cc16', '#10b981'],
         };
 
         for (const feat of features) {
@@ -245,7 +246,11 @@ export function computePalikaChoropleth({
           }
 
           const calibratedScore = Math.max(35, Math.min(96, score - climateStressPenalty));
-          const color = computeGradientColor(calibratedScore, 40, 95, CHOROPLETH_RAMPS.rdylgn);
+          // FAO ECOCROP 4-tier domain classification matching SUBFILTER_LEGENDS['crop_suitability']
+          const color =
+            calibratedScore >= 80 ? '#10b981' :
+            calibratedScore >= 60 ? '#84cc16' :
+            calibratedScore >= 40 ? '#f59e0b' : '#ef4444';
 
           const cropLabel = cropItem ? `${cropItem.emoji} ${cropItem.cropName.split('(')[0].trim()}` : `${cropId.toUpperCase()}`;
           const limitTag = dynamicLimitingFactor
@@ -644,14 +649,18 @@ export function computePalikaChoropleth({
           unit: 'pH',
           min: 5.2,
           max: 7.3,
-          colorRamp: CHOROPLETH_RAMPS.soilPh,
+          colorRamp: ['#ef4444', '#f59e0b', '#10b981', '#3b82f6'],
         };
 
         for (const feat of features) {
           const props = feat.properties || {};
           const pData = getProfile(props);
           const ph = pData?.soilPh || 6.4;
-          const color = computeGradientColor(ph, 5.2, 7.3, CHOROPLETH_RAMPS.soilPh);
+          // NARC & FAO classification matching SUBFILTER_LEGENDS['soil_ph']
+          const color =
+            ph < 5.0 ? '#ef4444' :
+            ph < 6.0 ? '#f59e0b' :
+            ph <= 7.2 ? '#10b981' : '#3b82f6';
 
           joinedData[props.name] = {
             id: props.id || props.name,
@@ -774,14 +783,18 @@ export function computePalikaChoropleth({
           unit: 'MW',
           min: 1.5,
           max: 4.8,
-          colorRamp: CHOROPLETH_RAMPS.purples,
+          colorRamp: ['#10b981', '#7c3aed', '#4c1d95'],
         };
 
         for (const feat of features) {
           const props = feat.properties || {};
           const hItem = getHydro(props);
           const capMw = hItem?.total_installed_capacity_MW || 5.0;
-          const color = computeGradientColor(Math.log10(capMw * 1000), 1.5, 4.8, CHOROPLETH_RAMPS.purples);
+          // DOED classification matching SUBFILTER_LEGENDS['hydro_corridor']
+          const capKw = capMw * 1000;
+          const color =
+            capKw >= 1000 ? '#4c1d95' :
+            capKw >= 100 ? '#7c3aed' : '#10b981';
 
           joinedData[props.name] = {
             id: props.id || props.name,
@@ -908,18 +921,27 @@ export function computePalikaChoropleth({
         metricConfig = {
           metricKey: 'governance',
           pillar: 'socioeconomics',
-          label: 'Local Level Type',
+          label: 'Local Government Body Classification',
           unit: '',
           min: 0,
-          max: 1,
-          colorRamp: ['#059669', '#3730a3'],
+          max: 5,
+          colorRamp: ['#3730a3', '#4f46e5', '#059669', '#10b981', '#0ea5e9', '#14b8a6'],
         };
+
+        const govLegend = SUBFILTER_LEGENDS['local_governance'];
+        const govCategories = govLegend?.categories || [];
 
         for (const feat of features) {
           const props = feat.properties || {};
           const pData = getProfile(props);
-          const uType = pData?.unitType || props.type || 'Gaunpalika';
-          const color = uType === 'Nagarpalika' ? '#3730a3' : '#059669';
+          const pName = (props.name || '').toLowerCase();
+          const catIndex = govCategories.findIndex((cat) =>
+            (cat.description && cat.description.toLowerCase().includes(pName)) ||
+            (pName === 'rurukshetra' && cat.key === 'religious_trade')
+          );
+          const matchedCat = catIndex >= 0 ? govCategories[catIndex] : null;
+          const color = matchedCat?.color || (props.type === 'Nagarpalika' ? '#3730a3' : '#059669');
+          const label = matchedCat?.label || props.type || 'Local Body';
 
           joinedData[props.name] = {
             id: props.id || props.name,
@@ -927,10 +949,10 @@ export function computePalikaChoropleth({
             nepaliName: props.nepaliName,
             type: props.type,
             areaSqKm: props.areaSqKm,
-            value: uType === 'Nagarpalika' ? 1 : 0,
-            formattedValue: uType,
+            value: catIndex >= 0 ? catIndex + 1 : (props.type === 'Nagarpalika' ? 1 : 0),
+            formattedValue: label,
             color,
-            tooltipHtml: `<div style="color: #4f46e5; font-size: 10px; margin-top: 2px;">🏛️ Governance: <strong>${uType}</strong></div>`,
+            tooltipHtml: `<div style="color: ${color}; font-size: 10px; margin-top: 2px;">🏛️ <strong>${label}</strong> (${props.type || 'Palika'})</div>`,
             raw: pData,
           };
         }
