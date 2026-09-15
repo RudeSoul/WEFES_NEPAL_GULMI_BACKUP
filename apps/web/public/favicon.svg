@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="14" fill="#0f172a" stroke="#38bdf8" stroke-width="2.5"/>
+  <!-- Mountain Peaks (Ecosystem & Topography) -->
+  <polygon points="12,46 25,24 38,46" fill="#10b981" opacity="0.8"/>
+  <polygon points="26,46 42,16 56,46" fill="#059669" opacity="0.9"/>
+  <!-- Snow Cap -->
+  <polygon points="38,24 42,16 46,24 42,26" fill="#f8fafc"/>
+  <!-- Nexus Water Droplet (Hydrology) -->
+  <path d="M32 24 C32 24, 46 38, 46 47 C46 54.7, 39.7 61, 32 61 C24.3 61, 18 54.7, 18 47 C18 38, 32 24, 32 24 Z" fill="#06b6d4" opacity="0.95"/>
+  <!-- Energy Spark / Sun (Solar & Micro-hydro) -->
+  <circle cx="32" cy="48" r="5" fill="#fbbf24"/>
+  <circle cx="32" cy="48" r="2.5" fill="#fff"/>
+</svg>
