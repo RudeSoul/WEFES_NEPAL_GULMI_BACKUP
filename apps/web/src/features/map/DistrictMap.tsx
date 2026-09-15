@@ -1149,36 +1149,16 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
           cardamom: '🌿 Large Cardamom (अलैंची)',
           maize: '🌽 Mid-Hill Maize (मकै)'
         };
-        const title = `${cropNames[cropId] || cropId} Suitability across Gulmi's 12 Palikas:`;
-        const items: [string, string][] = [
-          ['#047857', '≥90% Optimal Prime Pocket (Optimal Micro-Climate & Soil)'],
-          ['#059669', '80–89% High Commercial Potential'],
-          ['#10b981', '70–79% Good Suitability'],
-          ['#14b8a6', '60–69% Moderate-High Viability'],
-          ['#f59e0b', '45–59% Marginal / Secondary Cultivation'],
-          ['#ef4444', '<45% Severely Constrained / Altitude-Frost Limiting']
-        ];
-        return (
-          <div className="flex flex-col glass-panel px-4 py-2.5 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 animate-fade-in-up justify-between gap-2.5">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <span className="text-slate-800 font-semibold uppercase tracking-wider flex items-center gap-1.5 shrink-0 text-xs">
-                <Sprout className="w-3.5 h-3.5 text-emerald-600" />
-                {title}
-              </span>
-              <span className="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-mono font-semibold" title="Suitability dynamically calibrated per Palika via FAO-EcoCrop, NARC Soil pH, and Topographic Temperature/Elevation Lapse Model">
-                🔬 Calibrated via WEFE Biophysical Model (FAO-EcoCrop & NARC Altitude/Soil Matrix)
-              </span>
-            </div>
-            <div className="flex flex-wrap items-center gap-3.5">
-              {items.map(([c, l]) => (
-                <span key={l} className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-sm inline-block border border-slate-300 shadow-xs" style={{ backgroundColor: c }} />
-                  <span className="text-slate-700 font-medium">{l}</span>
-                </span>
-              ))}
-            </div>
-          </div>
-        );
+        const cropLabel = cropNames[cropId] || cropId;
+        const baseConfig = SUBFILTER_LEGENDS['crop_suitability'];
+        if (baseConfig) {
+          const config = {
+            ...baseConfig,
+            title: `${cropLabel} Suitability`,
+            subtitle: `FAO ECOCROP Biophysical Model (Calibrated per Palika)`
+          };
+          return <DynamicLegend config={config} className="animate-fade-in-up" />;
+        }
       }
 
       if (foodMode === 'barkhe_summer' || foodMode === 'hiunde_winter' || foodMode === 'double_cropping') {
