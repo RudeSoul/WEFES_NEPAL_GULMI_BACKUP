@@ -98,8 +98,18 @@ export function usePalikaChoropleth({
       for (const feat of features) {
         const props = feat.properties || {};
         const pData = getProfile(props);
+        const palikaName = props.name || '';
         let score = 70;
         let cropItem = null;
+
+        // Downscale micro-climate for this Palika based on elevation and active month/weather
+        const micro = getPalikaMicroClimate(
+          palikaName,
+          currentRainMm ?? 150,
+          currentTempC ?? 19.5,
+          climateMonth ?? 7,
+          pData?.elevation
+        );
 
         if (pData?.feasibleCrops) {
           const c = pData.feasibleCrops.find(
@@ -116,14 +126,40 @@ export function usePalikaChoropleth({
           }
         }
 
-        const color = computeGradientColor(score, 40, 95, CHOROPLETH_RAMPS.rdylgn);
-        const snippet = cropItem
-          ? `<div style="color: #059669; font-weight: 600; font-size: 10px; margin-top: 2px;">
-               ${cropItem.emoji} ${cropItem.cropName.split('(')[0].trim()}: <strong>${score}% Suitability</strong> (${cropItem.rating})
-             </div>`
-          : `<div style="color: #059669; font-weight: 600; font-size: 10px; margin-top: 2px;">
-               Agronomic Score: <strong>${score}%</strong>
-             </div>`;
+        // Apply dynamic microclimate lapse adjustment
+        // High thermal stress if downscaled monthly temp drops below 10°C or rises above 32°C
+        let climateStressPenalty = 0;
+        let dynamicLimitingFactor = cropItem?.limitingFactor && cropItem.limitingFactor !== 'None' ? cropItem.limitingFactor : null;
+
+        if (micro.monthlyTempC < 11.0) {
+          climateStressPenalty += Math.round((11.0 - micro.monthlyTempC) * 2.5);
+          if (!dynamicLimitingFactor) dynamicLimitingFactor = 'Thermal Deficit / Frost Risk';
+        } else if (micro.monthlyTempC > 30.0) {
+          climateStressPenalty += Math.round((micro.monthlyTempC - 30.0) * 2.0);
+          if (!dynamicLimitingFactor) dynamicLimitingFactor = 'Heat Stress';
+        }
+
+        if (micro.monthlyRainMm < 25) {
+          climateStressPenalty += Math.round((25 - micro.monthlyRainMm) * 0.4);
+          if (!dynamicLimitingFactor) dynamicLimitingFactor = 'Dry Season Moisture Stress';
+        }
+
+        const calibratedScore = Math.max(35, Math.min(96, score - climateStressPenalty));
+        const color = computeGradientColor(calibratedScore, 40, 95, CHOROPLETH_RAMPS.rdylgn);
+
+        const cropLabel = cropItem ? `${cropItem.emoji} ${cropItem.cropName.split('(')[0].trim()}` : `${cropId.toUpperCase()}`;
+        const limitTag = dynamicLimitingFactor
+          ? `<div style="color: #b45309; font-size: 9px; margin-top: 1px;">⚠️ Limit: <strong>${dynamicLimitingFactor}</strong></div>`
+          : `<div style="color: #0284c7; font-size: 9px; margin-top: 1px;">🌡️ Micro: <strong>${micro.monthlyTempC}°C</strong> • <strong>${micro.monthlyRainMm}mm</strong></div>`;
+
+        const snippet = `
+          <div style="font-size: 10px; margin-top: 2px;">
+            <div style="color: #059669; font-weight: 600;">
+              ${cropLabel}: <strong>${calibratedScore}% Suitability</strong>
+            </div>
+            ${limitTag}
+          </div>
+        `;
 
         joinedData[props.name] = {
           id: props.id || props.name,
@@ -131,11 +167,16 @@ export function usePalikaChoropleth({
           nepaliName: props.nepaliName,
           type: props.type,
           areaSqKm: props.areaSqKm,
-          value: score,
-          formattedValue: `${score}%`,
+          value: calibratedScore,
+          formattedValue: `${calibratedScore}%`,
           color,
           tooltipHtml: snippet,
-          raw: pData,
+          raw: {
+            ...pData,
+            microClimate: micro,
+            limitingFactor: dynamicLimitingFactor,
+            calibratedScore,
+          },
         };
       }
     } else if (selectedPillar === 'water') {
