@@ -82,4 +82,124 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
       }
     });
   });
+
+  describe('Multi-Pillar SubFilter Dynamic Choropleth Joining', () => {
+    // Mock GeoJson features for Gulmi Palikas
+    const mockGeoJson = {
+      type: 'FeatureCollection',
+      features: [
+        { properties: { name: 'Resunga', nepaliName: 'रेसुङ्गा', type: 'Nagarpalika', areaSqKm: 83.77 } },
+        { properties: { name: 'Kaligandaki', nepaliName: 'कालीगण्डकी', type: 'Gaunpalika', areaSqKm: 101.01 } },
+        { properties: { name: 'Chandrakot', nepaliName: 'चन्द्रकोट', type: 'Gaunpalika', areaSqKm: 105.72 } },
+      ],
+    };
+
+    // Test runner executing computePalikaChoropleth directly
+    async function evaluateChoropleth(params: any) {
+      const { computePalikaChoropleth } = await import('../hooks/usePalikaChoropleth');
+      return computePalikaChoropleth(params);
+    }
+
+    it('updates metric config and palika values when food mode changes to barkhe_summer', async () => {
+      const resSingle = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'food',
+        subFilters: { foodMode: 'single_crop', crop: 'coffee' },
+      });
+
+      expect(resSingle.metricConfig.pillar).toBe('food');
+      expect(resSingle.metricConfig.metricKey).toContain('crop_');
+
+      // Switch to barkhe summer
+      const resBarkhe = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'food',
+        subFilters: { foodMode: 'barkhe_summer' },
+      });
+
+      expect(resBarkhe.metricConfig.metricKey).toBe('barkhe_summer');
+      expect(resBarkhe.metricConfig.label).toContain('Barkhe');
+      expect(resBarkhe.joinedData['Resunga']?.value).toBeGreaterThan(0);
+      expect(resBarkhe.joinedData['Kaligandaki']?.value).toBeGreaterThan(0);
+    });
+
+    it('updates metric config and palika values when water subfilter changes to irrigation_potential', async () => {
+      const resRain = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'water',
+        subFilters: { waterSubFilter: 'merra_rainfall' },
+      });
+      expect(resRain.metricConfig.metricKey).toBe('downscaled_rainfall');
+
+      const resIrrig = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'water',
+        subFilters: { waterSubFilter: 'irrigation_potential' },
+      });
+
+      expect(resIrrig.metricConfig.metricKey).toBe('irrigation_potential');
+      expect(resIrrig.joinedData['Kaligandaki']?.value).toBe(88); // Riverbed alluvial flat
+    });
+
+    it('updates metric config when ecosystem subfilter changes to soil_nitrogen and elevation_zones', async () => {
+      const resN = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'ecosystem',
+        subFilters: { ecoSubFilter: 'soil_nitrogen' },
+      });
+
+      expect(resN.metricConfig.metricKey).toBe('soil_nitrogen');
+      expect(resN.joinedData['Chandrakot']?.value).toBe(0.23);
+
+      const resElev = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'ecosystem',
+        subFilters: { ecoSubFilter: 'elevation_zones' },
+      });
+
+      expect(resElev.metricConfig.metricKey).toBe('elevation_zones');
+      expect(resElev.joinedData['Chandrakot']?.value).toBe(1603);
+    });
+
+    it('updates metric config when energy subfilter changes to solar_irradiance and grid_electrification', async () => {
+      const resSolar = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'energy',
+        subFilters: { energySubFilter: 'solar_irradiance' },
+      });
+
+      expect(resSolar.metricConfig.metricKey).toBe('solar_irradiance');
+      expect(resSolar.joinedData['Resunga']?.formattedValue).toContain('kWh/m²/d');
+
+      const resGrid = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'energy',
+        subFilters: { energySubFilter: 'grid_electrification' },
+      });
+
+      expect(resGrid.metricConfig.metricKey).toBe('grid_reach');
+      expect(resGrid.joinedData['Resunga']?.formattedValue).toContain('Tamghas Core');
+    });
+
+    it('updates metric config when socioeconomics subfilter changes to hq_market_proximity and agri_landholding', async () => {
+      const resRoad = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'socioeconomics',
+        subFilters: { socioSubFilter: 'hq_market_proximity' },
+      });
+
+      expect(resRoad.metricConfig.metricKey).toBe('road_access');
+      expect(resRoad.joinedData['Resunga']?.value).toBe(0.3);
+
+      const resLand = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'socioeconomics',
+        subFilters: { socioSubFilter: 'agri_landholding' },
+      });
+
+      expect(resLand.metricConfig.metricKey).toBe('landholding');
+      expect(resLand.joinedData['Kaligandaki']?.value).toBe(8.4);
+    });
+  });
 });
+
