@@ -28,7 +28,7 @@ export interface UsePalikaChoroplethParams {
   currentTempC?: number;
 }
 
-export function usePalikaChoropleth({
+export function computePalikaChoropleth({
   rawGeoJson,
   selectedPillar,
   subFilters,
@@ -37,51 +37,50 @@ export function usePalikaChoropleth({
   currentRainMm = 150,
   currentTempC = 19.5,
 }: UsePalikaChoroplethParams): PalikaChoroplethResult {
-  return useMemo(() => {
-    const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
-    const profileLookup = new Map<string, any>();
-    for (const p of gulmiPalikas) {
-      profileLookup.set(normalizePalikaName(p.name), p);
-    }
-    const hydroLookup = new Map<string, any>();
-    for (const h of (HYDRO_PALIKA_SUMMARY as any[])) {
-      hydroLookup.set(normalizePalikaName(h.palika), h);
-    }
+  const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
+  const profileLookup = new Map<string, any>();
+  for (const p of gulmiPalikas) {
+    profileLookup.set(normalizePalikaName(p.name), p);
+  }
+  const hydroLookup = new Map<string, any>();
+  for (const h of (HYDRO_PALIKA_SUMMARY as any[])) {
+    hydroLookup.set(normalizePalikaName(h.palika), h);
+  }
 
-    let metricConfig: PalikaChoroplethMetricConfig = {
-      metricKey: 'default',
-      pillar: selectedPillar,
-      label: 'Metric Value',
-      unit: '',
-      min: 0,
-      max: 100,
-      colorRamp: CHOROPLETH_RAMPS.ylgn,
-    };
+  let metricConfig: PalikaChoroplethMetricConfig = {
+    metricKey: 'default',
+    pillar: selectedPillar,
+    label: 'Metric Value',
+    unit: '',
+    min: 0,
+    max: 100,
+    colorRamp: CHOROPLETH_RAMPS.ylgn,
+  };
 
-    const joinedData: Record<string, JoinedPalikaData> = {};
-    const features = rawGeoJson?.features || [];
+  const joinedData: Record<string, JoinedPalikaData> = {};
+  const features = rawGeoJson?.features || [];
 
-    const getProfile = (props: any) => {
-      const norm = normalizePalikaName(props?.name || '');
-      let match = profileLookup.get(norm);
-      if (!match) {
-        for (const [k, v] of profileLookup.entries()) {
-          if (norm.includes(k) || k.includes(norm)) return v;
-        }
+  const getProfile = (props: any) => {
+    const norm = normalizePalikaName(props?.name || '');
+    let match = profileLookup.get(norm);
+    if (!match) {
+      for (const [k, v] of profileLookup.entries()) {
+        if (norm.includes(k) || k.includes(norm)) return v;
       }
-      return match;
-    };
+    }
+    return match;
+  };
 
-    const getHydro = (props: any) => {
-      const norm = normalizePalikaName(props?.name || '');
-      let match = hydroLookup.get(norm);
-      if (!match) {
-        for (const [k, v] of hydroLookup.entries()) {
-          if (norm.includes(k) || k.includes(norm)) return v;
-        }
+  const getHydro = (props: any) => {
+    const norm = normalizePalikaName(props?.name || '');
+    let match = hydroLookup.get(norm);
+    if (!match) {
+      for (const [k, v] of hydroLookup.entries()) {
+        if (norm.includes(k) || k.includes(norm)) return v;
       }
-      return match;
-    };
+    }
+    return match;
+  };
 
     if (selectedPillar === 'food') {
       const foodMode = subFilters.foodMode || 'single_crop';
@@ -945,14 +944,20 @@ export function usePalikaChoropleth({
       getTooltipHtml: (palikaName: string) => joinedData[palikaName]?.tooltipHtml || '',
       getValue: (palikaName: string) => joinedData[palikaName]?.value,
     };
-  }, [
-    rawGeoJson,
-    selectedPillar,
-    subFilters,
-    selectedCropId,
-    climateMonth,
-    currentRainMm,
-    currentTempC,
-  ]);
+}
+
+export function usePalikaChoropleth(params: UsePalikaChoroplethParams): PalikaChoroplethResult {
+  return useMemo(
+    () => computePalikaChoropleth(params),
+    [
+      params.rawGeoJson,
+      params.selectedPillar,
+      params.subFilters,
+      params.selectedCropId,
+      params.climateMonth,
+      params.currentRainMm,
+      params.currentTempC,
+    ]
+  );
 }
 
