@@ -1111,7 +1111,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       </div>
     `, { sticky: true, direction: 'top', opacity: 0.95 });
 
-
     layer.on({
       click: () => {
         const gulmiDistrict = db.getDistrictById('gulmi');
@@ -1121,14 +1120,16 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         e.target.setStyle({
           fillOpacity: 0.92,
           weight: 2.8,
-          color: '#ffffff',
+          color: '#10b981',
         });
         e.target.bringToFront();
         setHoveredPalika(props);
+        handleHoverPalikaFromMatrix(props.name || '');
       },
       mouseout: (e: any) => {
         e.target.setStyle(getPalikaStyle(feature));
         setHoveredPalika(null);
+        handleHoverPalikaFromMatrix(null);
       },
     });
   };
@@ -1705,22 +1706,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                       dashArray: '',
                     };
                   }}
-                  onEachFeature={(feature: any, layer: any) => {
-                    layer.on({
-                      mouseover: () => {
-                        const name = feature?.properties?.name || '';
-                        handleHoverPalikaFromMatrix(name);
-                      },
-                      mouseout: () => {
-                        handleHoverPalikaFromMatrix(null);
-                      },
-                      click: () => {
-                        const name = feature?.properties?.name || '';
-                        const gulmiDistrict = db.getDistrictById('gulmi');
-                        if (gulmiDistrict) onSelectDistrict(gulmiDistrict, name);
-                      }
-                    });
-                  }}
+                  onEachFeature={onEachPalika}
                 />
               )}
 
