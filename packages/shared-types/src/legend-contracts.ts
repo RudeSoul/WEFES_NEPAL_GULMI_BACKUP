@@ -344,16 +344,19 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
   solar_irradiance: {
     id: 'solar_irradiance',
     pillar: 'energy',
-    title: 'Solar Photovoltaic Global Horizontal Irradiance',
-    subtitle: 'NASA POWER 10-Year Daily Climatology Average',
+    title: 'Solar Photovoltaic Global Horizontal Irradiance (GHI)',
+    subtitle: 'Global Solar Atlas (World Bank / ESMAP / Solargis • 1999–2020 Climatology)',
     unit: 'kWh/m²/day',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/climate/nasa_power_10_years_full.csv',
+    dataSourceCitation: 'data/real/climate/gulmiGHI.geojson',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 5.0, color: '#b45309', label: 'Optimal Solar Ridge (≥5.0 kWh/m²/d)', description: 'Unshaded southern ridge slopes (Resunga, Madane, Malika)' },
-      { minValue: 4.4, maxValue: 4.9, color: '#f59e0b', label: 'High Solar Slopes (4.4–4.9 kWh/m²/d)', description: 'Mid-hill south and west facing terraces' },
-      { maxValue: 4.3, color: '#fbbf24', label: 'Valley Shadow Zone (<4.4 kWh/m²/d)', description: 'Deep river gorges subject to morning/afternoon topographic shading' }
+      { minValue: 4.35, color: '#fef08a', label: 'Peak Highland Ridge (≥4.35 kWh/m²/d)', description: 'Maximum insolation unshaded ridges (Madane, Resunga summit, Dhurkot)' },
+      { minValue: 4.20, maxValue: 4.34, color: '#fde047', label: 'High Solar Slopes (4.20–4.34 kWh/m²/d)', description: 'Open south/west facing mid-hill agroforestry terraces' },
+      { minValue: 4.10, maxValue: 4.19, color: '#fbbf24', label: 'Moderate Mid-Hills (4.10–4.19 kWh/m²/d)', description: 'District baseline agricultural settlements and plateaus' },
+      { minValue: 3.90, maxValue: 4.09, color: '#f97316', label: 'Lower Slopes & Narrow Valleys (3.90–4.09 kWh/m²/d)', description: 'Partially shaded hillsides and river transition zones' },
+      { minValue: 3.60, maxValue: 3.89, color: '#ea580c', label: 'Topographic Shading Slopes (3.60–3.89 kWh/m²/d)', description: 'Steep north-facing slopes with reduced sun exposure' },
+      { maxValue: 3.59, color: '#7c2d12', label: 'Deep Gorge Shadow Zone (<3.60 kWh/m²/d)', description: 'Severe mountain shading in deep ravines (Kali Gandaki / Badigad gorges)' }
     ]
   },
 
