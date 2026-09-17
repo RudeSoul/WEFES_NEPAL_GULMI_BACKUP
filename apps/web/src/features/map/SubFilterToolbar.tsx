@@ -39,10 +39,10 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
               <optgroup label="🌧️ Precipitation & Watersheds">
                 <option value="merra_rainfall">🌧️ Dynamic Monthly Rainfall (MERRA-2 Topographic Downscaling)</option>
                 <option value="river_basins">🌊 Gandaki Basin Drainage Corridors (Kali Gandaki, Badigad, Ridi)</option>
-                <option value="dhm_station">💧 River Network & DHM Gauging Stations (Stations #410, #430, #435)</option>
+                <option value="dhm_station">💧 River Network & DHM Hydrological Gauging Stations</option>
               </optgroup>
               <optgroup label="⛰️ Terrain Water Security">
-                <option value="spring_vulnerability">🏔️ Spring Scarcity Risk (मुहान सुक्ने जोखिम - Ridge vs Valley)</option>
+                <option value="spring_vulnerability">🏔️ Watershed Spring Depletion Vulnerability (मुहान सुक्ने जोखिम)</option>
                 <option value="irrigation_potential">🌾 River Lift Irrigation Potential (Riverbed Flats)</option>
               </optgroup>
             </select>
@@ -109,12 +109,12 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
             >
               <optgroup label="🧪 Soil Geology & Chemistry">
                 <option value="soil_ph">🧪 Soil pH & Liming Need (Acidic Ridge vs Neutral Valley)</option>
-                <option value="soil_nitrogen">🌱 NARC Soil Nitrogen (81 Sampling Points)</option>
+                <option value="soil_nitrogen">🌱 Soil Available Nitrogen (NARC Soil Fertility Grid)</option>
                 <option value="soil_phosphorus">🌱 NARC Soil Phosphorus (P₂O₅)</option>
                 <option value="soil_potassium">🌱 NARC Soil Potassium (K₂O)</option>
               </optgroup>
               <optgroup label="🏔️ Topography & Flora">
-                <option value="elevation_zones">🏔️ Elevation Tiers (Valley &lt;800m, Slopes 800–1500m, Ridges &gt;1500m)</option>
+                <option value="elevation_zones">🏔️ Topographic Elevation Tiers & Agro-Ecological Zones</option>
                 <option value="agroforestry_belt">🌲 Community Forestry & Pine/Sal Agroforestry Belt</option>
               </optgroup>
             </select>
@@ -135,7 +135,7 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
               onChange={handleChange}
             >
               <option value="hydro_corridor">⚡ Run-of-River & Micro-Hydro Corridors (Kali Gandaki, Badigad)</option>
-              <option value="solar_irradiance">☀️ Ridge Solar Potential (NASA POWER 4.9 kWh/m²/d)</option>
+              <option value="solar_irradiance">☀️ Solar Photovoltaic GHI (Global Solar Atlas • 1999–2020 Climatology)</option>
               <option value="clean_cooking_biomass">🪵 Clean Cooking & Biomass Transition Zone</option>
               <option value="grid_electrification">🔌 NEA Distribution Reach (Tamghas Grid Core vs Perimeter)</option>
             </select>
@@ -155,7 +155,7 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
               value={subFilters.socioSubFilter || 'local_governance'}
               onChange={handleChange}
             >
-              <option value="local_governance">🏛️ Local Body Type (2 Municipalities vs 10 Rural Palikas)</option>
+              <option value="local_governance">🏛️ Local Governance Classification (Municipalities & Rural Palikas)</option>
               <option value="hq_market_proximity">🛣️ Proximity to Tamghas HQ & Madan Bhandari Highway</option>
               <option value="agri_landholding">🚜 Average Agricultural Landholding per Household</option>
               <option value="labor_wages">💼 Daily Agricultural Labor Rate (NPR/Day)</option>
