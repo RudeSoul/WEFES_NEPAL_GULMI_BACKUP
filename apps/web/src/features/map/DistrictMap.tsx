@@ -22,6 +22,8 @@ import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../../data/districtPalik
 import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../../utils/climateDownscaling';
 import { resolveCalculationMethodology } from '../../data/districtCalculationAssets';
 import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
+import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
+import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
 
 
 
@@ -221,6 +223,10 @@ function MapPanesSetup() {
   const map = useMap();
   useEffect(() => {
     if (map) {
+      if (!map.getPane('rainfallPane')) {
+        const pane = map.createPane('rainfallPane');
+        pane.style.zIndex = '340';
+      }
       if (!map.getPane('palikasPane')) {
         const pane = map.createPane('palikasPane');
         pane.style.zIndex = '350';
@@ -1083,10 +1089,23 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     currentTempC,
   });
 
+  const isMerraRainfallActive = selectedPillar === 'water' && (subFilters.waterSubFilter || 'merra_rainfall') === 'merra_rainfall';
+  const isSolarGhiActive = selectedPillar === 'energy' && subFilters.energySubFilter === 'solar_irradiance';
+
   const getPalikaStyle = (feature: any) => {
     const props = feature?.properties;
     const isHovered = hoveredPalika?.name === props?.name;
     const fillColor = choropleth.getColor(props?.name || '');
+
+    if (isMerraRainfallActive || isSolarGhiActive) {
+      return {
+        fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : '#38bdf8') : 'transparent',
+        weight: isHovered ? 2.5 : 1.5,
+        opacity: 0.95,
+        color: isHovered ? '#10b981' : '#475569',
+        fillOpacity: isHovered ? 0.22 : 0,
+      };
+    }
 
     return {
       fillColor,
@@ -1664,6 +1683,27 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 }
               />
 
+              {/* Continuous Spatial Rainfall Surface (IDW + Orographic Micro-Climate Lapse Rates) */}
+              {isMerraRainfallActive && geoData && (
+                <SpatialRainfallSurfaceOverlay
+                  currentRainMm={currentRainMm}
+                  currentTempC={currentTempC}
+                  climateMonth={climateMonth}
+                  geoData={geoData}
+                  bounds={GULMI_BOUNDS}
+                  opacity={0.82}
+                />
+              )}
+
+              {/* Continuous Spatial Solar Irradiance Surface (Global Solar Atlas 900m Empirical Grid) */}
+              {isSolarGhiActive && geoData && (
+                <SpatialSolarSurfaceOverlay
+                  geoData={geoData}
+                  bounds={GULMI_BOUNDS}
+                  opacity={0.85}
+                />
+              )}
+
               {/* 12 Gulmi Palikas Vector Layer (Dynamically styled per Pillar, Crop, and Climate Time-Series) */}
               {palikasData && (
                 <GeoJSON
@@ -1678,6 +1718,17 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                     );
                     const isContourActive = showContours || basemap === 'terrain';
                     const baseOpacity = isContourActive ? 0.45 : 0.72;
+
+                    if (isMerraRainfallActive || isSolarGhiActive) {
+                      return {
+                        fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : '#38bdf8') : 'transparent',
+                        fillOpacity: isHovered ? 0.22 : 0,
+                        color: isHovered ? '#10b981' : '#334155',
+                        weight: isHovered ? 3.5 : 1.6,
+                        dashArray: '',
+                      };
+                    }
+
                     return {
                       fillColor: choropleth.getColor(feature?.properties?.name || ''),
                       fillOpacity: isHovered ? Math.min(0.92, baseOpacity + 0.3) : baseOpacity,
