@@ -54,11 +54,11 @@ export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
     { type: 'crop' as const, label: '🌿 Large Cardamom (अलैंची)', value: 'cardamom', category: 'Crop' },
     // Key Filters
     { type: 'filter' as const, label: '🌊 Kali Gandaki & River Basins', value: 'river_basins', category: 'Water' },
-    { type: 'filter' as const, label: '💧 Ridge Spring Vulnerability (मुहान सुक्ने)', value: 'spring_vulnerability', category: 'Water' },
+    { type: 'filter' as const, label: '💧 Watershed Spring Depletion (मुहान सुक्ने)', value: 'spring_vulnerability', category: 'Water' },
     { type: 'filter' as const, label: '🧪 Soil pH & Agricultural Lime', value: 'soil_ph', category: 'Soil' },
     { type: 'filter' as const, label: '⚡ Run-of-River Hydropower Corridors', value: 'hydro_corridor', category: 'Energy' },
-    { type: 'filter' as const, label: '☀️ Ridge Solar Irradiance (NASA POWER)', value: 'solar_irradiance', category: 'Energy' },
-    { type: 'filter' as const, label: '🏛️ Local Governance (2 Municipalities + 10 Rural)', value: 'local_governance', category: 'Governance' },
+    { type: 'filter' as const, label: '☀️ Solar Photovoltaic GHI (Global Solar Atlas • 1999–2020)', value: 'solar_irradiance', category: 'Energy' },
+    { type: 'filter' as const, label: '🏛️ Local Governance (Municipalities & Rural Palikas)', value: 'local_governance', category: 'Governance' },
     { type: 'filter' as const, label: '🛣️ Road Proximity to Tamghas HQ', value: 'hq_market_proximity', category: 'Transport' },
   ];
 
