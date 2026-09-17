@@ -1,7 +1,7 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json
+// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmiGHI.geojson
 // Classification: OBSERVED REAL & EMPIRICAL DOWNSCALING
-// Citations: MoFAGA Nepal, DHM Nepal, CBS 2021 Census, NASA POWER / MERRA-2
+// Citations: MoFAGA Nepal, DHM Nepal, CBS 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas (World Bank/ESMAP/Solargis)
 
 import { useMemo } from 'react';
 import {
@@ -12,6 +12,7 @@ import {
   SUBFILTER_LEGENDS,
 } from '@wefes/shared-types';
 import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../data/districtPalikaAssets';
+import palikaGhiData from '../data/gulmi_palika_ghi.json';
 import { getPalikaMicroClimate } from '../utils/climateDownscaling';
 import {
   CHOROPLETH_RAMPS,
@@ -683,19 +684,26 @@ export function computePalikaChoropleth({
         metricConfig = {
           metricKey: 'solar_irradiance',
           pillar: 'energy',
-          label: 'Solar Photovoltaic GHI',
+          label: 'Solar Photovoltaic GHI (Global Solar Atlas)',
           unit: 'kWh/m²/d',
-          min: 4.2,
-          max: 5.2,
+          min: 3.90,
+          max: 4.30,
           colorRamp: ['#fbbf24', '#f59e0b', '#b45309'],
         };
+
+        const palikaGhiMap = (palikaGhiData as any).palikas || {};
 
         for (const feat of features) {
           const props = feat.properties || {};
           const pData = getProfile(props);
-          const elev = pData?.elevation || 1400;
-          const ghi = Number((4.3 + ((elev - 800) / 1100) * 0.7).toFixed(2));
-          const color = ghi >= 5.0 ? '#b45309' : ghi >= 4.4 ? '#f59e0b' : '#fbbf24';
+          const pName = props.name || '';
+          const matchedGhi = palikaGhiMap[pName] || Object.entries(palikaGhiMap).find(([k]) => pName.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(pName.toLowerCase()))?.[1];
+
+          const ghiMean = matchedGhi?.mean ?? 4.16;
+          const ghiMin = matchedGhi?.min ?? 3.5;
+          const ghiMax = matchedGhi?.max ?? 4.5;
+          const ptCount = matchedGhi?.count ?? 120;
+          const color = ghiMean >= 4.25 ? '#b45309' : ghiMean >= 4.10 ? '#f59e0b' : '#fbbf24';
 
           joinedData[props.name] = {
             id: props.id || props.name,
@@ -703,13 +711,13 @@ export function computePalikaChoropleth({
             nepaliName: props.nepaliName,
             type: props.type,
             areaSqKm: props.areaSqKm,
-            value: ghi,
-            formattedValue: `${ghi} kWh/m²/d`,
+            value: ghiMean,
+            formattedValue: `${ghiMean} kWh/m²/d`,
             color,
             tooltipHtml: `<div style="color: #b45309; font-size: 10px; margin-top: 2px;">
-                            ☀️ Solar GHI: <strong>${ghi} kWh/m²/day</strong>
+                            ☀️ Solar GHI: <strong>${ghiMean} kWh/m²/day</strong> (Range: ${ghiMin}–${ghiMax} | ${ptCount} Grid Pts)
                           </div>`,
-            raw: pData,
+            raw: { ...pData, ghi: matchedGhi },
           };
         }
       } else if (eSub === 'clean_cooking_biomass' || eSub === 'clean_cooking') {
