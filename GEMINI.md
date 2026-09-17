@@ -7,6 +7,16 @@ This repository hosts a scientific Water-Energy-Food-Ecosystem-Society (WEFES) d
 
 ---
 
+## 0. Proactive First-Line Compliance (Zero-Rework Principle)
+- **Rules are proactive authoring constraints, NOT post-hoc commit-time tests.**
+- Do NOT write placeholder, inline, or unprovenanced code intending to "fix it before commit" — this burns duplicate tokens and forces repetitive rework.
+- **Before writing line 1 of any functional file**:
+  1. If defining coordinates, palika lists, thresholds, or tariffs: **STOP**. Import from existing assets (`data/palika_centroids.json`, `districtPalikaAssets.ts`, `data/`) immediately. Never declare a local `{ Resunga: ..., Madane: ... }` dictionary.
+  2. If the file consumes or produces datasets: **Declare `// [DATA PROVENANCE]` at line 1 before writing imports**.
+  3. Verify physical disk existence of every cited path (`test -f <path>`) before typing the citation string.
+  4. Ensure engines do not import from `apps/` or `packages/`.
+- The commit-time verification script (`scripts/verify_data_integrity.py`) is merely a passive safety net; code must be 100% compliant on first generation.
+
 ## 1. Zero-Synthesis & Anti-Hallucination in `data/real/`
 - **NEVER create, estimate, or synthesize data in `data/real/`.**
 - `data/real/` is an immutable, read-only tier reserved strictly for official government publications and recorded gauge data (DHM, MoALD, CBS, Survey Department, NASA POWER).
@@ -46,4 +56,5 @@ Before writing any citation string or import statement:
 - **Conventional Commits**: Commit messages must conform to `<type>(<scope>): <subject>` (enforced by `.githooks/commit-msg`).
 - Keep all commits atomic: Max 400 net functional lines per commit.
 - Always run `python3 scripts/generate_ai_index.py` before committing (or use `pnpm commit:flow`).
+
 
