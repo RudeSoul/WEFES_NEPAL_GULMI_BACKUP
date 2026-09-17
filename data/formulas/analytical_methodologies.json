@@ -241,30 +241,31 @@
       "currentStat": "Run-of-River Reach Power Screening across 12 Palikas"
     },
     "solar_irradiance": {
-      "shortTitle": { "en": "Solar Irradiance (GHI)", "np": "सौर्य विकिरण मोडल" },
+      "shortTitle": { "en": "Solar Photovoltaic GHI", "np": "सौर्य फोटोभोल्टिक विकिरण (GHI)" },
       "pillarName": { "en": "Energy", "np": "ऊर्जा" },
-      "model": { "en": "NASA POWER Surface Meteorological Solar Radiation Model", "np": "नासा सौर्य विकिरण विश्लेषण" },
-      "formula": "GHI = 4.2 + (Elev / 2200) × 1.1 kWh/m²/day",
-      "parameter": { "en": "Topographic Solar Irradiance Altitude Gradient", "np": "उचाइ अनुसार सौर्य विकिरण ग्रेडिएन्ट" },
+      "model": { "en": "Global Solar Atlas High-Resolution PV Solar Model (ESMAP / World Bank / Solargis)", "np": "ग्लोबल सोलार एटलस उच्च-विभेदन सौर्य मोडल" },
+      "formula": "GHI_palika = (1/N) Σ GHI_i (1,462 Empirical 30-arcsec Grid Points)",
+      "parameter": { "en": "Global Horizontal Irradiance (GHI) Micro-Topographic Insolation", "np": "भौगोलिक धरातल अनुसारको सौर्य विकिरण इन्सोलेसन" },
       "variables": [
-        { "symbol": "GHI", "definition": { "en": "Global Horizontal Irradiance received on flat terrain (kWh/m²/day)", "np": "प्रतिदिन प्रतिवर्गमिटर सतहमा पर्ने कुल सौर्य ऊर्जा (kWh/m²/day)" } },
-        { "symbol": "4.2", "definition": { "en": "Subtropical valley base clear-sky solar constant (kWh/m²/day)", "np": "उपत्यकाको आधारभूत सौर्य विकिरण स्थिराङ्क" } },
-        { "symbol": "Elev", "definition": { "en": "Palika centroid altitude above sea level from SRTM DEM (m)", "np": "समुद्र सतहबाट बस्ती वा पालिकाको औसत उचाइ (मिटर)" } },
-        { "symbol": "1.1", "definition": { "en": "Atmospheric thinning clearance gradient bonus at higher ridges", "np": "उच्च पहाडी क्षेत्रमा पातलो वायुमण्डलका कारण थपिने सौर्य लाभ" } }
+        { "symbol": "GHI_palika", "definition": { "en": "Empirical municipal mean Global Horizontal Irradiance (kWh/m²/day)", "np": "पालिका भित्रका ग्रिड बिन्दुहरूको औसत दैनिक सौर्य विकिरण (kWh/m²/दिन)" } },
+        { "symbol": "GHI_i", "definition": { "en": "Solargis satellite-modeled long-term annual daily solar insolation at point i", "np": "Solargis स्याटेलाइट आधारित दीर्घकालीन दैनिक सौर्य विकिरण मान" } },
+        { "symbol": "N", "definition": { "en": "Total 30-arcsec (~900m) spatial grid sample points within palika perimeter", "np": "पालिकाको सिमानाभित्र पर्ने ९०० मिटर रिजोल्युसनका कुल ग्रिड बिन्दु संख्या" } },
+        { "symbol": "Range", "definition": { "en": "District-wide GHI ranges from 3.03 kWh/m²/d (shaded river gorges) to 4.53 kWh/m²/d (high south-facing ridges)", "np": "गुल्मी जिल्लाभर सौर्य विकिरण ३.०३ (गहिरो खोंच) देखि ४.५३ (दक्षिणी डाँडा) सम्म" } }
       ],
       "description": {
-        "en": "Calculates Global Horizontal Irradiance (GHI) downscaled across topographic slope and elevation.",
-        "np": "उचाइ र बादलको प्रभाव अनुसार गुल्मीका पालिकामा प्राप्त हुने दैनिक सौर्य ऊर्जा।"
+        "en": "Empirical Global Horizontal Irradiance (GHI) derived from Global Solar Atlas (World Bank/ESMAP/Solargis) clipped via QGIS across Gulmi District at ~900m spatial resolution. Captures micro-topographic horizon shading, elevation terrain clearance, and solar lift irrigation / rooftop PV potential across all 12 Palikas.",
+        "np": "विश्व बैंक र सोभा Solargis द्वारा प्रकाशित ग्लोबल सोलार एटलसबाट QGIS मार्फत गुल्मी जिल्लाको ~९०० मिटर रिजोल्युसनमा निकालिएको वास्तविक सौर्य विकिरण तथ्यांक। यसले नदी खोँचहरूको छायाँ र दक्षिणी डाँडाहरूको उच्च सौर्य सम्भाव्यता यथार्थ रूपमा देखाउँछ।"
       },
-      "confidence": "CALCULATED",
+      "confidence": "OBSERVED REAL",
       "inputs": [
-        "NASA POWER Solar Radiation Reanalysis",
-        "DEM Elevation Profiles"
+        "Global Solar Atlas Nepal GeoTIFF (Solargis / ESMAP / World Bank)",
+        "QGIS Vectorized & Boundary Clipped Points (1,462 Features)",
+        "Survey Department of Nepal Municipal Polygons"
       ],
-      "citation": "NASA POWER Agro-Climatology Database",
-      "provenancePath": "data/real/climate/nasa_power_10_years_full.csv",
+      "citation": "Global Solar Atlas (https://globalsolaratlas.info/download/nepal), ESMAP / World Bank / Solargis",
+      "provenancePath": "data/real/climate/gulmiGHI.geojson",
       "unit": "kWh/m²/day",
-      "currentStat": "3.7 to 5.5 kWh/m²/day across Valley and Ridge Palikas"
+      "currentStat": "3.03 to 4.53 kWh/m²/day (District Mean: 4.16 kWh/m²/day)"
     },
     "clean_cooking_biomass": {
       "shortTitle": { "en": "Biomass Dependency", "np": "दाउरा निर्भरता दर" },
