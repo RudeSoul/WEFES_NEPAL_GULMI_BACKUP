@@ -1872,6 +1872,10 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                     const markerColor = is132 ? '#047857' : sData.tierKey === 'rural_33kv' ? '#8b5cf6' : '#f59e0b';
                     const radius = is132 ? 9 : 7.5;
 
+                    const isNorthern = coords[0] >= 28.15;
+                    const tooltipDirection = isNorthern ? 'bottom' : 'top';
+                    const tooltipOffset: [number, number] = isNorthern ? [0, 8] : [0, -8];
+
                     return (
                       <CircleMarker
                         key={`substation-${sKey}`}
@@ -1886,7 +1890,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                           pane: 'pointsPane',
                         }}
                       >
-                        <Tooltip direction="top" offset={[0, -8]} opacity={0.98} pane="popupPane">
+                        <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
                           <div className="text-xs p-2 min-w-[230px] bg-white rounded-lg shadow-lg border border-slate-200">
                             <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
                               <span className="flex items-center gap-1.5 font-outfit text-[12.5px]">
