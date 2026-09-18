@@ -294,6 +294,35 @@
       "unit": "% Households",
       "currentStat": "58.1% to 96.1% Firewood Reliance (District Mean: 86.3%)"
     },
+    "grid_reach": {
+      "shortTitle": { "en": "NEA Substation Grid Reach", "np": "विद्युत प्राधिकरण सबस्टेसन र फिडर सञ्जाल" },
+      "pillarName": { "en": "Energy", "np": "ऊर्जा" },
+      "model": { "en": "NEA Sub-Transmission & Radial Distribution Feeder Impedance Model", "np": "नेपाल विद्युत प्राधिकरण सब-प्रसारण र वितरण फिडर भोल्टेज मोडल" },
+      "formula": "V_drop = I · (R · cos θ + X · sin θ) · L",
+      "parameter": { "en": "Feeder Resistance R (Ω/km), Reactance X (Ω/km), Line Length L (km), Load I (A)", "np": "फिडर प्रतिरोध R (Ω/किमी), रियाक्टेन्स X, दूरी L (किमी), लोड I" },
+      "variables": [
+        { "symbol": "V_drop", "definition": { "en": "Line terminal voltage drop from servicing substation to consumer node (Volts)", "np": "सबस्टेसनबाट उपभोक्तासम्म प्रसारण दूरीका कारण हुने भोल्टेज गिरावट (भोल्ट)" } },
+        { "symbol": "I", "definition": { "en": "Peak active feeder distribution current (Amperes)", "np": "अधिकतम फिडर वितरण करेन्ट (एम्पियर)" } },
+        { "symbol": "R, X", "definition": { "en": "ACSR Dog / Rabbit conductor resistance and inductive reactance per unit length (Ω/km)", "np": "कन्डक्टरको प्रति किलोमिटर तारको विद्युत प्रतिरोध र इन्डक्टिभ रियाक्टेन्स" } },
+        { "symbol": "L", "definition": { "en": "Feeder line route distance from servicing 132/33 kV or 33/11 kV substation (km)", "np": "नजिकको १३२/३३ केभी वा ३३/११ केभी सबस्टेसनबाट पालिका केन्द्रसम्मको दूरी (किमी)" } },
+        { "symbol": "cos θ", "definition": { "en": "System operating power factor (typically 0.85–0.90 lagging)", "np": "प्रणालीको पावर फ्याक्टर (सामान्यतया ०.८५ देखि ०.९०)" } }
+      ],
+      "description": {
+        "en": "Empirical electrical network topology mapping all 12 Palikas to their servicing Nepal Electricity Authority (NEA) substations: Tamghas (Unaichaur 132/33/11 kV, 46 MVA), Paudi Amarai (132/33/11 kV, 30 MVA), Kisantari (33/11 kV, 3 MVA), Birbas (33/11 kV, 8 MVA), and Ridi (33/11 kV, 10 MVA with 7.4 MW local hydro integration).",
+        "np": "गुल्मी जिल्लाका १२ वटै पालिकालाई नेपाल विद्युत प्राधिकरण (NEA) का ५ वटा आधिकारिक सबस्टेसन (उनाइचौर तम्घास १३२ केभी, पौदी अमराई १३२ केभी, किसनतरी ३३ केभी, बीरबास ३३ केभी, र रिडी ३३ केभी) सँग जोडेर भोल्टेज स्थिरता र वितरण पहुँचको वैज्ञानिक विश्लेषण।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "NEA Transmission Directorate Infrastructure Reports (2024-2026)",
+        "Burtibang-Paudi Amarai-Tamghas-Sandhikharka 132 kV Transmission Project",
+        "Gulmi Distribution Center 33/11 kV Feeder Network & Substation Registries",
+        "PPMO Public Tender Records #84576628 & #NEA-GDC-2082/083-SQ06"
+      ],
+      "citation": "Nepal Electricity Authority (NEA) & Ministry of Energy, Water Resources and Irrigation (https://nea.org.np)",
+      "provenancePath": "data/real/infrastructure/gulmi_nea_substations.geojson",
+      "unit": "Substation Voltage (kV) / MVA Capacity",
+      "currentStat": "5 Active Substations (132 kV Hubs: Tamghas & Paudi Amarai; 33 kV Hubs: Kisantari, Birbas, Ridi)"
+    },
     "soil_ph": {
       "shortTitle": { "en": "Soil Reaction (pH)", "np": "माटोको अम्लीयता (pH)" },
       "pillarName": { "en": "Ecosystem", "np": "पारिस्थितिकी" },
