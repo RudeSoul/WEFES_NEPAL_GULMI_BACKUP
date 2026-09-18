@@ -4,7 +4,7 @@
 # DATA PROVENANCE
 # ---------------------------------------------------------------------------
 # River stations source:
-#   Data Source: data/hydrology/River_data.csv
+#   Data Source: data/real/hydrology/River_data.csv
 #   Classification: OBSERVED REAL (Department of Hydrology and Meteorology, Nepal)
 #   Citations: Department of Hydrology and Meteorology (DHM), Nepal
 # ---------------------------------------------------------------------------

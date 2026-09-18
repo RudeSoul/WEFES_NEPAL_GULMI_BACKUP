@@ -1,5 +1,5 @@
 # WEFES PLATFORM: AI CONTEXT & ARCHITECTURE MAP
-> Auto-generated on 2026-09-18 23:53. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
+> Auto-generated on 2026-09-18 23:57. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
 > This file is a high-density, token-optimized context anchor for AI assistants.
 
 ---
@@ -62,25 +62,15 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   │   ├── src/
 │   │   ├── package.json
 ├── data/
-│   ├── administrative/
-│   ├── agriculture/
 │   ├── calculated/
 │   │   ├── downscaled_rainfall/
 │   │   ├── hydro_reaches/
 │   │   ├── palika_benchmarks/
 │   │   └── DATAINFO.md
-│   ├── climate/
-│   ├── energy/
 │   ├── formulas/
 │   │   └── DATAINFO.md
-│   ├── geojson/
-│   ├── Gulmi_OpenTopography_data_Hillside_and_slope/
-│   ├── hydrology/
-│   ├── land_and_soil/
 │   ├── proxy/
 │   │   ├── crop_suitability_proxies/
-│   │   ├── economic_benchmarks/
-│   │   ├── energy_proxies/
 │   │   ├── environmental_proxies/
 │   │   ├── social/
 │   │   └── DATAINFO.md
@@ -96,8 +86,6 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   │   ├── socioeconomics/
 │   │   ├── transport/
 │   │   └── DATAINFO.md
-│   ├── socioeconomics/
-│   ├── transport/
 ├── docs/
 ├── engines/
 │   ├── ecosystems/
@@ -122,4 +110,13 @@ WEFES_NEXUS_NEPAL_GULMI/
 ├── venv/
 │   ├── bin/
 │   ├── include/
+│   │   └── python3.13/
+│   ├── lib/
+│   │   └── python3.13/
+│   ├── share/
+│   │   ├── jupyter/
+│   │   └── man/
+├── Makefile
+├── package.json
+├── RULESET.md
 ```
