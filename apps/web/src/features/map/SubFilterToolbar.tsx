@@ -39,7 +39,7 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
               <optgroup label="🌧️ Precipitation & Watersheds">
                 <option value="merra_rainfall">🌧️ Dynamic Monthly Rainfall (MERRA-2 Topographic Downscaling)</option>
                 <option value="river_basins">🌊 Gandaki Basin Drainage Corridors (Kali Gandaki, Badigad, Ridi)</option>
-                <option value="dhm_station">💧 River Network & DHM Hydrological Gauging Stations</option>
+                <option value="dhm_station">💧 DHM Hydro-Meteorological Stations</option>
               </optgroup>
               <optgroup label="⛰️ Terrain Water Security">
                 <option value="spring_vulnerability">🏔️ Watershed Spring Depletion Vulnerability (मुहान सुक्ने जोखिम)</option>
