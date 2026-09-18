@@ -135,8 +135,8 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
               onChange={handleChange}
             >
               <option value="hydro_corridor">⚡ Run-of-River & Micro-Hydro Corridors (Kali Gandaki, Badigad)</option>
-              <option value="solar_irradiance">☀️ Solar Photovoltaic GHI (Global Solar Atlas • 1999–2020 Climatology)</option>
-              <option value="clean_cooking_biomass">🪵 Clean Cooking & Biomass Transition Zone</option>
+              <option value="solar_irradiance">☀️ Solar PV Potential & Tilt (PVOUT & OPTA • Global Solar Atlas)</option>
+              <option value="clean_cooking_biomass">🪵 Clean Cooking & Firewood Reliance (Census 2021 • NSO Nepal)</option>
               <option value="grid_electrification">🔌 NEA Distribution Reach (Tamghas Grid Core vs Perimeter)</option>
             </select>
           </>
