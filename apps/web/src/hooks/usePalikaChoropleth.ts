@@ -1,7 +1,7 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson
+// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson, data/real/infrastructure/gulmi_nea_substations.geojson
 // Classification: OBSERVED REAL & EMPIRICAL DOWNSCALING
-// Citations: MoFAGA Nepal, DHM Nepal, CBS/NSO 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas 2.0 (World Bank/ESMAP/Solargis)
+// Citations: MoFAGA Nepal, DHM Nepal, CBS/NSO 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas 2.0, Nepal Electricity Authority (NEA)
 
 import { useMemo } from 'react';
 import {
@@ -14,6 +14,7 @@ import {
 import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../data/districtPalikaAssets';
 import palikaGhiData from '../data/gulmi_palika_ghi.json';
 import palikaCookingData from '../data/gulmi_palika_cooking.json';
+import palikaGridData from '../data/gulmi_palika_grid.json';
 import { getPalikaMicroClimate } from '../utils/climateDownscaling';
 import {
   CHOROPLETH_RAMPS,
@@ -782,18 +783,34 @@ export function computePalikaChoropleth({
         metricConfig = {
           metricKey: 'grid_reach',
           pillar: 'energy',
-          label: 'NEA Distribution Grid Reach',
-          unit: '',
-          min: 0,
-          max: 3,
-          colorRamp: ['#047857', '#0ea5e9', '#f59e0b'],
+          label: 'NEA Substation Grid Reach',
+          unit: 'Hub Voltage',
+          min: 1,
+          max: 4,
+          colorRamp: ['#047857', '#0ea5e9', '#8b5cf6', '#f59e0b'],
         };
+
+        const gridPalikas = (palikaGridData as any).palikas || {};
 
         for (const feat of features) {
           const props = feat.properties || {};
-          const pName = (props.name || '').toLowerCase();
-          const tier = pName.includes('resunga') ? 'Tamghas Core (33kV)' : pName.includes('musikot') || pName.includes('ruru') ? 'Secondary Line (11kV)' : 'Peripheral Rural Feeder';
-          const color = tier.includes('Core') ? '#047857' : tier.includes('Secondary') ? '#0ea5e9' : '#f59e0b';
+          const pData = getProfile(props);
+          const pName = props.name || '';
+          const matchedGrid = gridPalikas[pName] ||
+            Object.entries(gridPalikas).find(([k]) => pName.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(pName.toLowerCase()))?.[1];
+
+          const subName = matchedGrid?.substationName || 'Tamghas Substation';
+          const subNp = matchedGrid?.substationNepali || 'तम्घास सबस्टेसन';
+          const hubVolt = matchedGrid?.hubVoltage || '33/11 kV';
+          const capMva = matchedGrid?.capacityMVA || 10;
+          const tierLabel = matchedGrid?.tierLabel || '33/11 kV Dedicated Rural Substation';
+          const tierKey = matchedGrid?.tierKey || 'rural_33kv';
+          const color = matchedGrid?.color || (tierKey === 'hub_132kv' ? '#047857' : tierKey === 'trunk_132kv' ? '#0ea5e9' : tierKey === 'rural_33kv' ? '#8b5cf6' : '#f59e0b');
+          const distKm = matchedGrid?.feederDistanceKm || 5.0;
+          const lossPct = matchedGrid?.lineLossEstimatePct || 5.5;
+          const techDetails = matchedGrid?.technicalDetails || 'NEA radial distribution feeder network.';
+
+          const rankVal = tierKey === 'hub_132kv' ? 4 : tierKey === 'trunk_132kv' ? 3 : tierKey === 'rural_33kv' ? 2 : 1;
 
           joinedData[props.name] = {
             id: props.id || props.name,
@@ -801,12 +818,23 @@ export function computePalikaChoropleth({
             nepaliName: props.nepaliName,
             type: props.type,
             areaSqKm: props.areaSqKm,
-            value: tier.includes('Core') ? 3 : tier.includes('Secondary') ? 2 : 1,
-            formattedValue: tier,
+            value: rankVal,
+            formattedValue: `${subName} (${hubVolt})`,
             color,
-            tooltipHtml: `<div style="color: #0ea5e9; font-size: 10px; margin-top: 2px;">
-                            🔌 Grid Tier: <strong>${tier}</strong>
+            tooltipHtml: `<div style="color: ${color}; font-size: 10px; margin-top: 2px;">
+                            ⚡ Servicing Substation: <strong>${subName}</strong>
+                            <div style="font-size: 9px; opacity: 0.85;">(${subNp})</div>
+                            <div style="color: #0f172a; font-size: 9.5px; margin-top: 2px;">
+                              🔌 <strong>${hubVolt}</strong> • Transformer: <strong>${capMva} MVA</strong>
+                            </div>
+                            <div style="color: #475569; font-size: 9px; margin-top: 1px;">
+                              📍 Feeder Route: ~<strong>${distKm} km</strong> | Line Loss Est: ~<strong>${lossPct}%</strong>
+                            </div>
+                            <div style="color: #64748b; font-size: 8.5px; margin-top: 2px; line-height: 1.25;">
+                              ℹ️ ${techDetails}
+                            </div>
                           </div>`,
+            raw: { ...pData, grid: matchedGrid },
           };
         }
       } else {
