@@ -24,6 +24,7 @@ import { resolveCalculationMethodology } from '../../data/districtCalculationAss
 import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
 import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
 import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
+import palikaGridData from '../../data/gulmi_palika_grid.json';
 
 
 
@@ -1860,6 +1861,125 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                     }}
                   />
                 )}
+
+              {/* Contextual Layer Isolation 2.2: NEA High-Voltage Transmission Substations & Hub Points */}
+              {selectedPillar === 'energy' && (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach') && (
+                <>
+                  {/* Verified 132 kV Transmission Corridor Line (Sandhikharka -> Tamghas/Unaichaur -> Paudi Amarai) */}
+                  <GeoJSON
+                    key="nea-132kv-transmission-line"
+                    data={{
+                      type: "FeatureCollection",
+                      features: [
+                        {
+                          type: "Feature",
+                          properties: {
+                            name: "Sandhikharka–Tamghas–Paudi Amarai 132 kV Transmission Line",
+                            voltage: "132 kV Double-Circuit",
+                            status: "Operational"
+                          },
+                          geometry: {
+                            type: "LineString",
+                            coordinates: [
+                              [83.1850, 27.9950], // Arghakhanchi / Sandhikharka direction
+                              [83.2685, 28.0645], // Unaichaur / Tamghas Substation
+                              [83.2720, 28.1780], // Paudi Amarai Substation
+                              [83.2450, 28.2800]  // North towards Burtibang, Baglung
+                            ]
+                          }
+                        },
+                        {
+                          type: "Feature",
+                          properties: {
+                            name: "Unaichaur–Birbas 33 kV Interconnection Tie-Line",
+                            voltage: "33 kV Dedicated Link",
+                            status: "Operational (Upgraded 2023-2026)"
+                          },
+                          geometry: {
+                            type: "LineString",
+                            coordinates: [
+                              [83.2685, 28.0645], // Unaichaur Hub
+                              [83.3320, 28.0420]  // Birbas Substation
+                            ]
+                          }
+                        }
+                      ]
+                    } as any}
+                    pane="roadsPane"
+                    style={(feature: any) => {
+                      const is132 = (feature?.properties?.voltage || '').includes('132');
+                      return {
+                        color: is132 ? '#047857' : '#8b5cf6',
+                        weight: is132 ? 3.5 : 2.5,
+                        opacity: 0.9,
+                        dashArray: is132 ? '' : '4, 4',
+                      };
+                    }}
+                  />
+
+                  {/* 5 Physical Substations Overlay */}
+                  {Object.entries((palikaGridData as any).substations || {}).map(([sKey, sData]: [string, any]) => {
+                    const coords = sData.coordinates || [28.0645, 83.2685];
+                    const is132 = sData.voltage.includes('132');
+                    const markerColor = is132 ? '#047857' : sData.tierKey === 'rural_33kv' ? '#8b5cf6' : '#f59e0b';
+                    const radius = is132 ? 9 : 7.5;
+
+                    return (
+                      <CircleMarker
+                        key={`substation-${sKey}`}
+                        center={[coords[0], coords[1]]}
+                        radius={radius}
+                        pane="pointsPane"
+                        pathOptions={{
+                          fillColor: markerColor,
+                          fillOpacity: 1,
+                          color: '#ffffff',
+                          weight: 2.5,
+                          pane: 'pointsPane',
+                        }}
+                      >
+                        <Tooltip direction="top" offset={[0, -8]} opacity={0.98} pane="popupPane">
+                          <div className="text-xs p-2 min-w-[230px] bg-white rounded-lg shadow-lg border border-slate-200">
+                            <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
+                              <span className="flex items-center gap-1.5 font-outfit text-[12.5px]">
+                                ⚡ {sData.name}
+                              </span>
+                              <span
+                                className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold text-white shadow-2xs"
+                                style={{ backgroundColor: markerColor }}
+                              >
+                                {sData.voltage}
+                              </span>
+                            </div>
+                            <div className="text-slate-600 text-[10px] font-medium">
+                              {sData.nepaliName} • <strong>Ward {sData.ward}, {sData.palika}</strong>
+                            </div>
+                            <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80">
+                              Capacity: <strong>{sData.capacityMVA} MVA</strong>
+                              {sData.transmissionCapacityMW && (
+                                <span> • Power: <strong>{sData.transmissionCapacityMW} MW</strong></span>
+                              )}
+                            </div>
+                            {sData.connectedHydro && (
+                              <div className="text-amber-800 text-[9.5px] mt-1 bg-amber-50 p-1 rounded font-medium">
+                                💧 Hydro Link: {sData.connectedHydro}
+                              </div>
+                            )}
+                            {sData.budgetNPR && (
+                              <div className="text-purple-800 text-[9.5px] mt-1 bg-purple-50 p-1 rounded font-medium">
+                                💰 Project: {sData.budgetNPR} ({sData.contractor})
+                              </div>
+                            )}
+                            <div className="text-emerald-700 text-[9px] mt-1.5 font-semibold">
+                              ✅ {sData.status}
+                            </div>
+                          </div>
+                        </Tooltip>
+                      </CircleMarker>
+                    );
+                  })}
+                </>
+              )}
 
               {/* Contextual Layer Isolation 2.5: Real River Network Vector Polylines */}
               {selectedPillar === 'water' && gulmiRivers && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterSubFilter === 'irrigation_potential' || subFilters.waterClimateMetric === 'dhm_stations') && (
