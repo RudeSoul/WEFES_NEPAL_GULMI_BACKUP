@@ -73,7 +73,7 @@ export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProp
   bounds,
   opacity = 0.88,
 }) => {
-  const dataUrl = useMemo(() => {
+  const overlay = useMemo(() => {
     if (typeof window === 'undefined' || typeof document === 'undefined') return null;
 
     const { rows, cols, grid, lat_max, lat_min, lon_min, lon_max, step } = ghiGridData as {
@@ -87,24 +87,51 @@ export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProp
       step: number;
     };
 
-    // Extract Gulmi outer boundary polygon rings for crisp clipping
+    // Extract Gulmi outer boundary polygon rings for crisp clipping and compute exact polygon bounds
     const rings: number[][][] = [];
+    let polyMinLat = Infinity;
+    let polyMaxLat = -Infinity;
+    let polyMinLon = Infinity;
+    let polyMaxLon = -Infinity;
+
     if (geoData?.features) {
       for (const feat of geoData.features) {
+        const processRing = (ring: number[][]) => {
+          rings.push(ring);
+          for (const pt of ring) {
+            const lng = pt[0];
+            const lat = pt[1];
+            if (lat < polyMinLat) polyMinLat = lat;
+            if (lat > polyMaxLat) polyMaxLat = lat;
+            if (lng < polyMinLon) polyMinLon = lng;
+            if (lng > polyMaxLon) polyMaxLon = lng;
+          }
+        };
+
         if (feat.geometry?.type === 'Polygon') {
-          rings.push(...feat.geometry.coordinates);
+          for (const r of feat.geometry.coordinates) processRing(r);
         } else if (feat.geometry?.type === 'MultiPolygon') {
           for (const poly of feat.geometry.coordinates) {
-            rings.push(...poly);
+            for (const r of poly) processRing(r);
           }
         }
       }
     }
 
+    // Expand canvas bounds with buffer so the entire district polygon is fully covered
+    const pad = step * 1.5;
+    const canvasLatMin = isFinite(polyMinLat) ? polyMinLat - pad : lat_min - pad;
+    const canvasLatMax = isFinite(polyMaxLat) ? polyMaxLat + pad : lat_max + pad;
+    const canvasLonMin = isFinite(polyMinLon) ? polyMinLon - pad : lon_min - pad;
+    const canvasLonMax = isFinite(polyMaxLon) ? polyMaxLon + pad : lon_max + pad;
+
+    const colsCount = Math.max(1, Math.round((canvasLonMax - canvasLonMin) / step));
+    const rowsCount = Math.max(1, Math.round((canvasLatMax - canvasLatMin) / step));
+
     // High resolution render canvas (interpolated 4x super-sampled for smooth QGIS appearance)
     const scale = 4;
-    const canvasWidth = cols * scale;
-    const canvasHeight = rows * scale;
+    const canvasWidth = colsCount * scale;
+    const canvasHeight = rowsCount * scale;
 
     const canvas = document.createElement('canvas');
     canvas.width = canvasWidth;
@@ -115,20 +142,13 @@ export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProp
     const imgData = ctx.createImageData(canvasWidth, canvasHeight);
     const data = imgData.data;
 
-    // Fast bilinear interpolation over the 41x69 empirical grid with boundary clipping
+    // Fast bilinear interpolation with boundary gap fill
     for (let py = 0; py < canvasHeight; py++) {
-      // Leaflet y=0 is north (lat_max)
-      const rFloat = (py / (canvasHeight - 1)) * (rows - 1);
-      const lat = lat_max - (py / (canvasHeight - 1)) * (lat_max - lat_min);
-
-      const r0 = Math.floor(rFloat);
-      const r1 = Math.min(rows - 1, r0 + 1);
-      const rFrac = rFloat - r0;
+      const lat = canvasLatMax - (py / (canvasHeight - 1)) * (canvasLatMax - canvasLatMin);
+      const rFloat = (lat_max - lat) / step;
 
       for (let px = 0; px < canvasWidth; px++) {
-        const cFloat = (px / (canvasWidth - 1)) * (cols - 1);
-        const lng = lon_min + (px / (canvasWidth - 1)) * (lon_max - lon_min);
-
+        const lng = canvasLonMin + (px / (canvasWidth - 1)) * (canvasLonMax - canvasLonMin);
         const pixelIdx = (py * canvasWidth + px) * 4;
 
         // Clip strictly outside Gulmi district border
@@ -140,34 +160,59 @@ export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProp
           continue;
         }
 
+        const cFloat = (lng - lon_min) / step;
+
+        const r0 = Math.floor(rFloat);
         const c0 = Math.floor(cFloat);
-        const c1 = Math.min(cols - 1, c0 + 1);
-        const cFrac = cFloat - c0;
-
-        // Bilinear sampling across 4 adjacent empirical grid points
-        const v00 = grid[r0][c0];
-        const v01 = grid[r0][c1];
-        const v10 = grid[r1][c0];
-        const v11 = grid[r1][c1];
-
-        const validNeighbors: number[] = [];
-        if (v00 !== null) validNeighbors.push(v00);
-        if (v01 !== null) validNeighbors.push(v01);
-        if (v10 !== null) validNeighbors.push(v10);
-        if (v11 !== null) validNeighbors.push(v11);
 
         let finalVal: number | null = null;
 
-        if (v00 !== null && v01 !== null && v10 !== null && v11 !== null) {
-          const top = v00 * (1 - cFrac) + v01 * cFrac;
-          const bot = v10 * (1 - cFrac) + v11 * cFrac;
-          finalVal = top * (1 - rFrac) + bot * rFrac;
-        } else if (validNeighbors.length > 0) {
-          // Average nearby valid points along edge
-          finalVal = validNeighbors.reduce((a, b) => a + b, 0) / validNeighbors.length;
-        } else {
-          // Default to center cell value or skip
-          finalVal = null;
+        // 1. Bilinear sampling across adjacent grid points
+        if (r0 >= 0 && r0 < rows - 1 && c0 >= 0 && c0 < cols - 1) {
+          const v00 = grid[r0][c0];
+          const v01 = grid[r0][c0 + 1];
+          const v10 = grid[r0 + 1][c0];
+          const v11 = grid[r0 + 1][c0 + 1];
+
+          const validNeighbors: number[] = [];
+          if (v00 !== null) validNeighbors.push(v00);
+          if (v01 !== null) validNeighbors.push(v01);
+          if (v10 !== null) validNeighbors.push(v10);
+          if (v11 !== null) validNeighbors.push(v11);
+
+          if (v00 !== null && v01 !== null && v10 !== null && v11 !== null) {
+            const rFrac = rFloat - r0;
+            const cFrac = cFloat - c0;
+            const top = v00 * (1 - cFrac) + v01 * cFrac;
+            const bot = v10 * (1 - cFrac) + v11 * cFrac;
+            finalVal = top * (1 - rFrac) + bot * rFrac;
+          } else if (validNeighbors.length > 0) {
+            finalVal = validNeighbors.reduce((a, b) => a + b, 0) / validNeighbors.length;
+          }
+        }
+
+        // 2. Seamless boundary fallback: find nearest valid grid cell within 3.5 cells radius
+        if (finalVal === null) {
+          const rCenter = Math.max(0, Math.min(rows - 1, Math.round(rFloat)));
+          const cCenter = Math.max(0, Math.min(cols - 1, Math.round(cFloat)));
+          let minD2 = Infinity;
+
+          for (let dr = -3; dr <= 3; dr++) {
+            const nr = rCenter + dr;
+            if (nr < 0 || nr >= rows) continue;
+            for (let dc = -3; dc <= 3; dc++) {
+              const nc = cCenter + dc;
+              if (nc < 0 || nc >= cols) continue;
+              const nVal = grid[nr][nc];
+              if (nVal !== null) {
+                const d2 = (nr - rFloat) * (nr - rFloat) + (nc - cFloat) * (nc - cFloat);
+                if (d2 < minD2) {
+                  minD2 = d2;
+                  finalVal = nVal;
+                }
+              }
+            }
+          }
         }
 
         if (finalVal === null) {
@@ -187,28 +232,21 @@ export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProp
     }
 
     ctx.putImageData(imgData, 0, 0);
-    return canvas.toDataURL('image/png');
+    return {
+      dataUrl: canvas.toDataURL('image/png'),
+      bounds: [
+        [canvasLatMin, canvasLonMin],
+        [canvasLatMax, canvasLonMax],
+      ] as [[number, number], [number, number]],
+    };
   }, [geoData]);
 
-  if (!dataUrl) return null;
-
-  const { lat_min, lat_max, lon_min, lon_max, step } = ghiGridData as {
-    lat_min: number;
-    lat_max: number;
-    lon_min: number;
-    lon_max: number;
-    step: number;
-  };
-
-  const exactGridBounds: [[number, number], [number, number]] = [
-    [lat_min - step / 2, lon_min - step / 2],
-    [lat_max + step / 2, lon_max + step / 2],
-  ];
+  if (!overlay) return null;
 
   return (
     <ImageOverlay
-      bounds={exactGridBounds}
-      url={dataUrl}
+      bounds={overlay.bounds}
+      url={overlay.dataUrl}
       opacity={opacity}
       pane="rainfallPane"
       zIndex={340}
