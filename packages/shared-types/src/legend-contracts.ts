@@ -133,6 +133,22 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     ]
   },
 
+  dhm_station: {
+    id: 'dhm_station',
+    pillar: 'water',
+    title: 'DHM Hydro-Meteorological Gauge Network',
+    subtitle: 'Department of Hydrology and Meteorology (DHM) Ground Stations',
+    unit: 'Station Classification',
+    legendType: 'categorical',
+    dataSourceCitation: 'data/real/hydrology/gulmi_dhm_stations.geojson',
+    confidence: 'REAL',
+    categories: [
+      { key: 'precipitation', color: '#0284c7', label: 'DHM Precipitation Station', description: 'Symons standard daily rain gauge (Ridi 494m, Musikot 1353m, Agimir 1493m, Bharse 1626m, Daugha 960m)' },
+      { key: 'climatology', color: '#8b5cf6', label: 'DHM Climatological Station', description: 'Stevenson screen, max/min temp, humidity, rainfall & psychrometer (Tamghas 1547m, Anp Chour 738m)' },
+      { key: 'aws', color: '#10b981', label: 'Real-Time Telemetric AWS', description: 'Automated Weather Station with solar radiation pyranometer & GSM telemetry (Tamghas New)' }
+    ]
+  },
+
   // ============================================================================
   // 2. FOOD PILLAR
   // ============================================================================
@@ -461,22 +477,6 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
       { key: 'coffee_belt', color: '#10b981', label: 'Agroforestry & Coffee Belt', description: 'Dhurkot, Chandrakot, Gulmidarbar' },
       { key: 'river_lowlands', color: '#0ea5e9', label: 'River Basin Lowlands', description: 'Kaligandaki & Satyawati Rural Municipalities' },
       { key: 'highland_watershed', color: '#14b8a6', label: 'Highland Watershed Belt', description: 'Madane, Malika, Isma Rural Municipalities' }
-    ]
-  },
-
-  dhm_station: {
-    id: 'dhm_station',
-    pillar: 'water',
-    title: 'River Network & DHM Hydrometric Stations',
-    subtitle: 'Department of Hydrology and Meteorology Gauge Baselines',
-    legendType: 'categorical',
-    dataSourceCitation: 'data/real/hydrology/gulmi_hydrology_assets.json',
-    confidence: 'REAL',
-    categories: [
-      { key: 'primary_gauge', color: '#0284c7', label: 'Kali Gandaki (Station #410 Seti Beni)', description: 'Cable way hydrometric station at Seti Beni / Ruru confluence' },
-      { key: 'badigad_gauge', color: '#0ea5e9', label: 'Badigad Khola (Station #430 Rudrabeni)', description: 'Staff gauge & discharge measurement station at Rudrabeni' },
-      { key: 'panaha_gauge', color: '#06b6d4', label: 'Panaha Khola (Station #435 Tamghas)', description: 'Staff gauge & hydro-meteorological basin station at Tamghas' },
-      { key: 'secondary_corridor', color: '#38bdf8', label: 'Tributary Streams (Hugdi, Chhaldi)', description: 'Perennial flow feeders contributing to Gandaki river network' }
     ]
   }
 };
