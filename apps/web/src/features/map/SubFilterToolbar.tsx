@@ -137,7 +137,7 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
               <option value="hydro_corridor">⚡ Run-of-River & Micro-Hydro Corridors (Kali Gandaki, Badigad)</option>
               <option value="solar_irradiance">☀️ Solar PV Potential & Tilt (PVOUT & OPTA • Global Solar Atlas)</option>
               <option value="clean_cooking_biomass">🪵 Clean Cooking & Firewood Reliance (Census 2021 • NSO Nepal)</option>
-              <option value="grid_electrification">🔌 NEA Substation Grid Reach (132 kV Tamghas & Paudi Amarai • 33 kV Kisantari, Birbas, Ridi)</option>
+              <option value="grid_electrification">🔌 NEA Substation Grid Reach</option>
             </select>
           </>
         );
