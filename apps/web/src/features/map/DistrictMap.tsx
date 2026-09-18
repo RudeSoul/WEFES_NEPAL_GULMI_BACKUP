@@ -1865,58 +1865,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               {/* Contextual Layer Isolation 2.2: NEA High-Voltage Transmission Substations & Hub Points */}
               {selectedPillar === 'energy' && (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach') && (
                 <>
-                  {/* Verified 132 kV Transmission Corridor Line (Sandhikharka -> Tamghas/Unaichaur -> Paudi Amarai) */}
-                  <GeoJSON
-                    key="nea-132kv-transmission-line"
-                    data={{
-                      type: "FeatureCollection",
-                      features: [
-                        {
-                          type: "Feature",
-                          properties: {
-                            name: "Sandhikharka–Tamghas–Paudi Amarai 132 kV Transmission Line",
-                            voltage: "132 kV Double-Circuit",
-                            status: "Operational"
-                          },
-                          geometry: {
-                            type: "LineString",
-                            coordinates: [
-                              [83.1850, 27.9950], // Arghakhanchi / Sandhikharka direction
-                              [83.2685, 28.0645], // Unaichaur / Tamghas Substation
-                              [83.2720, 28.1780], // Paudi Amarai Substation
-                              [83.2450, 28.2800]  // North towards Burtibang, Baglung
-                            ]
-                          }
-                        },
-                        {
-                          type: "Feature",
-                          properties: {
-                            name: "Unaichaur–Birbas 33 kV Interconnection Tie-Line",
-                            voltage: "33 kV Dedicated Link",
-                            status: "Operational (Upgraded 2023-2026)"
-                          },
-                          geometry: {
-                            type: "LineString",
-                            coordinates: [
-                              [83.2685, 28.0645], // Unaichaur Hub
-                              [83.3320, 28.0420]  // Birbas Substation
-                            ]
-                          }
-                        }
-                      ]
-                    } as any}
-                    pane="roadsPane"
-                    style={(feature: any) => {
-                      const is132 = (feature?.properties?.voltage || '').includes('132');
-                      return {
-                        color: is132 ? '#047857' : '#8b5cf6',
-                        weight: is132 ? 3.5 : 2.5,
-                        opacity: 0.9,
-                        dashArray: is132 ? '' : '4, 4',
-                      };
-                    }}
-                  />
-
                   {/* 5 Physical Substations Overlay */}
                   {Object.entries((palikaGridData as any).substations || {}).map(([sKey, sData]: [string, any]) => {
                     const coords = sData.coordinates || [28.0645, 83.2685];
