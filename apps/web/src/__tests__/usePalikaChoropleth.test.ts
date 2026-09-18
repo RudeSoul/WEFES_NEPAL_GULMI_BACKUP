@@ -178,7 +178,7 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
       });
 
       expect(resGrid.metricConfig.metricKey).toBe('grid_reach');
-      expect(resGrid.joinedData['Resunga']?.formattedValue).toContain('Tamghas Core');
+      expect(resGrid.joinedData['Resunga']?.formattedValue).toContain('Tamghas Substation (Unaichaur)');
     });
 
     it('updates metric config when socioeconomics subfilter changes to hq_market_proximity and agri_landholding', async () => {
