@@ -380,17 +380,17 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
   grid_reach: {
     id: 'grid_reach',
     pillar: 'energy',
-    title: 'NEA Distribution Grid Reach & Reliability',
-    subtitle: 'Nepal Electricity Authority (NEA) Tamghas Substation Feeder Reach',
-    unit: 'Reliability Tier',
+    title: 'NEA Distribution Grid Reach & Substation Network',
+    subtitle: 'Nepal Electricity Authority (NEA) 132/33/11 kV Substation Feeder Domains',
+    unit: 'Substation Servicing Tier',
     legendType: 'categorical',
-    dataSourceCitation: 'data/proxy/economic_benchmarks/rural_tariff_estimates.json',
-    confidence: 'PROXY',
+    dataSourceCitation: 'data/real/infrastructure/gulmi_nea_substations.geojson',
+    confidence: 'REAL',
     categories: [
-      { key: 'core', color: '#047857', label: 'Tamghas Core Grid', description: 'High reliability, low transmission losses, 33kV dedicated line' },
-      { key: 'secondary', color: '#0ea5e9', label: 'Secondary Mid-Hill Line', description: 'Standard 11kV distribution, occasional storm interruptions' },
-      { key: 'peripheral', color: '#f59e0b', label: 'Peripheral Feeder', description: 'Long rural distribution lines subject to low voltage drop' },
-      { key: 'offgrid', color: '#ef4444', label: 'Off-Grid Remote Pocket', description: 'Isolated highland settlements relying on solar micro-grids' }
+      { key: 'hub_132kv', color: '#047857', label: '132 kV Central Primary Hub (Tamghas/Unaichaur)', description: '46 MVA capacity (30 MVA 132/33 kV + 16 MVA 33/11 kV); 200 MW transmission capability via Sandhikharka line (Resunga)' },
+      { key: 'trunk_132kv', color: '#0ea5e9', label: '132 kV Regional Backbone Hub (Paudi Amarai)', description: '30 MVA capacity; Tamghas-Burtibang high-voltage transmission extension (Musikot, Isma)' },
+      { key: 'rural_33kv', color: '#8b5cf6', label: '33/11 kV Dedicated Rural Substations (Kisantari & Birbas)', description: 'Kisantari (3 MVA, commissioned Sept 2025, Rs 105M) & Birbas (8 MVA with Unaichaur 33kV tie-line) (Malika, Madane, Dhurkot, Gulmidarbar, Chatrakot)' },
+      { key: 'hydro_33kv', color: '#f59e0b', label: '33/11 kV Hydro-Confluence Grid (Ridi Hub)', description: '10 MVA facility integrated with local 7.4 MW generation: Upper Hugdi (5 MW) & Ridi Khola (2.4 MW) (Ruru, Satyawati, Kaligandaki, Chandrakot)' }
     ]
   },
 
