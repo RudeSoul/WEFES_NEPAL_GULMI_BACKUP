@@ -344,19 +344,19 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
   solar_irradiance: {
     id: 'solar_irradiance',
     pillar: 'energy',
-    title: 'Solar Photovoltaic Global Horizontal Irradiance (GHI)',
-    subtitle: 'Global Solar Atlas (World Bank / ESMAP / Solargis • 1999–2020 Climatology)',
-    unit: 'kWh/m²/day',
+    title: 'Photovoltaic Power Potential (PVOUT)',
+    subtitle: 'Global Solar Atlas 2.0 (World Bank / ESMAP / Solargis • 1999–2020 Regional Climatology)',
+    unit: 'kWh/kWp/day',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/climate/gulmiGHI.geojson',
+    dataSourceCitation: 'data/real/climate/gulmi_solar_pvout_opta.geojson',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 4.35, color: '#fef08a', label: 'Peak Highland Ridge (≥4.35 kWh/m²/d)', description: 'Maximum insolation unshaded ridges (Madane, Resunga summit, Dhurkot)' },
-      { minValue: 4.20, maxValue: 4.34, color: '#fde047', label: 'High Solar Slopes (4.20–4.34 kWh/m²/d)', description: 'Open south/west facing mid-hill agroforestry terraces' },
-      { minValue: 4.10, maxValue: 4.19, color: '#fbbf24', label: 'Moderate Mid-Hills (4.10–4.19 kWh/m²/d)', description: 'District baseline agricultural settlements and plateaus' },
-      { minValue: 3.90, maxValue: 4.09, color: '#f97316', label: 'Lower Slopes & Narrow Valleys (3.90–4.09 kWh/m²/d)', description: 'Partially shaded hillsides and river transition zones' },
-      { minValue: 3.60, maxValue: 3.89, color: '#ea580c', label: 'Topographic Shading Slopes (3.60–3.89 kWh/m²/d)', description: 'Steep north-facing slopes with reduced sun exposure' },
-      { maxValue: 3.59, color: '#7c2d12', label: 'Deep Gorge Shadow Zone (<3.60 kWh/m²/d)', description: 'Severe mountain shading in deep ravines (Kali Gandaki / Badigad gorges)' }
+      { minValue: 4.35, color: '#fef08a', label: 'Peak Solar Yield (≥4.35 kWh/kWp/d)', description: 'Optimal unshaded generation capacity; ideal for solar lift pumping & mini-grids' },
+      { minValue: 4.20, maxValue: 4.34, color: '#fde047', label: 'High Solar Yield (4.20–4.34 kWh/kWp/d)', description: 'High daily energy generation for rooftop arrays and agricultural terraces' },
+      { minValue: 4.10, maxValue: 4.19, color: '#fbbf24', label: 'Moderate Solar Yield (4.10–4.19 kWh/kWp/d)', description: 'District baseline generation for domestic and institutional solar' },
+      { minValue: 3.90, maxValue: 4.09, color: '#f97316', label: 'Moderate-Low Solar Yield (3.90–4.09 kWh/kWp/d)', description: 'Slightly constrained generation due to local horizon obstruction' },
+      { minValue: 3.60, maxValue: 3.89, color: '#ea580c', label: 'Low Solar Yield (3.60–3.89 kWh/kWp/d)', description: 'Reduced insolation on steep shaded hillside aspects' },
+      { maxValue: 3.59, color: '#7c2d12', label: 'Very Low Solar Yield (<3.60 kWh/kWp/d)', description: 'Constrained generation in steep river ravine corridors' }
     ]
   },
 
@@ -364,15 +364,16 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     id: 'clean_cooking',
     pillar: 'energy',
     title: 'Clean Cooking Transition Demand',
-    subtitle: 'Alternative Energy Promotion Centre (AEPC) Biomass Reliance',
-    unit: '% Biomass',
+    subtitle: 'National Population and Housing Census 2021 (NSO Nepal)',
+    unit: '% Firewood',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/proxy/economic_benchmarks/rural_tariff_estimates.json',
-    confidence: 'PROXY',
+    dataSourceCitation: 'data/real/infrastructure/cooking_household.geojson',
+    confidence: 'REAL',
     thresholds: [
-      { minValue: 75, color: '#ef4444', label: 'Severe Firewood Reliance (≥75%)', description: 'Urgent priority for electric induction & domestic biogas' },
-      { minValue: 50, maxValue: 74, color: '#f59e0b', label: 'Moderate Firewood Reliance (50–74%)', description: 'Mixed LPG and traditional chulho cooking' },
-      { maxValue: 49, color: '#10b981', label: 'Electrified / Modern Transition (<50%)', description: 'High adoption of induction cookers and grid electricity' }
+      { minValue: 92, color: '#991b1b', label: 'Critical Firewood Dependency (≥92%)', description: 'Urgent priority for electric induction cooking & domestic biogas (Dhurkot, Isma, Madane, Malika, Gulmidarbar)' },
+      { minValue: 85, maxValue: 91.9, color: '#ef4444', label: 'High Firewood Dependency (85–91%)', description: 'High forest biomass pressure with secondary LPG access (Musikot, Satyawati, Chatrakot, Kaligandaki)' },
+      { minValue: 75, maxValue: 84.9, color: '#f59e0b', label: 'Partial Modern Transition (75–84%)', description: 'Highway access enabling emerging clean fuel adoption (Chandrakot, Ruru Kshetra)' },
+      { maxValue: 74.9, color: '#10b981', label: 'Advanced Clean Fuel Adoption (<75%)', description: 'District commercial core with high LPG cylinder penetration (Resunga Municipality at 58.1%)' }
     ]
   },
 
