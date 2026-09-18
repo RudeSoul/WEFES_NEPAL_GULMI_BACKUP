@@ -169,7 +169,7 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
       });
 
       expect(resSolar.metricConfig.metricKey).toBe('solar_irradiance');
-      expect(resSolar.joinedData['Resunga']?.formattedValue).toContain('kWh/m²/d');
+      expect(resSolar.joinedData['Resunga']?.formattedValue).toContain('kWh/kWp/d');
 
       const resGrid = await evaluateChoropleth({
         rawGeoJson: mockGeoJson,
