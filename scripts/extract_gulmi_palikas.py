@@ -7,7 +7,7 @@ import pandas as pd
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 SHAPEFILE_PATH = os.path.join(BASE_DIR, 'data/administrative/local_level.shp')
 CSV_PATH = os.path.join(BASE_DIR, 'mapped_output.csv')
-LOCAL_BODIES_CSV = os.path.join(BASE_DIR, 'data/administrative/local_bodies_district_code.csv')
+LOCAL_BODIES_CSV = os.path.join(BASE_DIR, 'data/real/boundaries/local_bodies_district_code.csv')
 
 OUTPUT_GEOJSON_WEB = os.path.join(BASE_DIR, 'apps/web/public/geojson/gulmi-palikas.json')
 OUTPUT_GEOJSON_DATA = os.path.join(BASE_DIR, 'data/geojson/gulmi-palikas.json')
