@@ -108,30 +108,32 @@
       "currentStat": "Prime Riverbed Gravity (≥80%) to Rainfed Ridges (<40%)"
     },
     "dhm_station": {
-      "shortTitle": { "en": "DHM River Gauging", "np": "जलमापन केन्द्र सञ्जाल" },
+      "shortTitle": { "en": "DHM Hydro-Meteorological Stations", "np": "जल तथा मौसम मापन केन्द्र सञ्जाल" },
       "pillarName": { "en": "Water", "np": "जल" },
-      "model": { "en": "DHM River Gauge Network & Telemetry Monitoring", "np": "जल तथा मौसम विज्ञान विभाग नदी बहाव मापन" },
-      "formula": "Q = a · (h - h0)^b",
-      "parameter": { "en": "DHM Stage-Discharge Rating Curve Baseline", "np": "डिस्चार्ज रेटिङ कर्भ (DHM जलमापन केन्द्र)" },
+      "model": { "en": "DHM Ground Gauge Network & Orographic Precipitation Uplift Model", "np": "जल तथा मौसम विज्ञान विभाग ग्राउन्ड गेज सञ्जाल र उचाइ अनुसारको वर्षा मोडल" },
+      "formula": "P(z) = P_ref · [1 + γ · (z - z_ref)]  |  Q = a · (h - h0)^b",
+      "parameter": { "en": "Precipitation Lapse Rate γ (mm/m), Elevation z (m masl), Streamflow Q (m³/s)", "np": "वर्षा उचाइ दर γ, भौगोलिक उचाइ z (मिटर), नदी बहाव Q (घनमिटर/सेकेन्ड)" },
       "variables": [
-        { "symbol": "Q", "definition": { "en": "River streamflow discharge rate (m³/s)", "np": "नदीको पानीको बहाव दर (घनमिटर प्रति सेकेन्ड)" } },
-        { "symbol": "h", "definition": { "en": "Observed water staff gauge stage height (m)", "np": "मापन गरिएको जल सतह वा गेजको उचाइ (मिटर)" } },
-        { "symbol": "h0", "definition": { "en": "Gauge staff datum height of zero river flow (m)", "np": "बहाव शून्य हुने गेजको आधारभूत उचाइ (मिटर)" } },
-        { "symbol": "a, b", "definition": { "en": "Empirical calibration coefficients for river cross-section geometry", "np": "नदीको चौडाइ र घर्षण अनुसारका क्यालिब्रेसन गुणांकहरू" } }
+        { "symbol": "P(z)", "definition": { "en": "Ground-calibrated monthly precipitation at terrain elevation z (mm)", "np": "उचाइ अनुसार क्यालिब्रेसन गरिएको मासिक वर्षा (मिमी)" } },
+        { "symbol": "P_ref", "definition": { "en": "Reference precipitation recorded at valley base station (e.g. Ridi 494m)", "np": "उपत्यका वा नदी किनारको आधार स्टेशनमा मापन गरिएको वर्षा" } },
+        { "symbol": "γ", "definition": { "en": "Empirical mid-hill orographic rainfall uplift coefficient (0.00035 to 0.00065 /m)", "np": "मध्यपहाडी उचाइ अनुसारको वर्षा वृद्धि गुणांक" } },
+        { "symbol": "Q", "definition": { "en": "River streamflow discharge rate from hydrometric staff gauge rating curve (m³/s)", "np": "नदीको पानीको बहाव दर (घनमिटर प्रति सेकेन्ड)" } },
+        { "symbol": "h", "definition": { "en": "Observed water staff gauge stage height (m)", "np": "मापन गरिएको जल सतह वा गेजको उचाइ (मिटर)" } }
       ],
       "description": {
-        "en": "Hydrological streamflow gauge stations with real historical telemetry and catchment tracking.",
-        "np": "कालीगण्डकी र रिदी नदीमा स्थापित आधिकारिक जलमापन केन्द्रहरूको वास्तविक विवरण र अभिलेख।"
+        "en": "Official Department of Hydrology and Meteorology (DHM) ground monitoring network in Gulmi District comprising 8 active stations: 5 precipitation stations (Index 701 Ridi Bazar 494m, Index 722 Musikot 1353m, Index 731 Agimir 1493m, Index 733 Bharse 1626m, Index 734 Daugha 960m), 2 climatological stations (Index 725 Tamghas 1547m, Index 732 Anp Chour 738m), and 1 real-time Automated Weather Station (Tamghas New AWS).",
+        "np": "गुल्मी जिल्लाका ८ वटा आधिकारिक जल तथा मौसम विज्ञान विभाग (DHM) केन्द्रहरूको वास्तविक सञ्जाल: ५ वर्षा मापन केन्द्र (रिडी बजार ४९४मि, मुसीकोट १३५३मि, अगिमिर १४९३मि, भार्से १६२६मि, दौघा ९६०मि), २ जलवायु मापन केन्द्र (तम्घास १५४७मि, आँपचौर ७३८मि), र १ स्वचालित मौसम केन्द्र (तम्घास नयाँ AWS)।"
       },
       "confidence": "OBSERVED REAL",
       "inputs": [
-        "DHM Hydrological Station Registries",
-        "Historical River Discharge Time-Series"
+        "DHM Station Directory & National Climatological Records (Indices 701, 722, 725, 731, 732, 733, 734)",
+        "DHM Real-Time Telemetry & Automated Weather Station (AWS) Portal",
+        "Nepal Water & Energy Commission Secretariat (WECS) Catchment Baselines"
       ],
-      "citation": "Department of Hydrology and Meteorology (DHM), Nepal",
-      "provenancePath": "data/real/hydrology/glacier_and_catchment_area_having_metrological_and_hydrological_station.csv",
-      "unit": "River Discharge (m³/s)",
-      "currentStat": "Active DHM Gauge Stations in Gulmi River Basins"
+      "citation": "Department of Hydrology and Meteorology (DHM), Ministry of Energy, Water Resources and Irrigation, Government of Nepal (https://dhm.gov.np)",
+      "provenancePath": "data/real/hydrology/gulmi_dhm_stations.geojson",
+      "unit": "Station Elevation (m masl) & Gauge Type",
+      "currentStat": "8 Active DHM Stations (5 Precipitation, 2 Climatology, 1 Telemetric AWS)"
     },
     "single_crop": {
       "shortTitle": { "en": "{crop} Suitability", "np": "{crop} अनुकूलता" },
