@@ -1,0 +1,77 @@
+# Documentation: Nepal Electricity Authority (NEA) Power Substations & Distribution Grid Hierarchy (Gulmi District, Nepal)
+
+This document provides the technical specifications, transmission network topology, operational timeline, and empirical sources for the electrical substations and distribution reach across the 12 local administrative units (Palikas) of Gulmi District, Nepal.
+
+---
+
+## 1. Official Data Citations & Lineage
+
+### A. Transmission & Substation Infrastructure
+* **Transmission Project:** Burtibang–Paudi Amarai–Tamghas–Sandhikharka–Gorusinge 132 kV Transmission Line Project
+* **Publisher / Operator:** Nepal Electricity Authority (NEA) Transmission Directorate & Gulmi Distribution Center
+* **Project Investment:** USD 39.5 Million (Government of Nepal & Nepal Electricity Authority)
+* **Access Date:** September 2026
+* **Key Media & Technical Publications:**
+  1. *Nepal Energy Forum* (June 20, 2024): *"Sandhikharka-Tamghas 132 kV Transmission Line and Substation Completed, Ensuring Reliable Power Supply"* ([Article URL](http://www.nepalenergyforum.com/sandhikharka-tamghas-132-kv-transmission-line-and-substation-completed-ensuring-reliable-power-supply/))
+  2. *My Republica / Nagarik Network* (Feb 20, 2026): *"Two substations in Gulmi mark 'historic achievement' in power transmission"* ([Article URL](https://myrepublica.nagariknetwork.com/news/two-substations-in-gulmi-mark-historic-achievement-in-power-transmission-74-14.html))
+  3. *The Rising Nepal / Gorkhapatra Sansthan* (Sept 19, 2025): *"Substation commissioned after a decade"* by Toplal Aryal ([Article URL](https://risingnepaldaily.com/news/68532))
+  4. *Public Procurement Monitoring Office (PPMO) / NEA Gulmi Distribution Center Tender Records* (2023–2026): Tender ID `84576628` (*"Upgrading and Construction of 33kV Line from Birbas 33/11kV Substation to Unayachaur 132/33kV Substation"*), Tender `NEA-GDC-2082/083-SQ06` ([PPMO Portal](https://www.nepaltender.com/tender/upgrading-and-construction-33kv-line-birbas-33-11kv-substation-unayachaur-132-33kv-substation-50a8974.php))
+
+---
+
+## 2. Substation Engineering Specifications
+
+### 1. Tamghas Substation (Unaichaur)
+* **Location:** Unaichaur, Ward 7, Resunga Municipality, Gulmi District (`28.0645° N, 83.2685° E`)
+* **Operating Voltage:** 132/33/11 kV
+* **Installed Transformer Capacity:** 46 MVA total
+  * 132/33 kV Power Transformer: 30 MVA
+  * 33/11 kV Distribution Transformer: 16 MVA
+* **Transmission Source:** 16 km double-circuit 132 kV line from Sandhikharka Substation (Arghakhanchi).
+* **Power Transmission Capability:** ~200 MW
+* **Feeder Infrastructure:** Three 33 kV outgoing feeders and four 11 kV distribution feeders.
+* **Direct Servicing Domain:** Resunga Municipality (Tamghas urban commercial core, institutional headquarters).
+
+### 2. Paudi Amarai Substation
+* **Location:** Paudi Arewa / Amarai, Musikot Municipality, Gulmi District (`28.1780° N, 83.2720° E`)
+* **Operating Voltage:** 132/33/11 kV
+* **Installed Transformer Capacity:** ~30 MVA
+* **Transmission Source:** 132 kV extension from Tamghas Substation onward to Burtibang (Baglung).
+* **Strategic Role:** North-Western Gulmi high-voltage backbone, terminating the historic low-voltage drop across northern municipal corridors.
+* **Direct Servicing Domain:** Musikot Municipality & Isma Rural Municipality.
+
+### 3. Kisantari Substation
+* **Location:** Kisantari, Marbhung, Ward 8, Malika Rural Municipality, Gulmi District (`28.2100° N, 83.1480° E`)
+* **Operating Voltage:** 33/11 kV
+* **Transformer Capacity:** 3 MVA
+* **Contractor & Cost:** Built by MSA2Jet Infrastructure Pvt. Ltd. at Rs 105 Million (रु १० करोड ५० लाख).
+* **Commissioning Date:** September 19, 2025.
+* **Strategic Role:** Dedicated rural distribution hub eliminating severe low-voltage drops and line tripping in far-western Gulmi.
+* **Direct Servicing Domain:** Malika Rural Municipality, Madane Rural Municipality, and Dhurkot Rural Municipality.
+
+### 4. Birbas Substation
+* **Location:** Birbas, Ward 4, Gulmidarbar Rural Municipality, Gulmi District (`28.0420° N, 83.3320° E`)
+* **Operating Voltage:** 33/11 kV
+* **Transformer Capacity:** 8 MVA
+* **Upgrades:** Upgraded via dedicated 33 kV tie-line to Unaichaur 132/33 kV hub (Contract #84576628).
+* **Strategic Role:** Interconnection point for eastern/southern incoming regional lines from Butwal/Palpa/Arghakhanchi.
+* **Direct Servicing Domain:** Gulmidarbar Rural Municipality & Chatrakot Rural Municipality.
+
+### 5. Ridi Substation
+* **Location:** Ridi Bazaar, Ward 1, Ruru Kshetra Rural Municipality, Gulmi District (`27.9780° N, 83.4350° E`)
+* **Operating Voltage:** 33/11 kV
+* **Transformer Capacity:** 10 MVA
+* **Local Hydro Generation Integration:** 5.0 MW Upper Hugdi Hydropower Project + 2.4 MW Ridi Khola Hydropower Plant.
+* **Direct Servicing Domain:** Ruru Kshetra Rural Municipality, Satyawati Rural Municipality, and Kaligandaki Rural Municipality.
+
+---
+
+## 3. 12-Palika Grid Reach Stratification
+
+| Servicing NEA Substation | Primary Voltage & Capacity | Servicing Domain (Palikas) | Technical Characteristics |
+| :--- | :--- | :--- | :--- |
+| **Tamghas (Unaichaur)** | 132/33/11 kV (46 MVA) | Resunga Municipality | Dedicated 132 kV primary feed, $<5\text{ km}$ feeder lines, lowest line loss ($<4\%$), zero voltage drop. |
+| **Paudi Amarai** | 132/33/11 kV (30 MVA) | Musikot Municipality, Isma Rural Municipality | 132 kV high-voltage regional backbone, high stability, connecting Baglung inter-district transmission. |
+| **Kisantari** | 33/11 kV (3 MVA) | Malika, Madane, Dhurkot Rural Municipalities | Commissioned Sept 2025 (Rs 105M), local 3 MVA transformer stepping down 33 kV to localized 11 kV feeders. |
+| **Birbas** | 33/11 kV (8 MVA) | Gulmidarbar, Chatrakot Rural Municipalities | 33 kV tie-line link to Unaichaur hub; manages southern regional grid feed from Palpa/Butwal. |
+| **Ridi** | 33/11 kV (10 MVA) | Ruru Kshetra, Satyawati, Kaligandaki Rural Municipalities | Confluence distribution network integrated directly with 7.4 MW local run-of-river generation. |
