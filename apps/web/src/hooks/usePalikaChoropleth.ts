@@ -1,5 +1,5 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson, data/real/infrastructure/gulmi_nea_substations.geojson
+// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson, data/real/infrastructure/gulmi_nea_substations.geojson, data/real/hydrology/gulmi_dhm_stations.geojson
 // Classification: OBSERVED REAL & EMPIRICAL DOWNSCALING
 // Citations: MoFAGA Nepal, DHM Nepal, CBS/NSO 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas 2.0, Nepal Electricity Authority (NEA)
 
@@ -408,29 +408,37 @@ export function computePalikaChoropleth({
         metricConfig = {
           metricKey: 'dhm_station',
           pillar: 'water',
-          label: 'River Network & DHM Stations',
-          unit: '',
-          min: 0,
-          max: 3,
+          label: 'DHM Hydro-Meteorological Stations',
+          unit: 'Station Domain',
+          min: 494,
+          max: 1626,
           colorRamp: CHOROPLETH_RAMPS.blues,
+        };
+
+        const DHM_PALIKA_MAP: Record<string, { station: string; type: string; elev: number; color: string }> = {
+          'resunga': { station: 'Tamghas (#725 Climatology & AWS)', type: 'Climatology / AWS', elev: 1547, color: '#10b981' },
+          'musikot': { station: 'Musikot (#722 Precipitation)', type: 'Precipitation', elev: 1353, color: '#0284c7' },
+          'ruru': { station: 'Ridi Bazar (#701 Precipitation)', type: 'Precipitation', elev: 494, color: '#0284c7' },
+          'chandrakot': { station: 'Anp Chour (#732 Climatology)', type: 'Climatology', elev: 738, color: '#8b5cf6' },
+          'satyawati': { station: 'Bharse (#733 Precipitation)', type: 'Precipitation', elev: 1626, color: '#0284c7' },
+          'chatrakot': { station: 'Daugha (#734 Precipitation)', type: 'Precipitation', elev: 960, color: '#0284c7' },
+          'malika': { station: 'Agimir (#731 Precipitation)', type: 'Precipitation', elev: 1493, color: '#0284c7' },
+          'madane': { station: 'Agimir Catchment (#731)', type: 'Precipitation', elev: 1493, color: '#0284c7' },
+          'dhurkot': { station: 'Tamghas-Agimir Corridor (#725/#731)', type: 'Climatology/Rain', elev: 1520, color: '#8b5cf6' },
+          'isma': { station: 'Musikot-Tamghas Basin (#722)', type: 'Precipitation', elev: 1353, color: '#0284c7' },
+          'gulmidarbar': { station: 'Tamghas-Daugha Perimeter (#725/#734)', type: 'Climatology/Rain', elev: 1250, color: '#8b5cf6' },
+          'kaligandaki': { station: 'Ridi-Anp Chour Confluence (#701/#732)', type: 'River Gauging', elev: 616, color: '#0284c7' }
         };
 
         for (const feat of features) {
           const props = feat.properties || {};
-          const pName = (props.name || '').toLowerCase();
-          let stationInfo = 'Tributary Feeder (Hugdi/Chhaldi)';
-          let stationColor = '#38bdf8';
-
-          if (pName.includes('kaligandaki')) {
-            stationInfo = 'Kali Gandaki (Station #410 Seti Beni)';
-            stationColor = '#0284c7';
-          } else if (pName.includes('satyawati') || pName.includes('ruru')) {
-            stationInfo = 'Badigad Khola (Station #430 Rudrabeni)';
-            stationColor = '#0ea5e9';
-          } else if (pName.includes('resunga') || pName.includes('gulmidarbar')) {
-            stationInfo = 'Panaha Khola (Station #435 Tamghas)';
-            stationColor = '#06b6d4';
-          }
+          const pKey = normalizePalikaName(props.name || '');
+          const info = DHM_PALIKA_MAP[pKey] || {
+            station: 'Tamghas Regional HQ (#725)',
+            type: 'Climatology',
+            elev: 1547,
+            color: '#0284c7'
+          };
 
           joinedData[props.name] = {
             id: props.id || props.name,
@@ -438,11 +446,12 @@ export function computePalikaChoropleth({
             nepaliName: props.nepaliName,
             type: props.type,
             areaSqKm: props.areaSqKm,
-            value: 1,
-            formattedValue: stationInfo,
-            color: stationColor,
+            value: info.elev,
+            formattedValue: info.station,
+            color: info.color,
             tooltipHtml: `<div style="color: #0284c7; font-size: 10px; margin-top: 2px;">
-                            💧 DHM Network: <strong>${stationInfo}</strong>
+                            💧 DHM Station: <strong>${info.station}</strong>
+                            <div style="color: #64748b; font-size: 9px; margin-top: 1px;">Type: ${info.type} • Gauge Elev: ${info.elev}m masl</div>
                           </div>`,
           };
         }
