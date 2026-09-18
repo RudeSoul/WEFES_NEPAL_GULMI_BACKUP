@@ -1967,51 +1967,72 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 />
               )}
 
-              {/* Contextual Layer Isolation 3: DHM River Gauging Stations Overlay */}
+              {/* Contextual Layer Isolation 3: DHM Hydro-Meteorological Stations Overlay */}
               {selectedPillar === 'water' && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterClimateMetric === 'dhm_stations') && hydrologyStations.map((st: any, idx: number) => {
                 const props = st.properties || st;
-                const isRegional = props.isInGulmi === false || props.district?.includes('Syangja');
-                const isMet = props.stationType === 'meteorological' || props.stationNo?.includes('0701');
-                const markerColor = isRegional ? '#f59e0b' : isMet ? '#8b5cf6' : '#0284c7';
-                const badgeLabel = isRegional ? 'Regional Inflow' : isMet ? 'Meteorological' : 'Active Hydrometric';
-                const badgeBg = isRegional ? 'bg-amber-100 text-amber-800' : isMet ? 'bg-purple-100 text-purple-800' : 'bg-sky-100 text-sky-800';
+                const coords = [st.lat ?? st.geometry?.coordinates[1], st.lng ?? st.geometry?.coordinates[0]];
+                if (!coords[0] || !coords[1]) return null;
+
+                const stType = (props.stationType || '').toLowerCase();
+                const isAWS = stType === 'aws';
+                const isClim = stType.includes('climat') || props.stationNo?.includes('0701');
+                const markerColor = isAWS ? '#10b981' : isClim ? '#8b5cf6' : '#0284c7';
+                const badgeLabel = isAWS ? 'Real-Time AWS' : isClim ? 'Climatological' : 'Precipitation';
+                const badgeBg = isAWS ? 'bg-emerald-100 text-emerald-800' : isClim ? 'bg-purple-100 text-purple-800' : 'bg-sky-100 text-sky-800';
+
+                const isNorthern = coords[0] >= 28.15;
+                const tooltipDirection = isNorthern ? 'bottom' : 'top';
+                const tooltipOffset: [number, number] = isNorthern ? [0, 8] : [0, -8];
+
+                const stationTitle = props.stationName || props.siteName || `Station #${props.indexNo || props.stationNo}`;
+                const elevDisplay = props.elevation_m || props.elevation || 'N/A';
+                const palikaDisplay = props.palika ? `${props.palika} Palika` : props.district || 'Gulmi';
+                const basinDisplay = props.riverBasin || props.river || 'Gulmi Catchment';
 
                 return (
                   <CircleMarker
-                    key={`hydro-${props.stationNo}-${idx}`}
-                    center={[st.lat ?? st.geometry?.coordinates[1], st.lng ?? st.geometry?.coordinates[0]]}
-                    radius={isRegional ? 8.5 : 8}
+                    key={`hydro-${props.indexNo || props.stationNo || idx}`}
+                    center={[coords[0], coords[1]]}
+                    radius={isAWS ? 9 : 8}
                     pane="pointsPane"
                     pathOptions={{
                       fillColor: markerColor,
-                      fillOpacity: 0.98,
+                      fillOpacity: 1,
                       color: '#ffffff',
                       weight: 2.5,
                       pane: 'pointsPane',
                     }}
                   >
-                    <Tooltip direction="top" offset={[0, -8]} opacity={0.98} pane="popupPane">
-                      <div className="text-xs p-1.5 min-w-[220px] bg-white rounded shadow-md border border-slate-200">
+                    <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
+                      <div className="text-xs p-2 min-w-[240px] bg-white rounded-lg shadow-lg border border-slate-200">
                         <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
-                          <span className="flex items-center gap-1 font-outfit">
-                            {isMet ? '🌤️' : '💧'} Station #{props.stationNo}
+                          <span className="flex items-center gap-1.5 font-outfit text-[12px]">
+                            {isAWS ? '📡' : isClim ? '🌡️' : '🌦️'} {stationTitle}
                           </span>
                           <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${badgeBg}`}>
                             {badgeLabel}
                           </span>
                         </div>
-                        <div className="font-semibold text-slate-900 text-xs">
-                          {props.displayLabel || `${props.river} (${props.siteName})`}
+                        <div className="text-slate-600 text-[10px] font-medium">
+                          Index: <strong>{props.indexNo || props.stationNo || 'DHM'}</strong> • <strong>{palikaDisplay}</strong>
                         </div>
-                        <div className="text-slate-600 text-[10px] mt-0.5">
-                          Location: <strong>{props.district || 'Gulmi'}</strong> • Elev: <strong>{props.elevation ? `${props.elevation}m` : 'N/A'}</strong>
+                        <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80 flex items-center justify-between">
+                          <span>Elev: <strong>{elevDisplay}m masl</strong></span>
+                          <span className="text-sky-700 font-sans text-[10px] font-semibold">{basinDisplay}</span>
                         </div>
-                        <div className="text-slate-500 text-[10px] mt-1 bg-slate-50 p-1 rounded font-mono break-words">
-                          Equip: {props.instruments}
-                        </div>
-                        {props.startDate && (
-                          <div className="text-slate-400 text-[9px] mt-0.5">Established: {props.startDate}</div>
+                        {props.instruments && (
+                          <div className="text-slate-500 text-[9.5px] mt-1 bg-slate-50 p-1 rounded font-mono break-words leading-tight">
+                            ⚙️ {props.instruments}
+                          </div>
                         )}
+                        {Array.isArray(props.monitoringParameters) && (
+                          <div className="text-emerald-700 text-[9px] mt-1 font-semibold">
+                            📊 {props.monitoringParameters.join(' • ')}
+                          </div>
+                        )}
+                        <div className="text-slate-400 text-[8.5px] mt-1">
+                          DHM Nepal National Network • Status: {props.status || 'Active'}
+                        </div>
                       </div>
                     </Tooltip>
                   </CircleMarker>
