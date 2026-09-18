@@ -900,7 +900,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       initialClimateDataset ? Promise.resolve(initialClimateDataset) : fetch('/geojson/gulmi-climate-monthly.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/roads/gulmi.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-hydro-reaches.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/gulmi-dhm-stations.json').then(r => r.json()).catch(() => fetch('/geojson/gulmi-hydrology-assets.json').then(r => r.json())).catch(() => null),
+      fetch('/geojson/gulmi-dhm-stations.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-rivers.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-contours.json').then(r => r.json()).catch(() => null),
     ]).then(([geo, palikas, climate, roads, reaches, hydroAssets, rivers, contours]) => {
@@ -913,8 +913,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       if (contours) setContoursData(contours);
       if (hydroAssets?.type === 'FeatureCollection' && Array.isArray(hydroAssets.features)) {
         setHydrologyStations(hydroAssets.features);
-      } else if (hydroAssets?.dhmRiverStationsByDistrict?.gulmi) {
-        setHydrologyStations(hydroAssets.dhmRiverStationsByDistrict.gulmi);
       }
       setGeoLoading(false);
     }).catch(() => setGeoLoading(false));
