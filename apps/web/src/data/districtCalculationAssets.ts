@@ -86,7 +86,8 @@ export function resolveCalculationMethodology(params: ResolveMethodologyParams):
     const eSub = subFilters.energySubFilter || 'hydro_corridor';
     if (eSub === 'hydro_corridor') key = 'hydro_corridor';
     else if (eSub === 'solar_irradiance') key = 'solar_irradiance';
-    else if (eSub === 'clean_cooking_biomass') key = 'clean_cooking_biomass';
+    else if (eSub === 'clean_cooking_biomass' || eSub === 'clean_cooking') key = 'clean_cooking_biomass';
+    else if (eSub === 'grid_electrification' || eSub === 'grid_reach') key = 'grid_reach';
   } else if (selectedPillar === 'ecosystem') {
     const ecoSub = subFilters.ecoSubFilter || 'soil_ph';
     if (ecoSub === 'soil_ph') key = 'soil_ph';
