@@ -1,0 +1,47 @@
+---
+title: "Technical Documentation: DHM Hydro-Meteorological Station Network in Gulmi District"
+subtitle: "Department of Hydrology and Meteorology (DHM) Ground Gauges, Coordinates, and Agro-Hydrological Baselines"
+author: "WEFES Platform Scientific Team"
+date: "September 2026"
+format:
+  html:
+    toc: true
+    number-sections: true
+    code-fold: true
+---
+
+# 1. Official Dataset Provenance
+
+* **Governing Body:** Department of Hydrology and Meteorology (DHM), Ministry of Energy, Water Resources and Irrigation, Government of Nepal
+* **Official Registry:** DHM National Meteorological and Hydrological Network Directory
+* **Administrative Scope:** Gulmi District, Lumbini Province (Province 5), Nepal
+* **Classification:** `OBSERVED REAL`
+* **Data File:** `data/real/hydrology/gulmi_dhm_stations.geojson`
+* **Portal Link:** [DHM Nepal Hydrometric and Climate Portal](https://dhm.gov.np)
+
+# 2. Station Network Inventory
+
+The district of Gulmi features a rigorous network of 8 Department of Hydrology and Meteorology (DHM) monitoring installations spanning from low-altitude river confluences (Ridi Bazar at 494m) to steep mountain ridges (Bharse at 1,626m):
+
+| S.N. | Index No. | Station Name | Station Type | Elevation (m) | Coordinates | Palika | Catchment / Basin | Primary Instruments |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 221 | **701** | **Ridi Bazar** | Precipitation | 494 | [83.44315, 27.93857] | Ruru Kshetra | Ridi Khola / Kali Gandaki | Symons Rain Gauge |
+| 241 | **722** | **Musikot** | Precipitation | 1353 | [83.26803, 28.16998] | Musikot | Badigad Watershed | Standard Rain Gauge |
+| 244 | **725** | **Tamghas** | Climatology | 1547 | [83.24353, 28.06360] | Resunga | Panaha River Basin | Stevenson Screen, Max-Min Thermometers, Psychrometer, Rain Gauge |
+| 250 | **731** | **Agimir** | Precipitation | 1493 | [83.11328, 28.16416] | Malika | Chhaldi Watershed | Standard Rain Gauge |
+| 251 | **732** | **Anp Chour** | Climatology | 738 | [83.32047, 28.12424] | Chandrakot | Hugdi Khola Basin | Stevenson Screen, Thermometers, Rain Gauge |
+| 252 | **733** | **Bharse** | Precipitation | 1626 | [83.43770, 28.07040] | Satyawati | Hugdi Headwaters | High-elevation Rain Gauge |
+| 253 | **734** | **Daugha** | Precipitation | 960 | [83.33812, 27.93650] | Chatrakot | Southern Drainage | Standard Rain Gauge |
+| 574 | **AWS-GUL-01** | **Tamghas new** | AWS (Automated) | 1550 | [83.25000, 28.07000] | Resunga | Tamghas Urban Core | Tipping bucket, Ultrasonic Wind, Pyranometer, GSM Telemetry |
+
+# 3. Scientific Methodology & Integration
+
+The station network monitors two fundamental physical regimes essential to the Water-Energy-Food-Ecosystem Nexus:
+
+1. **Topographic Rainfall Uplift (Orographic Rain Ratio):**
+   $$P_{\text{downscaled}}(z) = P_{\text{regional}} \cdot \left[1 + \gamma \cdot (z - z_{\text{ref}})\right]$$
+   where $z$ is the elevation of the terrain and $\gamma$ is the empirical mid-hill precipitation lapse rate calibrated against high-ridge stations (Bharse at 1,626m vs Ridi at 494m).
+
+2. **Hydrological River Discharge & Stage-Discharge Rating:**
+   $$Q = a \cdot (h - h_0)^b$$
+   used for river level telemetry across the Badigad and Panaha river systems.
