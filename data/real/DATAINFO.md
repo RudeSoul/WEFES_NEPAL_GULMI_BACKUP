@@ -21,14 +21,14 @@
 - **Description**: Rich municipal profiles for all 12 Palikas of Gulmi including demographics, elevation, temperatures, soil pH, crop feasibility scores, and seasonal rotations.
 
 ### `hydrology/`
-- **Files**: `gulmi_hydrology_assets.json`, `River_data.csv`, `Average_rainfall_by_altitude.csv`, `glacier_and_catchment_area_having_metrological_and_hydrological_station.csv`
-- **Source**: Department of Hydrology and Meteorology (DHM) Nepal.
-- **Description**: Hydrometric station records (stations 410, 430, 435, 420), altitude-dependent rainfall profiles, and lake altitude classifications.
+- **Files**: `gulmi_dhm_stations.geojson`, `gulmi_dhm_stations.qmd`, `gulmi_hydrology_assets.json`, `River_data.csv`, `Average_rainfall_by_altitude.csv`, `glacier_and_catchment_area_having_metrological_and_hydrological_station.csv`
+- **Source**: Department of Hydrology and Meteorology (DHM), Ministry of Energy, Water Resources and Irrigation, Nepal.
+- **Description**: 8 official DHM ground monitoring stations (Indices 701 Ridi, 722 Musikot, 725 Tamghas, 731 Agimir, 732 Anp Chour, 733 Bharse, 734 Daugha, and Tamghas New AWS), hydrometric ratings, and lake altitude classifications.
 
 ### `infrastructure/`
-- **Files**: `district_infrastructure_assets.json`
-- **Source**: Nepal Electricity Authority (NEA) Powerhouse Registry, Survey Department of Nepal, and National Tea and Coffee Development Board (NTCDB).
-- **Description**: Verified hydropower assets (Upper Hugdi, Ridi Khola, Badigad Khola), district summits/valleys, and historic coffee origin and processing landmarks (Aapchaur, Tamghas, Ruru).
+- **Files**: `gulmi_nea_substations.geojson`, `gulmi_nea_substations.qmd`, `cooking_household.geojson`, `cooking_household.qmd`, `district_infrastructure_assets.json`
+- **Source**: Nepal Electricity Authority (NEA) Transmission Directorate, National Statistics Office (NSO / CBS 2021 Census), and Survey Department of Nepal.
+- **Description**: Official NEA 132/33 kV substations (Tamghas/Unaichaur 46 MVA, Paudi Amarai 30 MVA, Kisantari 3 MVA, Birbas 8 MVA, Ridi 10 MVA) and Census 2021 12-Palika household cooking fuel reliance metrics.
 
 ### `agriculture/`
 - **Files**: `crops.json`, `narc_crop_varieties.json`, `Nepal_District_Crops_Feasibility.csv`, `Coffee_Production_untill_2080.csv`
@@ -36,9 +36,9 @@
 - **Description**: Certified hill seed varieties, yield potentials, resistance profiles, and district crop suitability baselines.
 
 ### `climate/`
-- **Files**: `nasa_power_10_years_full.csv`
-- **Source**: NASA POWER Agroclimatology Archive (10-Year Daily Meteorological Reanalysis).
-- **Description**: Solar insolation, daily mean/min/max temperature, relative humidity, and precipitation.
+- **Files**: `gulmi_solar_pvout_opta.geojson`, `nasa_power_10_years_full.csv`
+- **Source**: Global Solar Atlas 2.0 (World Bank / ESMAP / Solargis) and NASA POWER Agroclimatology Archive.
+- **Description**: Photovoltaic electricity potential (PVOUT), optimum tilt angle (OPTA), and 10-year daily reanalysis meteorological data.
 
 ### `land_and_soil/`
 - **Files**: `district-soil-summary.json`, `gulmi_soil_points_81.json`, `type_and_area_soil_by_color.csv`, `affected_land_erosion.csv`
