@@ -1,7 +1,7 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmiGHI.geojson
+// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson
 // Classification: OBSERVED REAL & EMPIRICAL DOWNSCALING
-// Citations: MoFAGA Nepal, DHM Nepal, CBS 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas (World Bank/ESMAP/Solargis)
+// Citations: MoFAGA Nepal, DHM Nepal, CBS/NSO 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas 2.0 (World Bank/ESMAP/Solargis)
 
 import { useMemo } from 'react';
 import {
@@ -13,6 +13,7 @@ import {
 } from '@wefes/shared-types';
 import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../data/districtPalikaAssets';
 import palikaGhiData from '../data/gulmi_palika_ghi.json';
+import palikaCookingData from '../data/gulmi_palika_cooking.json';
 import { getPalikaMicroClimate } from '../utils/climateDownscaling';
 import {
   CHOROPLETH_RAMPS,
@@ -684,8 +685,8 @@ export function computePalikaChoropleth({
         metricConfig = {
           metricKey: 'solar_irradiance',
           pillar: 'energy',
-          label: 'Solar Photovoltaic GHI (Global Solar Atlas)',
-          unit: 'kWh/m²/d',
+          label: 'Photovoltaic Power Potential (PVOUT)',
+          unit: 'kWh/kWp/d',
           min: 3.90,
           max: 4.30,
           colorRamp: ['#fbbf24', '#f59e0b', '#b45309'],
@@ -702,6 +703,7 @@ export function computePalikaChoropleth({
           const ghiMean = matchedGhi?.mean ?? 4.16;
           const ghiMin = matchedGhi?.min ?? 3.5;
           const ghiMax = matchedGhi?.max ?? 4.5;
+          const opta = matchedGhi?.opta ?? 29.0;
           const ptCount = matchedGhi?.count ?? 120;
           const color = ghiMean >= 4.25 ? '#b45309' : ghiMean >= 4.10 ? '#f59e0b' : '#fbbf24';
 
@@ -712,10 +714,13 @@ export function computePalikaChoropleth({
             type: props.type,
             areaSqKm: props.areaSqKm,
             value: ghiMean,
-            formattedValue: `${ghiMean} kWh/m²/d`,
+            formattedValue: `${ghiMean} kWh/kWp/d`,
             color,
             tooltipHtml: `<div style="color: #b45309; font-size: 10px; margin-top: 2px;">
-                            ☀️ Solar GHI: <strong>${ghiMean} kWh/m²/day</strong> (Range: ${ghiMin}–${ghiMax} | ${ptCount} Grid Pts)
+                            ⚡ PV Potential: <strong>${ghiMean} kWh/kWp/day</strong> (Range: ${ghiMin}–${ghiMax} | ${ptCount} Cells)
+                            <div style="color: #d97706; font-size: 9.5px; margin-top: 1px;">
+                              📐 Optimum Module Tilt: <strong>${opta}°</strong> (Yearly Generation Maxima)
+                            </div>
                           </div>`,
             raw: { ...pData, ghi: matchedGhi },
           };
@@ -724,19 +729,33 @@ export function computePalikaChoropleth({
         metricConfig = {
           metricKey: 'clean_cooking',
           pillar: 'energy',
-          label: 'Biomass Firewood Reliance',
+          label: 'Biomass Firewood Reliance (Census 2021)',
           unit: '%',
-          min: 40,
-          max: 85,
-          colorRamp: CHOROPLETH_RAMPS.gnylrd,
+          min: 55,
+          max: 98,
+          colorRamp: ['#10b981', '#f59e0b', '#ef4444', '#991b1b'],
         };
+
+        const cookingPalikas = (palikaCookingData as any).palikas || {};
 
         for (const feat of features) {
           const props = feat.properties || {};
-          const pName = (props.name || '').toLowerCase();
-          const uType = props.type || '';
-          const biomass = uType === 'Nagarpalika' || pName.includes('resunga') ? 46 : pName.includes('musikot') ? 58 : 76;
-          const color = biomass >= 75 ? '#ef4444' : biomass >= 50 ? '#f59e0b' : '#10b981';
+          const pData = getProfile(props);
+          const pName = props.name || '';
+          
+          // Match palika entry
+          const matchedCook = cookingPalikas[pName] || 
+            Object.entries(cookingPalikas).find(([k]) => pName.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(pName.toLowerCase()))?.[1];
+
+          const fwPct = matchedCook?.firewoodPct ?? 86.3;
+          const fwCount = matchedCook?.firewood ?? 0;
+          const totHH = matchedCook?.totalHouseholds ?? 0;
+          const lpgCount = matchedCook?.lpg ?? 0;
+          const lpgPct = matchedCook?.lpgPct ?? 0;
+          const cleanPct = matchedCook?.cleanCookingPct ?? 0;
+          const elecCount = (matchedCook?.electricity ?? 0) + (matchedCook?.biogas ?? 0);
+
+          const color = fwPct >= 92 ? '#991b1b' : fwPct >= 85 ? '#ef4444' : fwPct >= 75 ? '#f59e0b' : '#10b981';
 
           joinedData[props.name] = {
             id: props.id || props.name,
@@ -744,12 +763,19 @@ export function computePalikaChoropleth({
             nepaliName: props.nepaliName,
             type: props.type,
             areaSqKm: props.areaSqKm,
-            value: biomass,
-            formattedValue: `${biomass}%`,
+            value: fwPct,
+            formattedValue: `${fwPct}%`,
             color,
             tooltipHtml: `<div style="color: ${color}; font-size: 10px; margin-top: 2px;">
-                            🪵 Firewood Reliance: <strong>${biomass}%</strong>
+                            🪵 Firewood Reliance: <strong>${fwPct}%</strong> (${fwCount.toLocaleString()} / ${totHH.toLocaleString()} HHs)
+                            <div style="color: #0284c7; font-size: 9.5px; margin-top: 1px;">
+                              💨 LPG Gas Adoption: <strong>${lpgPct}%</strong> (${lpgCount.toLocaleString()} HHs)
+                            </div>
+                            <div style="color: #059669; font-size: 9.5px; margin-top: 1px;">
+                              ⚡ Clean Fuel (LPG/Elec/Biogas): <strong>${cleanPct}%</strong> (${(lpgCount + elecCount).toLocaleString()} HHs)
+                            </div>
                           </div>`,
+            raw: { ...pData, cooking: matchedCook },
           };
         }
       } else if (eSub === 'grid_electrification' || eSub === 'grid_reach') {
