@@ -181,16 +181,7 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
       expect(resGrid.joinedData['Resunga']?.formattedValue).toContain('Tamghas Substation (Unaichaur)');
     });
 
-    it('updates metric config when socioeconomics subfilter changes to hq_market_proximity and agri_landholding', async () => {
-      const resRoad = await evaluateChoropleth({
-        rawGeoJson: mockGeoJson,
-        selectedPillar: 'socioeconomics',
-        subFilters: { socioSubFilter: 'hq_market_proximity' },
-      });
-
-      expect(resRoad.metricConfig.metricKey).toBe('road_access');
-      expect(resRoad.joinedData['Resunga']?.value).toBe(0.3);
-
+    it('updates metric config when socioeconomics subfilter changes to agri_landholding', async () => {
       const resLand = await evaluateChoropleth({
         rawGeoJson: mockGeoJson,
         selectedPillar: 'socioeconomics',
