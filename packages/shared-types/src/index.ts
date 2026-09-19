@@ -363,3 +363,79 @@ export const ScenarioRequestSchema = z.object({
 });
 
 export type ScenarioRequest = z.infer<typeof ScenarioRequestSchema>;
+
+export * from './legend-contracts';
+
+// ==============================================================================
+// PALIKA CHOROPLETH DYNAMIC ATTRIBUTE JOINING CONTRACTS (TRACK B)
+// ==============================================================================
+
+export interface PalikaChoroplethMetricConfig {
+  metricKey: string;
+  pillar: WEFESPillar;
+  label: string;
+  unit: string;
+  min: number;
+  max: number;
+  colorRamp: string[];
+  description?: string;
+}
+
+export interface JoinedPalikaData {
+  id: string;
+  name: string;
+  nepaliName?: string;
+  type?: string;
+  areaSqKm?: number;
+  value: number;
+  formattedValue: string;
+  color: string;
+  tooltipHtml: string;
+  // Raw attributes joined from empirical & calculated datasets
+  raw?: Record<string, any>;
+}
+
+export interface PalikaChoroplethResult {
+  metricConfig: PalikaChoroplethMetricConfig;
+  joinedData: Record<string, JoinedPalikaData>;
+  getColor: (palikaName: string) => string;
+  getTooltipHtml: (palikaName: string) => string;
+  getValue: (palikaName: string) => number | undefined;
+}
+
+// ==============================================================================
+// TOPOGRAPHIC CONTOUR VECTOR CONTRACTS (TRACK C)
+// ==============================================================================
+
+export interface ContourFeatureProperties {
+  elevation: number;
+  isIndex: boolean;
+  color: string;
+  weight: number;
+  opacity: number;
+  lifeZone: string;
+  feasibleCrops: string[];
+  temperatureC: number;
+}
+
+export interface GulmiContourFeature {
+  type: 'Feature';
+  properties: ContourFeatureProperties;
+  geometry: {
+    type: 'LineString' | 'MultiLineString';
+    coordinates: [number, number][] | [number, number][][];
+  };
+}
+
+export interface GulmiContourCollection {
+  type: 'FeatureCollection';
+  _metadata?: {
+    title: string;
+    source: string;
+    tier: string;
+    crs: string;
+    elevationRange: string;
+    intervalMeters: number;
+  };
+  features: GulmiContourFeature[];
+}

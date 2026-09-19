@@ -1,7 +1,11 @@
+// [DATA PROVENANCE]
+// Data Source: apps/web/public/geojson/gulmi-contours.json, data/real/boundaries/gulmi-district.json
+// Classification: OBSERVED REAL & INTERPOLATED RELIEF
+// Citations: Survey Department / Topographical Survey of Nepal, MoFAGA, DHM Nepal
 import React, { useState, useEffect, useMemo } from 'react';
 import { MapContainer, TileLayer, GeoJSON, Marker, Popup, Polyline, Tooltip, CircleMarker, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { District, Crop, CropSuitability } from '@wefes/shared-types';
+import { District, Crop, CropSuitability, GulmiContourCollection } from '@wefes/shared-types';
 import { db } from '@wefes/database';
 import {
   MapPin, Droplets, Zap, Sprout, Layers, Eye,
@@ -59,9 +63,9 @@ type BaseMapStyle = 'voyager' | 'osm' | 'opentopo' | 'satellite';
 
 const BASE_MAP_TILES: Record<BaseMapStyle, { url: string; attribution: string; name: string }> = {
   voyager: {
-    name: 'Carto Voyager Clean',
-    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    name: 'Clean Vector Base',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
   },
   osm: {
     name: 'OpenStreetMap Standard',
@@ -70,8 +74,8 @@ const BASE_MAP_TILES: Record<BaseMapStyle, { url: string; attribution: string; n
   },
   opentopo: {
     name: 'Topographic Relief',
-    url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-    attribution: 'Map data: &copy; OpenStreetMap contributors, SRTM | Map style: &copy; OpenTopoMap'
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom'
   },
   satellite: {
     name: 'Satellite Imagery',
@@ -277,6 +281,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
 }) => {
   const [districtGeoData, setDistrictGeoData] = useState<any>(null);
   const [palikasGeoData, setPalikasGeoData] = useState<any>(null);
+  const [contoursGeoData, setContoursGeoData] = useState<GulmiContourCollection | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [layerMode, setLayerMode] = useState<MapLayerMode>('overview');
@@ -304,7 +309,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   // Selected soil point for detailed drawer inspection
   const [inspectedSoilPoint, setInspectedSoilPoint] = useState<any>(null);
 
-  // Load Gulmi 12 Palikas GeoJSON and District Boundary
+  // Load Gulmi 12 Palikas GeoJSON, District Boundary, and Precompiled Contours
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
@@ -312,11 +317,16 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
     Promise.all([
       fetch('/geojson/gulmi-palikas.json').then(r => (r.ok ? r.json() : null)).catch(() => null),
       fetch('/geojson/gulmi-district.json').then(r => (r.ok ? r.json() : null)).catch(() => null),
-    ]).then(([palikasData, districtData]) => {
+      fetch('/geojson/gulmi-contours.json').then(r => (r.ok ? r.json() : null)).catch(() => null),
+    ]).then(([palikasData, districtData, contoursData]) => {
       if (!isMounted) return;
 
       if (palikasData) {
         setPalikasGeoData(palikasData);
+      }
+
+      if (contoursData) {
+        setContoursGeoData(contoursData);
       }
 
       if (districtData && districtData.features) {
@@ -457,9 +467,31 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   }, [districtPalikas, selectedCropFilter, activePalika.name]);
 
   const generatedContours = useMemo<ContourLine[]>(() => {
+    // Priority 1: Use precompiled offline vector contours (zero runtime overhead)
+    if (contoursGeoData && Array.isArray(contoursGeoData.features) && contoursGeoData.features.length > 0) {
+      return contoursGeoData.features.map(f => {
+        const p = f.properties;
+        // GeoJSON LineString coordinates are [lng, lat] -> Leaflet Polyline expects [lat, lng]
+        const rawCoords = f.geometry.coordinates as [number, number][];
+        const leafletCoords: [number, number][] = rawCoords.map(c => [c[1], c[0]]);
+        return {
+          elevation: p.elevation,
+          isIndex: p.isIndex,
+          color: p.color,
+          weight: p.weight,
+          opacity: p.opacity,
+          coordinates: leafletCoords,
+          temperatureC: p.temperatureC,
+          lifeZone: p.lifeZone,
+          feasibleCrops: p.feasibleCrops,
+        };
+      });
+    }
+
+    // Priority 2: Fallback to client-side marching squares interpolation
     if (!districtGeoData) return [];
     return generateDistrictContours(district, districtGeoData.geometry, 10);
-  }, [district, districtGeoData]);
+  }, [contoursGeoData, district, districtGeoData]);
 
   const landmarks: DistrictLandmarks | undefined =
     DISTRICT_LANDMARKS[district.id] || DISTRICT_LANDMARKS[district.name];
@@ -777,8 +809,25 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
                   }}
                 >
                   <Tooltip sticky={true} direction="top" opacity={0.98}>
-                    <div className="p-1 text-xs font-mono font-bold bg-white text-slate-900 rounded shadow-xs border border-slate-200">
-                      ⛰️ {line.elevation}m masl {line.isIndex ? '(Index Contour)' : ''}
+                    <div className="p-1.5 text-xs font-sans bg-white text-slate-900 rounded-md shadow-xs border border-slate-200 min-w-[150px]">
+                      <div className="font-mono font-bold text-slate-800 border-b border-slate-100 pb-1">
+                        ⛰️ {line.elevation}m masl {line.isIndex ? '(Index Contour)' : ''}
+                      </div>
+                      {line.lifeZone && (
+                        <div className="text-[10px] text-sky-700 font-semibold mt-1">
+                          {line.lifeZone}
+                        </div>
+                      )}
+                      {line.temperatureC !== undefined && (
+                        <div className="text-[10px] text-slate-500">
+                          Lapse Temp: <strong>{line.temperatureC}°C</strong>
+                        </div>
+                      )}
+                      {line.feasibleCrops && line.feasibleCrops.length > 0 && (
+                        <div className="text-[9px] text-emerald-700 mt-0.5">
+                          🌾 {line.feasibleCrops.slice(0, 3).join(', ')}
+                        </div>
+                      )}
                     </div>
                   </Tooltip>
                 </Polyline>
