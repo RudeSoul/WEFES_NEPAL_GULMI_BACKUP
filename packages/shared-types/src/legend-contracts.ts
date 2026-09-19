@@ -446,22 +446,6 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     ]
   },
 
-  labor_rate: {
-    id: 'labor_rate',
-    pillar: 'socioeconomics',
-    title: 'Daily Agricultural Labor Wage Rate',
-    subtitle: 'Ministry of Labour, Employment and Social Security (MoLESS)',
-    unit: 'NPR / Day',
-    legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/proxy/social/gender_labor_coefficients.json & MoLESS rates',
-    confidence: 'REAL',
-    thresholds: [
-      { minValue: 900, color: '#047857', label: 'Commercial Urban Wage (≥900 NPR)', description: 'Urbanized centers near Tamghas and major river highway corridors' },
-      { minValue: 750, maxValue: 899, color: '#10b981', label: 'Standard Agricultural Rate (750–899 NPR)', description: 'Average rural municipal field labor rate' },
-      { maxValue: 749, color: '#f59e0b', label: 'Subsidized / Subsistence Rate (<750 NPR)', description: 'Remote highland village areas with high outmigration' }
-    ]
-  },
-
   local_governance: {
     id: 'local_governance',
     pillar: 'socioeconomics',
@@ -487,5 +471,4 @@ SUBFILTER_LEGENDS['clean_cooking_biomass'] = SUBFILTER_LEGENDS['clean_cooking'];
 SUBFILTER_LEGENDS['grid_electrification'] = SUBFILTER_LEGENDS['grid_reach'];
 SUBFILTER_LEGENDS['hq_market_proximity'] = SUBFILTER_LEGENDS['road_access'];
 SUBFILTER_LEGENDS['agri_landholding'] = SUBFILTER_LEGENDS['landholding'];
-SUBFILTER_LEGENDS['labor_wages'] = SUBFILTER_LEGENDS['labor_rate'];
 
