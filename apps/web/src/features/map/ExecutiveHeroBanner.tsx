@@ -59,7 +59,6 @@ export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
     { type: 'filter' as const, label: '⚡ Run-of-River Hydropower Corridors', value: 'hydro_corridor', category: 'Energy' },
     { type: 'filter' as const, label: '☀️ Solar PV Potential & Tilt (PVOUT & OPTA • Global Solar Atlas)', value: 'solar_irradiance', category: 'Energy' },
     { type: 'filter' as const, label: '🏛️ Local Governance (Municipalities & Rural Palikas)', value: 'local_governance', category: 'Governance' },
-    { type: 'filter' as const, label: '🛣️ Road Proximity to Tamghas HQ', value: 'hq_market_proximity', category: 'Transport' },
   ];
 
   const filteredOptions = searchQuery.trim()
