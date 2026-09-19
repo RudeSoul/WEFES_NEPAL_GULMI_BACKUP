@@ -95,7 +95,6 @@ export function resolveCalculationMethodology(params: ResolveMethodologyParams):
   } else if (selectedPillar === 'socioeconomics') {
     const sSub = subFilters.socioSubFilter || 'local_governance';
     if (sSub === 'local_governance') key = 'local_governance';
-    else if (sSub === 'hq_market_proximity' || sSub === 'road_access') key = 'hq_market_proximity';
     else if (sSub === 'agri_landholding' || sSub === 'landholding') key = 'agri_landholding';
   }
 
