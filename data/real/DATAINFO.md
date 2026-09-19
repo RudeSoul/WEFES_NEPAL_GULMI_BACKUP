@@ -10,10 +10,10 @@
 ## 2. Directory Contents & Provenance
 
 ### `boundaries/`
-- **Files**: `gulmi-palikas.json`, `District_code.csv`, `local_bodies_district_code.csv`, `palika_centroids.json`
-- **Source**: Survey Department of Nepal & Ministry of Federal Affairs and General Administration (MoFAGA).
+- **Files**: `gulmi-palikas.json`, `gulmi_buildings.geojson`, `District_code.csv`, `local_bodies_district_code.csv`, `palika_centroids.json`
+- **Source**: Survey Department of Nepal, Ministry of Federal Affairs and General Administration (MoFAGA), and OpenStreetMap (OSM / QuickOSM).
 - **Coordinate System**: WGS 84 (EPSG:4326).
-- **Description**: Official administrative boundaries and geographic centroids for the 12 local Palikas of Gulmi District.
+- **Description**: Official administrative boundaries, geographic centroids, and 78,934 physical building footprint structures across all 12 Palikas of Gulmi District.
 
 ### `municipal/`
 - **Files**: `palika_profiles.json`
@@ -31,9 +31,9 @@
 - **Description**: Official NEA 132/33 kV substations (Tamghas/Unaichaur 46 MVA, Paudi Amarai 30 MVA, Kisantari 3 MVA, Birbas 8 MVA, Ridi 10 MVA) and Census 2021 12-Palika household cooking fuel reliance metrics.
 
 ### `agriculture/`
-- **Files**: `crops.json`, `narc_crop_varieties.json`, `Nepal_District_Crops_Feasibility.csv`, `Coffee_Production_untill_2080.csv`
-- **Source**: National Agricultural Research Council (NARC), MoALD Seed Quality Control Centre (SQCC), and Agriculture Knowledge Centre (AKC) Gulmi.
-- **Description**: Certified hill seed varieties, yield potentials, resistance profiles, and district crop suitability baselines.
+- **Files**: `gulmi_agricultural_landholding.geojson`, `crops.json`, `narc_crop_varieties.json`, `Nepal_District_Crops_Feasibility.csv`, `Coffee_Production_untill_2080.csv`
+- **Source**: MoALD Land Resources Survey, National Agricultural Research Council (NARC), MoALD Seed Quality Control Centre (SQCC), National Statistics Office (NSO Census 2021), and OpenStreetMap.
+- **Description**: Certified hill seed varieties, yield potentials, resistance profiles, district crop suitability baselines, and empirical municipal agricultural landholdings (total cultivated ha, Khet/Bari split, Census households, building counts, and ha & Ropani per household).
 
 ### `climate/`
 - **Files**: `gulmi_solar_pvout_opta.geojson`, `nasa_power_10_years_full.csv`
