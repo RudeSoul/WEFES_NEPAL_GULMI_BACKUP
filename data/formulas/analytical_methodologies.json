@@ -396,32 +396,6 @@
       "unit": "Administrative Type",
       "currentStat": "2 Nagarpalikas • 10 Gaunpalikas"
     },
-    "hq_market_proximity": {
-      "shortTitle": { "en": "Market Access & HQ Distance", "np": "सदरमुकाम दूरी" },
-      "pillarName": { "en": "Socioeconomics", "np": "सामाजिक-आर्थिक" },
-      "model": { "en": "Geodesic Distance to Tamghas Administration Hub", "np": "तमघास सदरमुकाम ज्यामितीय र सडक दूरी" },
-      "formula": "D = √((Δlat·111)² + (Δlng·111·cos(θ))²) km",
-      "parameter": { "en": "Geodesic Distance to Tamghas HQ (θ = 28.065°)", "np": "सदरमुकाम तमघास ज्यामितीय दूरी (θ = 28.065°)" },
-      "variables": [
-        { "symbol": "D", "definition": { "en": "Great-circle geodesic straight-line distance to Tamghas (km)", "np": "सदरमुकाम तमघास सम्मको सिधा ज्यामितीय दूरी (किमी)" } },
-        { "symbol": "Δlat, Δlng", "definition": { "en": "Latitude and longitude degree differences from municipal centroid", "np": "पालिका केन्द्र र तमघास बीचको अक्षांश र देशान्तर फरक" } },
-        { "symbol": "111 km", "definition": { "en": "Approximate ground distance per degree of latitude near the equator", "np": "प्रति डिग्री अक्षांश बराबरको जमिनको सतह दूरी (१११ किमी)" } },
-        { "symbol": "θ", "definition": { "en": "Reference mean latitude of Gulmi District (28.065° N) for longitude projection", "np": "देशान्तर दूरी समायोजनका लागि गुल्मीको औसत अक्षांश (२८.०६५° उ.)" } }
-      ],
-      "description": {
-        "en": "Spatial accessibility matrix computing travel friction from each Palika centroid to district headquarters (Tamghas).",
-        "np": "सदरमुकाम तमघासबाट प्रत्येक पालिकाको केन्द्र सम्मको सीधा र सडक पहुँच दूरी।"
-      },
-      "confidence": "CALCULATED",
-      "inputs": [
-        "Survey Department Municipal Centroids",
-        "Gulmi Transport Master Plan"
-      ],
-      "citation": "Survey Department & District Coordination Committee Gulmi",
-      "provenancePath": "data/real/boundaries/palika_centroids.json",
-      "unit": "Kilometers (km)",
-      "currentStat": "2 km (Resunga HQ) to 75 km (Remote Western Ridges)"
-    },
     "agri_landholding": {
       "shortTitle": { "en": "Agricultural Landholding & Settlement", "np": "कृषियोग्य जमिन तथा बस्ती वितरण" },
       "pillarName": { "en": "Socioeconomics", "np": "सामाजिक-आर्थिक" },
