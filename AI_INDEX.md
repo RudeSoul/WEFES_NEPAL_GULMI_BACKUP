@@ -84,7 +84,6 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   │   ├── municipal/
 │   │   ├── rasters/
 │   │   ├── socioeconomics/
-│   │   ├── transport/
 │   │   └── DATAINFO.md
 ├── docs/
 ├── engines/
