@@ -10,10 +10,10 @@
 ## 2. Directory Contents & Provenance
 
 ### `boundaries/`
-- **Files**: `gulmi-palikas.json`, `gulmi_buildings.geojson`, `District_code.csv`, `local_bodies_district_code.csv`, `palika_centroids.json`
-- **Source**: Survey Department of Nepal, Ministry of Federal Affairs and General Administration (MoFAGA), and OpenStreetMap (OSM / QuickOSM).
+- **Files**: `gulmi-palikas.json`, `local_bodies_district_code.csv`, `palika_centroids.json`
+- **Source**: Survey Department of Nepal, Ministry of Federal Affairs and General Administration (MoFAGA).
 - **Coordinate System**: WGS 84 (EPSG:4326).
-- **Description**: Official administrative boundaries, geographic centroids, and 78,934 physical building footprint structures across all 12 Palikas of Gulmi District.
+- **Description**: Official administrative boundaries and geographic centroids across all 12 Palikas of Gulmi District.
 
 ### `municipal/`
 - **Files**: `palika_profiles.json`
@@ -21,12 +21,12 @@
 - **Description**: Rich municipal profiles for all 12 Palikas of Gulmi including demographics, elevation, temperatures, soil pH, crop feasibility scores, and seasonal rotations.
 
 ### `hydrology/`
-- **Files**: `gulmi_dhm_stations.geojson`, `gulmi_dhm_stations.qmd`, `gulmi_hydrology_assets.json`, `River_data.csv`, `Average_rainfall_by_altitude.csv`, `glacier_and_catchment_area_having_metrological_and_hydrological_station.csv`
+- **Files**: `gulmi_dhm_stations.geojson`, `gulmi_hydrology_assets.json`, `River_data.csv`
 - **Source**: Department of Hydrology and Meteorology (DHM), Ministry of Energy, Water Resources and Irrigation, Nepal.
-- **Description**: 8 official DHM ground monitoring stations (Indices 701 Ridi, 722 Musikot, 725 Tamghas, 731 Agimir, 732 Anp Chour, 733 Bharse, 734 Daugha, and Tamghas New AWS), hydrometric ratings, and lake altitude classifications.
+- **Description**: 8 official DHM ground monitoring stations (Indices 701 Ridi, 722 Musikot, 725 Tamghas, 731 Agimir, 732 Anp Chour, 733 Bharse, 734 Daugha, and Tamghas New AWS) and hydrometric ratings.
 
 ### `infrastructure/`
-- **Files**: `gulmi_nea_substations.geojson`, `gulmi_nea_substations.qmd`, `cooking_household.geojson`, `cooking_household.qmd`, `district_infrastructure_assets.json`
+- **Files**: `gulmi_nea_substations.geojson`, `cooking_household.geojson`, `district_infrastructure_assets.json`
 - **Source**: Nepal Electricity Authority (NEA) Transmission Directorate, National Statistics Office (NSO / CBS 2021 Census), and Survey Department of Nepal.
 - **Description**: Official NEA 132/33 kV substations (Tamghas/Unaichaur 46 MVA, Paudi Amarai 30 MVA, Kisantari 3 MVA, Birbas 8 MVA, Ridi 10 MVA) and Census 2021 12-Palika household cooking fuel reliance metrics.
 
@@ -41,9 +41,9 @@
 - **Description**: Photovoltaic electricity potential (PVOUT), optimum tilt angle (OPTA), and 10-year daily reanalysis meteorological data.
 
 ### `land_and_soil/`
-- **Files**: `district-soil-summary.json`, `gulmi_soil_points_81.json`, `type_and_area_soil_by_color.csv`, `affected_land_erosion.csv`
+- **Files**: `district-soil-summary.json`, `gulmi_soil_points_81.json`
 - **Source**: National Soil Science Research Centre (NARC) & Soil Management Directorate.
-- **Description**: Soil texture, pH distribution, 81 geo-referenced field soil sampling observations, organic matter percentage, and erosion susceptibility by ecological belt.
+- **Description**: Soil texture, pH distribution, 81 geo-referenced field soil sampling observations, and organic matter percentage.
 
 ### `socioeconomics/`
 - **Files**: `nepal_investment_benchmarks.json`, `nepal_agricultural_labor_rates_by_district.csv`
