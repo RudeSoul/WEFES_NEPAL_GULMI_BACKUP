@@ -413,23 +413,6 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
   // ============================================================================
   // 5. SOCIOECONOMICS PILLAR
   // ============================================================================
-  road_access: {
-    id: 'road_access',
-    pillar: 'socioeconomics',
-    title: 'Transport Accessibility to Tamghas Hub',
-    subtitle: 'Department of Local Infrastructure (DoLI) Travel Time Network',
-    unit: 'Hours',
-    legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/boundaries/gulmi-palikas.json & DoLI transport maps',
-    confidence: 'REAL',
-    thresholds: [
-      { maxValue: 1.0, color: '#047857', label: 'Direct Access (<1 hr)', description: 'Blacktopped highway directly connecting Tamghas market' },
-      { minValue: 1.0, maxValue: 2.5, color: '#0ea5e9', label: 'Moderate Transit (1–2.5 hrs)', description: 'Gravel all-weather municipal access road' },
-      { minValue: 2.6, maxValue: 4.0, color: '#f59e0b', label: 'Extended Transit (2.6–4.0 hrs)', description: 'Rough seasonal earthen track subject to monsoon blockage' },
-      { minValue: 4.0, color: '#ef4444', label: 'Remote Highland Access (>4 hrs)', description: 'High logistical friction for agricultural inputs and cold chain' }
-    ]
-  },
-
   landholding: {
     id: 'landholding',
     pillar: 'socioeconomics',
@@ -469,6 +452,6 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
 SUBFILTER_LEGENDS['spring_vulnerability'] = SUBFILTER_LEGENDS['springshed_vulnerability'];
 SUBFILTER_LEGENDS['clean_cooking_biomass'] = SUBFILTER_LEGENDS['clean_cooking'];
 SUBFILTER_LEGENDS['grid_electrification'] = SUBFILTER_LEGENDS['grid_reach'];
-SUBFILTER_LEGENDS['hq_market_proximity'] = SUBFILTER_LEGENDS['road_access'];
 SUBFILTER_LEGENDS['agri_landholding'] = SUBFILTER_LEGENDS['landholding'];
+
 
