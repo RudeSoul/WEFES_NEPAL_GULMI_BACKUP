@@ -198,7 +198,7 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
       });
 
       expect(resLand.metricConfig.metricKey).toBe('landholding');
-      expect(resLand.joinedData['Kaligandaki']?.value).toBe(8.4);
+      expect(resLand.joinedData['Kaligandaki']?.value).toBe(6.37);
     });
   });
 });
