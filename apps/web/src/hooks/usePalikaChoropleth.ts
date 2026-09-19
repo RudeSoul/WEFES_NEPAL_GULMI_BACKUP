@@ -1,5 +1,5 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson, data/real/infrastructure/gulmi_nea_substations.geojson, data/real/hydrology/gulmi_dhm_stations.geojson, data/real/agriculture/gulmi_agricultural_landholding.geojson, data/real/land_and_soil/gulmi_soil_points_81.json, data/real/socioeconomics/nepal_agricultural_labor_rates_by_district.csv
+// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson, data/real/infrastructure/gulmi_nea_substations.geojson, data/real/hydrology/gulmi_dhm_stations.geojson, data/real/agriculture/gulmi_agricultural_landholding.geojson, data/real/land_and_soil/gulmi_soil_points_81.json
 // Classification: OBSERVED REAL & EMPIRICAL DOWNSCALING
 // Citations: MoALD Nepal, MoFAGA Nepal, DHM Nepal, CBS/NSO 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas 2.0, Nepal Electricity Authority (NEA), NARC Soil Science Division, OpenStreetMap Contributors
 
@@ -1032,43 +1032,6 @@ export function computePalikaChoropleth({
                             </div>
                           </div>`,
             raw: matched,
-          };
-        }
-      } else if (sSub === 'labor_wages' || sSub === 'labor_rate') {
-        metricConfig = {
-          metricKey: 'labor_rate',
-          pillar: 'socioeconomics',
-          label: 'Agricultural Daily Labor Wage',
-          unit: 'NPR',
-          min: 700,
-          max: 850,
-          colorRamp: CHOROPLETH_RAMPS.ylgn,
-        };
-
-        const districtWageBaseline = 770; // NPR/day from official gazette (data/real/socioeconomics/nepal_agricultural_labor_rates_by_district.csv)
-
-        for (const feat of features) {
-          const props = feat.properties || {};
-          const pName = (props.name || '').toLowerCase();
-          // Real observed market premium: commercial HQ (Resunga) sits at upper bound (820 NPR), rural terraced palikas at statutory baseline (770 NPR)
-          const wage = pName.includes('resunga') ? 820 : pName.includes('musikot') || pName.includes('ruru') ? 790 : districtWageBaseline;
-          const color = wage >= 800 ? '#047857' : wage >= 780 ? '#10b981' : '#0ea5e9';
-
-          joinedData[props.name] = {
-            id: props.id || props.name,
-            name: props.name,
-            nepaliName: props.nepaliName,
-            type: props.type,
-            areaSqKm: props.areaSqKm,
-            value: wage,
-            formattedValue: `NPR ${wage}`,
-            color,
-            tooltipHtml: `<div style="color: #047857; font-size: 10px; margin-top: 2px;">
-                            💼 Daily Wage: <strong>NPR ${wage}/day</strong>
-                            <div style="color: #64748b; font-size: 8.5px; margin-top: 1px;">
-                              📜 Gulmi Statutory Baseline: NPR 770/day (Prevailing Range: NPR 700–820)
-                            </div>
-                          </div>`,
           };
         }
       } else {
