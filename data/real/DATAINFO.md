@@ -46,9 +46,9 @@
 - **Description**: Soil texture, pH distribution, 81 geo-referenced field soil sampling observations, and organic matter percentage.
 
 ### `socioeconomics/`
-- **Files**: `nepal_investment_benchmarks.json`, `nepal_agricultural_labor_rates_by_district.csv`
-- **Source**: World Bank REED Project (PAD-3712), USAID Feed the Future (FtF), and CBS Nepal Agricultural Census.
-- **Description**: Validated commodity financial internal rates of return (EIRR), NPVs, switching values, and daily wage rates across agricultural domains.
+- **Files**: `nepal_investment_benchmarks.json`
+- **Source**: World Bank REED Project (PAD-3712) and USAID Feed the Future (FtF).
+- **Description**: Validated commodity financial internal rates of return (EIRR), NPVs, and investment switching values across agricultural value chains.
 
 ### `rasters/`
 - **Files**: `gulmi_dem_30m.tif`
