@@ -24,6 +24,7 @@ import { resolveCalculationMethodology } from '../../data/districtCalculationAss
 import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
 import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
 import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
+import { SpatialSettlementDensityOverlay } from './SpatialSettlementDensityOverlay';
 import palikaGridData from '../../data/gulmi_palika_grid.json';
 
 
@@ -1090,6 +1091,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 
   const isMerraRainfallActive = selectedPillar === 'water' && (subFilters.waterSubFilter || 'merra_rainfall') === 'merra_rainfall';
   const isSolarGhiActive = selectedPillar === 'energy' && subFilters.energySubFilter === 'solar_irradiance';
+  const isLandholdingActive = selectedPillar === 'socioeconomics' && (subFilters.socioSubFilter === 'agri_landholding' || subFilters.socioSubFilter === 'landholding');
 
   const getPalikaStyle = (feature: any) => {
     const props = feature?.properties;
@@ -1103,6 +1105,16 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         opacity: 0.95,
         color: isHovered ? '#10b981' : '#475569',
         fillOpacity: isHovered ? 0.22 : 0,
+      };
+    }
+
+    if (isLandholdingActive) {
+      return {
+        fillColor,
+        weight: isHovered ? 2.5 : 1.4,
+        opacity: 0.9,
+        color: isHovered ? '#10b981' : '#334155',
+        fillOpacity: isHovered ? 0.65 : 0.45,
       };
     }
 
@@ -1703,6 +1715,15 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 />
               )}
 
+              {/* Continuous Spatial Settlement Building Density Heat Wave Overlay (78,934 OSM Building Geometries) */}
+              {isLandholdingActive && geoData && (
+                <SpatialSettlementDensityOverlay
+                  geoData={geoData}
+                  bounds={GULMI_BOUNDS}
+                  opacity={0.78}
+                />
+              )}
+
               {/* 12 Gulmi Palikas Vector Layer (Dynamically styled per Pillar, Crop, and Climate Time-Series) */}
               {palikasData && (
                 <GeoJSON
@@ -1724,6 +1745,16 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                         fillOpacity: isHovered ? 0.22 : 0,
                         color: isHovered ? '#10b981' : '#334155',
                         weight: isHovered ? 3.5 : 1.6,
+                        dashArray: '',
+                      };
+                    }
+
+                    if (isLandholdingActive) {
+                      return {
+                        fillColor: choropleth.getColor(feature?.properties?.name || ''),
+                        fillOpacity: isHovered ? 0.55 : 0.32,
+                        color: isHovered ? '#10b981' : '#334155',
+                        weight: isHovered ? 3.5 : 1.5,
                         dashArray: '',
                       };
                     }
