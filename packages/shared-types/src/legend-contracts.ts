@@ -434,15 +434,15 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     id: 'landholding',
     pillar: 'socioeconomics',
     title: 'Average Agricultural Landholding per Household',
-    subtitle: 'CBS National Sample Census of Agriculture 2021',
+    subtitle: 'MoALD Agricultural Resources Survey & Census 2021',
     unit: 'Ropani / HH',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/municipal/palika_profiles.json & CBS 2021',
+    dataSourceCitation: 'data/real/agriculture/gulmi_agricultural_landholding.geojson',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 8.0, color: '#047857', label: 'Substantial Holdings (≥8 Ropani)', description: 'High commercial vegetable and cash crop production capacity' },
-      { minValue: 4.0, maxValue: 7.9, color: '#10b981', label: 'Medium Smallholder (4–7.9 Ropani)', description: 'Standard mid-hill mixed subsistence and cash crop terrace farming' },
-      { maxValue: 3.9, color: '#ef4444', label: 'Marginal Smallholder (<4 Ropani)', description: 'High land fragmentation; requires collective farming or high-value crops' }
+      { minValue: 6.0, color: '#047857', label: 'Higher Terrace Holdings (≥6.0 Ropani)', description: 'Favorable rural land-to-household ratio supporting commercial horticulture' },
+      { minValue: 4.5, maxValue: 5.99, color: '#10b981', label: 'Mid-Hill Moderate Holdings (4.5–5.9 Ropani)', description: 'Typical mid-hill mixed subsistence cereal and cash crop terrace holding' },
+      { maxValue: 4.49, color: '#f59e0b', label: 'Dense Urbanized / Fragmented (<4.5 Ropani)', description: 'High population density / urban fragmentation (e.g. Resunga HQ corridor)' }
     ]
   },
 
