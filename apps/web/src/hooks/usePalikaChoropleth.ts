@@ -17,7 +17,6 @@ import palikaCookingData from '../data/gulmi_palika_cooking.json';
 import palikaGridData from '../data/gulmi_palika_grid.json';
 import palikaLandholdingData from '../data/gulmi_palika_landholding.json';
 import palikaSoilData from '../data/gulmi_palika_soil.json';
-import palikaTransitData from '../data/gulmi_palika_transit.json';
 import { getPalikaMicroClimate } from '../utils/climateDownscaling';
 import {
   CHOROPLETH_RAMPS,
@@ -931,51 +930,7 @@ export function computePalikaChoropleth({
     } else {
       const sSub = subFilters.socioSubFilter || 'local_governance';
 
-      if (sSub === 'hq_market_proximity' || sSub === 'road_access') {
-        metricConfig = {
-          metricKey: 'road_access',
-          pillar: 'socioeconomics',
-          label: 'Travel Time to Tamghas HQ',
-          unit: 'hours',
-          min: 0.2,
-          max: 2.5,
-          colorRamp: ['#047857', '#0ea5e9', '#f59e0b', '#ef4444'],
-        };
-
-        const transitMap = (palikaTransitData as any).palikas || {};
-
-        for (const feat of features) {
-          const props = feat.properties || {};
-          const pName = props.name || '';
-          const matched = transitMap[pName] ||
-            Object.entries(transitMap).find(([k]) => pName.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(pName.toLowerCase()))?.[1] || {
-              straight_km: 15.0,
-              road_km: 24.5,
-              transit_hours: 1.2,
-            };
-
-          const hours = matched.transit_hours;
-          const color = hours <= 0.5 ? '#047857' : hours <= 1.2 ? '#0ea5e9' : hours <= 1.6 ? '#f59e0b' : '#ef4444';
-
-          joinedData[props.name] = {
-            id: props.id || props.name,
-            name: props.name,
-            nepaliName: props.nepaliName,
-            type: props.type,
-            areaSqKm: props.areaSqKm,
-            value: hours,
-            formattedValue: `${hours} hrs`,
-            color,
-            tooltipHtml: `<div style="color: #0ea5e9; font-size: 10px; margin-top: 2px;">
-                            🛣️ Transit to Tamghas HQ: <strong>${hours} hrs</strong> (${matched.road_km} km)
-                            <div style="color: #64748b; font-size: 8.5px; margin-top: 1px;">
-                              📐 Geodesic Haversine Corridor • Tortuosity 1.65 • 22 km/h Mountain Transit
-                            </div>
-                          </div>`,
-            raw: matched,
-          };
-        }
-      } else if (sSub === 'agri_landholding' || sSub === 'landholding') {
+      if (sSub === 'agri_landholding' || sSub === 'landholding') {
         metricConfig = {
           metricKey: 'landholding',
           pillar: 'socioeconomics',
