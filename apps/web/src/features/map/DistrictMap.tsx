@@ -2108,7 +2108,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
           <div className="flex items-center gap-2 flex-wrap">
             <span className="flex items-center gap-1.5 text-xs font-bold text-slate-800 font-outfit">
               <FileText className="w-3.5 h-3.5 text-emerald-600" />
-              <span>{lang === 'np' ? 'विश्लेषणात्मक टिपोट' : 'Analytical Note'}</span>
+              <span>{lang === 'np' ? 'प्रस्तुति तथा नक्सा टिपोट' : 'Layer Briefing & Presenter Notes'}</span>
             </span>
             <span className="text-slate-300 hidden sm:inline">•</span>
             <span className="text-xs text-slate-700 font-semibold">
@@ -2142,11 +2142,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 
         {/* Minimal 3-Column Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 text-xs pt-1 md:divide-x md:divide-slate-100">
-          {/* Column 1: Formula & Mathematical Basis */}
+          {/* Column 1: Formula & Mathematical Basis / Operational Framework */}
           <div className="space-y-1.5 flex flex-col justify-between">
             <div className="space-y-1">
               <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-outfit">
-                {lang === 'np' ? 'गणितीय सूत्र:' : 'Mathematical Formula:'}
+                {activeCalc.confidence === 'OBSERVED REAL'
+                  ? (lang === 'np' ? 'प्रस्तुति तथा सञ्चालन आधार:' : 'Presenter & Operational Framework:')
+                  : (lang === 'np' ? 'गणितीय तथा विश्लेषणात्मक सूत्र:' : 'Mathematical & Analytical Model:')
+                }
               </div>
               <div className="bg-slate-50/80 border border-slate-200/70 rounded-lg p-2.5 font-mono text-xs shadow-2xs space-y-1.5">
                 <div className="font-semibold text-slate-900 break-words leading-snug">
