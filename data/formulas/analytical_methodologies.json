@@ -110,15 +110,14 @@
     "dhm_station": {
       "shortTitle": { "en": "DHM Hydro-Meteorological Stations", "np": "जल तथा मौसम मापन केन्द्र सञ्जाल" },
       "pillarName": { "en": "Water", "np": "जल" },
-      "model": { "en": "DHM Ground Gauge Network & Orographic Precipitation Uplift Model", "np": "जल तथा मौसम विज्ञान विभाग ग्राउन्ड गेज सञ्जाल र उचाइ अनुसारको वर्षा मोडल" },
-      "formula": "P(z) = P_ref · [1 + γ · (z - z_ref)]  |  Q = a · (h - h0)^b",
-      "parameter": { "en": "Precipitation Lapse Rate γ (mm/m), Elevation z (m masl), Streamflow Q (m³/s)", "np": "वर्षा उचाइ दर γ, भौगोलिक उचाइ z (मिटर), नदी बहाव Q (घनमिटर/सेकेन्ड)" },
+      "model": { "en": "DHM National Ground Station Network & Telemetry", "np": "जल तथा मौसम विज्ञान विभाग राष्ट्रिय केन्द्र सञ्जाल तथा टेलिमेट्री" },
+      "formula": "DHM National Station Index & Gauge Classification",
+      "parameter": { "en": "8 Active District Stations (5 Precipitation, 2 Climatology, 1 Telemetric AWS)", "np": "गुल्मी जिल्लाका ८ सक्रिय केन्द्रहरू (५ वर्षा, २ जलवायु, १ स्वचालित AWS)" },
       "variables": [
-        { "symbol": "P(z)", "definition": { "en": "Ground-calibrated monthly precipitation at terrain elevation z (mm)", "np": "उचाइ अनुसार क्यालिब्रेसन गरिएको मासिक वर्षा (मिमी)" } },
-        { "symbol": "P_ref", "definition": { "en": "Reference precipitation recorded at valley base station (e.g. Ridi 494m)", "np": "उपत्यका वा नदी किनारको आधार स्टेशनमा मापन गरिएको वर्षा" } },
-        { "symbol": "γ", "definition": { "en": "Empirical mid-hill orographic rainfall uplift coefficient (0.00035 to 0.00065 /m)", "np": "मध्यपहाडी उचाइ अनुसारको वर्षा वृद्धि गुणांक" } },
-        { "symbol": "Q", "definition": { "en": "River streamflow discharge rate from hydrometric staff gauge rating curve (m³/s)", "np": "नदीको पानीको बहाव दर (घनमिटर प्रति सेकेन्ड)" } },
-        { "symbol": "h", "definition": { "en": "Observed water staff gauge stage height (m)", "np": "मापन गरिएको जल सतह वा गेजको उचाइ (मिटर)" } }
+        { "symbol": "Precipitation", "definition": { "en": "Daily manual rainfall recording stations (Ridi #701, Musikot #722, Agimir #731, Bharse #733, Daugha #734)", "np": "दैनिक वर्षा मापन केन्द्रहरू (रिडी बजार #७०१, मुसीकोट #७२२, अगिमिर #७३१, भार्से #७३३, दौघा #७३४)" } },
+        { "symbol": "Climatological", "definition": { "en": "Comprehensive climate parameters (Temp, RH, Wind) at Tamghas #725 and Anp Chour #732", "np": "तापक्रम, आद्रता, हावाको गति मापन गर्ने जलवायु केन्द्रहरू (तम्घास #७२५ र आँपचौर #७३२)" } },
+        { "symbol": "Telemetric AWS", "definition": { "en": "Real-time automated cellular/satellite telemetry station at Tamghas New AWS", "np": "वास्तविक समयमा इन्टरनेट/सेलुलरबाट तथ्याङ्क पठाउने स्वचालित मौसम केन्द्र (तम्घास नयाँ AWS)" } },
+        { "symbol": "Elevation Range", "definition": { "en": "Covers altitudinal gradient from 494m (Ridi) to 1,626m (Bharse) for orographic verification", "np": "उचाइगत वर्षा अध्ययनका लागि ४९४ मिटर (रिडी) देखि १,६२६ मिटर (भार्से) सम्मको सञ्जाल" } }
       ],
       "description": {
         "en": "Official Department of Hydrology and Meteorology (DHM) ground monitoring network in Gulmi District comprising 8 active stations: 5 precipitation stations (Index 701 Ridi Bazar 494m, Index 722 Musikot 1353m, Index 731 Agimir 1493m, Index 733 Bharse 1626m, Index 734 Daugha 960m), 2 climatological stations (Index 725 Tamghas 1547m, Index 732 Anp Chour 738m), and 1 real-time Automated Weather Station (Tamghas New AWS).",
@@ -297,17 +296,16 @@
       "currentStat": "58.1% to 96.1% Firewood Reliance (District Mean: 86.3%)"
     },
     "grid_reach": {
-      "shortTitle": { "en": "NEA Substation Grid Reach", "np": "विद्युत प्राधिकरण सबस्टेसन र फिडर सञ्जाल" },
+      "shortTitle": { "en": "NEA Substation Grid Architecture", "np": "विद्युत प्राधिकरण सबस्टेसन र फिडर सञ्जाल" },
       "pillarName": { "en": "Energy", "np": "ऊर्जा" },
-      "model": { "en": "NEA Sub-Transmission & Radial Distribution Feeder Impedance Model", "np": "नेपाल विद्युत प्राधिकरण सब-प्रसारण र वितरण फिडर भोल्टेज मोडल" },
-      "formula": "V_drop = I · (R · cos θ + X · sin θ) · L",
-      "parameter": { "en": "Feeder Resistance R (Ω/km), Reactance X (Ω/km), Line Length L (km), Load I (A)", "np": "फिडर प्रतिरोध R (Ω/किमी), रियाक्टेन्स X, दूरी L (किमी), लोड I" },
+      "model": { "en": "NEA Sub-Transmission Hub & Radial Feeder Distribution Framework", "np": "नेपाल विद्युत प्राधिकरण सब-प्रसारण हब र फिडर वितरण प्रणाली" },
+      "formula": "NEA 132/33/11 kV Grid Architecture & Radial Feeder Framework",
+      "parameter": { "en": "2 Bulk 132 kV Hubs (76 MVA) + 3 Distribution 33 kV Hubs (21 MVA)", "np": "२ मुख्य १३२ केभी सबस्टेसन (७६ MVA) + ३ वितरण ३३ केभी सबस्टेसन (२१ MVA)" },
       "variables": [
-        { "symbol": "V_drop", "definition": { "en": "Line terminal voltage drop from servicing substation to consumer node (Volts)", "np": "सबस्टेसनबाट उपभोक्तासम्म प्रसारण दूरीका कारण हुने भोल्टेज गिरावट (भोल्ट)" } },
-        { "symbol": "I", "definition": { "en": "Peak active feeder distribution current (Amperes)", "np": "अधिकतम फिडर वितरण करेन्ट (एम्पियर)" } },
-        { "symbol": "R, X", "definition": { "en": "ACSR Dog / Rabbit conductor resistance and inductive reactance per unit length (Ω/km)", "np": "कन्डक्टरको प्रति किलोमिटर तारको विद्युत प्रतिरोध र इन्डक्टिभ रियाक्टेन्स" } },
-        { "symbol": "L", "definition": { "en": "Feeder line route distance from servicing 132/33 kV or 33/11 kV substation (km)", "np": "नजिकको १३२/३३ केभी वा ३३/११ केभी सबस्टेसनबाट पालिका केन्द्रसम्मको दूरी (किमी)" } },
-        { "symbol": "cos θ", "definition": { "en": "System operating power factor (typically 0.85–0.90 lagging)", "np": "प्रणालीको पावर फ्याक्टर (सामान्यतया ०.८५ देखि ०.९०)" } }
+        { "symbol": "Tamghas Hub", "definition": { "en": "Unaichaur 132/33/11 kV Substation (46 MVA capacity) — District central transmission anchor", "np": "उनाइचौर तम्घास १३२/३३/११ केभी सबस्टेसन (४६ MVA क्षमता) — जिल्लाको मुख्य प्रसारण केन्द्र" } },
+        { "symbol": "Paudi Amarai Hub", "definition": { "en": "Paudi Amarai 132/33/11 kV Substation (30 MVA capacity) — Northern corridor & Burtibang interconnect", "np": "पौदी अमराई १३२/३३/११ केभी सबस्टेसन (३० MVA क्षमता) — उत्तरी क्षेत्र र बुर्तिबाङ लाइन" } },
+        { "symbol": "Distribution Hubs", "definition": { "en": "33/11 kV substations at Kisantari (3 MVA), Birbas (8 MVA), and Ridi (10 MVA with 7.4 MW local hydro)", "np": "३३/११ केभी वितरण सबस्टेसनहरू: किसनतरी (३ MVA), बीरबास (८ MVA), र रिडी (१० MVA)" } },
+        { "symbol": "Feeder Servicing", "definition": { "en": "Radial 33 kV and 11 kV line routes linking each Palika to its nearest primary substation", "np": "प्रत्येक पालिकालाई नजिकको सबस्टेसनसँग जोड्ने ३३ केभी र ११ केभी फिडर लाइनहरू" } }
       ],
       "description": {
         "en": "Empirical electrical network topology mapping all 12 Palikas to their servicing Nepal Electricity Authority (NEA) substations: Tamghas (Unaichaur 132/33/11 kV, 46 MVA), Paudi Amarai (132/33/11 kV, 30 MVA), Kisantari (33/11 kV, 3 MVA), Birbas (33/11 kV, 8 MVA), and Ridi (33/11 kV, 10 MVA with 7.4 MW local hydro integration).",
@@ -378,7 +376,7 @@
       "shortTitle": { "en": "Administrative Typology", "np": "स्थानीय तह संरचना" },
       "pillarName": { "en": "Socioeconomics", "np": "सामाजिक-आर्थिक" },
       "model": { "en": "Constitution of Nepal 2015 Local Governance Typology", "np": "नेपालको संविधान २०७२ स्थानीय संरचना" },
-      "formula": "2 Urban (Nagarpalika) + 10 Rural (Gaunpalika)",
+      "formula": "MoFAGA Local Administrative Structure (2 Urban + 10 Rural)",
       "parameter": { "en": "Constitution of Nepal 2015 Local Governance Typology", "np": "नेपालको संविधान २०७२ स्थानीय संरचना" },
       "variables": [
         { "symbol": "Nagarpalika", "definition": { "en": "2 Urban Municipalities: Resunga (HQ) and Musikot", "np": "२ नगरपालिका: रेसुङ्गा (सदरमुकाम) र मुसिकोट" } },
