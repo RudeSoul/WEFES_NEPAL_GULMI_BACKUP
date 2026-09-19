@@ -804,7 +804,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       } else if (['hydro_corridor', 'solar_irradiance', 'clean_cooking_biomass'].includes(value)) {
         setSelectedPillar('energy');
         onSubFilterChange({ energySubFilter: value });
-      } else if (['local_governance', 'hq_market_proximity', 'agri_landholding', 'labor_wages'].includes(value)) {
+      } else if (['local_governance', 'hq_market_proximity', 'agri_landholding'].includes(value)) {
         setSelectedPillar('socioeconomics');
         onSubFilterChange({ socioSubFilter: value });
       }
