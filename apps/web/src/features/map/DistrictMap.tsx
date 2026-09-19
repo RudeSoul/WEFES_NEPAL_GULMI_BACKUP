@@ -804,7 +804,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       } else if (['hydro_corridor', 'solar_irradiance', 'clean_cooking_biomass'].includes(value)) {
         setSelectedPillar('energy');
         onSubFilterChange({ energySubFilter: value });
-      } else if (['local_governance', 'hq_market_proximity', 'agri_landholding'].includes(value)) {
+      } else if (['local_governance', 'agri_landholding'].includes(value)) {
         setSelectedPillar('socioeconomics');
         onSubFilterChange({ socioSubFilter: value });
       }
@@ -1830,11 +1830,11 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 );
               })}
 
-              {/* Contextual Layer Isolation 1: Roads strictly shown when explicitly filtering roads / market proximity */}
+              {/* Contextual Layer Isolation 1: Roads strictly shown when explicitly filtering roads */}
               {nationalRoads && (
                 subFilters.highwayFilter === 'all' ||
                 subFilters.highwayFilter === 'primary' ||
-                (selectedPillar === 'socioeconomics' && (subFilters.socioSubFilter === 'hq_market_proximity' || subFilters.highwayFilter !== 'none'))
+                (selectedPillar === 'socioeconomics' && subFilters.highwayFilter !== 'none')
               ) && (
                   <GeoJSON
                     key={`national-roads-${subFilters.highwayFilter || 'corridor'}`}
