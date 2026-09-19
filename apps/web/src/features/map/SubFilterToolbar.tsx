@@ -158,7 +158,6 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
               <option value="local_governance">🏛️ Local Governance Classification (Municipalities & Rural Palikas)</option>
               <option value="hq_market_proximity">🛣️ Proximity to Tamghas HQ & Madan Bhandari Highway</option>
               <option value="agri_landholding">🚜 Average Agricultural Landholding per Household</option>
-              <option value="labor_wages">💼 Daily Agricultural Labor Rate (NPR/Day)</option>
             </select>
           </>
         );
