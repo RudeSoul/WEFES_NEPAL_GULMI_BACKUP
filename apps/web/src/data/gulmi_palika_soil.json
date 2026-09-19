@@ -1,0 +1,82 @@
+{
+  "_provenance": {
+    "source": "data/real/land_and_soil/gulmi_soil_points_81.json",
+    "classification": "OBSERVED REAL & INVERSE DISTANCE WEIGHTED (IDW)",
+    "citations": "National Agricultural Research Council (NARC) Soil Science Division",
+    "description": "Municipal soil fertility indices (N %, P2O5 kg/ha, K2O kg/ha, pH) derived via Inverse Distance Weighting from 81 laboratory soil observation points across Gulmi."
+  },
+  "palikas": {
+    "Chandrakot": {
+      "nitrogenPct": 0.172,
+      "phosphorusKgHa": 144.4,
+      "potassiumKgHa": 250.9,
+      "ph": 6.7
+    },
+    "Chatrakot": {
+      "nitrogenPct": 0.166,
+      "phosphorusKgHa": 138.2,
+      "potassiumKgHa": 250.6,
+      "ph": 6.73
+    },
+    "Dhurkot": {
+      "nitrogenPct": 0.17,
+      "phosphorusKgHa": 139.6,
+      "potassiumKgHa": 250.5,
+      "ph": 6.71
+    },
+    "Gulmidarbar": {
+      "nitrogenPct": 0.169,
+      "phosphorusKgHa": 140.3,
+      "potassiumKgHa": 250.7,
+      "ph": 6.72
+    },
+    "Isma": {
+      "nitrogenPct": 0.17,
+      "phosphorusKgHa": 140.2,
+      "potassiumKgHa": 250.5,
+      "ph": 6.71
+    },
+    "Kaligandaki": {
+      "nitrogenPct": 0.177,
+      "phosphorusKgHa": 133.8,
+      "potassiumKgHa": 229.9,
+      "ph": 6.71
+    },
+    "Madane": {
+      "nitrogenPct": 0.17,
+      "phosphorusKgHa": 139.4,
+      "potassiumKgHa": 250.4,
+      "ph": 6.71
+    },
+    "Malika": {
+      "nitrogenPct": 0.17,
+      "phosphorusKgHa": 139.8,
+      "potassiumKgHa": 250.4,
+      "ph": 6.71
+    },
+    "Musikot": {
+      "nitrogenPct": 0.171,
+      "phosphorusKgHa": 141.0,
+      "potassiumKgHa": 250.5,
+      "ph": 6.71
+    },
+    "Resunga": {
+      "nitrogenPct": 0.169,
+      "phosphorusKgHa": 140.2,
+      "potassiumKgHa": 250.6,
+      "ph": 6.71
+    },
+    "Ruru": {
+      "nitrogenPct": 0.162,
+      "phosphorusKgHa": 134.8,
+      "potassiumKgHa": 249.8,
+      "ph": 6.75
+    },
+    "Satyawati": {
+      "nitrogenPct": 0.178,
+      "phosphorusKgHa": 160.6,
+      "potassiumKgHa": 255.1,
+      "ph": 6.68
+    }
+  }
+}
