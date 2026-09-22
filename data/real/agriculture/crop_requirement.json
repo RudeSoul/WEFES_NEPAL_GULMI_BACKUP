@@ -1,0 +1,478 @@
+{
+  "schema_version": "1.0.0",
+  "dataset": "crop_requirements",
+  "description": "Evidence-backed environmental requirements for crops relevant to Nepal crop-suitability assessment.",
+  "interpretation_policy": {
+    "ecocrop_absolute": "An ECOCROP-reported environmental range. It is not automatically interpreted as a physiological survival or lethal limit.",
+    "altitude": "Altitude is contextual unless the source explicitly establishes it as an independent suitability constraint.",
+    "missing": "Missing data are unknown and must not be interpreted as unsuitable.",
+    "gdd": "GDD is null unless the source explicitly provides a base temperature, phenological endpoint, calculation method, and source."
+  },
+  "crops": [
+    {
+      "id": "coffee",
+      "name": "Arabica Coffee",
+      "scientific_name": "Coffea arabica",
+      "source_taxon": "Coffea arabica",
+      "requirements": {
+        "temperature": {
+          "optimal_c": [14, 28],
+          "ecocrop_absolute_c": [10, 34],
+          "evaluation": "graded"
+        },
+        "rainfall": {
+          "annual_mm": {
+            "optimal": [1400, 2300],
+            "ecocrop_absolute": [750, 4200]
+          },
+          "evaluation": "graded",
+          "seasonality_required": false
+        },
+        "altitude": {
+          "ecocrop_max_m": 2800,
+          "evaluation": "contextual"
+        },
+        "soil": {
+          "ph": {
+            "optimal": [5.5, 7.0],
+            "ecocrop_absolute": [4.3, 8.4],
+            "evaluation": "graded"
+          },
+          "texture": {
+            "optimal": ["medium", "organic"],
+            "ecocrop_absolute": ["medium", "light"]
+          },
+          "depth_cm": {
+            "optimal": ">150",
+            "ecocrop_absolute": "50-150"
+          },
+          "drainage": {
+            "preferred": "well_drained"
+          }
+        },
+        "terrain": {},
+        "management": {},
+        "gdd": null
+      },
+      "evidence": [
+        {
+          "source_id": "FAO_ECOCROP_749",
+          "role": "primary"
+        }
+      ]
+    },
+
+    {
+      "id": "maize",
+      "name": "Maize",
+      "scientific_name": "Zea mays",
+      "source_taxon": "Zea mays",
+      "requirements": {
+        "temperature": {
+          "optimal_c": [18, 33],
+          "ecocrop_absolute_c": [10, 47],
+          "evaluation": "graded"
+        },
+        "rainfall": {
+          "annual_mm": {
+            "optimal": [600, 1200],
+            "ecocrop_absolute": [400, 1800]
+          },
+          "evaluation": "graded"
+        },
+        "altitude": {
+          "ecocrop_max_m": 4000,
+          "evaluation": "contextual"
+        },
+        "soil": {
+          "ph": {
+            "optimal": [5.0, 7.0],
+            "ecocrop_absolute": [4.5, 8.5],
+            "evaluation": "graded"
+          },
+          "texture": {
+            "optimal": null,
+            "ecocrop_absolute": null
+          },
+          "depth_cm": {
+            "optimal": "50-150",
+            "ecocrop_absolute": "20-50"
+          },
+          "fertility": {
+            "optimal": "high",
+            "ecocrop_absolute": "low"
+          }
+        },
+        "terrain": {},
+        "management": {},
+        "gdd": null
+      },
+      "evidence": [
+        {
+          "source_id": "FAO_ECOCROP_2175",
+          "role": "primary"
+        }
+      ]
+    },
+
+    {
+      "id": "rice",
+      "name": "Paddy Rice",
+      "scientific_name": "Oryza sativa",
+      "source_taxon": "Oryza sativa",
+      "requirements": {
+        "temperature": {
+          "optimal_c": [20, 30],
+          "ecocrop_absolute_c": [10, 36],
+          "evaluation": "graded"
+        },
+        "rainfall": {
+          "annual_mm": {
+            "optimal": [1500, 2000],
+            "ecocrop_absolute": [1000, 4000]
+          },
+          "evaluation": "graded"
+        },
+        "altitude": {
+          "ecocrop_max_m": 2500,
+          "evaluation": "contextual"
+        },
+        "soil": {
+          "ph": {
+            "optimal": [5.5, 7.0],
+            "ecocrop_absolute": [4.5, 9.0],
+            "evaluation": "graded"
+          },
+          "texture": {
+            "optimal": ["wide"],
+            "ecocrop_absolute": ["wide"],
+            "normalization": null
+          },
+          "depth_cm": {
+            "optimal": "50-150",
+            "ecocrop_absolute": "20-50"
+          },
+          "drainage": {
+            "preferred": "poorly_drained",
+            "saturation": ">50% of year"
+          }
+        },
+        "terrain": {},
+        "management": {
+          "water_regime": "important"
+        },
+        "gdd": null
+      },
+      "evidence": [
+        {
+          "source_id": "FAO_ECOCROP_1574",
+          "role": "primary"
+        }
+      ]
+    },
+
+    {
+      "id": "wheat",
+      "name": "Wheat",
+      "scientific_name": "Triticum aestivum",
+      "source_taxon": "Triticum aestivum",
+      "requirements": {
+        "temperature": {
+          "optimal_c": [15, 23],
+          "ecocrop_absolute_c": [5, 27],
+          "evaluation": "graded"
+        },
+        "rainfall": {
+          "annual_mm": {
+            "optimal": [750, 900],
+            "ecocrop_absolute": [300, 1600]
+          },
+          "evaluation": "graded"
+        },
+        "altitude": {
+          "ecocrop_max_m": 4500,
+          "evaluation": "contextual"
+        },
+        "soil": {
+          "ph": {
+            "optimal": [6.0, 7.0],
+            "ecocrop_absolute": [5.5, 8.5],
+            "evaluation": "graded"
+          },
+          "texture": {
+            "optimal": ["medium", "organic"],
+            "ecocrop_absolute": ["heavy", "medium"]
+          },
+          "depth_cm": {
+            "optimal": "50-150",
+            "ecocrop_absolute": "20-50"
+          },
+          "drainage": {
+            "preferred": "well_drained"
+          }
+        },
+        "terrain": {},
+        "management": {},
+        "gdd": null
+      },
+      "evidence": [
+        {
+          "source_id": "FAO_ECOCROP_2114",
+          "role": "primary"
+        }
+      ]
+    },
+
+    {
+      "id": "apple",
+      "name": "Apple",
+      "scientific_name": "Malus domestica",
+      "source_taxon": "Malus domestica",
+      "requirements": {
+        "temperature": {
+          "optimal_c": [14, 27],
+          "ecocrop_absolute_c": [8, 33],
+          "evaluation": "graded"
+        },
+        "rainfall": {
+          "annual_mm": {
+            "optimal": [700, 2500],
+            "ecocrop_absolute": [500, 3200]
+          },
+          "evaluation": "graded"
+        },
+        "altitude": {
+          "ecocrop_max_m": 1800,
+          "evaluation": "contextual"
+        },
+        "soil": {
+          "ph": {
+            "optimal": [6.0, 7.0],
+            "ecocrop_absolute": [4.5, 8.0],
+            "evaluation": "graded"
+          },
+          "texture": {
+            "optimal": ["medium", "light"],
+            "ecocrop_absolute": ["heavy", "medium", "light"]
+          },
+          "depth_cm": {
+            "optimal": ">150",
+            "ecocrop_absolute": "50-150"
+          },
+          "fertility": {
+            "optimal": "high",
+            "ecocrop_absolute": "moderate"
+          },
+          "drainage": {
+            "preferred": "well_drained"
+          }
+        },
+        "terrain": {},
+        "management": {},
+        "gdd": null
+      },
+      "evidence": [
+        {
+          "source_id": "FAO_ECOCROP_1407",
+          "role": "primary"
+        }
+      ]
+    },
+
+    {
+      "id": "finger_millet",
+      "name": "Finger Millet",
+      "scientific_name": "Eleusine coracana",
+      "source_taxon": "Eleusine coracana ssp. coracana",
+      "requirements": {
+        "temperature": {
+          "optimal_c": [18, 30],
+          "ecocrop_absolute_c": [8, 35],
+          "evaluation": "graded"
+        },
+        "rainfall": {
+          "annual_mm": {
+            "optimal": [500, 1100],
+            "ecocrop_absolute": [300, 4300]
+          },
+          "evaluation": "graded"
+        },
+        "altitude": {
+          "ecocrop_max_m": 2500,
+          "evaluation": "contextual"
+        },
+        "soil": {
+          "ph": {
+            "optimal": [6.0, 7.0],
+            "ecocrop_absolute": [5.5, 8.2],
+            "evaluation": "graded"
+          },
+          "texture": {
+            "optimal": ["medium"],
+            "ecocrop_absolute": ["heavy", "medium", "light"]
+          },
+          "depth_cm": {
+            "optimal": "50-150",
+            "ecocrop_absolute": "20-50"
+          },
+          "drainage": {
+            "preferred": "well_drained"
+          }
+        },
+        "terrain": {},
+        "management": {},
+        "gdd": null
+      },
+      "evidence": [
+        {
+          "source_id": "FAO_ECOCROP_5657",
+          "role": "primary"
+        }
+      ]
+    },
+
+    {
+      "id": "large_cardamom",
+      "name": "Large Black Cardamom",
+      "scientific_name": "Amomum subulatum",
+      "source_taxon": "Amomum subulatum",
+      "requirements": {
+        "temperature": {
+          "optimal_c": [18, 28],
+          "evaluation": "graded"
+        },
+        "rainfall": {
+          "annual_mm": {
+            "highly_suitable": ">2200",
+            "moderately_suitable": [1200, 2200],
+            "marginal": [600, 1200],
+            "unsuitable": "<600"
+          },
+          "evaluation": "source_classified"
+        },
+        "altitude": {
+          "reported_context_m": [1000, 2200],
+          "evaluation": "contextual"
+        },
+        "soil": {
+          "ph": {
+            "highly_suitable": [5.5, 6.3],
+            "moderately_suitable": [
+              [5.0, 5.5],
+              [6.3, 6.8]
+            ],
+            "marginal": [
+              [4.5, 5.0],
+              [6.8, 7.5]
+            ],
+            "unsuitable": [
+              "<4.5",
+              ">7.5"
+            ],
+            "evaluation": "source_classified"
+          },
+          "texture": {
+            "highly_suitable": ["sandy_loam"]
+          },
+          "depth_cm": {
+            "highly_suitable": ">100"
+          },
+          "drainage": {
+            "preferred": "well_drained"
+          }
+        },
+        "terrain": {
+          "slope_deg": {
+            "highly_suitable": [5, 8],
+            "moderately_suitable": [
+              "<5",
+              [8, 15]
+            ],
+            "marginal": [15, 30],
+            "unsuitable": ">30",
+            "evaluation": "source_classified"
+          },
+          "aspect": {
+            "preferred": [
+              "north",
+              "northeast"
+            ],
+            "evaluation": "contextual"
+          }
+        },
+        "microclimate": {
+          "shade": {
+            "importance": "high"
+          },
+          "moisture": {
+            "importance": "high"
+          }
+        },
+        "management": {},
+        "gdd": null
+      },
+      "evidence": [
+        {
+          "source_id": "BANIYA_2009_LARGE_CARDAMOM",
+          "role": "primary_local_source"
+        }
+      ]
+    },
+
+    {
+      "id": "tomato",
+      "name": "Tomato",
+      "scientific_name": "Solanum lycopersicum",
+      "source_taxon": "Lycopersicon esculentum",
+      "source_taxon_note": "ECOCROP indexes the crop under Lycopersicon esculentum and identifies Solanum lycopersicum as a synonym.",
+      "requirements": {
+        "temperature": {
+          "optimal_c": [20, 27],
+          "ecocrop_absolute_c": [7, 35],
+          "evaluation": "graded"
+        },
+        "rainfall": {
+          "annual_mm": {
+            "optimal": [600, 1300],
+            "ecocrop_absolute": [400, 1800]
+          },
+          "evaluation": "graded"
+        },
+        "altitude": {
+          "ecocrop_max_m": 2400,
+          "evaluation": "contextual"
+        },
+        "soil": {
+          "ph": {
+            "optimal": [5.5, 6.8],
+            "ecocrop_absolute": [5.0, 7.5],
+            "evaluation": "graded"
+          },
+          "texture": {
+            "optimal": ["medium", "organic"],
+            "ecocrop_absolute": ["heavy", "medium", "light"]
+          },
+          "depth_cm": {
+            "ecocrop": "20-50"
+          },
+          "fertility": {
+            "optimal": "high",
+            "ecocrop_absolute": "moderate"
+          },
+          "drainage": {
+            "preferred": "well_drained"
+          }
+        },
+        "terrain": {},
+        "management": {},
+        "gdd": null
+      },
+      "evidence": [
+        {
+          "source_id": "FAO_ECOCROP_1379",
+          "role": "primary"
+        }
+      ]
+    }
+  ]
+}
