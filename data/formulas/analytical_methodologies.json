@@ -137,31 +137,84 @@
     "single_crop": {
       "shortTitle": { "en": "{crop} Suitability", "np": "{crop} अनुकूलता" },
       "pillarName": { "en": "Food", "np": "खाद्य" },
-      "model": { "en": "FAO-56 EcoCrop & NARC Agro-Climatic Suitability", "np": "एफएओ-५६ इकोक्रप र नार्क जैविक-जलवायु मोडल" },
-      "formula": "Suitability = min(S_temp, S_rain, S_elev, S_pH) × W_soil",
-      "parameter": { "en": "NARC Cultivar Liebig Limiting Envelope Model", "np": "नार्क सिफारिस लिबिक न्यूनतम सीमा मोडल" },
+      "model": { "en": "Two-Tier Rule: FAO EcoCrop + Municipal Survey Grounding", "np": "दुई-तह विधि: एफएओ जैविक सीमा + स्थानीय सरकार कृषि सम्भाव्यता सर्वेक्षण" },
+      "formula": "Suitability = Tier2_SurveyScore if verified else RuleClass_Score(T, P, pH, Alt)",
+      "parameter": { "en": "Two-Tier Rule: Tier 1 FAO EcoCrop Biological Envelope + Tier 2 MoFAGA/MoALD Survey Grounding", "np": "दुई-तह विधि: एफएओ जैविक सीमा + स्थानीय सरकार कृषि सम्भाव्यता सर्वेक्षण" },
       "variables": [
-        { "symbol": "Suitability", "definition": { "en": "Final agronomic crop feasibility index (0–100%)", "np": "अन्तिम कृषि-जलवायु बाली अनुकूलता सूचकाङ्क" } },
-        { "symbol": "S_temp", "definition": { "en": "Thermal suitability from monthly growing degree days (GDD)", "np": "तापक्रम तथा औसत ताप एकाइ अनुकूलता" } },
-        { "symbol": "S_rain", "definition": { "en": "Moisture suitability from monthly rainfall envelopes", "np": "मासिक वर्षा तथा आद्रता अनुकूलता" } },
-        { "symbol": "S_elev", "definition": { "en": "Hypsometric altitude envelope score from SRTM DEM", "np": "उचाइगत भू-बनोट अनुकूलता" } },
-        { "symbol": "S_pH", "definition": { "en": "Soil reaction suitability from 127 laboratory points", "np": "माटोको पिएच (अम्लीयता/क्षारीयता) अनुकूलता" } },
-        { "symbol": "W_soil", "definition": { "en": "Soil texture and organic matter retention multiplier", "np": "माटोको बनावट तथा जैविक पदार्थको भारित गुणक" } }
+        { "symbol": "Suitability", "definition": { "en": "Official agro-climatic suitability score (0–100%) grounded in municipal surveys", "np": "अन्तिम कृषि-जलवायु बाली अनुकूलता सूचकाङ्क" } },
+        { "symbol": "Tier 1 (EcoCrop)", "definition": { "en": "Biophysical envelope checks for optimal temperature, precipitation, soil pH, and altitude limits", "np": "तापक्रम, वर्षा, माटोको पिएच र उचाइको जैविक सीमा परीक्षण" } },
+        { "symbol": "Tier 2 (Survey)", "definition": { "en": "Grounded municipal feasibility survey from MoFAGA / MoALD / CBS 2021 District Profiles", "np": "स्थानीय तह कृषि सम्भाव्यता सर्वेक्षण (सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय / कृषि मन्त्रालय)" } },
+        { "symbol": "Limiting Factor", "definition": { "en": "Primary agro-climatic constraint (frost risk, slope, thermal edge, dry-month rainfall deficit)", "np": "प्रमुख कृषि-जलवायु सीमितता (तुषारो, भिरालोपन, तापक्रम वा वर्षा अभाव)" } }
       ],
       "description": {
-        "en": "Evaluates limiting environmental envelopes (thermal degree days, monthly precipitation, elevation limits, soil pH) against NARC cultivar thresholds for {crop}.",
-        "np": "{crop} का लागि नार्क आधिकारिक सिफारिस अनुसार तापक्रम, वर्षा, उचाइ र माटोको पिएचलाई १२ पालिकाको सूक्ष्म जलवायुसँग तुलना गरी अनुकूलता गणना गरिएको छ।"
+        "en": "Two-tier scientific evaluation: Tier 1 checks biological limits against FAO EcoCrop species envelopes ({crop}); Tier 2 grounds Palika suitability scores directly in official municipal agricultural feasibility surveys (MoFAGA/MoALD/CBS 2021) with identified limiting constraints.",
+        "np": "दुई-तह वैज्ञानिक विधि: तह १ मा एफएओ इकोक्रप अनुसार {crop} का जैविक सीमाहरू (तापक्रम, वर्षा, माटो पिएच, उचाइ) परीक्षण गरिन्छ; तह २ मा गुल्मीका १२ पालिकाको आधिकारिक सरकारी कृषि सम्भाव्यता सर्वेक्षण (MoFAGA/MoALD/CBS २०७८) को वास्तविक प्राप्ताङ्क र सीमितता समावेश गरिन्छ।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "FAO EcoCrop Species Database (IDs 749, 2175, 1574, 2114, 5657, 1407, 1379)",
+        "Municipal Agricultural Feasibility Profiles (MoFAGA, MoALD, CBS Census 2021)",
+        "DHM Downscaled Climatology & NASA POWER",
+        "NARC Soil Sampling Grid pH Database"
+      ],
+      "citation": "Food and Agriculture Organization (FAO EcoCrop), MoFAGA & MoALD Nepal",
+      "provenancePath": "data/real/municipal/palika_profiles.json",
+      "unit": "Suitability Score %",
+      "currentStat": "Optimal (≥80%), High (65–79%), Marginal (45–64%), Constrained (<45%)"
+    },
+    "crop_water_stress": {
+      "shortTitle": { "en": "{crop} Moisture Stress ({season})", "np": "{crop} जल अभाव तथा तनाव ({season})" },
+      "pillarName": { "en": "Food", "np": "खाद्य" },
+      "model": { "en": "Crop Water Footprint & Evapotranspiration Deficit Model", "np": "बाली जल पदचाप तथा वाष्पीकरण अभाव मोडल" },
+      "formula": "Moisture Stress % = min(100, (Deficit / Demand) × 100)",
+      "parameter": { "en": "Demand = MinWaterReq × (Temp / 20°C); Deficit = max(0, Demand - Rain)", "np": "माग = न्यूनतम जल माग × (तापक्रम / २०°C); अभाव = माग - वर्षा" },
+      "variables": [
+        { "symbol": "Stress %", "definition": { "en": "Relative irrigation moisture deficit severity index (0–100%)", "np": "सिँचाइ तथा पानी अभावको गम्भीरता सूचकाङ्क" } },
+        { "symbol": "Demand", "definition": { "en": "Thermal-adjusted crop seasonal evapotranspiration water demand (mm)", "np": "तापक्रम अनुसार समायोजित बालीको मौसमी पानी माग" } },
+        { "symbol": "Deficit", "definition": { "en": "Precipitation shortfall requiring supplemental irrigation (mm)", "np": "प्राकृतिक वर्षा नपुग भई सिँचाइ चाहिने परिमाण (मिमी)" } },
+        { "symbol": "WF", "definition": { "en": "Global Water Footprint Network specific consumption benchmark (L/kg)", "np": "ग्लोबल वाटर फुटप्रिन्ट नेटवर्क अनुसार प्रति केजी पानी खपत दर" } }
+      ],
+      "description": {
+        "en": "Evaluates {crop} water footprint and moisture stress for the {season} by comparing evapotranspiration demand against downscaled precipitation across Gulmi's 12 Palikas.",
+        "np": "गुल्मीका १२ पालिकामा {season} का लागि {crop} को पानी माग र वर्षा बीचको खाडल मापन गरी सिँचाइ आवश्यकता र खडेरी जोखिम विश्लेषण गर्दछ।"
       },
       "confidence": "CALCULATED",
       "inputs": [
-        "NARC Crop Phenology Thresholds (1999–2025)",
-        "NASA MERRA-2 Climatology",
-        "NARC 127 Soil Survey Lab Points"
+        "Water Footprint Network Report 47 (Global Water Footprint of Crops)",
+        "DHM Ground Rain Gauge & NASA POWER Climatology",
+        "MoALD Seasonal Crop Water Requirements"
       ],
-      "citation": "Nepal Agricultural Research Council (NARC) & MoALD",
+      "citation": "Water Footprint Network (Mekonnen & Hoekstra) & DHM Nepal",
       "provenancePath": "data/real/agriculture/crops.json",
-      "unit": "Suitability Score %",
-      "currentStat": "Prime (≥75%), Highly (60–74%), Moderate (40–59%), Marginal (<40%)"
+      "unit": "% Moisture Deficit",
+      "currentStat": "Minimal Deficit (<25%), Low Stress (25-44%), Moderate (45-64%), Severe (≥65%)"
+    },
+    "land_typology": {
+      "shortTitle": { "en": "Terrace Typology & Landholding", "np": "जग्गाको किसिम तथा खेतबारी संरचना" },
+      "pillarName": { "en": "Food", "np": "खाद्य" },
+      "model": { "en": "NSO Agricultural Census 2021/22 Landholding Distribution", "np": "राष्ट्रिय कृषि गणना २०७८ जग्गा तथा खेतबारी वितरण" },
+      "formula": "Khet % = (Khet Area / Total Agricultural Area) × 100",
+      "parameter": { "en": "Census Holdings = 51,200; Avg Holding = 12.15 Ropani; Khet vs Bari", "np": "कृषि गणना २०७८: कुल कृषि परिवार, औसत जग्गा र खेत/बारी अनुपात" },
+      "variables": [
+        { "symbol": "Khet %", "definition": { "en": "Proportion of lowland bunded irrigated terraces suited for paddy & wheat", "np": "धान तथा गहुँका लागि उपयुक्त सिञ्चित खेतको प्रतिशत" } },
+        { "symbol": "Bari %", "definition": { "en": "Proportion of sloping rainfed upland terraces suited for maize, millet, coffee", "np": "मकै, कोदो र कफीका लागि उपयुक्त पाखो बारीको प्रतिशत" } },
+        { "symbol": "Parcels", "definition": { "en": "Average land fragmentation parcels per agricultural household", "np": "प्रति किसान परिवार औसत कित्ता सङ्ख्या (भू-खण्डिकरण)" } },
+        { "symbol": "Total Area", "definition": { "en": "Aggregated cultivated agricultural area recorded by NSO Census (ha)", "np": "राष्ट्रिय तथ्याङ्क कार्यालय अनुसार कुल कृषियोग्य क्षेत्रफल" } }
+      ],
+      "description": {
+        "en": "Official National Sample Census of Agriculture 2021/22 dataset documenting the physical division between lowland irrigated terraces (Khet) and sloping rainfed terraces (Bari) across all 12 Palikas of Gulmi.",
+        "np": "राष्ट्रिय तथ्याङ्क कार्यालय (NSO) को राष्ट्रिय कृषि गणना २०७८ अनुसार गुल्मीका १२ पालिकामा रहेका सिञ्चित खेत र पाखो बारीको वास्तविक क्षेत्रफल र कित्ता विवरण।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "National Sample Census of Agriculture 2021/22 (NSO Nepal)",
+        "Survey Department Cadastral Parcel Records",
+        "MoALD Land Resources Survey"
+      ],
+      "citation": "National Statistics Office (NSO), Government of Nepal (Census of Agriculture 2021/22)",
+      "provenancePath": "data/real/agriculture/gulmi_agricultural_landholding.geojson",
+      "unit": "% Khet / % Bari / Parcels",
+      "currentStat": "District: 19.4% Khet, 80.6% Bari, 3.3 Parcels/Holding"
     },
     "all_crops": {
       "shortTitle": { "en": "Composite Crop Suitability", "np": "एकीकृत बाली अनुकूलता" },
