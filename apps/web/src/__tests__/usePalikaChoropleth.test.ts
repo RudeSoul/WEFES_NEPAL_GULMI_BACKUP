@@ -91,6 +91,7 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
         { properties: { name: 'Resunga', nepaliName: 'रेसुङ्गा', type: 'Nagarpalika', areaSqKm: 83.77 } },
         { properties: { name: 'Kaligandaki', nepaliName: 'कालीगण्डकी', type: 'Gaunpalika', areaSqKm: 101.01 } },
         { properties: { name: 'Chandrakot', nepaliName: 'चन्द्रकोट', type: 'Gaunpalika', areaSqKm: 105.72 } },
+        { properties: { name: 'Madane', nepaliName: 'मदाने', type: 'Gaunpalika', areaSqKm: 94.52 } },
       ],
     };
 
@@ -189,7 +190,49 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
       });
 
       expect(resLand.metricConfig.metricKey).toBe('landholding');
-      expect(resLand.joinedData['Kaligandaki']?.value).toBe(6.37);
+      expect(resLand.joinedData['Kaligandaki']?.value).toBe(17.4);
+    });
+
+    it('updates metric config and evaluates crop suitability with FAO EcoCrop', async () => {
+      const resSuit = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'food',
+        subFilters: { foodMode: 'single_crop', crop: 'coffee' },
+      });
+
+      expect(resSuit.metricConfig.metricKey).toBe('crop_coffee');
+      // Resunga is a prime coffee zone (88% in official survey)
+      expect(resSuit.joinedData['Resunga']?.value).toBe(88);
+      expect(resSuit.joinedData['Resunga']?.tooltipHtml).toContain('Arabica Coffee');
+      expect(resSuit.joinedData['Resunga']?.tooltipHtml).toContain('Municipal Feasibility:');
+
+      // Kaligandaki (52% marginal) and Madane (42% constrained) reflect real microclimatic variability, not 100% everywhere
+      expect(resSuit.joinedData['Kaligandaki']?.value).toBe(52);
+      expect(resSuit.joinedData['Madane']?.value).toBe(42);
+      expect(resSuit.joinedData['Chandrakot']?.value).toBe(74);
+    });
+
+    it('updates metric config when food mode changes to crop_water_stress', async () => {
+      const resStress = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'food',
+        subFilters: { foodMode: 'crop_water_stress', crop: 'rice' },
+      });
+
+      expect(resStress.metricConfig.metricKey).toBe('water_stress_rice');
+      expect(resStress.joinedData['Kaligandaki']?.tooltipHtml).toContain('Moisture Stress');
+    });
+
+    it('updates metric config when food mode changes to land_typology', async () => {
+      const resLandType = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'food',
+        subFilters: { foodMode: 'land_typology', landMetric: 'khet_pct' },
+      });
+
+      expect(resLandType.metricConfig.metricKey).toBe('land_typology_khet_pct');
+      expect(resLandType.joinedData['Chandrakot']?.value).toBe(19.9);
+      expect(resLandType.joinedData['Chandrakot']?.tooltipHtml).toContain('Khet (Irrigated)');
     });
   });
 });
