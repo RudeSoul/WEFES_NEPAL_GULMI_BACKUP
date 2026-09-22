@@ -79,7 +79,9 @@ export function resolveCalculationMethodology(params: ResolveMethodologyParams):
     else if (wSub === 'dhm_station') key = 'dhm_station';
   } else if (selectedPillar === 'food') {
     const foodMode = subFilters.foodMode || 'single_crop';
-    if (foodMode === 'single_crop') key = 'single_crop';
+    if (foodMode === 'single_crop' || foodMode === 'crop_suitability') key = 'single_crop';
+    else if (foodMode === 'crop_water_stress') key = 'crop_water_stress';
+    else if (foodMode === 'land_typology') key = 'land_typology';
     else if (foodMode === 'all_crops') key = 'all_crops';
     else if (foodMode === 'cereal_index') key = 'cereal_index';
   } else if (selectedPillar === 'energy') {
@@ -101,10 +103,26 @@ export function resolveCalculationMethodology(params: ResolveMethodologyParams):
   const raw = ANALYTICAL_METHODOLOGIES[key] || ANALYTICAL_METHODOLOGIES['default'];
   const activeCrop = (lang === 'np' ? cropNameNepali : cropName) || (lang === 'np' ? 'बाली' : 'Crop');
 
+  const waterSeason = subFilters.waterSeason || 'cycle';
+  const seasonEnMap: Record<string, string> = {
+    cycle: 'Full Growing Cycle',
+    winter_dry: 'Winter Dry Period (Nov–Feb)',
+    pre_monsoon: 'Pre-Monsoon Dry Spell (Mar–May)',
+    monsoon_wet: 'Monsoon Wet Period (Jun–Sep)',
+  };
+  const seasonNpMap: Record<string, string> = {
+    cycle: 'पूर्ण बाली चक्र',
+    winter_dry: 'हिउँदे सुक्खा याम (मंसिर–फागुन)',
+    pre_monsoon: 'प्रि-मनसुन खडेरी याम (चैत–जेठ)',
+    monsoon_wet: 'मनसुनी अधिक वर्षा याम (असार–असोज)',
+  };
+  const activeSeason = lang === 'np' ? (seasonNpMap[waterSeason] || seasonNpMap.cycle) : (seasonEnMap[waterSeason] || seasonEnMap.cycle);
+
   // Interpolate dynamic values into localized text
   const formatText = (text: string) => {
     return text
       .replace(/{crop}/g, activeCrop)
+      .replace(/{season}/g, activeSeason)
       .replace(/{month}/g, monthName)
       .replace(/{rainMm}/g, String(Math.round(currentRainMm)))
       .replace(/{rainMin}/g, String(Math.round(currentRainMm * 0.82)))
