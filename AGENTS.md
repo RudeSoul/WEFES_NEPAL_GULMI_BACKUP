@@ -57,4 +57,35 @@ Before writing any citation string or import statement:
 - Keep all commits atomic: Max 400 net functional lines per commit.
 - Always run `python3 scripts/generate_ai_index.py` before committing (or use `pnpm commit:flow`).
 
+---
+
+## 7. Architecture Map & Subfilter Fast-Reference (Token-Optimized)
+When working on maps, subfilters, legends, or analytics, **NEVER search or grep blindly across the repo**. Refer directly to this authoritative map:
+
+### Multi-Pillar Subfilters & Data Lineage:
+| Pillar | SubFilter ID | Primary Data Source | Computation / Engine Location | Legend Contract |
+|---|---|---|---|---|
+| **Food** | `single_crop` / `crop_suitability` | `data/real/agriculture/crop_requirement.json` & `data/real/municipal/palika_profiles.json` | `apps/web/src/data/cropSuitabilityAssets.ts` (`evaluatePalikaCropSuitability`) | `crop_suitability` in `packages/shared-types/src/legend-contracts.ts` |
+| **Food** | `crop_water_stress` | `data/real/agriculture/crops.json`, DHM Rain & NASA POWER | `apps/web/src/data/cropSuitabilityAssets.ts` (`computePalikaMoistureStress`) | `crop_water_stress` (4 seasons: `cycle`, `winter_dry`, `pre_monsoon`, `monsoon_wet`) |
+| **Food** | `land_typology` | `data/real/agriculture/gulmi_agricultural_landholding.geojson` & `apps/web/src/data/gulmi_palika_landholding.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `land_typology` (Khet %, Bari %, Parcel density from NSO Census 2021/22) |
+| **Water** | `irrigation_potential` | `data/real/agriculture/gulmi_agricultural_landholding.geojson` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `irrigation_potential` |
+| **Water** | `spring_vulnerability` | `data/real/hydrology/` & `palika_profiles.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `spring_vulnerability` |
+| **Water** | `dhm_station` | `data/real/hydrology/` DHM station network | `apps/web/src/hooks/usePalikaChoropleth.ts` | `dhm_station` |
+| **Energy** | `solar_irradiance` | `data/real/climate/gulmi_solar_pvout_opta.geojson` & `apps/web/src/data/gulmi_palika_ghi.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `solar_irradiance` |
+| **Energy** | `grid_electrification` | `data/real/infrastructure/gulmi_palika_grid.json` (NEA Substations) | `apps/web/src/hooks/usePalikaChoropleth.ts` | `grid_electrification` |
+| **Energy** | `hydro_capacity` | `data/real/energy/` & `HYDRO_PALIKA_SUMMARY` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `hydro_capacity` |
+| **Ecosystem** | `soil_nitrogen` / `phosphorus` / `potassium` / `ph` | `apps/web/src/data/gulmiSoilPoints.json` (127 NARC laboratory points) | `apps/web/src/hooks/usePalikaChoropleth.ts` | Respective soil chemical thresholds |
+| **Ecosystem** | `elevation_zones` / `agroforestry_belt` | SRTM DEM / Topographic profiles in `palika_profiles.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `elevation_zones` |
+| **Socioeconomics**| `clean_cooking_biomass` | `data/real/municipal/palika_profiles.json` (Census 2021 firewood %) | `apps/web/src/hooks/usePalikaChoropleth.ts` | `clean_cooking_biomass` |
+| **Socioeconomics**| `agri_landholding` | `apps/web/src/data/gulmi_palika_landholding.json` (NSO Census 2021/22) | `apps/web/src/hooks/usePalikaChoropleth.ts` | `landholding` |
+
+### Key Code & Presentation Files:
+- **Choropleth Join Hook**: `apps/web/src/hooks/usePalikaChoropleth.ts` (Zero hardcoding; joins palika GeoJSON with calculation metrics).
+- **SubFilter Toolbar UI**: `apps/web/src/features/map/SubFilterToolbar.tsx` (Dropdowns for subfilters and timescale selectors).
+- **District Map Component**: `apps/web/src/features/map/DistrictMap.tsx` (Leaflet rendering, legend display, layer briefing).
+- **Layer Briefing & Methodologies**: `apps/web/src/data/districtCalculationAssets.ts` and `data/formulas/analytical_methodologies.json`.
+- **Crop Suitability & Water Stress Assets**: `apps/web/src/data/cropSuitabilityAssets.ts`.
+- **Legend Type Contracts**: `packages/shared-types/src/legend-contracts.ts`.
+
+
 
