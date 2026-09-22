@@ -19,6 +19,7 @@ import { MapPin, Calendar, Coins, Trees, Droplets, Zap, Sprout, Sun, Wheat, Cher
 import gulmiSoilPoints from '../../data/gulmiSoilPoints.json';
 import { PalikaHoverCard } from '../palika/PalikaHoverCard';
 import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../../data/districtPalikaAssets';
+import { VALIDATED_CROPS } from '../../data/cropSuitabilityAssets';
 import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../../utils/climateDownscaling';
 import { resolveCalculationMethodology } from '../../data/districtCalculationAssets';
 import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
@@ -1167,19 +1168,25 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   const renderLegend = () => {
     if (selectedPillar === 'food') {
       const foodMode = subFilters.foodMode || 'single_crop';
-      if (foodMode === 'single_crop') {
-        const cropId = selectedMapCropId || subFilters.crop || 'coffee';
-        const cropNames: Record<string, string> = {
-          coffee: '☕ Arabica Coffee (कफी)',
-          orange: '🍊 Mandarin Orange (सुन्तला)',
-          ginger: '🫚 Ginger & Turmeric (अदुवा)',
-          potato: '🥔 Seed Potato (उच्च पहाडी आलु)',
-          buckwheat: '🌾 Buckwheat & Wheat (फापर/गहुँ)',
-          rice: '🌾 Monsoon / Spring Paddy (धान)',
-          cardamom: '🌿 Large Cardamom (अलैंची)',
-          maize: '🌽 Mid-Hill Maize (मकै)'
-        };
-        const cropLabel = cropNames[cropId] || cropId;
+      const cropId = selectedMapCropId || subFilters.crop || 'coffee';
+      const cropNames: Record<string, string> = {
+        coffee: '☕ Arabica Coffee (कफी)',
+        large_cardamom: '🌿 Large Cardamom (अलैंची)',
+        tomato: '🍅 Fresh Market Tomato (गोलभेंडा)',
+        apple: '🍎 High-Hill Apple (स्याउ)',
+        maize: '🌽 Mid-Hill Maize (मकै)',
+        rice: '🌾 Monsoon Paddy (धान)',
+        wheat: '🌾 Winter Wheat (गहुँ)',
+        finger_millet: '🌾 Finger Millet / Kodo (कोदो)',
+        cardamom: '🌿 Large Cardamom (अलैंची)',
+        orange: '🍊 Mandarin Orange (सुन्तला)',
+        ginger: '🫚 Ginger & Turmeric (अदुवा)',
+        potato: '🥔 Seed Potato (उच्च पहाडी आलु)',
+        buckwheat: '🌾 Buckwheat & Wheat (फापर/गहुँ)',
+      };
+      const cropLabel = cropNames[cropId] || cropId;
+
+      if (foodMode === 'single_crop' || foodMode === 'crop_suitability') {
         const baseConfig = SUBFILTER_LEGENDS['crop_suitability'];
         if (baseConfig) {
           const config = {
@@ -1187,6 +1194,32 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             title: `${cropLabel} Suitability`,
             subtitle: `FAO ECOCROP Biophysical Model (Calibrated per Palika)`
           };
+          return <DynamicLegend config={config} className="animate-fade-in-up" />;
+        }
+      }
+
+      if (foodMode === 'crop_water_stress') {
+        const baseConfig = SUBFILTER_LEGENDS['crop_water_stress'];
+        if (baseConfig) {
+          const seasonLabels: Record<string, string> = {
+            cycle: 'Full Growing Cycle',
+            winter_dry: 'Winter Dry Period (Nov–Feb)',
+            pre_monsoon: 'Pre-Monsoon Dry Spell (Mar–May)',
+            monsoon_wet: 'Monsoon Wet Period (Jun–Sep)'
+          };
+          const seasonSubtitle = seasonLabels[subFilters.waterSeason || 'cycle'] || 'Growing Cycle';
+          const config = {
+            ...baseConfig,
+            title: `${cropLabel} Moisture Stress`,
+            subtitle: `${seasonSubtitle} • Water Footprint & Evapotranspiration Deficit`
+          };
+          return <DynamicLegend config={config} className="animate-fade-in-up" />;
+        }
+      }
+
+      if (foodMode === 'land_typology') {
+        const config = SUBFILTER_LEGENDS['land_typology'];
+        if (config) {
           return <DynamicLegend config={config} className="animate-fade-in-up" />;
         }
       }
@@ -1261,12 +1294,17 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 
   // [DATA PROVENANCE & CALCULATION METHODOLOGY LOADER]
   // Loaded from data/formulas/analytical_methodologies.json (Strict Rule 5 Zero-Hardcoding Compliance)
+  const currentCropId = selectedMapCropId || subFilters.crop || 'coffee';
+  const validatedCrop = VALIDATED_CROPS[currentCropId];
+  const activeCropName = validatedCrop?.name || (selectedMapCropId ? db.getCropById(selectedMapCropId)?.name : null) || 'Arabica Coffee';
+  const activeCropNepali = validatedCrop?.nepaliName || (selectedMapCropId ? db.getCropById(selectedMapCropId)?.nepaliName : null) || 'कफी';
+
   const activeCalc = resolveCalculationMethodology({
     selectedPillar,
     subFilters,
     lang,
-    cropName: (selectedMapCropId ? db.getCropById(selectedMapCropId) : null)?.name || 'Crop',
-    cropNameNepali: (selectedMapCropId ? db.getCropById(selectedMapCropId) : null)?.nepaliName || 'बाली',
+    cropName: activeCropName,
+    cropNameNepali: activeCropNepali,
     climateMonth,
     currentRainMm,
     monthName: MONTH_NAMES[climateMonth - 1]
