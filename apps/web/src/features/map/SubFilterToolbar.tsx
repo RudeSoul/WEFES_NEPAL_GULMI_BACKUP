@@ -55,7 +55,7 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
           <>
             <div className="flex items-center gap-1.5 text-xs text-slate-700 font-medium">
               <Sprout className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Agro-Feasibility Focus:</span>
+              <span>Food Analysis:</span>
             </div>
             <select
               name="foodMode"
@@ -63,31 +63,58 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
               value={foodMode}
               onChange={handleChange}
             >
-              <option value="single_crop">🎯 Signature Crop Suitability Model</option>
-              <option value="barkhe_summer">☀️ Barkhe (बरखे - Summer Monsoon Crops)</option>
-              <option value="hiunde_winter">❄️ Hiunde (हिउँदे - Winter Crops)</option>
-              <option value="double_cropping">🔄 Double-Cropping Feasibility (Irrigated vs Rainfed)</option>
+              <option value="single_crop">🌱 Crop Suitability (Agro-Climatic Fit)</option>
+              <option value="crop_water_stress">💧 Crop Water & Moisture Stress</option>
+              <option value="land_typology">🌾 Land Typology & Terraces (Khet vs Bari)</option>
             </select>
 
-            {foodMode === 'single_crop' && (
+            {(foodMode === 'single_crop' || foodMode === 'crop_water_stress') && (
               <select
                 name="crop"
                 className={selectClass}
                 value={subFilters.crop || 'coffee'}
                 onChange={handleChange}
               >
-                <optgroup label="☕ Signature Cash Crops">
+                <optgroup label="☕ Cash & Horticultural Crops">
                   <option value="coffee">☕ Arabica Coffee (कफी)</option>
-                  <option value="orange">🍊 Mandarin Orange (सुन्तला)</option>
-                  <option value="ginger">🫚 Ginger & Turmeric (अदुवा / बेसार)</option>
-                  <option value="cardamom">🌿 Large Cardamom (अलैंची)</option>
+                  <option value="large_cardamom">🌿 Large Cardamom (अलैंची)</option>
+                  <option value="tomato">🍅 Fresh Market Tomato (गोलभेंडा)</option>
+                  <option value="apple">🍎 High-Hill Apple (स्याउ)</option>
                 </optgroup>
-                <optgroup label="🌾 Cereals & High-Altitude Crops">
-                  <option value="potato">🥔 Seed Potato (आलु)</option>
-                  <option value="buckwheat">🌾 Buckwheat (फापर)</option>
-                  <option value="rice">🌾 Monsoon Paddy (धान)</option>
+                <optgroup label="🌾 Cereals & Staple Crops">
                   <option value="maize">🌽 Mid-Hill Maize (मकै)</option>
+                  <option value="rice">🌾 Monsoon Paddy Rice (धान)</option>
+                  <option value="wheat">🌾 Winter Wheat (गहुँ)</option>
+                  <option value="finger_millet">🌾 Finger Millet / Kodo (कोदो)</option>
                 </optgroup>
+              </select>
+            )}
+
+            {foodMode === 'crop_water_stress' && (
+              <select
+                name="waterSeason"
+                className={selectClass}
+                value={subFilters.waterSeason || 'cycle'}
+                onChange={handleChange}
+                title="Select Moisture Evaluation Period"
+              >
+                <option value="cycle">🌱 Full Growing Cycle (Crop Lifecycle Deficit)</option>
+                <option value="winter_dry">❄️ Winter Dry Period (Nov–Feb Deficit)</option>
+                <option value="pre_monsoon">☀️ Pre-Monsoon Dry Spell (Mar–May Deficit)</option>
+                <option value="monsoon_wet">🌊 Monsoon Wet Period (Jun–Sep Surplus)</option>
+              </select>
+            )}
+
+            {foodMode === 'land_typology' && (
+              <select
+                name="landMetric"
+                className={selectClass}
+                value={subFilters.landMetric || 'khet_pct'}
+                onChange={handleChange}
+              >
+                <option value="khet_pct">🌊 Lowland Irrigated Terraces (Khet %)</option>
+                <option value="bari_pct">⛰️ Sloping Rainfed Terraces (Bari %)</option>
+                <option value="parcel_density">🧩 Average Parcels per Holding</option>
               </select>
             )}
           </>
