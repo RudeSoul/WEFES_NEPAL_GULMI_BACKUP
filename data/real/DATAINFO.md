@@ -31,9 +31,9 @@
 - **Description**: Official NEA 132/33 kV substations (Tamghas/Unaichaur 46 MVA, Paudi Amarai 30 MVA, Kisantari 3 MVA, Birbas 8 MVA, Ridi 10 MVA) and Census 2021 12-Palika household cooking fuel reliance metrics.
 
 ### `agriculture/`
-- **Files**: `gulmi_agricultural_landholding.geojson`, `crops.json`, `narc_crop_varieties.json`, `Nepal_District_Crops_Feasibility.csv`, `Coffee_Production_untill_2080.csv`
-- **Source**: MoALD Land Resources Survey, National Agricultural Research Council (NARC), MoALD Seed Quality Control Centre (SQCC), National Statistics Office (NSO Census 2021), and OpenStreetMap.
-- **Description**: Certified hill seed varieties, yield potentials, resistance profiles, district crop suitability baselines, and empirical municipal agricultural landholdings (total cultivated ha, Khet/Bari split, Census households, building counts, and ha & Ropani per household).
+- **Files**: `gulmi_agricultural_landholding.geojson`, `6a47a54874425.xlsx`, `crops.json`, `narc_crop_varieties.json`, `Nepal_District_Crops_Feasibility.csv`, `Coffee_Production_untill_2080.csv`
+- **Source**: National Statistics Office (NSO Nepal) - National Sample Census of Agriculture 2021/22, MoALD Land Resources Survey, National Agricultural Research Council (NARC), MoALD Seed Quality Control Centre (SQCC), National Tea and Coffee Development Board (NTCDB), Water Footprint Network (WFN), FAO ECOCROP, ICIMOD, and OpenStreetMap.
+- **Description**: Certified hill seed varieties, yield potentials, resistance profiles, district crop suitability baselines, empirical municipal agricultural landholdings from Census of Agriculture 2021/22, and peer-reviewed crop biophysical footprint matrices (water footprint L/kg, energy input MJ/kg, carbon offset kg CO₂-eq, farmgate market values, labor requirements, nutritional calories, and soil pH) with fully qualified, uncropped citations.
 
 ### `climate/`
 - **Files**: `gulmi_solar_pvout_opta.geojson`, `nasa_power_10_years_full.csv`
