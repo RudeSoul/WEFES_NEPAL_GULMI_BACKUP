@@ -72,8 +72,8 @@ When working on maps, subfilters, legends, or analytics, **NEVER search or grep 
 | **Water** | `spring_vulnerability` | `data/real/hydrology/` & `palika_profiles.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `spring_vulnerability` |
 | **Water** | `dhm_station` | `data/real/hydrology/` DHM station network | `apps/web/src/hooks/usePalikaChoropleth.ts` | `dhm_station` |
 | **Energy** | `solar_irradiance` | `data/real/climate/gulmi_solar_pvout_opta.geojson` & `apps/web/src/data/gulmi_palika_ghi.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `solar_irradiance` |
-| **Energy** | `grid_electrification` | `data/real/infrastructure/gulmi_palika_grid.json` (NEA Substations) | `apps/web/src/hooks/usePalikaChoropleth.ts` | `grid_electrification` |
-| **Energy** | `hydro_capacity` | `data/real/energy/` & `HYDRO_PALIKA_SUMMARY` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `hydro_capacity` |
+| **Energy** | `grid_electrification` | `apps/web/src/data/gulmi_palika_grid.json` (NEA Substations) | `apps/web/src/hooks/usePalikaChoropleth.ts` | `grid_electrification` |
+| **Energy** | `hydro_capacity` | `HYDRO_PALIKA_SUMMARY` exported from `apps/web/src/data/districtPalikaAssets.ts` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `hydro_capacity` |
 | **Ecosystem** | `soil_nitrogen` / `phosphorus` / `potassium` / `ph` | `apps/web/src/data/gulmiSoilPoints.json` (127 NARC laboratory points) | `apps/web/src/hooks/usePalikaChoropleth.ts` | Respective soil chemical thresholds |
 | **Ecosystem** | `elevation_zones` / `agroforestry_belt` | SRTM DEM / Topographic profiles in `palika_profiles.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `elevation_zones` |
 | **Socioeconomics**| `clean_cooking_biomass` | `data/real/municipal/palika_profiles.json` (Census 2021 firewood %) | `apps/web/src/hooks/usePalikaChoropleth.ts` | `clean_cooking_biomass` |
