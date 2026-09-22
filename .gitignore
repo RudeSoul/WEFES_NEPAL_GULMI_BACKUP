@@ -12,10 +12,12 @@ data/transport/*.gpkg
 data/**/*.gpkg
 *.gpkg
 
-# Heavy binary rasters (tracked via data/manifest.json)
+# Heavy binary rasters and oversized GeoJSON
 *.tif
 *.tiff
 *.geotiff
+data/real/boundaries/gulmi_buildings.geojson
+data/Households by main source of drinking water/
 
 # Python artifacts
 __pycache__/
@@ -26,4 +28,3 @@ venv/
 # Legacy unorganized directory
 data/Gulmi_OpenTopography_data_Hillside_and_slope/
 
-node_modules
