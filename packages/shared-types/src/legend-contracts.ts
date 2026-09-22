@@ -159,13 +159,47 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     subtitle: 'FAO ECOCROP Parametric Model',
     unit: '%',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/agriculture/crops.json',
+    dataSourceCitation: 'data/real/agriculture/crop_requirement.json & crops.json',
     confidence: 'CALCULATED',
     thresholds: [
       { minValue: 80, color: '#10b981', label: 'Highly Suitable (≥ 80%)', description: 'Optimal thermal and moisture conditions' },
       { minValue: 60, maxValue: 79, color: '#84cc16', label: 'Moderately Suitable (60 – 79%)', description: 'Good yield expected with standard inputs' },
       { minValue: 40, maxValue: 59, color: '#f59e0b', label: 'Marginally Suitable (40 – 59%)', description: 'Significant climate or elevation constraints' },
       { maxValue: 39, color: '#ef4444', label: 'Unsuitable (< 40%)', description: 'High frost or drought crop failure risk' }
+    ]
+  },
+
+  crop_water_stress: {
+    id: 'crop_water_stress',
+    pillar: 'food',
+    title: 'Crop Water Demand & Moisture Stress',
+    subtitle: 'WaterFootprint.org & Local Seasonal Precipitation Deficit',
+    unit: '% Stress',
+    legendType: 'domain_thresholds',
+    dataSourceCitation: 'data/real/agriculture/crops.json & NASA POWER / DHM Climatology',
+    confidence: 'CALCULATED',
+    thresholds: [
+      { maxValue: 24, color: '#0284c7', label: 'Minimal Deficit (<25%)', description: 'Natural precipitation satisfies evapotranspiration' },
+      { minValue: 25, maxValue: 44, color: '#0d9488', label: 'Low Stress (25–44%)', description: 'Minor supplemental irrigation recommended during dry spells' },
+      { minValue: 45, maxValue: 64, color: '#f59e0b', label: 'Moderate Stress (45–64%)', description: 'Substantial moisture deficit during flowering/grain filling' },
+      { minValue: 65, color: '#dc2626', label: 'Severe Stress (≥65%)', description: 'Critical drought vulnerability; canal or lift irrigation essential' }
+    ]
+  },
+
+  land_typology: {
+    id: 'land_typology',
+    pillar: 'food',
+    title: 'Land Typology & Terrace Capacity',
+    subtitle: 'NSO Nepal Agricultural Census 2021/22',
+    unit: '% Khet',
+    legendType: 'domain_thresholds',
+    dataSourceCitation: 'data/real/agriculture/gulmi_agricultural_landholding.geojson',
+    confidence: 'REAL',
+    thresholds: [
+      { minValue: 30, color: '#059669', label: 'Prime Irrigated Khet Valleys (≥30%)', description: 'Lowland bunded river terraces, prime for wetland paddy' },
+      { minValue: 20, maxValue: 29, color: '#10b981', label: 'Mixed Terraces (20–29%)', description: 'Balanced distribution of Khet and Bari terraces' },
+      { minValue: 10, maxValue: 19, color: '#f59e0b', label: 'Bari-Dominant Slopes (10–19%)', description: 'Sloping rainfed terraces suited for maize, millet, coffee' },
+      { maxValue: 9, color: '#d97706', label: 'High Ridge Steep Bari (<10%)', description: 'Predominantly rainfed upland slopes; high erosion sensitivity' }
     ]
   },
 
@@ -416,16 +450,16 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
   landholding: {
     id: 'landholding',
     pillar: 'socioeconomics',
-    title: 'Average Agricultural Landholding per Household',
-    subtitle: 'MoALD Agricultural Resources Survey & Census 2021',
-    unit: 'Ropani / HH',
+    title: 'Average Agricultural Landholding per Holding',
+    subtitle: 'NSO National Sample Census of Agriculture 2021/22',
+    unit: 'Ropani / Holding',
     legendType: 'domain_thresholds',
     dataSourceCitation: 'data/real/agriculture/gulmi_agricultural_landholding.geojson',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 6.0, color: '#047857', label: 'Higher Terrace Holdings (≥6.0 Ropani)', description: 'Favorable rural land-to-household ratio supporting commercial horticulture' },
-      { minValue: 4.5, maxValue: 5.99, color: '#10b981', label: 'Mid-Hill Moderate Holdings (4.5–5.9 Ropani)', description: 'Typical mid-hill mixed subsistence cereal and cash crop terrace holding' },
-      { maxValue: 4.49, color: '#f59e0b', label: 'Dense Urbanized / Fragmented (<4.5 Ropani)', description: 'High population density / urban fragmentation (e.g. Resunga HQ corridor)' }
+      { minValue: 14.0, color: '#047857', label: 'Extensive Hill Holdings (≥14.0 Ropani)', description: 'Substantial terrace area supporting commercial horticulture and agroforestry (e.g. Chatrakot, Kaligandaki, Ruru)' },
+      { minValue: 11.0, maxValue: 13.99, color: '#10b981', label: 'Mid-Hill Typical Holdings (11.0–13.9 Ropani)', description: 'Average mid-hill mixed subsistence terrace holding (e.g. Dhurkot, Chandrakot, Gulmidarbar, Malika, Madane, Resunga)' },
+      { maxValue: 10.99, color: '#f59e0b', label: 'Fragmented / Dense (<11.0 Ropani)', description: 'Higher holding density or parcel fragmentation (e.g. Musikot, Satyawati, Isma)' }
     ]
   },
 

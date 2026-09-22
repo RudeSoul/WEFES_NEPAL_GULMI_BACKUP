@@ -1,5 +1,5 @@
 # WEFES PLATFORM: AI CONTEXT & ARCHITECTURE MAP
-> Auto-generated on 2026-09-19 15:35. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
+> Auto-generated on 2026-09-22 21:30. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
 > This file is a high-density, token-optimized context anchor for AI assistants.
 
 ---
@@ -33,6 +33,7 @@
 ### Discovered Data Catalogs:
 | Subfolder | Classification | Description |
 |---|---|---|
+| `data/Households by main source of drinking water` | **Unknown** | Households by main source of drinking water |
 | `data/calculated` | **Calculated / Computational Engine Output** | Data Catalog: Deterministic Engine Outputs (`data/calculated/`) |
 | `data/formulas` | **CALCULATED / DOMAIN CONFIGURATION** | Data Information: `data/formulas/` |
 | `data/proxy` | **Proxy / Surrogate Assumption** | Data Catalog: Surrogate Assumptions & Proxy Benchmarks (`data/proxy/`) |
@@ -69,6 +70,8 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   │   └── DATAINFO.md
 │   ├── formulas/
 │   │   └── DATAINFO.md
+│   ├── Households by main source of drinking water/
+│   │   ├── DATAINFO.md
 │   ├── proxy/
 │   │   ├── crop_suitability_proxies/
 │   │   ├── environmental_proxies/
