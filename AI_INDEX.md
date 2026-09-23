@@ -1,5 +1,5 @@
 # WEFES PLATFORM: AI CONTEXT & ARCHITECTURE MAP
-> Auto-generated on 2026-09-24 20:23. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
+> Auto-generated on 2026-09-25 08:38. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
 > This file is a high-density, token-optimized context anchor for AI assistants.
 
 ---
@@ -33,10 +33,11 @@
 ### Discovered Data Catalogs:
 | Subfolder | Classification | Description |
 |---|---|---|
-| `data\calculated` | **Calculated / Computational Engine Output** | Data Catalog: Deterministic Engine Outputs (`data/calculated/`) |
-| `data\formulas` | **CALCULATED / DOMAIN CONFIGURATION** | Data Information: `data/formulas/` |
-| `data\proxy` | **Proxy / Surrogate Assumption** | Data Catalog: Surrogate Assumptions & Proxy Benchmarks (`data/proxy/`) |
-| `data\real` | **Observed / Official Records (Empirical Ground Truth)** | Data Catalog: Observed & Official Records (`data/real/`) |
+| `data/Households by main source of drinking water` | **Unknown** | Households by main source of drinking water |
+| `data/calculated` | **Calculated / Computational Engine Output** | Data Catalog: Deterministic Engine Outputs (`data/calculated/`) |
+| `data/formulas` | **CALCULATED / DOMAIN CONFIGURATION** | Data Information: `data/formulas/` |
+| `data/proxy` | **Proxy / Surrogate Assumption** | Data Catalog: Surrogate Assumptions & Proxy Benchmarks (`data/proxy/`) |
+| `data/real` | **Observed / Official Records (Empirical Ground Truth)** | Data Catalog: Observed & Official Records (`data/real/`) |
 
 ---
 
@@ -63,10 +64,14 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   │   ├── package.json
 ├── data/
 │   ├── calculated/
+│   │   ├── downscaled_rainfall/
 │   │   ├── hydro_reaches/
+│   │   ├── palika_benchmarks/
 │   │   └── DATAINFO.md
 │   ├── formulas/
 │   │   └── DATAINFO.md
+│   ├── Households by main source of drinking water/
+│   │   ├── DATAINFO.md
 │   ├── proxy/
 │   │   ├── crop_suitability_proxies/
 │   │   ├── environmental_proxies/
@@ -80,6 +85,7 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   │   ├── infrastructure/
 │   │   ├── land_and_soil/
 │   │   ├── municipal/
+│   │   ├── rasters/
 │   │   ├── socioeconomics/
 │   │   └── DATAINFO.md
 ├── docs/
@@ -103,6 +109,15 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   │   ├── src/
 │   │   ├── package.json
 ├── scripts/
+├── venv/
+│   ├── bin/
+│   ├── include/
+│   │   └── python3.13/
+│   ├── lib/
+│   │   └── python3.13/
+│   ├── share/
+│   │   ├── jupyter/
+│   │   └── man/
 ├── Makefile
 ├── package.json
 ├── RULESET.md
