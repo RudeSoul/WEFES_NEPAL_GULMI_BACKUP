@@ -5,7 +5,6 @@ import { DISTRICT_PALIKAS, PALIKA_GEO_CENTROIDS, DistrictPalika, GULMI_PALIKA_NE
 import { extractAnnualRainfallSeries, arimaForecast } from '@wefes/wefes-engine';
 import { CloudRain, Mountain, Sparkles, Thermometer, ArrowLeft, ArrowUp } from 'lucide-react';
 import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
-import { PalikaDossierExportModal } from './PalikaDossierExportModal';
 import { DistrictDetailMap } from '../map/DistrictDetailMap';
 import { IndicatorModal, ModalKey } from './components/IndicatorModal';
 import { PalikaLiveWeather, PalikaWeatherConsole } from './components/PalikaWeatherConsole';
@@ -42,7 +41,6 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   const [climateDataset, setClimateDataset] = useState<any>(initialClimateDataset || null);
   const [openModal, setOpenModal] = useState<ModalKey>(null);
   const [activePalikaName, setActivePalikaNameState] = useState<string>(initialPalikaName || 'Resunga');
-  const [isDossierModalOpen, setIsDossierModalOpen] = useState<boolean>(false);
   const [palikaWeather, setPalikaWeather] = useState<PalikaLiveWeather | null>(null);
   const [weatherTelemetryMode, setWeatherTelemetryMode] = useState<'live' | 'archive'>('live');
 
@@ -237,14 +235,6 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
         />
       )}
 
-      {isDossierModalOpen && (
-        <PalikaDossierExportModal
-          palika={activePalika}
-          isOpen={isDossierModalOpen}
-          onClose={() => setIsDossierModalOpen(false)}
-        />
-      )}
-
       {/* Top Header Card */}
       <div className="glass-panel p-6 rounded-2xl relative overflow-hidden border border-slate-200 shadow-sm bg-white/95 space-y-5">
         <PalikaHeroHeader
@@ -253,7 +243,6 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
           gulmiPalikas={gulmiPalikas}
           onSelectPalika={setActivePalikaName}
           onBackToMap={onBackToMap}
-          onOpenDossierModal={() => setIsDossierModalOpen(true)}
           weatherTelemetryMode={weatherTelemetryMode}
           setWeatherTelemetryMode={setWeatherTelemetryMode}
           palikaWeather={palikaWeather}
