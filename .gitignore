@@ -1,30 +1,52 @@
-node_modules
-.turbo
-dist
-build
-.next
+# --- Turborepo & Build Outputs ---
+.turbo/
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+
+# --- Package Managers & Dependencies ---
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+
+# --- Python Integrity & Automation Scripts ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+.pytest_cache/
+.coverage
+
+# --- Local Environment Variables & Secrets ---
 .env
 .env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+
+# --- Logs & Performance Traces ---
+logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache
+
+# --- OS & System Files ---
 .DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-data/transport/*.gpkg
-data/**/*.gpkg
-*.gpkg
-
-# Heavy binary rasters and oversized GeoJSON
-*.tif
-*.tiff
-*.geotiff
-data/real/boundaries/gulmi_buildings.geojson
-data/Households by main source of drinking water/
-
-# Python artifacts
-__pycache__/
-*.pyc
-.pytest_cache/
-venv/
-
-# Legacy unorganized directory
-data/Gulmi_OpenTopography_data_Hillside_and_slope/
-
+# --- IDEs and Editors ---
+.idea/
+.vscode/
+*.swp
+*.swo
