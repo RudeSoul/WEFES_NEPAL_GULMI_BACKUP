@@ -46,15 +46,15 @@ export const PalikaHeroHeader: React.FC<PalikaHeroHeaderProps> = ({
           </h2>
           {GULMI_PALIKA_NEPALI[activePalika.name] && (
             <span className="text-lg font-serif text-slate-600 font-semibold">
-              ({GULMI_PALIKA_NEPALI[activePalika.name]} {activePalika.unitType === 'Nagarpalika' ? 'नगरपालिका' : 'गाउँपालिका'})
+              ({GULMI_PALIKA_NEPALI[activePalika.name]})
             </span>
           )}
-          <span className="text-xs px-2.5 py-0.5 rounded-md font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300">
-            Gulmi District • {activePalika.unitType}
+          <span className="text-[10px] px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-500 border border-slate-200">
+            {activePalika.elevation}m ASL · {activePalika.rainfallMm} mm/yr
           </span>
         </div>
-        <p className="text-xs text-slate-600 mt-1 max-w-2xl font-normal leading-relaxed">
-          Precision Agro-Ecological Dossier and 4-Season Cropping Calendar for <strong>{activePalika.name}</strong> ({activePalika.elevation}m ASL, {activePalika.rainfallMm} mm/yr). Parameterized from NARC ground soil surveys and NASA/MERRA-2 micro-climatology.
+        <p className="text-xs text-slate-500 mt-0.5 max-w-xl font-normal">
+          Gulmi District · Agro-ecological dossier parameters.
         </p>
       </div>
 
@@ -64,7 +64,6 @@ export const PalikaHeroHeader: React.FC<PalikaHeroHeaderProps> = ({
           <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider font-outfit flex items-center gap-1.5">
             <span>🏛️ Switch Palika ({gulmiPalikas.length} Local Bodies in Gulmi):</span>
           </span>
-          <span className="text-[10px] text-slate-400 italic">Click to switch dossier</span>
         </div>
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
           {gulmiPalikas.map((p) => {
@@ -74,13 +73,13 @@ export const PalikaHeroHeader: React.FC<PalikaHeroHeaderProps> = ({
                 key={p.name}
                 onClick={() => onSelectPalika(p.name)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 border ${isSelected
-                    ? 'bg-emerald-700 text-white border-emerald-800 shadow-sm font-bold scale-102'
-                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-emerald-700 text-white border-emerald-800 shadow-sm font-bold scale-102'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
                   }`}
               >
                 <span>{p.name}</span>
                 <span className={`text-[10px] ${isSelected ? 'text-emerald-200' : 'text-slate-500'}`}>
-                  ({GULMI_PALIKA_NEPALI[p.name] || ''})
+                  ({(GULMI_PALIKA_NEPALI[p.name] || '').replace(/\s*(गाउँपालिका|नगरपालिका)$/, '')})
                 </span>
               </button>
             );
@@ -91,36 +90,38 @@ export const PalikaHeroHeader: React.FC<PalikaHeroHeaderProps> = ({
       {/* Live Satellite Weather Telemetry for Active Palika */}
       <div className="flex items-center justify-between flex-wrap gap-2 px-4 py-2.5 rounded-2xl bg-white/95 text-slate-800 shadow-xs border border-slate-200/90 text-xs animate-fade-in glass-panel">
         <div className="flex items-center gap-2 flex-wrap">
-          {weatherTelemetryMode === 'live' && palikaWeather ? (
+          {weatherTelemetryMode === 'live' ? (
             <>
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
               <span className="font-bold text-slate-900 font-outfit uppercase tracking-wider text-[11px]">
-                Live Satellite Weather Telemetry ({activePalika.name} Micro-Climate)
+                ⚡ Live Operational Advisory (Beta) · {activePalika.name}
               </span>
-              <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
-                Real-Time Today
+              <span className="bg-amber-50 text-amber-800 border border-amber-300 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
+                Daily Operations Mode
               </span>
             </>
           ) : (
             <>
-              <span className="w-2.5 h-2.5 rounded-full bg-sky-500" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
               <span className="font-bold text-slate-900 font-outfit uppercase tracking-wider text-[11px]">
-                NASA POWER / MERRA-2 39-Yr Climatology ({activePalika.name} Baseline)
+                🏛️ Strategic Planning Baseline · {activePalika.name}
               </span>
-              <span className="bg-sky-50 text-sky-800 border border-sky-300 text-[10px] px-2 py-0.5 rounded font-mono font-semibold">
-                Historical
+              <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-[10px] px-2 py-0.5 rounded font-mono font-semibold" title="Rainfall & Temperature from DHM / Municipal Profile (CBS 2021); Solar from NASA POWER Climatology">
+                Municipal Profile & Climatology
               </span>
             </>
           )}
 
-          {palikaWeather && (
-            <button
-              onClick={() => setWeatherTelemetryMode(prev => (prev === 'live' ? 'archive' : 'live'))}
-              className="ml-1.5 px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 cursor-pointer transition-colors"
-            >
-              {weatherTelemetryMode === 'live' ? '⇄ 39-Yr Archive' : '⇄ 🟢 Live Weather'}
-            </button>
-          )}
+          <button
+            onClick={() => setWeatherTelemetryMode(prev => (prev === 'live' ? 'archive' : 'live'))}
+            className={`ml-1.5 px-2.5 py-1 rounded-lg text-[10px] font-semibold border cursor-pointer transition-all shadow-xs flex items-center gap-1 ${weatherTelemetryMode === 'live'
+                ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
+                : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-300'
+              }`}
+            title="Toggle between Strategic Planning Baseline and Live Operational Advisory"
+          >
+            {weatherTelemetryMode === 'live' ? '← Return to Planning Baseline' : '⚡ Live Field Advisory (Beta)'}
+          </button>
         </div>
 
         <div className="flex items-center gap-3.5 sm:gap-4 flex-wrap text-[11px] font-mono">
