@@ -1,0 +1,168 @@
+{
+  "_provenance": {
+    "source": "National Population and Housing Census 2021 (NSO Nepal)",
+    "portal": "https://censusresults.nsonepal.gov.np/downloads/census-dataset",
+    "table": "hhld07_typeofcookingfuel.csv (Household Type of Cooking Fuel)",
+    "processing": "QGIS Table Join to Admin Level 7 Municipal Boundaries",
+    "citation": "National Statistics Office (NSO), Government of Nepal (2021 Census)",
+    "classification": "OBSERVED REAL"
+  },
+  "district": {
+    "totalHouseholds": 66100,
+    "firewood": 57020,
+    "lpg": 8695,
+    "electricity": 49,
+    "biogas": 279,
+    "kerosene": 25,
+    "others": 32,
+    "firewoodPct": 86.26,
+    "lpgPct": 13.15,
+    "cleanCookingPct": 13.65
+  },
+  "palikas": {
+    "Resunga": {
+      "totalHouseholds": 9015,
+      "firewood": 5238,
+      "firewoodPct": 58.1,
+      "lpg": 3746,
+      "lpgPct": 41.55,
+      "electricity": 13,
+      "biogas": 12,
+      "kerosene": 6,
+      "cleanCookingPct": 41.83,
+      "cleanDeficit": 5244
+    },
+    "Gulmidarbar": {
+      "totalHouseholds": 5253,
+      "firewood": 4860,
+      "firewoodPct": 92.52,
+      "lpg": 382,
+      "lpgPct": 7.27,
+      "electricity": 5,
+      "biogas": 3,
+      "kerosene": 1,
+      "cleanCookingPct": 7.42,
+      "cleanDeficit": 4863
+    },
+    "Chatrakot": {
+      "totalHouseholds": 5307,
+      "firewood": 4789,
+      "firewoodPct": 90.24,
+      "lpg": 516,
+      "lpgPct": 9.72,
+      "electricity": 0,
+      "biogas": 0,
+      "kerosene": 1,
+      "cleanCookingPct": 9.72,
+      "cleanDeficit": 4791
+    },
+    "Ruru": {
+      "totalHouseholds": 4607,
+      "firewood": 3792,
+      "firewoodPct": 82.31,
+      "lpg": 803,
+      "lpgPct": 17.43,
+      "electricity": 5,
+      "biogas": 5,
+      "kerosene": 0,
+      "cleanCookingPct": 17.65,
+      "cleanDeficit": 3794
+    },
+    "Satyawati": {
+      "totalHouseholds": 5169,
+      "firewood": 4651,
+      "firewoodPct": 89.98,
+      "lpg": 505,
+      "lpgPct": 9.77,
+      "electricity": 3,
+      "biogas": 7,
+      "kerosene": 1,
+      "cleanCookingPct": 9.96,
+      "cleanDeficit": 4654
+    },
+    "Kaligandaki": {
+      "totalHouseholds": 3736,
+      "firewood": 3336,
+      "firewoodPct": 89.29,
+      "lpg": 331,
+      "lpgPct": 8.86,
+      "electricity": 3,
+      "biogas": 60,
+      "kerosene": 5,
+      "cleanCookingPct": 10.55,
+      "cleanDeficit": 3342
+    },
+    "Chandrakot": {
+      "totalHouseholds": 5029,
+      "firewood": 4031,
+      "firewoodPct": 80.16,
+      "lpg": 975,
+      "lpgPct": 19.39,
+      "electricity": 9,
+      "biogas": 9,
+      "kerosene": 3,
+      "cleanCookingPct": 19.75,
+      "cleanDeficit": 4036
+    },
+    "Musikot": {
+      "totalHouseholds": 7099,
+      "firewood": 6343,
+      "firewoodPct": 89.35,
+      "lpg": 673,
+      "lpgPct": 9.48,
+      "electricity": 5,
+      "biogas": 67,
+      "kerosene": 6,
+      "cleanCookingPct": 10.49,
+      "cleanDeficit": 6354
+    },
+    "Isma": {
+      "totalHouseholds": 5009,
+      "firewood": 4796,
+      "firewoodPct": 95.75,
+      "lpg": 182,
+      "lpgPct": 3.63,
+      "electricity": 0,
+      "biogas": 16,
+      "kerosene": 13,
+      "cleanCookingPct": 3.95,
+      "cleanDeficit": 4811
+    },
+    "Dhurkot": {
+      "totalHouseholds": 5382,
+      "firewood": 5171,
+      "firewoodPct": 96.08,
+      "lpg": 199,
+      "lpgPct": 3.7,
+      "electricity": 0,
+      "biogas": 11,
+      "kerosene": 0,
+      "cleanCookingPct": 3.9,
+      "cleanDeficit": 5172
+    },
+    "Malika": {
+      "totalHouseholds": 5241,
+      "firewood": 4998,
+      "firewoodPct": 95.36,
+      "lpg": 153,
+      "lpgPct": 2.92,
+      "electricity": 4,
+      "biogas": 84,
+      "kerosene": 0,
+      "cleanCookingPct": 4.6,
+      "cleanDeficit": 5000
+    },
+    "Madane": {
+      "totalHouseholds": 5253,
+      "firewood": 5015,
+      "firewoodPct": 95.47,
+      "lpg": 230,
+      "lpgPct": 4.38,
+      "electricity": 0,
+      "biogas": 6,
+      "kerosene": 2,
+      "cleanCookingPct": 4.49,
+      "cleanDeficit": 5017
+    }
+  }
+}

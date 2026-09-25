@@ -397,7 +397,7 @@
         "Soil Survey Department GIS Grid"
       ],
       "citation": "National Soil Science Research Centre (NSSRC), NARC Nepal",
-      "provenancePath": "apps/web/src/data/gulmiSoilPoints.json",
+      "provenancePath": "data/real/land_and_soil/gulmi_soil_points_81.json",
       "unit": "pH Scale (4.5–7.8)",
       "currentStat": "Strongly Acidic (<5.5) to Neutral (6.5–7.5)"
     },
@@ -421,7 +421,7 @@
         "NARC Soil Survey Laboratory Test Database"
       ],
       "citation": "NARC National Soil Science Research Centre",
-      "provenancePath": "apps/web/src/data/gulmiSoilPoints.json",
+      "provenancePath": "data/real/land_and_soil/gulmi_soil_points_81.json",
       "unit": "Organic Matter %",
       "currentStat": "Low (<1.5%), Medium (1.5–3.0%), High (>3.0%)"
     },

@@ -1,5 +1,5 @@
 # WEFES PLATFORM: AI CONTEXT & ARCHITECTURE MAP
-> Auto-generated on 2026-09-25 13:58. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
+> Auto-generated on 2026-09-25 14:28. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
 > This file is a high-density, token-optimized context anchor for AI assistants.
 
 ---
@@ -33,11 +33,12 @@
 ### Discovered Data Catalogs:
 | Subfolder | Classification | Description |
 |---|---|---|
-| `data/Households by main source of drinking water` | **Unknown** | Households by main source of drinking water |
 | `data/calculated` | **Calculated / Computational Engine Output** | Data Catalog: Deterministic Engine Outputs (`data/calculated/`) |
+| `data/calculated/indicators` | **Calculated / Empirical Downscaled Palika Indicators** | Data Catalog: Palika Sectoral Indicators (`data/calculated/indicators/`) |
 | `data/formulas` | **CALCULATED / DOMAIN CONFIGURATION** | Data Information: `data/formulas/` |
 | `data/proxy` | **Proxy / Surrogate Assumption** | Data Catalog: Surrogate Assumptions & Proxy Benchmarks (`data/proxy/`) |
 | `data/real` | **Observed / Official Records (Empirical Ground Truth)** | Data Catalog: Observed & Official Records (`data/real/`) |
+| `data/real/infrastructure/drinking_water` | **Unknown** | Households by main source of drinking water |
 
 ---
 
@@ -66,12 +67,11 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   ├── calculated/
 │   │   ├── downscaled_rainfall/
 │   │   ├── hydro_reaches/
+│   │   ├── indicators/
 │   │   ├── palika_benchmarks/
 │   │   └── DATAINFO.md
 │   ├── formulas/
 │   │   └── DATAINFO.md
-│   ├── Households by main source of drinking water/
-│   │   ├── DATAINFO.md
 │   ├── proxy/
 │   │   ├── crop_suitability_proxies/
 │   │   ├── environmental_proxies/
