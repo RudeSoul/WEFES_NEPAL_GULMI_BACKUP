@@ -1,11 +1,13 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/municipal/palika_profiles.json, data/real/boundaries/gulmi-palikas.json
+// Data Source: data/real/municipal/palika_profiles.json, data/real/boundaries/gulmi-palikas.json, data/real/boundaries/palika_centroids.json
 // Classification: OBSERVED REAL (Nepal Local Levels 774 Palikas, CBS 2021 Census, Survey Department)
 // Citations: Ministry of Federal Affairs and General Administration (MoFAGA); MoALD; Survey Department Nepal
 
 import rawPalikaData from '../../../../data/real/municipal/palika_profiles.json';
 import boundaryData from '../../../../data/real/boundaries/gulmi-palikas.json';
 import hydroSummaryData from '../../../../data/calculated/hydro_reaches/hydro_palika_summary.json';
+
+import palikaCentroidsData from '../../../../data/real/boundaries/palika_centroids.json';
 
 export interface PalikaFeasibleCrop {
   cropId: string;
@@ -53,14 +55,27 @@ export const PALIKA_GEO_CENTROIDS: Record<string, { lat: number; lng: number }> 
 export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> =
   (rawPalikaData.palikas as unknown) as Record<string, DistrictPalika[]>;
 
-export const GULMI_PALIKA_NEPALI: Record<string, string> = (
-  (boundaryData as any).features || []
-).reduce((acc: Record<string, string>, f: any) => {
-  if (f.properties?.name) {
-    acc[f.properties.name] = f.properties.nepaliName || f.properties.name;
-  }
-  return acc;
-}, {});
+export const GULMI_PALIKA_NEPALI: Record<string, string> = {
+  ...(
+    (boundaryData as any).features || []
+  ).reduce((acc: Record<string, string>, f: any) => {
+    if (f.properties?.name) {
+      acc[f.properties.name] = f.properties.nepaliName || f.properties.name;
+    }
+    return acc;
+  }, {}),
+  ...Object.entries(palikaCentroidsData as Record<string, any>).reduce(
+    (acc: Record<string, string>, [k, v]) => {
+      if (k !== '_provenance' && v?.nepali) {
+        acc[k] = v.nepali.includes('गाउँपालिका') || v.nepali.includes('नगरपालिका')
+          ? v.nepali
+          : `${v.nepali} गाउँपालिका`;
+      }
+      return acc;
+    },
+    {}
+  ),
+};
 
 export const HYDRO_PALIKA_SUMMARY: any[] = hydroSummaryData as any[];
 
