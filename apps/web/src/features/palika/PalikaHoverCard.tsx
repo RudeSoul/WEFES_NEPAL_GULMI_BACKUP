@@ -1,6 +1,10 @@
+// [DATA PROVENANCE]
+// Data Source: data/real/municipal/palika_profiles.json, apps/web/src/utils/climateDownscaling.ts
+// Classification: OBSERVED REAL & OROGRAPHIC DOWNSCALED
+// Citations: MoALD, MoFAGA Nepal, DHM Nepal, Survey Department
 import React from 'react';
 import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
-import { Mountain, Thermometer, CloudRain, Sparkles, Sprout, ArrowRight, Layers, Compass } from 'lucide-react';
+import { Mountain, Thermometer, CloudRain, Sparkles, Sprout, ArrowRight, Layers, Compass, AlertTriangle } from 'lucide-react';
 import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../../utils/climateDownscaling';
 
 interface PalikaHoverCardProps {
@@ -149,21 +153,29 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({
         </div>
       )}
 
-      {/* Seasonal Rotations */}
+      {/* Seasonal Cropping Calendar */}
       {rotations && (rotations.barkhe || rotations.hiunde) && (
-        <div className="bg-emerald-50/60 border border-emerald-200/70 rounded-lg p-1.5 mb-1.5 text-[9px] text-slate-700 flex items-center justify-between">
-          {rotations.barkhe && (
-            <div>
-              <span className="text-emerald-900 font-bold block">बरखे (Summer):</span>
-              <span>{rotations.barkhe.emoji} {rotations.barkhe.cropName.split('(')[0]}</span>
-            </div>
-          )}
-          {rotations.hiunde && (
-            <div className="text-right">
-              <span className="text-emerald-900 font-bold block">हिउँदे (Winter):</span>
-              <span>{rotations.hiunde.emoji} {rotations.hiunde.cropName.split('(')[0]}</span>
-            </div>
-          )}
+        <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-lg p-2 mb-2 text-[9.5px] text-slate-700">
+          <div className="flex items-center justify-between font-semibold text-emerald-900 border-b border-emerald-200/60 pb-1 mb-1">
+            <span>📅 Seasonal Crop Cycle:</span>
+            <span className="font-mono text-[9px] text-emerald-800">
+              {[6, 7, 8, 9].includes(climateMonth) ? 'Active: Barkhe (Monsoon)' : [11, 12, 1, 2].includes(climateMonth) ? 'Active: Hiunde (Winter)' : 'Active: Chaite (Spring)'}
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {rotations.barkhe && (
+              <div className={`p-1 rounded ${[6, 7, 8, 9].includes(climateMonth) ? 'bg-emerald-100/90 font-bold text-emerald-950 shadow-2xs' : 'opacity-80'}`}>
+                <span className="block text-[8.5px] text-emerald-800 uppercase font-mono">बरखे (Summer):</span>
+                <span>{rotations.barkhe.emoji} {rotations.barkhe.cropName.split('(')[0]}</span>
+              </div>
+            )}
+            {rotations.hiunde && (
+              <div className={`p-1 rounded text-right ${[11, 12, 1, 2].includes(climateMonth) ? 'bg-emerald-100/90 font-bold text-emerald-950 shadow-2xs' : 'opacity-80'}`}>
+                <span className="block text-[8.5px] text-emerald-800 uppercase font-mono">हिउँदे (Winter):</span>
+                <span>{rotations.hiunde.emoji} {rotations.hiunde.cropName.split('(')[0]}</span>
+              </div>
+            )}
+          </div>
         </div>
       )}
 

@@ -1,0 +1,164 @@
+{
+  "_metadata": {
+    "title": "Geographic Landmarks, NEA Powerhouses, and Agricultural Pockets",
+    "source": "NEA (Nepal Electricity Authority), NARC, Survey Department of Nepal",
+    "tier": "OBSERVED REAL"
+  },
+  "districtLandmarks": {
+    "gulmi": {
+      "peak": {
+        "name": "Resunga Peak (रेसुङ्गा चुचुरो)",
+        "elevation": 2347,
+        "lat": 28.0833,
+        "lon": 83.25
+      },
+      "valley": {
+        "name": "Ridi / Kali Gandaki Basin (रुरुधाम)",
+        "elevation": 465,
+        "lat": 27.94,
+        "lon": 83.43
+      }
+    },
+    "palpa": {
+      "peak": {
+        "name": "Srinagar Hill (तानसेन डाँडा)",
+        "elevation": 1524,
+        "lat": 27.8667,
+        "lon": 83.55
+      },
+      "valley": {
+        "name": "Kali Gandaki Basin (Ramdi)",
+        "elevation": 420,
+        "lat": 27.8833,
+        "lon": 83.65
+      }
+    },
+    "rupandehi": {
+      "peak": {
+        "name": "Churia Foothills (Siddhababa)",
+        "elevation": 650,
+        "lat": 27.75,
+        "lon": 83.48
+      },
+      "valley": {
+        "name": "Belahiya Customs Southern Plain",
+        "elevation": 95,
+        "lat": 27.46,
+        "lon": 83.46
+      }
+    },
+    "arghakhanchi": {
+      "peak": {
+        "name": "Narpani Hill",
+        "elevation": 2150,
+        "lat": 27.91,
+        "lon": 83.05
+      },
+      "valley": {
+        "name": "Rapti River Confluence",
+        "elevation": 380,
+        "lat": 27.75,
+        "lon": 82.95
+      }
+    }
+  },
+  "hydropowerPlants": {
+    "gulmi": [
+      {
+        "name": "Upper Hugdi Hydropower Station",
+        "capacityMW": 5,
+        "lat": 28.125,
+        "lon": 83.345,
+        "river": "Hugdi Khola",
+        "owner": "Ruru Jalbidyut Pariyojana",
+        "commissioned": "2015"
+      },
+      {
+        "name": "Ridi Khola Small Hydropower",
+        "capacityMW": 2.4,
+        "lat": 27.952,
+        "lon": 83.418,
+        "river": "Ridi Khola",
+        "owner": "Ridi Hydropower Co",
+        "commissioned": "2009"
+      },
+      {
+        "name": "Badigad Khola Micro-Hydro",
+        "capacityMW": 1.2,
+        "lat": 28.165,
+        "lon": 83.284,
+        "river": "Badigad Khola",
+        "owner": "Local Community Energy",
+        "commissioned": "2016"
+      }
+    ],
+    "palpa": [
+      {
+        "name": "Lower Tinau Micro-Hydro",
+        "capacityMW": 1,
+        "lat": 27.82,
+        "lon": 83.52,
+        "river": "Tinau Khola",
+        "owner": "NEA / Community",
+        "commissioned": "2010"
+      }
+    ]
+  },
+  "coffeeLandmarks": [
+    {
+      "id": "aapchaur-origin",
+      "name": "Aapchaur Historic Coffee Origin Site",
+      "nepaliName": "आपचौर — नेपालको पहिलो कफी रोपण स्थल (वि.सं. १९९५)",
+      "category": "origin",
+      "lat": 28.145,
+      "lon": 83.31,
+      "elevationM": 1180,
+      "palika": "Chandrakot",
+      "significance": "Birthplace of Nepali Coffee cultivation introduced by hermit Hira Giri in 1938 BS with seeds brought from Myanmar."
+    },
+    {
+      "id": "tamghas-coffee-center",
+      "name": "Tamghas District Coffee Center & Cupping Lab",
+      "nepaliName": "तम्घास कफी विकास तथा गुणस्तर परीक्षण केन्द्र",
+      "category": "research",
+      "lat": 28.068,
+      "lon": 83.248,
+      "elevationM": 1530,
+      "palika": "Resunga",
+      "significance": "National Coffee Development Board research, seedling propagation nursery, and specialty cupping lab."
+    },
+    {
+      "id": "ruru-cooperative-mill",
+      "name": "Ruru Commercial Coffee Processing Cooperative",
+      "nepaliName": "रुरु प्राथमिक कफी प्रशोधन तथा संकलन केन्द्र",
+      "category": "processing",
+      "lat": 27.978,
+      "lon": 83.42,
+      "elevationM": 1250,
+      "palika": "Ruru",
+      "significance": "Commercial wet-pulping mill and international specialty grade export grading hub for organic Arabica."
+    },
+    {
+      "id": "gulmidarbar-pocket",
+      "name": "Gulmidarbar Organic Coffee Heritage Pocket",
+      "nepaliName": "गुल्मीदरबार गौँडाकोट जैविक कफी पकेट",
+      "category": "pocket",
+      "lat": 28.012,
+      "lon": 83.32,
+      "elevationM": 1350,
+      "palika": "Gulmidarbar",
+      "significance": "Dense agro-forestry shade-grown Arabica clusters producing premium high-elevation parchment coffee."
+    },
+    {
+      "id": "satyawati-ridge-pocket",
+      "name": "Satyawati Agro-Forestry Coffee & Citrus Ridge",
+      "nepaliName": "सत्यवती कफी तथा सुन्तला सघन उत्पादन बेल्ट",
+      "category": "pocket",
+      "lat": 28.045,
+      "lon": 83.46,
+      "elevationM": 1420,
+      "palika": "Satyawati",
+      "significance": "Micro-climate slopes with optimal organic carbon producing floral-noted washed Arabica beans."
+    }
+  ]
+}

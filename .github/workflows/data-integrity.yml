@@ -1,0 +1,44 @@
+name: Data Integrity & CI Verification
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+    branches: ['main']
+
+jobs:
+  verify:
+    name: Verify Data Integrity & Monorepo Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Setup Node.js & pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify Data Integrity & Engine Isolation (Gatekeeper)
+        run: python3 scripts/verify_data_integrity.py
+
+      - name: Run Automated Tests
+        run: pnpm test
+
+      - name: Build Monorepo Workspaces
+        run: pnpm build

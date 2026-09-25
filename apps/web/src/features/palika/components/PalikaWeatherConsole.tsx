@@ -1,28 +1,36 @@
+// [DATA PROVENANCE]
+// Data Source: Open-Meteo NWP assimilation (ECMWF/GFS) & Biophysical Heuristics (Palpa I-D Curve)
+// Classification: EXPERIMENTAL OPERATIONAL ADVISORY (Downscaled Numerical Model)
+// Citations: Open-Meteo Historical & Live Weather API; FAO-56 Penman-Monteith; Dahal & Hasegawa (2008)
 import React, { useState } from 'react';
 import { DistrictPalika } from '../../../data/districtPalikaAssets';
 
 export interface PalikaLiveWeather {
-  temperature: number;
-  apparentTemp: number;
-  humidity: number;
-  precipitation: number;
-  windSpeed: number;
-  solarRadiation: number;
-  cloudCover: number;
-  surfacePressure: number;
-  et0: number;
-  vpd: number;
-  topsoilMoisture: number;
-  deepSoilMoisture: number;
-  uvIndex: number;
-  isDay: boolean;
-  time: string;
-  soilMoisturePct: number;
-  fungalRisk: 'Low' | 'Moderate' | 'High';
-  solarPumpingScore: number;
-  fireDangerRating: 'Low' | 'Moderate' | 'High' | 'Extreme';
-  landslideHazard: 'Low' | 'Moderate' | 'Alert';
-  hourlyInflow72h: number;
+  temperature?: number | null;
+  apparentTemp?: number | null;
+  humidity?: number | null;
+  precipitation?: number | null;
+  windSpeed?: number | null;
+  solarRadiation?: number | null;
+  cloudCover?: number | null;
+  surfacePressure?: number | null;
+  et0?: number | null;
+  vpd?: number | null;
+  topsoilMoisture?: number | null;
+  deepSoilMoisture?: number | null;
+  uvIndex?: number | null;
+  isDay?: boolean | null;
+  time?: string | null;
+  // Scientifically precision-calibrated & dynamic metrics
+  soilWaterIndex?: number | null; // Relative soil wetness % (topsoil / saturation porosity config)
+  coffeeRustRisk?: 'Low' | 'Moderate' | 'High' | null; // Weather-favourability for coffee leaf rust (Hemileia vastatrix)
+  solarYieldKwhPerM2?: number | null; // Integrated daily solar radiation yield in kWh/m²
+  solarPumpingScore?: number | null; // Solar irrigation pumping viability % based on daily irradiance target
+  fireWeatherHeuristic?: 'Low' | 'Moderate' | 'High' | 'Extreme' | null; // Micro-climate fuel dryness & fire weather heuristic
+  landslideExceedanceRatio?: number | null; // Rainfall intensity-duration exceedance ratio (Dahal-Hasegawa / Palpa I-D curve)
+  landslideHazard?: 'Low' | 'Moderate' | 'Alert' | null; // Slope stability hazard warning
+  hourlyInflow24h?: number | null; // 24-hour accumulated rainfall (mm)
+  hourlyInflow72h?: number | null; // 72-hour accumulated rainfall (mm)
 }
 
 interface PalikaWeatherConsoleProps {
@@ -42,20 +50,30 @@ export const PalikaWeatherConsole: React.FC<PalikaWeatherConsoleProps> = ({
 
   if (weatherTelemetryMode !== 'live' || !palikaWeather) return null;
 
+  const lat = PALIKA_GEO_CENTROIDS[activePalika.name]?.lat;
+  const lng = PALIKA_GEO_CENTROIDS[activePalika.name]?.lng;
+
   return (
     <div className="p-4 rounded-2xl bg-white/95 text-slate-800 border border-slate-200/90 shadow-sm space-y-3.5 animate-fade-in glass-panel">
       <div className="flex items-center justify-between flex-wrap gap-2 pb-2.5 border-b border-slate-200/80">
         <div className="flex items-center gap-2">
           <span className="flex h-2.5 w-2.5 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
           </span>
-          <span className="text-xs font-bold text-slate-900 font-outfit uppercase tracking-wider flex items-center gap-1.5">
-            <span>🛰️ Real-Time Earth Observation Radar</span>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold text-slate-900 font-outfit uppercase tracking-wider">
+                ⚡ Live Operational Advisory (Beta)
+              </span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 font-semibold border border-amber-300">
+                Non-Validated Telemetry
+              </span>
+            </div>
             <span className="text-[10px] text-slate-500 font-mono font-normal">
-              ({activePalika.name} Coordinates: {PALIKA_GEO_CENTROIDS[activePalika.name]?.lat}°N, {PALIKA_GEO_CENTROIDS[activePalika.name]?.lng}°E)
+              {activePalika.name} Micro-Climate · {lat != null && lng != null ? `${lat}°N, ${lng}°E` : 'No coordinate data'} · Elevation: {activePalika.elevation ?? 'No data'}m ASL
             </span>
-          </span>
+          </div>
         </div>
 
         {/* 5 Modular Tabs */}
@@ -103,36 +121,60 @@ export const PalikaWeatherConsole: React.FC<PalikaWeatherConsoleProps> = ({
         </div>
       </div>
 
-      {/* Tab 1: Soil Moisture & ET0 */}
+      {/* Tab 1: Soil Water Index & ET0 */}
       {satConsoleTab === 'soil' && (
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5 text-xs animate-fade-in">
           <div className="p-3 rounded-xl bg-cyan-50/70 border border-cyan-200/80">
             <div className="text-[10px] text-cyan-800 font-semibold uppercase">Topsoil Moisture (0–7cm)</div>
             <div className="text-lg font-extrabold text-cyan-950 font-mono mt-0.5">
-              {palikaWeather.topsoilMoisture} <span className="text-[10px] font-normal text-slate-500">m³/m³</span>
+              {palikaWeather.topsoilMoisture != null ? (
+                <>
+                  {palikaWeather.topsoilMoisture} <span className="text-[10px] font-normal text-slate-500">m³/m³</span>
+                </>
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
-            <div className="text-[10px] text-cyan-700 font-mono mt-0.5">{palikaWeather.soilMoisturePct}% Saturation Ratio</div>
+            <div className="text-[10px] text-cyan-700 font-mono mt-0.5">
+              {palikaWeather.soilWaterIndex != null ? `${palikaWeather.soilWaterIndex}% Soil Water Index` : 'No data'}
+            </div>
           </div>
           <div className="p-3 rounded-xl bg-cyan-50/70 border border-cyan-200/80">
             <div className="text-[10px] text-cyan-800 font-semibold uppercase">Deep Root-Zone (7–28cm)</div>
             <div className="text-lg font-extrabold text-cyan-950 font-mono mt-0.5">
-              {palikaWeather.deepSoilMoisture} <span className="text-[10px] font-normal text-slate-500">m³/m³</span>
+              {palikaWeather.deepSoilMoisture != null ? (
+                <>
+                  {palikaWeather.deepSoilMoisture} <span className="text-[10px] font-normal text-slate-500">m³/m³</span>
+                </>
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
-            <div className="text-[10px] text-slate-500 font-mono mt-0.5">Hydraulic Mountain Buffer</div>
+            <div className="text-[10px] text-slate-500 font-mono mt-0.5">Subsoil Storage Reserve</div>
           </div>
           <div className="p-3 rounded-xl bg-cyan-50/70 border border-cyan-200/80">
             <div className="text-[10px] text-cyan-800 font-semibold uppercase">FAO-56 Evapotranspiration (ET₀)</div>
             <div className="text-lg font-extrabold text-cyan-950 font-mono mt-0.5">
-              {palikaWeather.et0} <span className="text-[10px] font-normal text-slate-500">mm/day</span>
+              {palikaWeather.et0 != null ? (
+                <>
+                  {palikaWeather.et0} <span className="text-[10px] font-normal text-slate-500">mm/day</span>
+                </>
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
             <div className="text-[10px] text-slate-500 font-mono mt-0.5">Atmospheric Crop Water Loss</div>
           </div>
           <div className="p-3 rounded-xl bg-cyan-50/70 border border-cyan-200/80 flex flex-col justify-between">
             <div className="text-[10px] text-cyan-800 font-semibold uppercase">Irrigation Balance Status</div>
             <div className="text-xs font-bold text-emerald-800 mt-1 font-mono">
-              {palikaWeather.precipitation > palikaWeather.et0 ? '🌧️ Inflow Hydration' : '☀️ Evaporative Deficit'}
+              {palikaWeather.precipitation != null && palikaWeather.et0 != null ? (
+                palikaWeather.precipitation > palikaWeather.et0 ? '🌧️ Inflow Hydration' : '☀️ Evaporative Deficit'
+              ) : (
+                <span className="text-slate-400 font-normal italic">No data</span>
+              )}
             </div>
-            <div className="text-[9px] text-slate-500">Terraced Bari Soil Drainage Monitored</div>
+            <div className="text-[9px] text-slate-500">{activePalika.name} Micro-Climate Soil Balance</div>
           </div>
         </div>
       )}
@@ -143,36 +185,60 @@ export const PalikaWeatherConsole: React.FC<PalikaWeatherConsoleProps> = ({
           <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80">
             <div className="text-[10px] text-emerald-800 font-semibold uppercase">Vapor Pressure Deficit (VPD)</div>
             <div className="text-lg font-extrabold text-emerald-950 font-mono mt-0.5">
-              {palikaWeather.vpd} <span className="text-[10px] font-normal text-slate-500">kPa</span>
+              {palikaWeather.vpd != null ? (
+                <>
+                  {palikaWeather.vpd} <span className="text-[10px] font-normal text-slate-500">kPa</span>
+                </>
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
             <div className="text-[10px] text-emerald-700 font-mono mt-0.5">
-              {palikaWeather.vpd < 0.4 ? 'Humid Stomatal Closure' : palikaWeather.vpd <= 1.2 ? 'Optimal Transpiration Window' : 'Dry Atmospheric Stress'}
+              {palikaWeather.vpd != null ? (
+                palikaWeather.vpd < 0.4 ? 'Humid Stomatal Closure' : palikaWeather.vpd <= 1.2 ? 'Optimal Transpiration Window' : 'Dry Atmospheric Stress'
+              ) : (
+                'No data'
+              )}
             </div>
           </div>
           <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80">
             <div className="text-[10px] text-emerald-800 font-semibold uppercase">Coffee Leaf Rust (*Hemileia*)</div>
-            <div className={`text-sm font-extrabold mt-1 font-mono inline-flex items-center px-2 py-0.5 rounded ${
-              palikaWeather.fungalRisk === 'High' ? 'bg-rose-100 text-rose-800 border border-rose-300' :
-              palikaWeather.fungalRisk === 'Moderate' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
-              'bg-emerald-100 text-emerald-800 border border-emerald-300'
-            }`}>
-              {palikaWeather.fungalRisk} Risk Level
-            </div>
-            <div className="text-[9px] text-slate-500 mt-1">Spore Germination Probability</div>
+            {palikaWeather.coffeeRustRisk ? (
+              <div className={`text-sm font-extrabold mt-1 font-mono inline-flex items-center px-2 py-0.5 rounded ${
+                palikaWeather.coffeeRustRisk === 'High' ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                palikaWeather.coffeeRustRisk === 'Moderate' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                'bg-emerald-100 text-emerald-800 border border-emerald-300'
+              }`}>
+                {palikaWeather.coffeeRustRisk} Favourability
+              </div>
+            ) : (
+              <div className="text-slate-400 font-normal italic text-sm mt-1">No data</div>
+            )}
+            <div className="text-[9px] text-slate-500 mt-1">Weather-Favourability Proxy</div>
           </div>
           <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80">
-            <div className="text-[10px] text-emerald-800 font-semibold uppercase">Citrus Canker Vulnerability</div>
+            <div className="text-[10px] text-emerald-800 font-semibold uppercase">Micro-Climate Incubation</div>
             <div className="text-sm font-bold text-slate-800 mt-1 font-mono">
-              {palikaWeather.humidity > 80 ? '⚠️ High Moisture Incubation' : '✅ Safe Micro-Climate'}
+              {palikaWeather.humidity != null ? (
+                palikaWeather.humidity > 80 ? '⚠️ High Moisture Incubation' : '✅ Moderate Incubation Risk'
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
-            <div className="text-[9px] text-slate-500 mt-1">Relative Humidity: {palikaWeather.humidity}%</div>
+            <div className="text-[9px] text-slate-500 mt-1">
+              Relative Humidity: {palikaWeather.humidity != null ? `${palikaWeather.humidity}%` : 'No data'}
+            </div>
           </div>
           <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80">
-            <div className="text-[10px] text-emerald-800 font-semibold uppercase">Crop Stomatal Health</div>
+            <div className="text-[10px] text-emerald-800 font-semibold uppercase">Stomatal Transpiration</div>
             <div className="text-xs font-bold text-emerald-800 mt-1 font-mono">
-              Active Photosynthetic Pumping
+              {palikaWeather.vpd != null ? (
+                palikaWeather.vpd >= 0.4 && palikaWeather.vpd <= 1.2 ? 'Active Transpiration' : 'Regulated Stomatal Flow'
+              ) : (
+                <span className="text-slate-400 font-normal italic">No data</span>
+              )}
             </div>
-            <div className="text-[9px] text-slate-500 mt-1">Slow High-Altitude Acid Synthesis</div>
+            <div className="text-[9px] text-slate-500 mt-1">{activePalika.elevation != null ? `${activePalika.elevation}m ASL Canopy Dynamics` : 'Canopy Dynamics'}</div>
           </div>
         </div>
       )}
@@ -183,28 +249,48 @@ export const PalikaWeatherConsole: React.FC<PalikaWeatherConsoleProps> = ({
           <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200/80">
             <div className="text-[10px] text-amber-800 font-semibold uppercase">Direct Normal Solar Flux</div>
             <div className="text-lg font-extrabold text-amber-950 font-mono mt-0.5">
-              {palikaWeather.solarRadiation} <span className="text-[10px] font-normal text-slate-500">W/m²</span>
+              {palikaWeather.solarRadiation != null ? (
+                <>
+                  {palikaWeather.solarRadiation} <span className="text-[10px] font-normal text-slate-500">W/m²</span>
+                </>
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
-            <div className="text-[10px] text-amber-700 font-mono mt-0.5">Clear-Sky Ground Insolation</div>
+            <div className="text-[10px] text-amber-700 font-mono mt-0.5">Instantaneous Ground Insolation</div>
           </div>
           <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200/80">
-            <div className="text-[10px] text-amber-800 font-semibold uppercase">Solar River-Lifting Efficiency</div>
+            <div className="text-[10px] text-amber-800 font-semibold uppercase">Solar River-Lifting Potential</div>
             <div className="text-lg font-extrabold text-amber-800 font-mono mt-0.5">
-              {palikaWeather.solarPumpingScore}% <span className="text-[10px] font-normal text-slate-500">Operational</span>
+              {palikaWeather.solarPumpingScore != null ? (
+                <>
+                  {palikaWeather.solarPumpingScore}% <span className="text-[10px] font-normal text-slate-500">Viability</span>
+                </>
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
-            <div className="text-[9px] text-slate-500 mt-0.5">Badigad / Kaligandaki River Pump</div>
+            <div className="text-[9px] text-slate-500 mt-0.5">Daily Irradiance Benchmark</div>
           </div>
           <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200/80">
             <div className="text-[10px] text-amber-800 font-semibold uppercase">Solar UV Index (Daily Peak)</div>
             <div className="text-lg font-extrabold text-amber-950 font-mono mt-0.5">
-              {palikaWeather.uvIndex} <span className="text-[10px] font-normal text-slate-500">UVI</span>
+              {palikaWeather.uvIndex != null ? (
+                <>
+                  {palikaWeather.uvIndex} <span className="text-[10px] font-normal text-slate-500">UVI</span>
+                </>
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
-            <div className="text-[9px] text-slate-500 mt-0.5">Photovoltaic Photons Cleared</div>
+            <div className="text-[9px] text-slate-500 mt-0.5">Atmospheric Irradiance Transmission</div>
           </div>
           <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200/80">
-            <div className="text-[10px] text-amber-800 font-semibold uppercase">Clean Energy Yield</div>
-            <div className="text-xs font-bold text-amber-900 mt-1 font-mono">~4.9 kWh/kWp Daily Capacity</div>
-            <div className="text-[9px] text-slate-500 mt-0.5">Municipal Micro-Grid Viable</div>
+            <div className="text-[10px] text-amber-800 font-semibold uppercase">Integrated Solar Energy</div>
+            <div className="text-xs font-bold text-amber-900 mt-1 font-mono">
+              {palikaWeather.solarYieldKwhPerM2 != null ? `${palikaWeather.solarYieldKwhPerM2} kWh/m²/day` : <span className="text-slate-400 font-normal italic">No data</span>}
+            </div>
+            <div className="text-[9px] text-slate-500 mt-0.5">24-Hour Integrated Yield</div>
           </div>
         </div>
       )}
@@ -213,41 +299,59 @@ export const PalikaWeatherConsole: React.FC<PalikaWeatherConsoleProps> = ({
       {satConsoleTab === 'hazard' && (
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5 text-xs animate-fade-in">
           <div className="p-3 rounded-xl bg-rose-50/70 border border-rose-200/80">
-            <div className="text-[10px] text-rose-800 font-semibold uppercase">72-Hour Inflow Accumulation</div>
+            <div className="text-[10px] text-rose-800 font-semibold uppercase">Rainfall (Past 24h / Forecast 24h)</div>
             <div className="text-lg font-extrabold text-rose-950 font-mono mt-0.5">
-              {palikaWeather.hourlyInflow72h} <span className="text-[10px] font-normal text-slate-500">mm / 72h</span>
+              {palikaWeather.hourlyInflow24h != null && palikaWeather.hourlyInflow72h != null ? (
+                <>
+                  {palikaWeather.hourlyInflow24h} / {palikaWeather.hourlyInflow72h} <span className="text-[10px] font-normal text-slate-500">mm</span>
+                </>
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
-            <div className="text-[10px] text-slate-500 font-mono mt-0.5">Rolling Satellite Accumulation</div>
+            <div className="text-[10px] text-slate-500 font-mono mt-0.5">Past 24h Rain & Next 24h Forecast</div>
           </div>
           <div className="p-3 rounded-xl bg-rose-50/70 border border-rose-200/80">
-            <div className="text-[10px] text-rose-800 font-semibold uppercase">Landslide Trigger Hazard</div>
-            <div className={`text-sm font-extrabold mt-1 font-mono inline-flex items-center px-2 py-0.5 rounded ${
-              palikaWeather.landslideHazard === 'Alert' ? 'bg-rose-100 text-rose-800 border border-rose-300 animate-pulse' :
-              palikaWeather.landslideHazard === 'Moderate' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
-              'bg-emerald-100 text-emerald-800 border border-emerald-300'
-            }`}>
-              {palikaWeather.landslideHazard} Trigger Status
-            </div>
-            <div className="text-[9px] text-slate-500 mt-1">Threshold: 120 mm/72h on slopes</div>
+            <div className="text-[10px] text-rose-800 font-semibold uppercase">Landslide I-D Exceedance</div>
+            {palikaWeather.landslideHazard ? (
+              <div className={`text-sm font-extrabold mt-1 font-mono inline-flex items-center px-2 py-0.5 rounded ${
+                palikaWeather.landslideHazard === 'Alert' ? 'bg-rose-100 text-rose-800 border border-rose-300 animate-pulse' :
+                palikaWeather.landslideHazard === 'Moderate' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                'bg-emerald-100 text-emerald-800 border border-emerald-300'
+              }`}>
+                {palikaWeather.landslideHazard} {palikaWeather.landslideExceedanceRatio != null ? `(${palikaWeather.landslideExceedanceRatio}x Ratio)` : ''}
+              </div>
+            ) : (
+              <div className="text-slate-400 font-normal italic text-sm mt-1">No data</div>
+            )}
+            <div className="text-[9px] text-slate-500 mt-1">Palpa I-D Curve (I = 58.67·D⁻⁰·⁸⁴)</div>
           </div>
           <div className="p-3 rounded-xl bg-rose-50/70 border border-rose-200/80">
-            <div className="text-[10px] text-rose-800 font-semibold uppercase">Forest Fire Danger Index (FDRI)</div>
-            <div className={`text-sm font-extrabold mt-1 font-mono inline-flex items-center px-2 py-0.5 rounded ${
-              palikaWeather.fireDangerRating === 'Extreme' ? 'bg-rose-200 text-rose-900 border border-rose-400 animate-pulse' :
-              palikaWeather.fireDangerRating === 'High' ? 'bg-orange-100 text-orange-900 border border-orange-300' :
-              palikaWeather.fireDangerRating === 'Moderate' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
-              'bg-emerald-100 text-emerald-800 border border-emerald-300'
-            }`}>
-              {palikaWeather.fireDangerRating} Fire Rating
-            </div>
-            <div className="text-[9px] text-slate-500 mt-1">Community Forest Pinewood Aridity</div>
+            <div className="text-[10px] text-rose-800 font-semibold uppercase">Fire Weather Dryness Heuristic</div>
+            {palikaWeather.fireWeatherHeuristic ? (
+              <div className={`text-sm font-extrabold mt-1 font-mono inline-flex items-center px-2 py-0.5 rounded ${
+                palikaWeather.fireWeatherHeuristic === 'Extreme' ? 'bg-rose-200 text-rose-900 border border-rose-400 animate-pulse' :
+                palikaWeather.fireWeatherHeuristic === 'High' ? 'bg-orange-100 text-orange-900 border border-orange-300' :
+                palikaWeather.fireWeatherHeuristic === 'Moderate' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                'bg-emerald-100 text-emerald-800 border border-emerald-300'
+              }`}>
+                {palikaWeather.fireWeatherHeuristic} Rating
+              </div>
+            ) : (
+              <div className="text-slate-400 font-normal italic text-sm mt-1">No data</div>
+            )}
+            <div className="text-[9px] text-slate-500 mt-1">VPD + Soil Moisture + Wind Heuristic</div>
           </div>
           <div className="p-3 rounded-xl bg-rose-50/70 border border-rose-200/80">
-            <div className="text-[10px] text-rose-800 font-semibold uppercase">Disaster Advisory</div>
+            <div className="text-[10px] text-rose-800 font-semibold uppercase">Terrain Advisory</div>
             <div className="text-xs font-bold text-slate-800 mt-1 font-mono">
-              {palikaWeather.landslideHazard === 'Alert' ? '⚠️ High Inflow Precaution' : '✅ Slopes Mechanically Stable'}
+              {palikaWeather.landslideHazard != null ? (
+                palikaWeather.landslideHazard === 'Alert' ? '⚠️ High Slope Inflow Precaution' : '✅ Normal Slope Condition'
+              ) : (
+                <span className="text-slate-400 font-normal italic">No data</span>
+              )}
             </div>
-            <div className="text-[9px] text-slate-500 mt-1">Satyawati & Madane Ward Radar</div>
+            <div className="text-[9px] text-slate-500 mt-1">{activePalika.name} Slope Monitoring</div>
           </div>
         </div>
       )}
@@ -258,28 +362,53 @@ export const PalikaWeatherConsole: React.FC<PalikaWeatherConsoleProps> = ({
           <div className="p-3 rounded-xl bg-indigo-50/70 border border-indigo-200/80">
             <div className="text-[10px] text-indigo-800 font-semibold uppercase">Surface Pressure</div>
             <div className="text-lg font-extrabold text-indigo-950 font-mono mt-0.5">
-              {palikaWeather.surfacePressure} <span className="text-[10px] font-normal text-slate-500">hPa</span>
+              {palikaWeather.surfacePressure != null ? (
+                <>
+                  {palikaWeather.surfacePressure} <span className="text-[10px] font-normal text-slate-500">hPa</span>
+                </>
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
-            <div className="text-[10px] text-indigo-700 font-mono mt-0.5">High-Elevation Barometric Level</div>
+            <div className="text-[10px] text-indigo-700 font-mono mt-0.5">
+              {activePalika.elevation != null ? `${activePalika.elevation}m ASL Barometric Level` : 'Barometric Level'}
+            </div>
           </div>
           <div className="p-3 rounded-xl bg-indigo-50/70 border border-indigo-200/80">
             <div className="text-[10px] text-indigo-800 font-semibold uppercase">Diurnal Temperature</div>
             <div className="text-lg font-extrabold text-amber-800 font-mono mt-0.5">
-              {palikaWeather.temperature}°C <span className="text-[10px] font-normal text-slate-500">(Feels {palikaWeather.apparentTemp}°)</span>
+              {palikaWeather.temperature != null ? (
+                <>
+                  {palikaWeather.temperature}°C{' '}
+                  <span className="text-[10px] font-normal text-slate-500">
+                    {palikaWeather.apparentTemp != null ? `(Feels ${palikaWeather.apparentTemp}°)` : ''}
+                  </span>
+                </>
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
-            <div className="text-[9px] text-slate-500 mt-0.5">Lapse-Adjusted Ambient Sensor</div>
+            <div className="text-[9px] text-slate-500 mt-0.5">Live Ambient Telemetry</div>
           </div>
           <div className="p-3 rounded-xl bg-indigo-50/70 border border-indigo-200/80">
-            <div className="text-[10px] text-indigo-800 font-semibold uppercase">Wind Speed & Direction</div>
+            <div className="text-[10px] text-indigo-800 font-semibold uppercase">Wind Speed & Flow</div>
             <div className="text-lg font-extrabold text-teal-800 font-mono mt-0.5">
-              {palikaWeather.windSpeed} <span className="text-[10px] font-normal text-slate-500">m/s</span>
+              {palikaWeather.windSpeed != null ? (
+                <>
+                  {palikaWeather.windSpeed} <span className="text-[10px] font-normal text-slate-500">m/s</span>
+                </>
+              ) : (
+                <span className="text-slate-400 font-normal italic text-sm">No data</span>
+              )}
             </div>
-            <div className="text-[9px] text-slate-500 mt-0.5">Kali Gandaki Gorge Valley Breeze</div>
+            <div className="text-[9px] text-slate-500 mt-0.5">Surface Wind Speed (10m)</div>
           </div>
           <div className="p-3 rounded-xl bg-indigo-50/70 border border-indigo-200/80">
             <div className="text-[10px] text-indigo-800 font-semibold uppercase">Cloud Cover & Attenuation</div>
-            <div className="text-lg font-extrabold text-indigo-900 font-mono mt-0.5">{palikaWeather.cloudCover}%</div>
-            <div className="text-[9px] text-slate-500 mt-0.5">Monsoon Cloud Blanket Ratio</div>
+            <div className="text-lg font-extrabold text-indigo-900 font-mono mt-0.5">
+              {palikaWeather.cloudCover != null ? `${palikaWeather.cloudCover}%` : <span className="text-slate-400 font-normal italic text-sm">No data</span>}
+            </div>
+            <div className="text-[9px] text-slate-500 mt-0.5">Satellite Cloud Attenuation</div>
           </div>
         </div>
       )}

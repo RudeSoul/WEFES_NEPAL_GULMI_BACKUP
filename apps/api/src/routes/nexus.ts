@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { db } from '@wefes/database';
 import { calculateHarvestImpact, simulateScenario } from '@wefes/wefes-engine';
-import { AnalyzeRequestSchema, ScenarioRequestSchema } from '@wefes/shared-types';
+import { AnalyzeRequestSchema, ScenarioRequestSchema, ScenarioParameters } from '@wefes/shared-types';
 
 export const nexusRouter = Router();
 
@@ -53,7 +53,7 @@ nexusRouter.post('/simulate', (req, res) => {
     }
 
     const baseline = calculateHarvestImpact(district, crop, quantity, unit);
-    const simulatedResult = simulateScenario(baseline, parameters);
+    const simulatedResult = simulateScenario(baseline, parameters as unknown as ScenarioParameters);
 
     res.json({ success: true, data: simulatedResult });
   } catch (error: any) {

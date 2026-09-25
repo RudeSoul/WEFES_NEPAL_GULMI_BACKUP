@@ -63,13 +63,13 @@ export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({
       subFilters: { ecoSubFilter: 'soil_ph' }
     },
     {
-      id: 'market_proximity',
+      id: 'agri_landholding',
       pillar: 'socioeconomics' as WEFESPillar,
       icon: Coins,
       color: 'indigo',
-      title: lang === 'np' ? '🏛️ तम्घास बजार पहुँच' : '🏛️ Tamghas Market Access',
-      desc: lang === 'np' ? 'सदरमुकामसम्मको सडक दूरी र ढुवानी' : 'Transport distance to commercial HQ',
-      subFilters: { socioSubFilter: 'hq_market_proximity' }
+      title: lang === 'np' ? '🚜 कृषियोग्य जग्गा र बस्ती' : '🚜 Landholding & Settlements',
+      desc: lang === 'np' ? 'प्रति घरधुरी जग्गा र घनत्व तरङ्ग' : 'Land per HH & settlement density',
+      subFilters: { socioSubFilter: 'agri_landholding' }
     }
   ];
 

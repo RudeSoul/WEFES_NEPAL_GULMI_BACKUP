@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+# .githooks/pre-commit
+# Enforces:
+# 1. Branch Protection (no direct commits to main/master)
+# 2. 6-Tier Data Integrity & Governance Gatekeeper
+# 3. 1-File-Per-Commit Rule (Build-Flow Atomic Policy)
+# 4. Max 400 net functional lines per commit
+# 5. Auto-regeneration of AI_INDEX.md
+
+# 0. Branch Protection (Rule 6: Never commit directly to main or master)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$CURRENT_BRANCH" = "main" ] || [ "$CURRENT_BRANCH" = "master" ]; then
+    echo "=================================================================="
+    echo " ❌ COMMIT REJECTED: Direct commits to '$CURRENT_BRANCH' are forbidden!"
+    echo " Rule 6 of RULESET.md mandates working on a feature branch."
+    echo " Create a branch: git checkout -b feat/your-feature"
+    echo "=================================================================="
+    exit 1
+fi
+
+# 1. Verify 6-Tier Data Integrity & Governance Gatekeeper (Rules 1-6)
+if [ -f "scripts/verify_data_integrity.py" ]; then
+    echo "--> [Pre-Commit] Verifying 6-tier data integrity & platform rules..."
+    python3 scripts/verify_data_integrity.py || exit 1
+fi
+
+# 2. 1-File-Per-Commit Rule (Rule 7: Build-Flow Atomic Policy)
+if [ "$ALLOW_MULTI_FILE_COMMIT" != "1" ]; then
+    # Collect list of staged files, ignoring AI_INDEX.md which is auto-refreshed
+    STAGED_FILES=()
+    while IFS= read -r file; do
+        if [ -n "$file" ] && [ "$file" != "AI_INDEX.md" ]; then
+            STAGED_FILES+=("$file")
+        fi
+    done < <(git diff --cached --name-only)
+
+    NUM_FILES=${#STAGED_FILES[@]}
+
+    if [ "$NUM_FILES" -gt 1 ]; then
+        echo ""
+        echo "=================================================================="
+        echo " ❌ COMMIT REJECTED: 1-File-Per-Commit Rule Exceeded ($NUM_FILES files staged)!"
+        echo "=================================================================="
+        echo " Repository policy mandates committing 1 functional file per commit,"
+        echo " sequenced by the architectural build flow:"
+        echo "   (Types -> Engines -> Database -> API -> Web -> Tests -> Governance)"
+        echo ""
+        echo " Currently staged files:"
+        for f in "${STAGED_FILES[@]}"; do
+            echo "   - $f"
+        done
+        echo ""
+        echo " To commit your changes in build-flow order:"
+        echo "   1. Unstage all changes:"
+        echo "        git reset HEAD"
+        echo "   2. Use the automated build-flow assistant:"
+        echo "        pnpm commit:flow"
+        echo "      or stage and commit each file in order:"
+        echo "        git add <file>"
+        echo "        git commit -m \"<type>(<scope>): <message>\""
+        echo ""
+        echo " (Emergency bypass: ALLOW_MULTI_FILE_COMMIT=1 git commit -m '...')"
+        echo "=================================================================="
+        echo ""
+        exit 1
+    fi
+fi
+
+# 3. Check Binary File Size Limit (Rule 5: Max 40 MB per file)
+MAX_FILE_BYTES=$((40 * 1024 * 1024))
+while IFS= read -r file; do
+    if [ -f "$file" ]; then
+        FILE_SIZE=$(wc -c < "$file" | tr -d ' ')
+        if [ "$FILE_SIZE" -gt "$MAX_FILE_BYTES" ]; then
+            FILE_MB=$((FILE_SIZE / 1024 / 1024))
+            echo ""
+            echo "=================================================================="
+            echo " ❌ COMMIT REJECTED: File size exceeds 40 MB limit!"
+            echo "=================================================================="
+            echo " '$file' is ${FILE_MB} MB (maximum allowed is 40 MB)."
+            echo " Rule 5 of RULESET.md mandates tracking large binary rasters in"
+            echo " 'data/manifest.json' and downloading them via 'scripts/sync_data.py'."
+            echo "=================================================================="
+            echo ""
+            exit 1
+        fi
+    fi
+done < <(git diff --cached --name-only)
+
+# 4. Update AI_INDEX.md if generator script exists
+if [ -f "scripts/generate_ai_index.py" ]; then
+    echo "--> [Pre-Commit] Refreshing dynamic AI_INDEX.md..."
+    python3 scripts/generate_ai_index.py > /dev/null 2>&1 || true
+    if [ -f "AI_INDEX.md" ]; then
+        git add AI_INDEX.md
+    fi
+fi
+
+# 4. Check Atomic Commit Limit (Max 400 net functional lines)
+if [ "$ALLOW_LARGE_COMMIT" = "1" ]; then
+    echo "--> [Pre-Commit] ALLOW_LARGE_COMMIT=1 set; bypassing commit size check."
+    exit 0
+fi
+
+MAX_LINES=400
+TOTAL_LINES=0
+
+# Sum up added and deleted lines, excluding manifests, lockfiles, and data tables
+while read -r added deleted filepath; do
+    if [[ "$added" =~ ^[0-9]+$ ]] && [[ "$deleted" =~ ^[0-9]+$ ]]; then
+        case "$filepath" in
+            *lock.yaml|*lock.json|*.lock|AI_INDEX.md|data/manifest.json|*.geojson|*.csv|data/*|data/calculated/*|data/real/*|data/proxy/*|dist/*|*public/geojson/*)
+                # Exempt from line count limit (data assets and build artifacts)
+                ;;
+            *)
+                TOTAL_LINES=$((TOTAL_LINES + added + deleted))
+                ;;
+        esac
+    fi
+done < <(git diff --cached --numstat)
+
+if [ "$TOTAL_LINES" -gt "$MAX_LINES" ]; then
+    echo ""
+    echo "=================================================================="
+    echo " ❌ COMMIT REJECTED: Atomic Commit Line Limit Exceeded!"
+    echo "=================================================================="
+    echo " This commit modifies $TOTAL_LINES net functional code lines (limit: $MAX_LINES)."
+    echo " Rule 7 of RULESET.md requires atomic commits to keep reviews manageable."
+    echo ""
+    echo " Please split your staged changes into smaller commits:"
+    echo "   git reset HEAD <files>"
+    echo "   git commit -m 'feat: step 1 schema & interfaces'"
+    echo ""
+    echo " (Bypass: ALLOW_LARGE_COMMIT=1 git commit -m '...')"
+    echo "=================================================================="
+    echo ""
+    exit 1
+fi
+
+exit 0

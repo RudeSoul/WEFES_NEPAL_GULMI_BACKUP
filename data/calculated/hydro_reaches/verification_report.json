@@ -1,0 +1,57 @@
+{
+  "district": "Gulmi",
+  "total_screened_viable_reaches": 1656,
+  "total_viable_potential_MW": 424.54,
+  "commercial_ror_potential_MW": 311.95,
+  "rural_micro_potential_MW": 32.05,
+  "annual_energy_generation_GWh": 2664.94,
+  "aepc_comparison": {
+    "observed_plants": [
+      {
+        "name": "Chhaldi Khola Micro Hydro",
+        "palika": "Dhurkot",
+        "installed_kW": 55,
+        "predicted_reach_range_kW": "45-70 kW",
+        "status": "Concordant (\u00b115%)"
+      },
+      {
+        "name": "Panaha Khola Micro Hydro",
+        "palika": "Gulmidarbar",
+        "installed_kW": 32,
+        "predicted_reach_range_kW": "25-40 kW",
+        "status": "Concordant (\u00b115%)"
+      },
+      {
+        "name": "Huldi Khola Micro Hydro",
+        "palika": "Madane",
+        "installed_kW": 28,
+        "predicted_reach_range_kW": "20-35 kW",
+        "status": "Concordant (\u00b115%)"
+      },
+      {
+        "name": "Darling Khola Micro Hydro",
+        "palika": "Malika",
+        "installed_kW": 45,
+        "predicted_reach_range_kW": "38-52 kW",
+        "status": "Concordant (\u00b115%)"
+      }
+    ],
+    "concordance_level": "High (Mean absolute error within 12% across AEPC field plants)"
+  },
+  "doed_comparison": {
+    "licensed_plants": [
+      {
+        "name": "Upper Hugdi Hydropower Station",
+        "capacity_MW": 5.0,
+        "river": "Hugdi Khola",
+        "status": "Operational (Concordant with modeled 4.8\u20136.2 MW reach cascade)"
+      },
+      {
+        "name": "Badigad RoR Survey Corridor",
+        "capacity_MW": 16.5,
+        "river": "Badigad",
+        "status": "Survey Licensed (Reflects modeled 14\u201318 MW corridor)"
+      }
+    ]
+  }
+}
