@@ -52,6 +52,10 @@ export interface DistrictPalika {
 export const PALIKA_GEO_CENTROIDS: Record<string, { lat: number; lng: number }> =
   rawPalikaData.palikaCentroids as Record<string, { lat: number; lng: number }>;
 
+const { _provenance, ...palikaCentroidsMap } = palikaCentroidsData as any;
+export const PALIKA_CENTROIDS: Record<string, { lat: number; lng: number; nepali: string }> =
+  palikaCentroidsMap as Record<string, { lat: number; lng: number; nepali: string }>;
+
 export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> =
   (rawPalikaData.palikas as unknown) as Record<string, DistrictPalika[]>;
 
