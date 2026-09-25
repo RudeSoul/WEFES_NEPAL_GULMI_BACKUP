@@ -7,10 +7,7 @@
 import React, { useMemo } from 'react';
 import { ImageOverlay } from 'react-leaflet';
 import { GULMI_PALIKA_CLIMATE_PROFILES, getPalikaMicroClimate } from '../../utils/climateDownscaling';
-import palikaCentroidsData from '../../data/palika_centroids.json';
-
-const { _provenance, ...palikaCentroidsMap } = palikaCentroidsData as any;
-const PALIKA_CENTROIDS = palikaCentroidsMap as Record<string, { lat: number; lng: number; nepali: string }>;
+import { PALIKA_CENTROIDS } from '../../data/districtPalikaAssets';
 
 // Scientific multi-stop gradient color ramp for precipitation (mm/month)
 // Deep subtropical gorge (#fed7aa) -> Mid-hills moderate (#38bdf8 -> #0284c7) -> High orographic ridge (#1e3a8a)

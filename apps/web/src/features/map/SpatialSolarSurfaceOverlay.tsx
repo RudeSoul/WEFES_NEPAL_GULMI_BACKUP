@@ -1,12 +1,12 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/climate/gulmiGHI.geojson, apps/web/src/data/gulmiGhiGrid.json, apps/web/public/geojson/gulmi-district.json
+// Data Source: data/real/climate/gulmiGHI.geojson, data/calculated/indicators/gulmi_ghi_grid.json, apps/web/public/geojson/gulmi-district.json
 // Classification: EMPIRICAL 900M RASTER GRID (Global Solar Atlas / ESMAP / World Bank / Solargis)
 // Citations: Global Solar Atlas (https://globalsolaratlas.info/download/nepal); Survey Department of Nepal
 // Consumed By: apps/web/src/features/map/DistrictMap.tsx
 
 import React, { useMemo } from 'react';
 import { ImageOverlay } from 'react-leaflet';
-import ghiGridData from '../../data/gulmiGhiGrid.json';
+import { GULMI_GHI_GRID as ghiGridData } from '../../data/districtIndicatorAssets';
 
 // Rich, multi-stop QGIS-matched solar radiation thermal palette (GHI in kWh/m2/day):
 // Deep gorge shadow (3.03) -> Shaded north slopes (3.6) -> Lower valleys (3.9) -> Mid-hills (4.15) -> Sunny terraces (4.3) -> High ridge summits (4.53+)

@@ -16,9 +16,8 @@ import ClimateTimeController from './ClimateTimeController';
 import { MapGestureHandler } from './MapGestureHandler';
 import { PolicyPresetSelector } from '../simulator/PolicyPresetSelector';
 import { MapPin, Calendar, Coins, Trees, Droplets, Zap, Sprout, Sun, Wheat, Cherry, Leaf, Thermometer, Mountain, Target, Cloud, CloudRain, Wind, Activity, Globe, Compass, Check, Eye, EyeOff, Building2, FileText, Calculator, ShieldCheck, Cpu, AlertTriangle, Info, X, CloudSun, CloudLightning, CloudFog, CloudDrizzle, Snowflake, Moon, ChevronDown, ChevronUp, Gauge } from 'lucide-react';
-import gulmiSoilPoints from '../../data/gulmiSoilPoints.json';
 import { PalikaHoverCard } from '../palika/PalikaHoverCard';
-import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY, PALIKA_CENTROIDS } from '../../data/districtPalikaAssets';
 import { VALIDATED_CROPS } from '../../data/cropSuitabilityAssets';
 import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../../utils/climateDownscaling';
 import { resolveCalculationMethodology } from '../../data/districtCalculationAssets';
@@ -26,7 +25,7 @@ import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
 import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
 import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
 import { SpatialSettlementDensityOverlay } from './SpatialSettlementDensityOverlay';
-import palikaGridData from '../../data/gulmi_palika_grid.json';
+import { PALIKA_GRID_DATA as palikaGridData } from '../../data/districtIndicatorAssets';
 
 
 
@@ -45,16 +44,6 @@ const GULMI_BOUNDS: [[number, number], [number, number]] = [
   [27.920, 83.024],
   [28.271, 83.608],
 ];
-
-// ==============================================================================
-// [DATA PROVENANCE]
-// Source File: data/real/boundaries/palika_centroids.json
-// Lineage: Survey Department / Local Government Palika Boundary Centroids
-// Consumed By: apps/web/src/features/map/DistrictMap.tsx
-// ==============================================================================
-import palikaCentroidsData from '../../data/palika_centroids.json';
-const { _provenance, ...palikaCentroidsMap } = palikaCentroidsData;
-const PALIKA_CENTROIDS = palikaCentroidsMap as unknown as Record<string, { lat: number; lng: number; nepali: string }>;
 
 function createPalikaLabelIcon(name: string, nepali: string, isHovered: boolean) {
   return L.divIcon({

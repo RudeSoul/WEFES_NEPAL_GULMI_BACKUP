@@ -31,7 +31,7 @@ import {
   DHMRiverStation
 } from '../../data/districtHydrologyAssets';
 import { generateDistrictContours, ContourLine } from '../../utils/contourGenerator';
-import gulmiSoilPoints from '../../data/gulmiSoilPoints.json';
+import { GULMI_SOIL_POINTS as gulmiSoilPoints } from '../../data/districtIndicatorAssets';
 
 const GULMI_PALIKA_NEPALI: Record<string, string> = {
   'Resunga': 'रेसुङ्गा',

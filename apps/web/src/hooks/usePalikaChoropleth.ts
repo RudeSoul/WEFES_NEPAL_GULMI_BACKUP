@@ -12,11 +12,13 @@ import {
   SUBFILTER_LEGENDS,
 } from '@wefes/shared-types';
 import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../data/districtPalikaAssets';
-import palikaGhiData from '../data/gulmi_palika_ghi.json';
-import palikaCookingData from '../data/gulmi_palika_cooking.json';
-import palikaGridData from '../data/gulmi_palika_grid.json';
-import palikaLandholdingData from '../data/gulmi_palika_landholding.json';
-import palikaSoilData from '../data/gulmi_palika_soil.json';
+import {
+  PALIKA_GHI_DATA as palikaGhiData,
+  PALIKA_COOKING_DATA as palikaCookingData,
+  PALIKA_GRID_DATA as palikaGridData,
+  PALIKA_LANDHOLDING_DATA as palikaLandholdingData,
+  PALIKA_SOIL_DATA as palikaSoilData,
+} from '../data/districtIndicatorAssets';
 import {
   VALIDATED_CROPS,
   WaterStressSeason,
