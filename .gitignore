@@ -50,3 +50,6 @@ Desktop.ini
 .vscode/
 *.swp
 *.swo
+
+# --- Large Raw GIS Datasets (>40MB) ---
+data/real/boundaries/gulmi_buildings.geojson

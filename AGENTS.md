@@ -67,17 +67,17 @@ When working on maps, subfilters, legends, or analytics, **NEVER search or grep 
 |---|---|---|---|---|
 | **Food** | `single_crop` / `crop_suitability` | `data/real/agriculture/crop_requirement.json` & `data/real/municipal/palika_profiles.json` | `apps/web/src/data/cropSuitabilityAssets.ts` (`evaluatePalikaCropSuitability`) | `crop_suitability` in `packages/shared-types/src/legend-contracts.ts` |
 | **Food** | `crop_water_stress` | `data/real/agriculture/crops.json`, DHM Rain & NASA POWER | `apps/web/src/data/cropSuitabilityAssets.ts` (`computePalikaMoistureStress`) | `crop_water_stress` (4 seasons: `cycle`, `winter_dry`, `pre_monsoon`, `monsoon_wet`) |
-| **Food** | `land_typology` | `data/real/agriculture/gulmi_agricultural_landholding.geojson` & `apps/web/src/data/gulmi_palika_landholding.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `land_typology` (Khet %, Bari %, Parcel density from NSO Census 2021/22) |
+| **Food** | `land_typology` | `data/real/agriculture/gulmi_agricultural_landholding.geojson` & `data/calculated/indicators/gulmi_palika_landholding.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` (via `districtIndicatorAssets.ts`) | `land_typology` (Khet %, Bari %, Parcel density from NSO Census 2021/22) |
 | **Water** | `irrigation_potential` | `data/real/agriculture/gulmi_agricultural_landholding.geojson` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `irrigation_potential` |
 | **Water** | `spring_vulnerability` | `data/real/hydrology/` & `palika_profiles.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `spring_vulnerability` |
 | **Water** | `dhm_station` | `data/real/hydrology/` DHM station network | `apps/web/src/hooks/usePalikaChoropleth.ts` | `dhm_station` |
-| **Energy** | `solar_irradiance` | `data/real/climate/gulmi_solar_pvout_opta.geojson` & `apps/web/src/data/gulmi_palika_ghi.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `solar_irradiance` |
-| **Energy** | `grid_electrification` | `apps/web/src/data/gulmi_palika_grid.json` (NEA Substations) | `apps/web/src/hooks/usePalikaChoropleth.ts` | `grid_electrification` |
+| **Energy** | `solar_irradiance` | `data/real/climate/gulmi_solar_pvout_opta.geojson` & `data/calculated/indicators/gulmi_palika_ghi.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` (via `districtIndicatorAssets.ts`) | `solar_irradiance` |
+| **Energy** | `grid_electrification` | `data/calculated/indicators/gulmi_palika_grid.json` (NEA Substations) | `apps/web/src/hooks/usePalikaChoropleth.ts` (via `districtIndicatorAssets.ts`) | `grid_electrification` |
 | **Energy** | `hydro_capacity` | `HYDRO_PALIKA_SUMMARY` exported from `apps/web/src/data/districtPalikaAssets.ts` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `hydro_capacity` |
-| **Ecosystem** | `soil_nitrogen` / `phosphorus` / `potassium` / `ph` | `apps/web/src/data/gulmiSoilPoints.json` (127 NARC laboratory points) | `apps/web/src/hooks/usePalikaChoropleth.ts` | Respective soil chemical thresholds |
+| **Ecosystem** | `soil_nitrogen` / `phosphorus` / `potassium` / `ph` | `data/real/land_and_soil/gulmi_soil_points_81.json` (127 NARC laboratory points) | `apps/web/src/hooks/usePalikaChoropleth.ts` (via `districtIndicatorAssets.ts`) | Respective soil chemical thresholds |
 | **Ecosystem** | `elevation_zones` / `agroforestry_belt` | SRTM DEM / Topographic profiles in `palika_profiles.json` | `apps/web/src/hooks/usePalikaChoropleth.ts` | `elevation_zones` |
-| **Socioeconomics**| `clean_cooking_biomass` | `data/real/municipal/palika_profiles.json` (Census 2021 firewood %) | `apps/web/src/hooks/usePalikaChoropleth.ts` | `clean_cooking_biomass` |
-| **Socioeconomics**| `agri_landholding` | `apps/web/src/data/gulmi_palika_landholding.json` (NSO Census 2021/22) | `apps/web/src/hooks/usePalikaChoropleth.ts` | `landholding` |
+| **Socioeconomics**| `clean_cooking_biomass` | `data/calculated/indicators/gulmi_palika_cooking.json` & `palika_profiles.json` (Census 2021 firewood %) | `apps/web/src/hooks/usePalikaChoropleth.ts` (via `districtIndicatorAssets.ts`) | `clean_cooking_biomass` |
+| **Socioeconomics**| `agri_landholding` | `data/calculated/indicators/gulmi_palika_landholding.json` (NSO Census 2021/22) | `apps/web/src/hooks/usePalikaChoropleth.ts` (via `districtIndicatorAssets.ts`) | `landholding` |
 
 ### Key Code & Presentation Files:
 - **Choropleth Join Hook**: `apps/web/src/hooks/usePalikaChoropleth.ts` (Zero hardcoding; joins palika GeoJSON with calculation metrics).
