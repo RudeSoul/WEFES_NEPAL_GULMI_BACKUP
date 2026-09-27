@@ -1,31 +1,39 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/boundaries/gulmi-palikas.json, apps/web/public/geojson/gulmi-contours.json
+// Data Source:
+// - data/real/municipal/palika_profiles.json
+// - data/calculated/hydro_reaches/hydro_palika_summary.json
+// - data/real/boundaries/gulmi-palikas.json
+// - apps/web/public/geojson/gulmi-contours.json
+// - data/real/hydrology/catchments_l10.geojson
+// - data/real/hydrology/rivers_streams.geojson
+// - data/real/hydrology/flow_accumulation.tif
+// - data/real/hydrology/flow_direction.tif
 // Classification: OBSERVED REAL & CALCULATED BASELINES
-// Citations: Ministry of Federal Affairs and General Administration (MoFAGA), DHM Nepal, Survey Department of Nepal
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON, CircleMarker, Marker, Tooltip, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import { District, WEFESPillar, SUBFILTER_LEGENDS } from '@wefes/shared-types';
+// Citations: Ministry of Federal Affairs and General Administration (MoFAGA), DHM Nepal, Survey Department of Nepal, HydroSHEDS / HydroRIVERS / HydroBASINS (WWF/USGS)
 import { db } from '@wefes/database';
+import { District, SUBFILTER_LEGENDS, WEFESPillar } from '@wefes/shared-types';
 import { computeCropSuitability } from '@wefes/wefes-engine';
+import L from 'leaflet';
+import { AlertTriangle, Building2, ChevronDown, ChevronUp, Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSun, Cpu, Droplets, Eye, EyeOff, FileText, Gauge, Moon, Mountain, ShieldCheck, Snowflake, Sprout, Sun, Target, Trees, Wind, Zap } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { CircleMarker, GeoJSON, MapContainer, Marker, TileLayer, Tooltip, useMap } from 'react-leaflet';
 import { DynamicLegend } from '../../components/legend/DynamicLegend';
-import { SubFilterToolbar } from './SubFilterToolbar';
-import { PillarFilter } from './PillarFilter';
-import DistrictHoverCard from './DistrictHoverCard';
-import ClimateTimeController from './ClimateTimeController';
-import { MapGestureHandler } from './MapGestureHandler';
-import { PolicyPresetSelector } from '../simulator/PolicyPresetSelector';
-import { MapPin, Calendar, Coins, Trees, Droplets, Zap, Sprout, Sun, Wheat, Cherry, Leaf, Thermometer, Mountain, Target, Cloud, CloudRain, Wind, Activity, Globe, Compass, Check, Eye, EyeOff, Building2, FileText, Calculator, ShieldCheck, Cpu, AlertTriangle, Info, X, CloudSun, CloudLightning, CloudFog, CloudDrizzle, Snowflake, Moon, ChevronDown, ChevronUp, Gauge } from 'lucide-react';
-import { PalikaHoverCard } from '../palika/PalikaHoverCard';
-import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY, PALIKA_CENTROIDS } from '../../data/districtPalikaAssets';
 import { VALIDATED_CROPS } from '../../data/cropSuitabilityAssets';
-import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../../utils/climateDownscaling';
 import { resolveCalculationMethodology } from '../../data/districtCalculationAssets';
-import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
-import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
-import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
-import { SpatialSettlementDensityOverlay } from './SpatialSettlementDensityOverlay';
 import { PALIKA_GRID_DATA as palikaGridData } from '../../data/districtIndicatorAssets';
+import { DISTRICT_PALIKAS, PALIKA_CENTROIDS } from '../../data/districtPalikaAssets';
+import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
+import { PalikaHoverCard } from '../palika/PalikaHoverCard';
+import { CatchmentsGeoJsonLayer } from './CatchmentsGeoJsonLayer';
+import DistrictHoverCard from './DistrictHoverCard';
+import { MapGestureHandler } from './MapGestureHandler';
+import { RiversStreamsGeoJsonLayer } from './RiversStreamsGeoJsonLayer';
+import { SpatialFlowAccumulationOverlay } from './SpatialFlowAccumulationOverlay';
+import { SpatialFlowDirectionOverlay } from './SpatialFlowDirectionOverlay';
+import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
+import { SpatialSettlementDensityOverlay } from './SpatialSettlementDensityOverlay';
+import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
+import { SubFilterToolbar } from './SubFilterToolbar';
 
 
 
@@ -754,6 +762,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   const [nationalRoads, setNationalRoads] = useState<any>(null);
   const [hydroReachesData, setHydroReachesData] = useState<any>(null);
   const [gulmiRivers, setGulmiRivers] = useState<any>(null);
+  const [catchmentsData, setCatchmentsData] = useState<any>(null);
+  const [riversStreamsData, setRiversStreamsData] = useState<any>(null);
   const [contoursData, setContoursData] = useState<any>(null);
   const [showContours, setShowContours] = useState<boolean>(false);
   const [showRoadOverlay, setShowRoadOverlay] = useState<boolean>(false);
@@ -894,7 +904,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       fetch('/geojson/gulmi-dhm-stations.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-rivers.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-contours.json').then(r => r.json()).catch(() => null),
-    ]).then(([geo, palikas, climate, roads, reaches, hydroAssets, rivers, contours]) => {
+      fetch('/geojson/catchments_l10.geojson').then(r => r.json()).catch(() => null),
+      fetch('/geojson/rivers_streams.geojson').then(r => r.json()).catch(() => null),
+    ]).then(([geo, palikas, climate, roads, reaches, hydroAssets, rivers, contours, catchments, riversStreams]) => {
       if (geo) setGeoData(geo);
       if (palikas) setPalikasData(palikas);
       if (climate) setClimateDataset(climate);
@@ -902,6 +914,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       if (reaches) setHydroReachesData(reaches);
       if (rivers) setGulmiRivers(rivers);
       if (contours) setContoursData(contours);
+      if (catchments) setCatchmentsData(catchments);
+      if (riversStreams) setRiversStreamsData(riversStreams);
       if (hydroAssets?.type === 'FeatureCollection' && Array.isArray(hydroAssets.features)) {
         setHydrologyStations(hydroAssets.features);
       }
@@ -1080,15 +1094,21 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   });
 
   const isMerraRainfallActive = selectedPillar === 'water' && (subFilters.waterSubFilter || 'merra_rainfall') === 'merra_rainfall';
+  const isCatchmentsActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'catchments';
+  const isRiversStreamsActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'rivers_streams';
+  const isFlowAccumulationActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'flow_accumulation';
+  const isFlowDirectionActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'flow_direction';
   const isSolarGhiActive = selectedPillar === 'energy' && subFilters.energySubFilter === 'solar_irradiance';
   const isLandholdingActive = selectedPillar === 'socioeconomics' && (subFilters.socioSubFilter === 'agri_landholding' || subFilters.socioSubFilter === 'landholding');
+
+  const isOverlayModeActive = isMerraRainfallActive || isSolarGhiActive || isFlowAccumulationActive || isFlowDirectionActive || isCatchmentsActive || isRiversStreamsActive;
 
   const getPalikaStyle = (feature: any) => {
     const props = feature?.properties;
     const isHovered = hoveredPalika?.name === props?.name;
     const fillColor = choropleth.getColor(props?.name || '');
 
-    if (isMerraRainfallActive || isSolarGhiActive) {
+    if (isOverlayModeActive) {
       return {
         fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : '#38bdf8') : 'transparent',
         weight: isHovered ? 2.5 : 1.5,
@@ -1751,6 +1771,32 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 />
               )}
 
+              {/* HydroSHEDS Continuous Surface Flow Accumulation Overlay */}
+              {isFlowAccumulationActive && (
+                <SpatialFlowAccumulationOverlay
+                  opacity={0.88}
+                  pane="rainfallPane"
+                />
+              )}
+
+              {/* HydroSHEDS D8 Surface Flow Direction Overlay */}
+              {isFlowDirectionActive && (
+                <SpatialFlowDirectionOverlay
+                  opacity={0.85}
+                  pane="rainfallPane"
+                />
+              )}
+
+              {/* HydroBASINS Level 10 Sub-Basin Watershed Boundaries */}
+              {isCatchmentsActive && catchmentsData && (
+                <CatchmentsGeoJsonLayer data={catchmentsData} />
+              )}
+
+              {/* HydroRIVERS Multi-Tier Stream Network with Strahler Orders */}
+              {isRiversStreamsActive && riversStreamsData && (
+                <RiversStreamsGeoJsonLayer data={riversStreamsData} />
+              )}
+
               {/* 12 Gulmi Palikas Vector Layer (Dynamically styled per Pillar, Crop, and Climate Time-Series) */}
               {palikasData && (
                 <GeoJSON
@@ -1766,13 +1812,13 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                     const isContourActive = showContours || basemap === 'terrain';
                     const baseOpacity = isContourActive ? 0.45 : 0.72;
 
-                    if (isMerraRainfallActive || isSolarGhiActive) {
+                    if (isOverlayModeActive) {
                       return {
                         fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : '#38bdf8') : 'transparent',
                         fillOpacity: isHovered ? 0.22 : 0,
-                        color: isHovered ? '#10b981' : '#334155',
-                        weight: isHovered ? 3.5 : 1.6,
-                        dashArray: '',
+                        color: isHovered ? '#10b981' : (isCatchmentsActive ? '#64748b' : '#334155'),
+                        weight: isHovered ? 3.5 : (isCatchmentsActive ? 1.2 : 1.6),
+                        dashArray: isCatchmentsActive ? '3, 4' : '',
                       };
                     }
 
@@ -2290,7 +2336,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 <div>Physical Disk: <code className="bg-slate-200/70 text-slate-800 px-1 py-0.2 rounded text-[10px] break-all select-all font-mono">{activeCalc.provenancePath}</code></div>
                 <div className="text-[10px] text-slate-400 pt-1 border-t border-slate-200/60 flex items-center justify-between">
                   <span>Classification: {activeCalc.confidence}</span>
-                  <span className="text-slate-400 font-sans">Zero-Synthesis Validated</span>
                 </div>
               </div>
             </div>
@@ -2302,4 +2347,3 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 };
 
 export default DistrictMap;
-
