@@ -55,6 +55,303 @@
       "unit": "Hydrological Reaches",
       "currentStat": "6 Perennial Catchments • Kali Gandaki Basin Drainage"
     },
+
+    "catchments": {
+      "shortTitle": {
+        "en": "HydroBASINS Level 10 Sub-Basins",
+        "np": "हाइड्रोबेसिन्स लेभल १० उप-जलाधारहरू"
+      },
+      "pillarName": {
+        "en": "Water",
+        "np": "जल"
+      },
+      "model": {
+        "en": "HydroBASINS Level 10 Standard Sub-Basin Delineation",
+        "np": "हाइड्रोबेसिन्स लेभल १० मानक उप-जलाधार सीमांकन"
+      },
+      "formula": "Pfafstetter hierarchical basin coding and nested sub-basin delineation",
+      "parameter": {
+        "en": "Sub-basin boundaries, upstream contributing area and river-network connectivity",
+        "np": "स्थलाकृतिक उप-जलाधार सीमाना, माथिल्लो भागबाट योगदान हुने जलाधार क्षेत्रफल र नदी सञ्जालको सम्बन्ध"
+      },
+      "variables": [
+        {
+          "symbol": "SUB_AREA",
+          "definition": {
+            "en": "Area of the individual HydroBASINS sub-basin polygon (km²)",
+            "np": "सम्बन्धित हाइड्रोबेसिन्स उप-जलाधार बहुभुजको क्षेत्रफल (वर्ग किमी)"
+          }
+        },
+        {
+          "symbol": "UP_AREA",
+          "definition": {
+            "en": "Total upstream drainage area calculated from the headwaters to the polygon location, including the polygon itself; includes only the directly connected watershed area (km²)",
+            "np": "सम्बन्धित उप-जलाधारसहित प्रत्यक्ष रूपमा जोडिएको माथिल्लो भागको कुल निकास क्षेत्रफल (वर्ग किमी)"
+          }
+        },
+        {
+          "symbol": "ORDER",
+          "definition": {
+            "en": "Indicator of river order following the classical ordering system: order 1 represents the main-stem river from sink to source; order 2 represents tributaries flowing into an order-1 river; higher orders represent tributaries flowing into the corresponding lower-order river; order 0 represents conglomerates of small coastal watersheds",
+            "np": "शास्त्रीय नदी-क्रम निर्धारण प्रणालीमा आधारित नदी क्रमको सूचक"
+          }
+        },
+        {
+          "symbol": "PFAF_ID",
+          "definition": {
+            "en": "Pfafstetter hierarchical code identifying the sub-basin's position within the nested drainage system; a Level 10 sub-basin has a 10-digit Pfafstetter code",
+            "np": "पदानुक्रमिक रूपमा जोडिएको जल निकास प्रणालीमा उप-जलाधारको अद्वितीय स्थान पहिचान गर्ने १०-अङ्कको Pfafstetter पदानुक्रमिक कोड"
+          }
+        },
+        {
+          "symbol": "DIST_SINK",
+          "definition": {
+            "en": "Distance from the sub-basin outlet to the next downstream sink along the river network, measured to the next downstream endorheic sink or, if none exists, to the most downstream sink at the ocean (km)",
+            "np": "उप-जलाधारको निकास विन्दुदेखि अन्तिम महासागर वा अन्तिम विन्दु (सिङ्क) सम्मको नदी सञ्जाल पछ्याउने कुल जलप्रवाह दुरी (किमी)"
+          }
+        }
+      ],
+      "description": {
+        "en": "HydroBASINS provides globally consistent, hierarchically nested sub-basin polygons derived from HydroSHEDS. The standard product uses the Pfafstetter coding system to organize nested drainage basins and provides attributes supporting analysis of basin topology, upstream and downstream connectivity, and drainage structure.",
+        "np": "हाइड्रोबेसिन्स लेभल १० ले हाइड्रोसेड्सबाट व्युत्पन्न विश्वव्यापी रूपमा एकरूप र पदानुक्रमिक रूपमा जोडिएका उप-जलाधार बहुभुजहरू प्रदान गर्छ। मानक उत्पादनले पदानुक्रमिक रूपमा जोडिएका जल निकास क्षेत्रहरूलाई व्यवस्थित गर्न तथा जलाधारको संरचना र माथिल्लो/तल्लो भागको सम्बन्ध विश्लेषण गर्न Pfafstetter कोडिङ प्रणाली प्रयोग गर्छ।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "HydroBASINS Level 10 Standard Sub-Basin Dataset"
+      ],
+      "citation": "Lehner, B. and Grill, G. (2013). Global river hydrography and network routing: baseline data and new approaches to study the world’s large river systems. Hydrological Processes, 27(15): 2171–2186.",
+      "provenancePath": "data/real/hydrology/catchments_l10.geojson",
+      "unit": "km²",
+      "currentStat": "HydroBASINS Level 10 sub-basins covering the selected Gulmi study area"
+    },
+
+    "rivers_streams": {
+      "shortTitle": {
+        "en": "HydroRIVERS River Network",
+        "np": "हाइड्रोरिभर्स नदी तथा खोला सञ्जाल"
+      },
+      "pillarName": {
+        "en": "Water",
+        "np": "जल"
+      },
+      "model": {
+        "en": "HydroRIVERS Vector River Network with Long-Term Mean Discharge Estimate",
+        "np": "दीर्घकालीन औसत डिस्चार्ज अनुमानसहितको हाइड्रोरिभर्स नदी सञ्जाल"
+      },
+      "formula": "HydroRIVERS network delineation and routing with estimated long-term average discharge",
+      "parameter": {
+        "en": "River-network topology, Strahler order, classical order, flow-based order, reach length, upstream area and estimated long-term average discharge",
+        "np": "नदी सञ्जाल सम्बन्ध, स्ट्राल्हर क्रम, नदी खण्ड लम्बाइ, माथिल्लो जलाधार क्षेत्रफल र अनुमानित औसत डिस्चार्ज"
+      },
+      "variables": [
+        {
+          "symbol": "ORD_STRA",
+          "definition": {
+            "en": "Indicator of river order following the Strahler ordering system: order 1 represents headwater streams; when two streams of the same order meet, the resulting reach increases to the next order",
+            "np": "स्ट्राल्हर नदी-क्रम सूचक: १ ले मुहानतर्फका खोला जनाउँछ र समान क्रमका खोला जोडिँदा क्रम बढ्छ"
+          }
+        },
+        {
+          "symbol": "ORD_CLAS",
+          "definition": {
+            "en": "Indicator of river order following the classical ordering system: order 1 represents the main-stem river from sink to source; order 2 represents tributaries flowing into an order-1 river; higher orders represent tributaries flowing into the corresponding lower-order river",
+            "np": "मुख्य नदी र त्यसका सहायक नदीहरूको पदानुक्रम जनाउने शास्त्रीय नदी-क्रम सूचक"
+          }
+        },
+        {
+          "symbol": "ORD_FLOW",
+          "definition": {
+            "en": "Indicator of river order based on logarithmic classes of long-term average discharge, with orders 1–10 representing progressively smaller discharge ranges",
+            "np": "दीर्घकालीन औसत डिस्चार्जमा आधारित नदी-क्रम वर्ग"
+          }
+        },
+        {
+          "symbol": "DIS_AV_CMS",
+          "definition": {
+            "en": "Estimated long-term average discharge for the river reach (m³/s)",
+            "np": "सम्बन्धित नदी खण्डको अनुमानित दीर्घकालीन औसत डिस्चार्ज (घन मिटर/सेकेन्ड)"
+          }
+        },
+        {
+          "symbol": "LENGTH_KM",
+          "definition": {
+            "en": "Length of the river reach segment (km)",
+            "np": "नदी खण्डको ज्यामितीय लम्बाइ (किमी)"
+          }
+        },
+        {
+          "symbol": "CATCH_SKM",
+          "definition": {
+            "en": "Area of the catchment that contributes directly to the individual river reach, excluding the contributing areas of upstream reaches (km²)",
+            "np": "सम्बन्धित नदी खण्डमा प्रत्यक्ष रूपमा निकास हुने स्थानीय जलाधार क्षेत्रफल (वर्ग किमी)"
+          }
+        },
+        {
+          "symbol": "UPLAND_SKM",
+          "definition": {
+            "en": "Total upstream drainage area calculated from the headwaters to the pour point of the river reach; includes only the directly connected watershed area and excludes endorheic regions nested within the larger basin (km²)",
+            "np": "सम्बन्धित नदी खण्डमा योगदान गर्ने कुल माथिल्लो जलाधार क्षेत्रफल (वर्ग किमी)"
+          }
+        }
+      ],
+      "description": {
+        "en": "HydroRIVERS is a globally consistent vector river network derived from HydroSHEDS at 15 arc-second resolution. Its river reaches contain network topology and attributes including reach length, upstream and downstream distances, river-order indicators, directly contributing catchment area, total upstream area and an estimated long-term average discharge.",
+        "np": "हाइड्रोरिभर्स हाइड्रोसेड्स तथा पूरक सूचनाबाट तयार गरिएको विश्वव्यापी रूपमा एकरूप भेक्टर नदी सञ्जाल हो। नदी खण्डहरूमा सञ्जाल सम्बन्ध, स्ट्राल्हर क्रम, शास्त्रीय क्रम, बहाव-आधारित क्रम, लम्बाइ, माथिल्लो जलाधार क्षेत्रफल र अनुमानित दीर्घकालीन औसत डिस्चार्ज समावेश हुन्छ।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": ["HydroRIVERS Global Hydrographic Database"],
+      "citation": "Lehner, B. and Grill, G. (2013). Global river hydrography and network routing: baseline data and new approaches to study the world’s large river systems. Hydrological Processes, 27(15): 2171–2186; HydroRIVERS Technical Documentation v1.0 (2019).",
+      "provenancePath": "data/real/hydrology/rivers_streams.geojson",
+      "unit": "m³/s, km, km², river-order class",
+      "currentStat": "HydroRIVERS river reaches intersecting the selected Gulmi study area"
+    },
+
+    "flow_accumulation": {
+      "shortTitle": {
+        "en": "HydroSHEDS Flow Accumulation Grid",
+        "np": "हाइड्रोसेड्स बहाव संकलन ग्रिड"
+      },
+      "pillarName": {
+        "en": "Water",
+        "np": "जल"
+      },
+      "model": {
+        "en": "HydroSHEDS 3 Arc-Second Flow Accumulation Raster",
+        "np": "हाइड्रोसेड्स ३ आर्क-सेकेन्ड बहाव संकलन रास्टर"
+      },
+      "formula": "ACC(x,y) = number of accumulated upstream grid cells draining into cell (x,y), including the target cell",
+      "parameter": {
+        "en": "Number of accumulated upstream contributing cells",
+        "np": "सम्बन्धित बिन्दुमा योगदान गर्ने माथिल्लो बहावका ग्रिड कोषहरूको संख्या"
+      },
+      "variables": [
+        {
+          "symbol": "ACC",
+          "definition": {
+            "en": "Number of accumulated upstream grid cells draining into each cell, including the cell itself; the count starts at 1 at river sources",
+            "np": "प्रत्येक ग्रिड कोषमा निकास हुने माथिल्लो बहावका ग्रिड कोषहरूको संख्या; हाइड्रोसेड्समा नदीको मुहानमा गणना १ बाट सुरु हुन्छ"
+          }
+        },
+        {
+          "symbol": "ACA",
+          "definition": {
+            "en": "Accumulated upstream contributing area in square kilometers; available in HydroSHEDS at multiple spatial resolutions",
+            "np": "माथिल्लो योगदान क्षेत्रफल वर्ग किलोमिटरमा; हाइड्रोसेड्समा विभिन्न स्थानिक रिजोल्युसनहरूमा उपलब्ध"
+          }
+        }
+      ],
+      "description": {
+        "en": "HydroSHEDS flow accumulation represents the upstream drainage contribution to each raster cell based on the HydroSHEDS drainage-direction network. ACC expresses this contribution as the number of accumulated upstream cells.",
+        "np": "हाइड्रोसेड्स बहाव संकलनले निकास-दिशा सञ्जालका आधारमा प्रत्येक रास्टर कोषमा जम्मा हुने माथिल्लो जलनिकास योगदान देखाउँछ। उच्च संकलन मानले ठूलो माथिल्लो जलाधारबाट निकास प्राप्त गर्ने स्थान जनाउँछ।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "HydroSHEDS Flow Direction (DIR)"
+      ],
+      "citation": "Lehner, B., Verdin, K. and Jarvis, A. (2008). New global hydrography derived from spaceborne elevation data. Eos, Transactions, AGU, 89(10): 93–94; HydroSHEDS Technical Documentation v1.4.",
+      "provenancePath": "data/real/hydrology/flow_accumulation.tif",
+      "unit": "Accumulated cells (ACC)",
+      "currentStat": "3 Arc-Second Flow Accumulation Raster clipped to the selected Gulmi study area"
+    },
+
+    "flow_direction": {
+      "shortTitle": {
+        "en": "HydroSHEDS D8 Flow Direction Raster",
+        "np": "हाइड्रोसेड्स D8 बहाव दिशा रास्टर"
+      },
+      "pillarName": {
+        "en": "Water",
+        "np": "जल"
+      },
+      "model": {
+        "en": "HydroSHEDS ESRI D8 Drainage Direction",
+        "np": "हाइड्रोसेड्स ESRI D8 निकास दिशा"
+      },
+      "formula": "Direction = steepest downslope neighbor using the ESRI D8 single-flow-direction convention",
+      "parameter": {
+        "en": "Steepest downslope direction among eight neighboring cells",
+        "np": "आठ छिमेकी ग्रिड कोषमध्ये सबैभन्दा तीव्र तलतर्फको बहाव दिशा"
+      },
+      "variables": [
+        {
+          "symbol": "1",
+          "definition": {
+            "en": "East",
+            "np": "पूर्व"
+          }
+        },
+        {
+          "symbol": "2",
+          "definition": {
+            "en": "Southeast",
+            "np": "दक्षिण-पूर्व"
+          }
+        },
+        {
+          "symbol": "4",
+          "definition": {
+            "en": "South",
+            "np": "दक्षिण"
+          }
+        },
+        {
+          "symbol": "8",
+          "definition": {
+            "en": "Southwest",
+            "np": "दक्षिण-पश्चिम"
+          }
+        },
+        {
+          "symbol": "16",
+          "definition": {
+            "en": "West",
+            "np": "पश्चिम"
+          }
+        },
+        {
+          "symbol": "32",
+          "definition": {
+            "en": "Northwest",
+            "np": "उत्तर-पश्चिम"
+          }
+        },
+        {
+          "symbol": "64",
+          "definition": {
+            "en": "North",
+            "np": "उत्तर"
+          }
+        },
+        {
+          "symbol": "128",
+          "definition": {
+            "en": "Northeast",
+            "np": "उत्तर-पूर्व"
+          }
+        },
+        {
+          "symbol": "0",
+          "definition": {
+            "en": "Ocean outlet or inland sink cell in HydroSHEDS v1.1",
+            "np": "हाइड्रोसेड्स v1.1 मा नदी निकास वा sink कोष"
+          }
+        }
+      ],
+      "description": {
+        "en": "HydroSHEDS drainage-direction raster assigns each cell an ESRI D8 flow-direction code corresponding to its steepest downslope neighbor. In HydroSHEDS v1.1, final ocean outlet cells and inland sink cells are assigned a value of 0; the complementary mask grid distinguishes ocean and inland sinks.",
+        "np": "हाइड्रोसेड्स निकास-दिशा रास्टरले प्रत्येक ग्रिड कोषलाई सबैभन्दा तीव्र तलतर्फको छिमेकी दिशाअनुसार ESRI D8 कोड प्रदान गर्छ। यही दिशा सूचना बहाव संकलन तथा निकास सञ्जाल निर्माणका लागि प्रयोग हुन्छ।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "HydroSHEDS Hydrologically Conditioned Elevation",
+        "ESRI D8 Single Flow Direction Convention"
+      ],
+      "citation": "Lehner, B., Verdin, K. and Jarvis, A. (2008). New global hydrography derived from spaceborne elevation data. Eos, Transactions, AGU, 89(10): 93–94; HydroSHEDS Technical Documentation v1.4.",
+      "provenancePath": "data/real/hydrology/flow_direction.tif",
+      "unit": "ESRI D8 direction code",
+      "currentStat": "3 Arc-Second D8 Drainage Direction Raster clipped to the selected Gulmi study area"
+    },
+
     "springshed_vulnerability": {
       "shortTitle": { "en": "Springshed Vulnerability", "np": "मुहान सुक्ने जोखिम" },
       "pillarName": { "en": "Water", "np": "जल" },
