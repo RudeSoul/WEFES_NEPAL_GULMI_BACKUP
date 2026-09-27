@@ -6,9 +6,15 @@
  * Complies with Rule 2 and Rule 6 of RULESET.md.
  *
  * [DATA PROVENANCE]
- * Data Source: data/real/boundaries/gulmi-palikas.json, data/real/hydrology/gulmi_hydrology_assets.json
+ * Data Source:
+ * - data/real/boundaries/gulmi-palikas.json
+ * - data/real/hydrology/gulmi_hydrology_assets.json
+ * - data/real/hydrology/catchments_l10.geojson
+ * - data/real/hydrology/rivers_streams.geojson
+ * - data/real/hydrology/flow_accumulation.tif
+ * - data/real/hydrology/flow_direction.tif
  * Classification: OBSERVED REAL & CALCULATED BASELINES
- * Citations: Survey Department Nepal, Department of Hydrology and Meteorology (DHM)
+ * Citations: Survey Department Nepal, Department of Hydrology and Meteorology (DHM), HydroSHEDS / HydroRIVERS / HydroBASINS (WWF/USGS)
  */
 
 
@@ -96,6 +102,98 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
       { key: 'panaha', color: '#d97706', label: 'Panaha River Corridor', description: 'Tamghas valley & southern agro-ecological drainage' },
       { key: 'hugdi', color: '#38bdf8', label: 'Hugdi Khola Sub-Basin', description: 'Eastern agricultural catchment in Chandrakot & Satyawati' },
       { key: 'chhaldi', color: '#0891b2', label: 'Chhaldi Khola Sub-Basin', description: 'Western watershed connecting Dhurkot & Malika' }
+    ]
+  },
+  catchments: {
+    id: "catchments",
+    pillar: "water",
+    title: "HydroBASINS Level 10 Topology",
+    subtitle: "Pfafstetter Sub-basin and Inter-basin Classification",
+    legendType: "categorical",
+    dataSourceCitation: "data/real/hydrology/catchments_l10.geojson",
+    confidence: "REAL",
+    categories: [
+      {
+        key: "inter_basin",
+        color: "#bae6fd",
+        label: "Inter-basin",
+        description:
+          "Pfafstetter inter-basin unit represented by an odd Level 10 code.",
+        badge: "Odd L10 Code"
+      },
+      {
+        key: "sub_basin",
+        color: "#38bdf8",
+        label: "Sub-basin",
+        description:
+          "Pfafstetter sub-basin unit represented by an even Level 10 code.",
+        badge: "Even L10 Code"
+      },
+      {
+        key: "unknown",
+        color: "#94a3b8",
+        label: "Unclassified",
+        description:
+          "Feature with a missing, invalid, or incomplete Pfafstetter code.",
+        badge: "Invalid / Missing"
+      }
+    ]
+  },
+
+  rivers_streams: {
+    id: 'rivers_streams',
+    pillar: 'water',
+    title: 'HydroRIVERS River & Stream Network',
+    subtitle: 'Strahler Stream Order Routing & Average Discharge (m³/s)',
+    unit: 'Strahler Order',
+    legendType: 'domain_thresholds',
+    dataSourceCitation: 'data/real/hydrology/rivers_streams.geojson',
+    confidence: 'REAL',
+    thresholds: [
+      { minValue: 1, maxValue: 1, color: '#7dd3fc', label: '1st Order Stream (Headwater Torrents)', description: 'Initial upland springs and mountain rills (<0.5 m³/s)' },
+      { minValue: 2, maxValue: 2, color: '#38bdf8', label: '2nd Order Stream (Mid-Hill Kholas)', description: 'Confluence channels with seasonal discharge 0.5–2.5 m³/s' },
+      { minValue: 3, maxValue: 4, color: '#0284c7', label: '3rd/4th Order River (Sub-Basin Trunk)', description: 'Perennial kholas with agricultural irrigation command (>2.5 m³/s)' },
+      { minValue: 5, color: '#1e3a8a', label: '5th+ Order River (Kali Gandaki / Badigad)', description: 'Trans-Himalayan major river corridors (>10 m³/s)' }
+    ]
+  },
+
+  flow_accumulation: {
+    id: 'flow_accumulation',
+    pillar: 'water',
+    title: 'Surface Flow Accumulation',
+    subtitle: 'HydroSHEDS Upslope Drainage Convergence (3 Arc-Sec / 90m)',
+    unit: 'Drainage Tier',
+    legendType: 'domain_thresholds',
+    dataSourceCitation: 'data/real/hydrology/flow_accumulation.tif',
+    confidence: 'REAL',
+    thresholds: [
+      { minValue: 0, maxValue: 0, color: '#e0f2fe', label: 'Tier 0: Ridge Crests & Slopes', description: 'Upland slopes & groundwater recharge infiltration zones' },
+      { minValue: 1, maxValue: 1, color: '#7dd3fc', label: 'Tier 1: Ephemeral Swales', description: 'Hillside depressions and initial runoff convergence' },
+      { minValue: 2, maxValue: 2, color: '#38bdf8', label: 'Tier 2: Headwater Tributaries', description: 'Concentrated runoff channels and mountain gullies' },
+      { minValue: 3, maxValue: 3, color: '#0ea5e9', label: 'Tier 3: Stream Valleys', description: 'Secondary stream corridors and mid-hill ravines' },
+      { minValue: 4, maxValue: 4, color: '#0284c7', label: 'Tier 4: Valley Riverbeds', description: 'Lower agricultural valley floors and tributary junctions' },
+      { minValue: 5, maxValue: 6, color: '#1e3a8a', label: 'Tier 5–6: Main Trunk Corridors', description: 'Highest flow accumulation along Badigad & Kali Gandaki' }
+    ]
+  },
+
+  flow_direction: {
+    id: 'flow_direction',
+    pillar: 'water',
+    title: 'D8 Surface Flow Direction',
+    subtitle: 'HydroSHEDS 8-Direction Hydrological Drainage Vector',
+    unit: 'Compass Heading',
+    legendType: 'categorical',
+    dataSourceCitation: 'data/real/hydrology/flow_direction.tif',
+    confidence: 'REAL',
+    categories: [
+      { key: 'N', color: '#a855f7', label: 'North (64 - 0°)', description: 'Drains toward northern ridges and Badigad valley' },
+      { key: 'NE', color: '#ec4899', label: 'North-East (128 - 45°)', description: 'Drains north-east toward Kali Gandaki gorge' },
+      { key: 'E', color: '#ef4444', label: 'East (1 - 90°)', description: 'Drains eastward toward Ridi / Hugdi basins' },
+      { key: 'SE', color: '#f97316', label: 'South-East (2 - 135°)', description: 'Drains south-east toward lower Ridi corridor' },
+      { key: 'S', color: '#eab308', label: 'South (4 - 180°)', description: 'Drains southward toward Panaha / southern valleys' },
+      { key: 'SW', color: '#22c55e', label: 'South-West (8 - 225°)', description: 'Drains south-west toward western district border' },
+      { key: 'W', color: '#06b6d4', label: 'West (16 - 270°)', description: 'Drains westward toward Pyuthan / Chhaldi basin' },
+      { key: 'NW', color: '#3b82f6', label: 'North-West (32 - 315°)', description: 'Drains north-west toward upper Badigad headwaters' }
     ]
   },
 
@@ -487,5 +585,3 @@ SUBFILTER_LEGENDS['spring_vulnerability'] = SUBFILTER_LEGENDS['springshed_vulner
 SUBFILTER_LEGENDS['clean_cooking_biomass'] = SUBFILTER_LEGENDS['clean_cooking'];
 SUBFILTER_LEGENDS['grid_electrification'] = SUBFILTER_LEGENDS['grid_reach'];
 SUBFILTER_LEGENDS['agri_landholding'] = SUBFILTER_LEGENDS['landholding'];
-
-
