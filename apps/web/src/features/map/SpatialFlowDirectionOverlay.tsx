@@ -1,7 +1,7 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/hydrology/flow_direction.tif
+// Data Source: data/real/hydrology/flow_direction.tif, apps/web/public/geojson/gulmi-district.json
 // Classification: OBSERVED REAL (HydroSHEDS 3 Arc-Second / 90m D8 Surface Flow Direction)
-// Citations: HydroSHEDS Technical Documentation (Lehner, Verdin, & Jarvis, 2008), WWF / USGS
+// Citations: HydroSHEDS Technical Documentation (Lehner, Verdin, & Jarvis, 2008), WWF / USGS; Survey Department of Nepal
 // Consumed By: apps/web/src/features/map/DistrictMap.tsx
 
 import React, { useEffect, useState } from 'react';
@@ -11,22 +11,25 @@ import { fromArrayBuffer } from 'geotiff';
 interface SpatialFlowDirectionOverlayProps {
   opacity?: number;
   pane?: string;
+  geoData?: any;
 }
 
 // Module-level in-memory cache for instant switching
 let cachedDirectionUrl: string | null = null;
 let cachedBounds: [[number, number], [number, number]] | null = null;
+let cachedGeoDataRef: any = null;
 
 export const SpatialFlowDirectionOverlay: React.FC<SpatialFlowDirectionOverlayProps> = ({
   opacity = 0.85,
   pane = 'rainfallPane',
+  geoData,
 }) => {
   const [dataUrl, setDataUrl] = useState<string | null>(cachedDirectionUrl);
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>(cachedBounds);
   const [loading, setLoading] = useState<boolean>(!cachedDirectionUrl);
 
   useEffect(() => {
-    if (cachedDirectionUrl && cachedBounds) {
+    if (cachedDirectionUrl && cachedBounds && cachedGeoDataRef === geoData) {
       setDataUrl(cachedDirectionUrl);
       setBounds(cachedBounds);
       setLoading(false);
@@ -54,13 +57,13 @@ export const SpatialFlowDirectionOverlay: React.FC<SpatialFlowDirectionOverlayPr
           [bbox[3], bbox[2]],
         ];
 
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = width;
+        tempCanvas.height = height;
+        const tempCtx = tempCanvas.getContext('2d');
+        if (!tempCtx) return;
 
-        const imgData = ctx.createImageData(width, height);
+        const imgData = tempCtx.createImageData(width, height);
         const pixels = imgData.data;
 
         for (let i = 0; i < rasterData.length; i++) {
@@ -135,11 +138,74 @@ export const SpatialFlowDirectionOverlay: React.FC<SpatialFlowDirectionOverlayPr
           }
         }
 
-        ctx.putImageData(imgData, 0, 0);
+        tempCtx.putImageData(imgData, 0, 0);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        // Clip strictly within Gulmi vector boundary if geoData is provided
+        if (geoData) {
+          const [minLng, minLat, maxLng, maxLat] = bbox;
+          const lngSpan = maxLng - minLng;
+          const latSpan = maxLat - minLat;
+
+          ctx.save();
+          ctx.beginPath();
+
+          const drawRing = (ring: number[][]) => {
+            for (let rIdx = 0; rIdx < ring.length; rIdx++) {
+              const [lng, lat] = ring[rIdx];
+              const px = ((lng - minLng) / lngSpan) * width;
+              const py = ((maxLat - lat) / latSpan) * height;
+              if (rIdx === 0) {
+                ctx.moveTo(px, py);
+              } else {
+                ctx.lineTo(px, py);
+              }
+            }
+            ctx.closePath();
+          };
+
+          const processGeometry = (geom: any) => {
+            if (!geom) return;
+            if (geom.type === 'Polygon' && Array.isArray(geom.coordinates)) {
+              for (const ring of geom.coordinates) {
+                drawRing(ring);
+              }
+            } else if (geom.type === 'MultiPolygon' && Array.isArray(geom.coordinates)) {
+              for (const poly of geom.coordinates) {
+                for (const ring of poly) {
+                  drawRing(ring);
+                }
+              }
+            }
+          };
+
+          if (geoData.features && Array.isArray(geoData.features)) {
+            for (const feat of geoData.features) {
+              processGeometry(feat.geometry);
+            }
+          } else if (geoData.geometry) {
+            processGeometry(geoData.geometry);
+          } else if (geoData.type === 'Polygon' || geoData.type === 'MultiPolygon') {
+            processGeometry(geoData);
+          }
+
+          ctx.clip('evenodd');
+          ctx.drawImage(tempCanvas, 0, 0);
+          ctx.restore();
+        } else {
+          ctx.drawImage(tempCanvas, 0, 0);
+        }
+
         const generatedUrl = canvas.toDataURL('image/png');
 
         cachedDirectionUrl = generatedUrl;
         cachedBounds = leafletBounds;
+        cachedGeoDataRef = geoData;
 
         if (isMounted) {
           setDataUrl(generatedUrl);
@@ -157,7 +223,7 @@ export const SpatialFlowDirectionOverlay: React.FC<SpatialFlowDirectionOverlayPr
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [geoData]);
 
   if (loading || !dataUrl || !bounds) return null;
 
