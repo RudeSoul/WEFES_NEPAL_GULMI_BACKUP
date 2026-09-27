@@ -1100,9 +1100,10 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   const isFlowDirectionActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'flow_direction';
   const isSolarGhiActive = selectedPillar === 'energy' && subFilters.energySubFilter === 'solar_irradiance';
   const isGridSubstationActive = selectedPillar === 'energy' && (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach');
+  const isHydroCorridorActive = selectedPillar === 'energy' && (!subFilters.energySubFilter || subFilters.energySubFilter === 'hydro_corridor');
   const isLandholdingActive = selectedPillar === 'socioeconomics' && (subFilters.socioSubFilter === 'agri_landholding' || subFilters.socioSubFilter === 'landholding');
 
-  const isOverlayModeActive = isMerraRainfallActive || isSolarGhiActive || isFlowAccumulationActive || isFlowDirectionActive || isCatchmentsActive || isRiversStreamsActive || isGridSubstationActive;
+  const isOverlayModeActive = isMerraRainfallActive || isSolarGhiActive || isFlowAccumulationActive || isFlowDirectionActive || isCatchmentsActive || isRiversStreamsActive || isGridSubstationActive || isHydroCorridorActive;
 
   const getPalikaStyle = (feature: any) => {
     const props = feature?.properties;
@@ -1111,7 +1112,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 
     if (isOverlayModeActive) {
       return {
-        fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : isGridSubstationActive ? '#0ea5e9' : '#38bdf8') : 'transparent',
+        fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : isGridSubstationActive ? '#0ea5e9' : isHydroCorridorActive ? '#7c3aed' : '#38bdf8') : 'transparent',
         weight: isHovered ? 2.5 : 1.5,
         opacity: 0.95,
         color: isHovered ? '#10b981' : '#475569',
@@ -1928,44 +1929,113 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                   />
                 )}
 
-              {/* Contextual Layer Isolation 2: Run-of-River & Micro-Hydro Screened Reaches (Strictly on Energy Run-of-River) */}
-              {hydroReachesData && (
-                selectedPillar === 'energy' && (!subFilters.energySubFilter || subFilters.energySubFilter === 'hydro_corridor')
-              ) && (
-                  <GeoJSON
-                    key={`screened-hydro-reaches-${selectedPillar}`}
-                    data={hydroReachesData}
-                    pane="pointsPane"
-                    pointToLayer={(feature: any, latlng: any) => {
-                      const pKw = feature?.properties?.power_kW || 10;
-                      const isRoR = pKw >= 100;
-                      const radius = isRoR ? 6 : 4.5;
-                      const fillColor = isRoR ? '#8b5cf6' : '#06b6d4';
-                      return L.circleMarker(latlng, {
-                        radius,
-                        fillColor,
-                        fillOpacity: 0.95,
-                        color: '#ffffff',
-                        weight: 2,
-                        pane: 'pointsPane',
-                      });
-                    }}
-                    onEachFeature={(feature: any, layer: any) => {
-                      const p = feature?.properties || {};
-                      layer.bindTooltip(`
-                    <div style="padding: 4px; font-size: 11px; min-width: 140px;">
-                      <div style="font-weight: bold; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin-bottom: 3px;">
-                        ⚡ Reach #${p.id} (${p.palika})
-                      </div>
-                      <div style="color: #0369a1; font-weight: 600;">Power: ${p.power_kW} kW</div>
-                      <div style="color: #64748b; font-size: 10px;">Class: ${p.class}</div>
-                      <div style="color: #64748b; font-size: 10px;">Head: ${p.head_m}m • Flow: ${p.flow_m3s} m³/s</div>
-                      <div style="color: #10b981; font-size: 10px; font-weight: 600; margin-top: 2px;">Annual Energy: ${p.energy_mwh} MWh</div>
-                    </div>
-                  `, { direction: 'top', offset: [0, -6], opacity: 0.98, pane: 'popupPane' });
-                    }}
-                  />
-                )}
+              {/* Contextual Layer Isolation 2: Run-of-River & Micro-Hydro Potential Corridors (Styled by DOED Legend Tiers) */}
+              {isHydroCorridorActive && (
+                <>
+                  {/* Full HydroRIVERS stream network classified by Hydropower Potential Tiers */}
+                  {riversStreamsData && (
+                    <GeoJSON
+                      key={`hydro-corridor-streams-${selectedPillar}`}
+                      data={riversStreamsData}
+                      pane="riversPane"
+                      style={(feature: any) => {
+                        const order = feature?.properties?.ORD_STRA || 1;
+                        // Tier 1: Commercial RoR (>1 MW) - Strahler Order 5+ (Kali Gandaki / Lower Badigad)
+                        if (order >= 5) {
+                          return {
+                            color: '#4c1d95',
+                            weight: 5.5,
+                            opacity: 0.98,
+                          };
+                        }
+                        // Tier 2: Mini Hydro (100–999 kW) - Strahler Order 3-4 (Badigad / Ridi / Panaha)
+                        if (order === 3 || order === 4) {
+                          return {
+                            color: '#7c3aed',
+                            weight: 3.8,
+                            opacity: 0.95,
+                          };
+                        }
+                        // Tier 3: Rural Micro-Hydro (<100 kW) - Strahler Order 1-2 (Headwater streams)
+                        return {
+                          color: '#10b981',
+                          weight: 2.2,
+                          opacity: 0.88,
+                        };
+                      }}
+                      onEachFeature={(feature: any, layer: any) => {
+                        const p = feature?.properties || {};
+                        const order = p.ORD_STRA || 1;
+                        const tierTitle = order >= 5
+                          ? '⚡ Commercial RoR (>1 MW)'
+                          : (order === 3 || order === 4)
+                            ? '⚡ Mini Hydro (100–999 kW)'
+                            : '⚡ Rural Micro-Hydro (<100 kW)';
+                        const tierColor = order >= 5 ? '#4c1d95' : (order === 3 || order === 4) ? '#7c3aed' : '#10b981';
+                        const estPower = order >= 5 ? '1,500 – 12,000 kW' : (order === 3 || order === 4) ? '150 – 950 kW' : '15 – 85 kW';
+
+                        layer.bindTooltip(`
+                          <div style="padding: 5px 8px; font-size: 11px; min-width: 200px;">
+                            <div style="font-weight: 800; color: ${tierColor}; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px;">
+                              ${tierTitle}
+                            </div>
+                            <div style="color: #1e293b; font-size: 10.5px;"><strong>Reach ID:</strong> #${p.HYRIV_ID || 'N/A'} (Strahler Order ${order})</div>
+                            <div style="color: #0369a1; font-size: 10.5px; font-weight: 700;">Mean Flow: ${p.DIS_AV_CMS ?? 'N/A'} m³/s</div>
+                            <div style="color: #7c3aed; font-size: 10.5px; font-weight: 700;">Est. Potential: ${estPower}</div>
+                            <div style="color: #475569; font-size: 10px; margin-top: 2px;">Corridor Reach Length: <strong>${p.LENGTH_KM ?? 'N/A'} km</strong></div>
+                            <div style="color: #64748b; font-size: 9.5px;">Upland Basin: ${p.UPLAND_SKM ?? 'N/A'} km²</div>
+                          </div>
+                        `, { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' });
+                      }}
+                    />
+                  )}
+
+                  {/* 6 Named Major River Corridor Arteries with Enhanced Glowing Highlight */}
+                  {gulmiRivers && (
+                    <GeoJSON
+                      key={`hydro-corridor-named-rivers-${selectedPillar}`}
+                      data={gulmiRivers}
+                      pane="riversPane"
+                      style={(feature: any) => {
+                        const name = feature?.properties?.name || '';
+                        const isCommercial = name.includes('Kali Gandaki') || name.includes('Badigad');
+                        const isMini = name.includes('Ridi') || name.includes('Panaha');
+                        const color = isCommercial ? '#4c1d95' : isMini ? '#7c3aed' : '#10b981';
+                        const weight = isCommercial ? 6.5 : isMini ? 4.8 : 3.5;
+                        return {
+                          color,
+                          weight,
+                          opacity: 1,
+                        };
+                      }}
+                      onEachFeature={(feature: any, layer: any) => {
+                        const p = feature?.properties || {};
+                        const isCommercial = p.name?.includes('Kali Gandaki') || p.name?.includes('Badigad');
+                        const isMini = p.name?.includes('Ridi') || p.name?.includes('Panaha');
+                        const tierLabel = isCommercial
+                          ? '⚡ Commercial RoR (>1 MW) Cascade Corridor'
+                          : isMini
+                            ? '⚡ Mini-Hydro (100–999 kW) Industrial Micro-Grid Corridor'
+                            : '⚡ Rural Micro-Hydro (<100 kW) Agro-Processing Corridor';
+                        const tierColor = isCommercial ? '#4c1d95' : isMini ? '#7c3aed' : '#10b981';
+
+                        layer.bindTooltip(`
+                          <div style="padding: 6px 10px; font-size: 11.5px; min-width: 220px;">
+                            <div style="font-weight: 800; color: ${tierColor}; font-size: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px;">
+                              🌊 ${p.name} (${p.nepaliName || ''})
+                            </div>
+                            <div style="color: #0f172a; font-weight: 600; font-size: 11px;">${tierLabel}</div>
+                            <div style="color: #64748b; font-size: 10px; margin-top: 2px;"><strong>Hydrological Basin:</strong> ${p.basin || 'Gandaki Basin'}</div>
+                            <div style="color: #0369a1; font-size: 10px;"><strong>Key Station:</strong> ${p.dhmStation || 'DHM Gauge'}</div>
+                            <div style="color: #475569; font-size: 10px; margin-top: 3px;"><strong>Served Palikas:</strong> ${Array.isArray(p.palikaList) ? p.palikaList.join(', ') : (Array.isArray(p.palikasServed) ? p.palikasServed.join(', ') : 'Gulmi')}</div>
+                            <div style="color: #059669; font-size: 9.5px; margin-top: 3px; font-style: italic;">${p.importance || ''}</div>
+                          </div>
+                        `, { direction: 'top', offset: [0, -6], opacity: 0.98, pane: 'popupPane' });
+                      }}
+                    />
+                  )}
+                </>
+              )}
 
               {/* Contextual Layer Isolation 2.2: NEA High-Voltage Transmission Substations & Hub Points (Pure Ground Truth GPS Points) */}
               {selectedPillar === 'energy' && (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach') && (
