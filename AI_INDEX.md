@@ -1,5 +1,5 @@
 # WEFES PLATFORM: AI CONTEXT & ARCHITECTURE MAP
-> Auto-generated on 2026-09-25 14:29. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
+> Auto-generated on 2026-09-27 09:03. DO NOT EDIT DIRECTLY. Updated via `scripts/generate_ai_index.py`.
 > This file is a high-density, token-optimized context anchor for AI assistants.
 
 ---
@@ -33,12 +33,12 @@
 ### Discovered Data Catalogs:
 | Subfolder | Classification | Description |
 |---|---|---|
-| `data/calculated` | **Calculated / Computational Engine Output** | Data Catalog: Deterministic Engine Outputs (`data/calculated/`) |
-| `data/calculated/indicators` | **Calculated / Empirical Downscaled Palika Indicators** | Data Catalog: Palika Sectoral Indicators (`data/calculated/indicators/`) |
-| `data/formulas` | **CALCULATED / DOMAIN CONFIGURATION** | Data Information: `data/formulas/` |
-| `data/proxy` | **Proxy / Surrogate Assumption** | Data Catalog: Surrogate Assumptions & Proxy Benchmarks (`data/proxy/`) |
-| `data/real` | **Observed / Official Records (Empirical Ground Truth)** | Data Catalog: Observed & Official Records (`data/real/`) |
-| `data/real/infrastructure/drinking_water` | **Unknown** | Households by main source of drinking water |
+| `data\calculated` | **Calculated / Computational Engine Output** | Data Catalog: Deterministic Engine Outputs (`data/calculated/`) |
+| `data\calculated\indicators` | **Calculated / Empirical Downscaled Palika Indicators** | Data Catalog: Palika Sectoral Indicators (`data/calculated/indicators/`) |
+| `data\formulas` | **CALCULATED / DOMAIN CONFIGURATION** | Data Information: `data/formulas/` |
+| `data\proxy` | **Proxy / Surrogate Assumption** | Data Catalog: Surrogate Assumptions & Proxy Benchmarks (`data/proxy/`) |
+| `data\real` | **Observed / Official Records (Empirical Ground Truth)** | Data Catalog: Observed & Official Records (`data/real/`) |
+| `data\real\infrastructure\drinking_water` | **Unknown** | Households by main source of drinking water |
 
 ---
 
@@ -65,10 +65,8 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   │   ├── package.json
 ├── data/
 │   ├── calculated/
-│   │   ├── downscaled_rainfall/
 │   │   ├── hydro_reaches/
 │   │   ├── indicators/
-│   │   ├── palika_benchmarks/
 │   │   └── DATAINFO.md
 │   ├── formulas/
 │   │   └── DATAINFO.md
@@ -109,15 +107,6 @@ WEFES_NEXUS_NEPAL_GULMI/
 │   │   ├── src/
 │   │   ├── package.json
 ├── scripts/
-├── venv/
-│   ├── bin/
-│   ├── include/
-│   │   └── python3.13/
-│   ├── lib/
-│   │   └── python3.13/
-│   ├── share/
-│   │   ├── jupyter/
-│   │   └── man/
 ├── Makefile
 ├── package.json
 ├── RULESET.md
