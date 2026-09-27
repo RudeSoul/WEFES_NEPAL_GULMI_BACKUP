@@ -41,6 +41,12 @@ export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
                 <option value="river_basins">🌊 Gandaki Basin Drainage Corridors (Kali Gandaki, Badigad, Ridi)</option>
                 <option value="dhm_station">💧 DHM Hydro-Meteorological Stations</option>
               </optgroup>
+              <optgroup label="🌊 HydroSHEDS Basin & Drainage Modeling">
+                <option value="catchments">🏔️ Catchments (HydroBASINS Level 10 Watershed Basins)</option>
+                <option value="rivers_streams">🌊 Rivers & Stream Drainage Network (HydroRIVERS Strahler Orders)</option>
+                <option value="flow_accumulation">💧 Surface Flow Accumulation Grid (Upslope Drainage Tiers)</option>
+                <option value="flow_direction">🧭 D8 Flow Direction Raster (8-Direction Flow Paths)</option>
+              </optgroup>
               <optgroup label="⛰️ Terrain Water Security">
                 <option value="spring_vulnerability">🏔️ Watershed Spring Depletion Vulnerability (मुहान सुक्ने जोखिम)</option>
                 <option value="irrigation_potential">🌾 River Lift Irrigation Potential (Riverbed Flats)</option>
