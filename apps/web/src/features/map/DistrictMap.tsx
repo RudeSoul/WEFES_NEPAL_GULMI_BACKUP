@@ -1777,6 +1777,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 <SpatialFlowAccumulationOverlay
                   opacity={0.88}
                   pane="rainfallPane"
+                  geoData={geoData}
                 />
               )}
 
@@ -1785,6 +1786,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                 <SpatialFlowDirectionOverlay
                   opacity={0.85}
                   pane="rainfallPane"
+                  geoData={geoData}
                 />
               )}
 
