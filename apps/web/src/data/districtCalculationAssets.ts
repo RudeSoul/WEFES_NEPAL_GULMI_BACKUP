@@ -74,6 +74,10 @@ export function resolveCalculationMethodology(params: ResolveMethodologyParams):
     const wSub = subFilters.waterSubFilter || 'merra_rainfall';
     if (wSub === 'merra_rainfall') key = 'merra_rainfall';
     else if (wSub === 'river_basins') key = 'river_basins';
+    else if (wSub === 'catchments') key = 'catchments';
+    else if (wSub === 'rivers_streams') key = 'rivers_streams';
+    else if (wSub === 'flow_accumulation') key = 'flow_accumulation';
+    else if (wSub === 'flow_direction') key = 'flow_direction';
     else if (wSub === 'springshed_vulnerability' || wSub === 'spring_vulnerability') key = 'springshed_vulnerability';
     else if (wSub === 'irrigation_potential') key = 'irrigation_potential';
     else if (wSub === 'dhm_station') key = 'dhm_station';
