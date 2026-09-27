@@ -1099,9 +1099,10 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   const isFlowAccumulationActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'flow_accumulation';
   const isFlowDirectionActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'flow_direction';
   const isSolarGhiActive = selectedPillar === 'energy' && subFilters.energySubFilter === 'solar_irradiance';
+  const isGridSubstationActive = selectedPillar === 'energy' && (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach');
   const isLandholdingActive = selectedPillar === 'socioeconomics' && (subFilters.socioSubFilter === 'agri_landholding' || subFilters.socioSubFilter === 'landholding');
 
-  const isOverlayModeActive = isMerraRainfallActive || isSolarGhiActive || isFlowAccumulationActive || isFlowDirectionActive || isCatchmentsActive || isRiversStreamsActive;
+  const isOverlayModeActive = isMerraRainfallActive || isSolarGhiActive || isFlowAccumulationActive || isFlowDirectionActive || isCatchmentsActive || isRiversStreamsActive || isGridSubstationActive;
 
   const getPalikaStyle = (feature: any) => {
     const props = feature?.properties;
@@ -1110,11 +1111,11 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 
     if (isOverlayModeActive) {
       return {
-        fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : '#38bdf8') : 'transparent',
+        fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : isGridSubstationActive ? '#0ea5e9' : '#38bdf8') : 'transparent',
         weight: isHovered ? 2.5 : 1.5,
         opacity: 0.95,
         color: isHovered ? '#10b981' : '#475569',
-        fillOpacity: isHovered ? 0.22 : 0,
+        fillOpacity: isHovered ? 0.18 : 0,
       };
     }
 
@@ -1814,9 +1815,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
 
                     if (isOverlayModeActive) {
                       return {
-                        fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : '#38bdf8') : 'transparent',
-                        fillOpacity: isHovered ? 0.22 : 0,
-                        color: isHovered ? '#10b981' : (isCatchmentsActive ? '#64748b' : '#334155'),
+                        fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : isGridSubstationActive ? '#0ea5e9' : '#38bdf8') : 'transparent',
+                        fillOpacity: isHovered ? 0.18 : 0,
+                        color: isHovered ? '#10b981' : (isCatchmentsActive ? '#64748b' : isGridSubstationActive ? '#475569' : '#334155'),
                         weight: isHovered ? 3.5 : (isCatchmentsActive ? 1.2 : 1.6),
                         dashArray: isCatchmentsActive ? '3, 4' : '',
                       };
@@ -1964,72 +1965,90 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                   />
                 )}
 
-              {/* Contextual Layer Isolation 2.2: NEA High-Voltage Transmission Substations & Hub Points */}
+              {/* Contextual Layer Isolation 2.2: NEA High-Voltage Transmission Substations & Hub Points (Pure Ground Truth GPS Points) */}
               {selectedPillar === 'energy' && (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach') && (
                 <>
-                  {/* 5 Physical Substations Overlay */}
+                  {/* 5 Physical Substations Overlay with Glowing Rings */}
                   {Object.entries((palikaGridData as any).substations || {}).map(([sKey, sData]: [string, any]) => {
                     const coords = sData.coordinates || [28.0645, 83.2685];
                     const is132 = sData.voltage.includes('132');
-                    const markerColor = is132 ? '#047857' : sData.tierKey === 'rural_33kv' ? '#8b5cf6' : '#f59e0b';
-                    const radius = is132 ? 9 : 7.5;
+                    const markerColor = sData.color || (is132 ? (sData.tierKey === 'trunk_132kv' ? '#0ea5e9' : '#047857') : sData.tierKey === 'rural_33kv' ? '#8b5cf6' : '#f59e0b');
+                    const radius = is132 ? 10 : 8;
 
                     const isNorthern = coords[0] >= 28.15;
                     const tooltipDirection = isNorthern ? 'bottom' : 'top';
                     const tooltipOffset: [number, number] = isNorthern ? [0, 8] : [0, -8];
 
                     return (
-                      <CircleMarker
-                        key={`substation-${sKey}`}
-                        center={[coords[0], coords[1]]}
-                        radius={radius}
-                        pane="pointsPane"
-                        pathOptions={{
-                          fillColor: markerColor,
-                          fillOpacity: 1,
-                          color: '#ffffff',
-                          weight: 2.5,
-                          pane: 'pointsPane',
-                        }}
-                      >
-                        <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
-                          <div className="text-xs p-2 min-w-[230px] bg-white rounded-lg shadow-lg border border-slate-200">
-                            <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
-                              <span className="flex items-center gap-1.5 font-outfit text-[12.5px]">
-                                ⚡ {sData.name}
-                              </span>
-                              <span
-                                className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold text-white shadow-2xs"
-                                style={{ backgroundColor: markerColor }}
-                              >
-                                {sData.voltage}
-                              </span>
-                            </div>
-                            <div className="text-slate-600 text-[10px] font-medium">
-                              {sData.nepaliName} • <strong>Ward {sData.ward}, {sData.palika}</strong>
-                            </div>
-                            <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80">
-                              Capacity: <strong>{sData.capacityMVA} MVA</strong>
-                              {sData.transmissionCapacityMW && (
-                                <span> • Power: <strong>{sData.transmissionCapacityMW} MW</strong></span>
+                      <React.Fragment key={`substation-node-${sKey}`}>
+                        {/* Outer Pulsing/Glow Halo Ring */}
+                        <CircleMarker
+                          center={[coords[0], coords[1]]}
+                          radius={radius + 6}
+                          pane="pointsPane"
+                          pathOptions={{
+                            fillColor: markerColor,
+                            fillOpacity: 0.2,
+                            color: markerColor,
+                            weight: 1.5,
+                            dashArray: '3, 3',
+                            pane: 'pointsPane',
+                          }}
+                          interactive={false}
+                        />
+
+                        {/* Core Substation Node Marker */}
+                        <CircleMarker
+                          center={[coords[0], coords[1]]}
+                          radius={radius}
+                          pane="pointsPane"
+                          pathOptions={{
+                            fillColor: markerColor,
+                            fillOpacity: 1,
+                            color: '#ffffff',
+                            weight: 2.5,
+                            pane: 'pointsPane',
+                          }}
+                        >
+                          <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
+                            <div className="text-xs p-2 min-w-[230px] bg-white rounded-lg shadow-lg border border-slate-200">
+                              <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
+                                <span className="flex items-center gap-1.5 font-outfit text-[12.5px]">
+                                  ⚡ {sData.name}
+                                </span>
+                                <span
+                                  className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold text-white shadow-2xs"
+                                  style={{ backgroundColor: markerColor }}
+                                >
+                                  {sData.voltage}
+                                </span>
+                              </div>
+                              <div className="text-slate-600 text-[10px] font-medium">
+                                {sData.nepaliName} • <strong>Ward {sData.ward}, {sData.palika}</strong>
+                              </div>
+                              <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80">
+                                Capacity: <strong>{sData.capacityMVA} MVA</strong>
+                                {sData.transmissionCapacityMW && (
+                                  <span> • Power: <strong>{sData.transmissionCapacityMW} MW</strong></span>
+                                )}
+                              </div>
+                              {sData.connectedHydro && (
+                                <div className="text-amber-800 text-[9.5px] mt-1 bg-amber-50 p-1 rounded font-medium">
+                                  💧 Hydro Link: {sData.connectedHydro}
+                                </div>
                               )}
-                            </div>
-                            {sData.connectedHydro && (
-                              <div className="text-amber-800 text-[9.5px] mt-1 bg-amber-50 p-1 rounded font-medium">
-                                💧 Hydro Link: {sData.connectedHydro}
+                              {sData.budgetNPR && (
+                                <div className="text-purple-800 text-[9.5px] mt-1 bg-purple-50 p-1 rounded font-medium">
+                                  💰 Project: {sData.budgetNPR} ({sData.contractor})
+                                </div>
+                              )}
+                              <div className="text-emerald-700 text-[9px] mt-1.5 font-semibold">
+                                ✅ {sData.status}
                               </div>
-                            )}
-                            {sData.budgetNPR && (
-                              <div className="text-purple-800 text-[9.5px] mt-1 bg-purple-50 p-1 rounded font-medium">
-                                💰 Project: {sData.budgetNPR} ({sData.contractor})
-                              </div>
-                            )}
-                            <div className="text-emerald-700 text-[9px] mt-1.5 font-semibold">
-                              ✅ {sData.status}
                             </div>
-                          </div>
-                        </Tooltip>
-                      </CircleMarker>
+                          </Tooltip>
+                        </CircleMarker>
+                      </React.Fragment>
                     );
                   })}
                 </>
