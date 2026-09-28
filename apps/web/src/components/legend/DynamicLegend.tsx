@@ -1,6 +1,5 @@
 import React from 'react';
 import { SubFilterLegendConfig } from '@wefes/shared-types';
-import { Info, ShieldCheck, Cpu, AlertTriangle } from 'lucide-react';
 
 interface DynamicLegendProps {
   config: SubFilterLegendConfig;
@@ -8,32 +7,6 @@ interface DynamicLegendProps {
 }
 
 export const DynamicLegend: React.FC<DynamicLegendProps> = ({ config, className = '' }) => {
-  const renderConfidenceBadge = () => {
-    switch (config.confidence) {
-      case 'REAL':
-        return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
-            <ShieldCheck className="w-3 h-3 text-emerald-600" />
-            OBSERVED REAL
-          </span>
-        );
-      case 'CALCULATED':
-        return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-sky-100 text-sky-800 border border-sky-300">
-            <Cpu className="w-3 h-3 text-sky-600" />
-            CALCULATED
-          </span>
-        );
-      case 'PROXY':
-        return (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-100 text-amber-800 border border-amber-300">
-            <AlertTriangle className="w-3 h-3 text-amber-600" />
-            PROXY ESTIMATE
-          </span>
-        );
-    }
-  };
-
   return (
     <div className={`flex flex-col glass-panel px-4 py-3 rounded-xl text-xs border border-slate-200 shadow-sm bg-white/95 backdrop-blur-md gap-2 ${className}`}>
       {/* Header */}
@@ -48,7 +21,6 @@ export const DynamicLegend: React.FC<DynamicLegendProps> = ({ config, className 
             </span>
           )}
         </div>
-        {renderConfidenceBadge()}
       </div>
 
       {/* Body: Continuous Gradient */}
@@ -100,14 +72,6 @@ export const DynamicLegend: React.FC<DynamicLegendProps> = ({ config, className 
           ))}
         </div>
       )}
-
-      {/* Footer: Data Lineage Provenance Citation */}
-      <div className="flex items-center gap-1 pt-1 border-t border-slate-100 text-[10px] text-slate-400">
-        <Info className="w-3 h-3 shrink-0 text-slate-400" />
-        <span className="truncate" title={config.dataSourceCitation}>
-          Source: {config.dataSourceCitation}
-        </span>
-      </div>
     </div>
   );
 };
