@@ -12,9 +12,8 @@
 // Citations: Ministry of Federal Affairs and General Administration (MoFAGA), DHM Nepal, Survey Department of Nepal, HydroSHEDS / HydroRIVERS / HydroBASINS (WWF/USGS)
 import { db } from '@wefes/database';
 import { District, SUBFILTER_LEGENDS, WEFESPillar } from '@wefes/shared-types';
-import { computeCropSuitability } from '@wefes/wefes-engine';
 import L from 'leaflet';
-import { AlertTriangle, Building2, ChevronDown, ChevronUp, Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSun, Cpu, Droplets, Eye, EyeOff, FileText, Gauge, Moon, Mountain, ShieldCheck, Snowflake, Sprout, Sun, Target, Trees, Wind, Zap } from 'lucide-react';
+import { Building2, ChevronDown, ChevronUp, Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSun, Droplets, Eye, EyeOff, FileText, Gauge, Moon, Mountain, ShieldCheck, Snowflake, Sprout, Sun, Target, Trees, Wind, Zap } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { CircleMarker, GeoJSON, MapContainer, Marker, TileLayer, Tooltip, useMap } from 'react-leaflet';
 import { DynamicLegend } from '../../components/legend/DynamicLegend';
@@ -25,7 +24,6 @@ import { DISTRICT_PALIKAS, PALIKA_CENTROIDS } from '../../data/districtPalikaAss
 import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
 import { PalikaHoverCard } from '../palika/PalikaHoverCard';
 import { CatchmentsGeoJsonLayer } from './CatchmentsGeoJsonLayer';
-import DistrictHoverCard from './DistrictHoverCard';
 import { MapGestureHandler } from './MapGestureHandler';
 import { RiversStreamsGeoJsonLayer } from './RiversStreamsGeoJsonLayer';
 import { SpatialFlowAccumulationOverlay } from './SpatialFlowAccumulationOverlay';
@@ -258,405 +256,6 @@ const MONTH_NAMES = [
   'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
-function interpolateColor(color1: string, color2: string, factor: number): string {
-  const f = Math.max(0, Math.min(1, factor));
-  const c1 = color1.startsWith('#') ? color1.slice(1) : color1;
-  const c2 = color2.startsWith('#') ? color2.slice(1) : color2;
-  const r1 = parseInt(c1.substring(0, 2), 16);
-  const g1 = parseInt(c1.substring(2, 4), 16);
-  const b1 = parseInt(c1.substring(4, 6), 16);
-  const r2 = parseInt(c2.substring(0, 2), 16);
-  const g2 = parseInt(c2.substring(2, 4), 16);
-  const b2 = parseInt(c2.substring(4, 6), 16);
-  const r = Math.round(r1 + f * (r2 - r1));
-  const g = Math.round(g1 + f * (g2 - g1));
-  const b = Math.round(b1 + f * (b2 - b1));
-  return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-}
-
-// QGIS-style continuous multi-stop gradient interpolator
-function getGradientColor(val: number, min: number, max: number, palette: string[]): string {
-  if (palette.length === 0) return '#059669';
-  if (palette.length === 1) return palette[0];
-  const clamped = Math.max(min, Math.min(max, val));
-  const norm = max === min ? 0.5 : (clamped - min) / (max - min);
-  const segCount = palette.length - 1;
-  const segIndex = Math.min(Math.floor(norm * segCount), segCount - 1);
-  const segFactor = (norm - segIndex / segCount) * segCount;
-  return interpolateColor(palette[segIndex], palette[segIndex + 1], segFactor);
-}
-
-// Curated scientific QGIS palettes
-const COLOR_RAMPS = {
-  blues: ['#eff6ff', '#bfdbfe', '#60a5fa', '#2563eb', '#1d4ed8', '#1e3a8a'], // Hydrology & Rivers
-  rainfall: ['#fed7aa', '#fdba74', '#38bdf8', '#0284c7', '#0369a1', '#1e3a8a'], // Low Valley -> High Uplift
-  viridis: ['#440154', '#414487', '#2a788e', '#22a884', '#7ad151', '#fde725'], // Topo Elevation
-  ylgn: ['#ffffe5', '#d9f0a3', '#78c679', '#31a354', '#006837'], // Agro & Forest
-  purples: ['#f3e8ff', '#d8b4fe', '#a855f7', '#7c3aed', '#4c1d95'], // Energy & Hydro Power
-  rdylgn: ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#047857'], // Risk -> Favorable
-  gnylrd: ['#047857', '#10b981', '#f59e0b', '#f97316', '#ef4444'], // Favorable -> Severe Risk
-  soilPh: ['#ef4444', '#f59e0b', '#84cc16', '#10b981', '#059669', '#0284c7'], // Acidic -> Alkaline
-};
-
-function suitabilityToColor(score: number): string {
-  return getGradientColor(score, 30, 95, COLOR_RAMPS.rdylgn);
-}
-
-function getFoodFeasibilityColor(
-  props: any,
-  overlayType: string,
-  selectedMapCropId: string | null,
-  cropSuitabilityMap: Record<string, number>
-): string {
-  if (!props) return '#1e293b';
-
-  // 1. Specific Crop Suitability overlay
-  if (overlayType === 'crop_suitability' && selectedMapCropId) {
-    const score = cropSuitabilityMap[props.id];
-    if (score !== undefined) {
-      return suitabilityToColor(score);
-    }
-  }
-
-  // 2. Feasible Cereal Crops Count
-  if (overlayType === 'cereal_crops') {
-    const count = props.feasibleCrops?.length || 0;
-    if (count >= 8) return '#059669';
-    if (count >= 6) return '#10b981';
-    if (count >= 4) return '#f59e0b';
-    return '#ef4444';
-  }
-
-  // 3. Feasible Vegetables Count
-  if (overlayType === 'vegetables') {
-    const count = props.feasibleVegetables?.length || 0;
-    if (count >= 16) return '#059669';
-    if (count >= 12) return '#10b981';
-    if (count >= 8) return '#0ea5e9';
-    return '#f59e0b';
-  }
-
-  // 4. Feasible Fruits Count
-  if (overlayType === 'fruits') {
-    const count = props.feasibleFruits?.length || 0;
-    if (count >= 8) return '#d97706';
-    if (count >= 5) return '#f59e0b';
-    if (count >= 2) return '#0ea5e9';
-    return '#8b5cf6';
-  }
-
-  // 5. Spices & Cash Crops Count
-  if (overlayType === 'spices_cash') {
-    const count = props.feasibleSpicesCashCrops?.length || 0;
-    if (count >= 6) return '#7c3aed';
-    if (count >= 4) return '#a855f7';
-    if (count >= 2) return '#c084fc';
-    return '#94a3b8';
-  }
-
-  // 6. Agro-Climatic Zone
-  if (overlayType === 'climate_zone') {
-    const cz = (props.climateZone || '').toLowerCase();
-    if (cz.includes('tropical')) return '#059669';
-    if (cz.includes('subtropical')) return '#10b981';
-    if (cz.includes('temperate')) return '#0ea5e9';
-    if (cz.includes('subalpine') || cz.includes('alpine')) return '#8b5cf6';
-    if (cz.includes('trans-himalayan')) return '#f59e0b';
-    return '#64748b';
-  }
-
-  // 7. Physiographic Region
-  if (overlayType === 'physiographic') {
-    const pr = (props.physiographicRegion || props.ecoZone || '').toLowerCase();
-    if (pr.includes('terai')) return '#facc15';
-    if (pr.includes('hill')) return '#10b981';
-    if (pr.includes('mountain')) return '#0ea5e9';
-    if (pr.includes('valley')) return '#8b5cf6';
-    return '#64748b';
-  }
-
-  // Default: Total Agricultural Diversity (variety count)
-  const total =
-    (props.feasibleCrops?.length || 0) +
-    (props.feasibleVegetables?.length || 0) +
-    (props.feasibleFruits?.length || 0) +
-    (props.feasibleSpicesCashCrops?.length || 0);
-
-  if (total >= 32) return '#059669';
-  if (total >= 24) return '#10b981';
-  if (total >= 16) return '#0ea5e9';
-  if (total >= 8) return '#f59e0b';
-  return '#8b5cf6';
-}
-
-function getNarcSoilColor(props: any, ecoSubFilter: string, subFilters: Record<string, string>): string {
-  if (!props || props.hasRealSoilData === false || props.soilSampleCount === 0 || props.soilNitrogen === undefined) {
-    return '#1e293b';
-  }
-
-  if (ecoSubFilter === 'soil_nitrogen') {
-    const n = props.soilNitrogen;
-    const range = subFilters.nitrogenRange;
-    if (range === 'high' && n <= 0.20) return '#1e293b';
-    if (range === 'med' && (n < 0.10 || n > 0.20)) return '#1e293b';
-    if (range === 'low' && n >= 0.10) return '#1e293b';
-    if (n > 0.20) return '#059669';
-    if (n >= 0.10) return '#10b981';
-    return '#ef4444';
-  }
-
-  if (ecoSubFilter === 'soil_phosphorus') {
-    const p = props.soilPhosphorus;
-    const range = subFilters.phosphorusRange;
-    if (range === 'high' && p <= 55) return '#1e293b';
-    if (range === 'med' && (p < 30 || p > 55)) return '#1e293b';
-    if (range === 'low' && p >= 30) return '#1e293b';
-    if (p > 55) return '#0284c7';
-    if (p >= 30) return '#38bdf8';
-    return '#ef4444';
-  }
-
-  if (ecoSubFilter === 'soil_potassium') {
-    const k = props.soilPotassium;
-    const range = subFilters.potassiumRange;
-    if (range === 'high' && k <= 280) return '#1e293b';
-    if (range === 'med' && (k < 110 || k > 280)) return '#1e293b';
-    if (range === 'low' && k >= 110) return '#1e293b';
-    if (k > 280) return '#7c3aed';
-    if (k >= 110) return '#a855f7';
-    return '#ef4444';
-  }
-
-  if (ecoSubFilter === 'soil_ph') {
-    const ph = props.baseSoilPh;
-    const range = subFilters.phRange;
-    if (range === 'alkaline' && ph <= 7.5) return '#1e293b';
-    if (range === 'neutral' && (ph < 6.5 || ph > 7.5)) return '#1e293b';
-    if (range === 'acidic' && (ph < 5.5 || ph >= 6.5)) return '#1e293b';
-    if (range === 'strongly_acidic' && ph >= 5.5) return '#1e293b';
-    if (ph > 7.5) return '#06b6d4';
-    if (ph >= 6.5) return '#10b981';
-    if (ph >= 5.5) return '#f59e0b';
-    return '#ef4444';
-  }
-
-  if (ecoSubFilter === 'soil_type') {
-    const st = (props.soilType || '').toLowerCase();
-    const typeClass = subFilters.soilTypeClass;
-    if (typeClass === 'gneiss' && !st.includes('gneiss')) return '#1e293b';
-    if (typeClass === 'slate' && !st.includes('slate')) return '#1e293b';
-    if (typeClass === 'quartzite' && !st.includes('quartzite')) return '#1e293b';
-    if (typeClass === 'fluvial' && !(st.includes('fluvial') && st.includes('calcareous'))) return '#1e293b';
-    if (typeClass === 'fluvial_non' && !(st.includes('fluvial') && !st.includes('calcareous'))) return '#1e293b';
-    if (typeClass === 'colluvial' && !st.includes('colluvial')) return '#1e293b';
-    if (typeClass === 'sandstone' && !st.includes('sandstone')) return '#1e293b';
-    if (typeClass === 'lacustrine' && !st.includes('lacustrine')) return '#1e293b';
-    if (st.includes('gneiss') || st.includes('migmatite')) return '#6366f1';
-    if (st.includes('slate') || st.includes('phyllite')) return '#06b6d4';
-    if (st.includes('quartzite')) return '#f59e0b';
-    if (st.includes('fluvial') && st.includes('calcareous')) return '#10b981';
-    if (st.includes('fluvial')) return '#14b8a6';
-    if (st.includes('colluvial')) return '#0ea5e9';
-    if (st.includes('sandstone')) return '#ec4899';
-    if (st.includes('lacustrine')) return '#8b5cf6';
-    return '#3b82f6';
-  }
-
-  return '#0284c7';
-}
-
-function getClimateMetricColor(val: number, metric: string): string {
-  if (val === undefined || isNaN(val)) return '#1e293b';
-
-  if (metric === 'prectot' || metric === 'prectot_max') {
-    if (val >= 350) return '#0284c7';
-    if (val >= 200) return '#0ea5e9';
-    if (val >= 100) return '#38bdf8';
-    if (val >= 30) return '#a5f3fc';
-    if (val >= 10) return '#facc15';
-    return '#ef4444';
-  }
-
-  if (metric.startsWith('t2m') || metric === 'ts') {
-    if (val >= 32) return '#dc2626';
-    if (val >= 26) return '#f97316';
-    if (val >= 20) return '#f59e0b';
-    if (val >= 14) return '#10b981';
-    if (val >= 6) return '#06b6d4';
-    if (val >= 0) return '#3b82f6';
-    return '#8b5cf6';
-  }
-
-  if (metric.startsWith('ws')) {
-    if (val >= 5.5) return '#6d28d9';
-    if (val >= 4.0) return '#8b5cf6';
-    if (val >= 2.8) return '#06b6d4';
-    if (val >= 1.8) return '#10b981';
-    return '#94a3b8';
-  }
-
-  if (metric === 'rh2m') {
-    if (val >= 85) return '#0284c7';
-    if (val >= 70) return '#10b981';
-    if (val >= 50) return '#f59e0b';
-    return '#ef4444';
-  }
-
-  if (metric === 'qv2m') {
-    if (val >= 16) return '#0284c7';
-    if (val >= 11) return '#10b981';
-    if (val >= 6) return '#f59e0b';
-    return '#ef4444';
-  }
-
-  if (metric === 'ps') {
-    if (val >= 95) return '#0284c7';
-    if (val >= 80) return '#10b981';
-    return '#8b5cf6';
-  }
-
-  return '#0284c7';
-}
-
-function parseCommissionedYear(commStr?: string): number | null {
-  if (!commStr) return null;
-  const match = commStr.match(/\b(19\d\d|20\d\d)\b/);
-  return match ? parseInt(match[1], 10) : null;
-}
-
-function getActiveHydroCapacityForYear(props: any, year: number): number {
-  if (!props || !props.hydroStationsList || props.hydroStationsList.length === 0) return 0;
-
-  let activeMW = 0;
-  for (const st of props.hydroStationsList) {
-    const commYear = parseCommissionedYear(st.commissioned);
-    if (commYear !== null && commYear <= year) {
-      activeMW += st.capacityMW;
-    }
-  }
-  return Number(activeMW.toFixed(2));
-}
-
-function getEnergyInfrastructureColor(props: any, metric: string, climateYear: number): string {
-  if (!props) return '#1e293b';
-
-  if (metric === 'totalHydroCapacityMW') {
-    const mw = getActiveHydroCapacityForYear(props, climateYear);
-    if (mw >= 200) return '#6d28d9'; // Mega Powerhouse Deep Purple
-    if (mw >= 80) return '#8b5cf6'; // High Capacity Hydro Violet
-    if (mw >= 20) return '#06b6d4'; // Medium Capacity Cyan
-    if (mw >= 1) return '#10b981'; // Small Hydro Emerald
-    return '#1e293b';                // No Active Hydro Power Stations as of selected year
-  }
-
-  if (metric === 'nasaSolarRadiationKwh') {
-    const yearlyMap = props.nasaSolarYearly || {};
-    const solar = yearlyMap[climateYear] || props.nasaSolarRadiationKwh || props.solarRadiationKwh || 4.8;
-    if (solar >= 5.0) return '#d97706'; // High Insolation Amber
-    if (solar >= 4.4) return '#f59e0b'; // Good Solar Yellow
-    if (solar >= 4.0) return '#eab308'; // Moderate Solar
-    return '#38bdf8';                   // Lower Insolation
-  }
-
-  return '#8b5cf6';
-}
-
-function getSocioMetricColor(props: any, metric: string): string {
-  if (!props) return '#1e293b';
-
-  if (metric === 'national_road_network') {
-    return '#0f172a'; // Base dark slate background for highway map
-  }
-
-  if (metric === 'popDensity') {
-    const d = props.populationDensity ?? 180;
-    if (d >= 1000) return '#7c3aed';
-    if (d >= 300) return '#8b5cf6';
-    if (d >= 100) return '#c084fc';
-    return '#e9d5ff';
-  }
-
-  if (metric === 'laborRateNprPerDay') {
-    const rate = props.laborRateNprPerDay ?? props.agriLaborMarketRateAvgNpr ?? 750;
-    if (rate >= 950) return '#7c3aed'; // High Alpine Hardship / Remote Mountain (>950 NPR)
-    if (rate >= 800) return '#f59e0b'; // Kathmandu Valley & Upper Hills (800-950 NPR)
-    if (rate >= 680) return '#38bdf8'; // Mid-Hills Moderate (680-800 NPR)
-    return '#10b981'; // Tarai Low Cost (<680 NPR)
-  }
-
-  if (metric === 'wealthIndexScore') {
-    const w = props.wealthIndexScore ?? 50;
-    if (w >= 75) return '#059669';
-    if (w >= 55) return '#10b981';
-    if (w >= 40) return '#f59e0b';
-    return '#ef4444';
-  }
-
-  if (metric === 'agriLandholdingAvgHa') {
-    const l = props.agriLandholdingAvgHa ?? 0.5;
-    if (l >= 0.8) return '#10b981';
-    if (l >= 0.5) return '#84cc16';
-    if (l >= 0.35) return '#f59e0b';
-    return '#ef4444';
-  }
-
-  if (metric === 'unemploymentRatePct') {
-    const u = props.unemploymentRatePct ?? 11;
-    if (u >= 14) return '#ef4444';
-    if (u >= 11) return '#f59e0b';
-    return '#10b981';
-  }
-
-  if (metric === 'literacyRatePct') {
-    const lit = props.literacyRatePct ?? 70;
-    if (lit >= 80) return '#0284c7';
-    if (lit >= 68) return '#38bdf8';
-    if (lit >= 58) return '#f59e0b';
-    return '#ef4444';
-  }
-
-  if (metric === 'utilityAccessPct') {
-    const util = props.utilityAccessPct ?? 65;
-    if (util >= 85) return '#059669';
-    if (util >= 65) return '#10b981';
-    if (util >= 50) return '#f59e0b';
-    return '#ef4444';
-  }
-
-  if (metric === 'roadDensityKmPerKm2') {
-    const rd = props.roadDensityKmPerKm2 ?? 0.4;
-    if (rd >= 1.0) return '#059669';
-    if (rd >= 0.6) return '#10b981';
-    if (rd >= 0.3) return '#f59e0b';
-    return '#ef4444';
-  }
-
-  if (metric === 'avgDistanceToPavedRoadKm') {
-    const dist = props.avgDistanceToPavedRoadKm ?? 10;
-    if (dist <= 5) return '#059669';
-    if (dist <= 15) return '#10b981';
-    if (dist <= 30) return '#f59e0b';
-    return '#ef4444';
-  }
-
-  if (metric === 'marketAccessIndex') {
-    const mai = props.marketAccessIndex ?? 50;
-    if (mai >= 80) return '#7c3aed';
-    if (mai >= 60) return '#a855f7';
-    if (mai >= 40) return '#c084fc';
-    return '#e9d5ff';
-  }
-
-  if (metric === 'freightLogisticsTariffNprPerTonKm') {
-    const t = props.freightLogisticsTariffNprPerTonKm ?? 20;
-    if (t <= 15) return '#059669';
-    if (t <= 25) return '#f59e0b';
-    return '#ef4444';
-  }
-
-  return '#8b5cf6';
-}
-
 interface DistrictMapProps {
   onSelectDistrict: (district: District, palikaName?: string) => void;
   selectedDistrict: District | null;
@@ -668,63 +267,6 @@ interface DistrictMapProps {
   climateDataset?: any;
 }
 
-function getDistrictFromProps(props: any): District {
-  if (!props) {
-    return {
-      id: 'unknown',
-      name: 'Unknown',
-      nepaliName: '',
-      province: 'Nepal',
-      ecoZone: 'Hill',
-      avgRainfallMm: 1500,
-      solarRadiationKwh: 5.0,
-      baseSoilPh: 6.5,
-      laborRateNprPerDay: 750,
-      coordinates: { lat: 28.0, lng: 84.0 },
-    };
-  }
-  const dbDistrict = db.getDistrictById(props.id);
-  if (dbDistrict) return dbDistrict;
-  return {
-    id: props.id || 'district',
-    name: props.name || props.id || 'District',
-    nepaliName: props.nepaliName || props.name || '',
-    province: props.province || 'Nepal',
-    ecoZone: props.ecoZone || 'Hill',
-    avgRainfallMm: props.avgRainfallMm || 1500,
-    solarRadiationKwh: props.solarRadiationKwh || props.nasaSolarRadiationKwh || 5.0,
-    baseSoilPh: props.baseSoilPh,
-    soilNitrogen: props.soilNitrogen,
-    soilPhosphorus: props.soilPhosphorus,
-    soilPotassium: props.soilPotassium,
-    soilType: props.soilType,
-    soilSampleCount: props.soilSampleCount,
-    hasRealSoilData: props.hasRealSoilData ?? (props.soilSampleCount > 0),
-    populationTotal: props.populationTotal,
-    populationDensity: props.populationDensity,
-    wealthIndexScore: props.wealthIndexScore,
-    agriLandholdingAvgHa: props.agriLandholdingAvgHa,
-    unemploymentRatePct: props.unemploymentRatePct,
-    literacyRatePct: props.literacyRatePct,
-    utilityAccessPct: props.utilityAccessPct,
-    totalHydroCapacityMW: props.totalHydroCapacityMW,
-    hydroStationCount: props.hydroStationCount,
-    hydroStationsList: props.hydroStationsList,
-    nasaSolarRadiationKwh: props.nasaSolarRadiationKwh,
-    nasaSolarYearly: props.nasaSolarYearly,
-    laborRateNprPerDay: props.laborRateNprPerDay || 750,
-    coordinates: { lat: 28.0, lng: 84.0 },
-    description: props.description || `${props.name} district in ${props.province}.`,
-    physiographicRegion: props.physiographicRegion,
-    climateZone: props.climateZone,
-    elevationRange: props.elevationRange,
-    feasibleCrops: props.feasibleCrops,
-    feasibleVegetables: props.feasibleVegetables,
-    feasibleFruits: props.feasibleFruits,
-    feasibleSpicesCashCrops: props.feasibleSpicesCashCrops,
-    feasibilityReasoning: props.feasibilityReasoning,
-  };
-}
 
 export const DistrictMap: React.FC<DistrictMapProps> = ({
   onSelectDistrict,
@@ -739,34 +281,20 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   const [geoData, setGeoData] = useState<any>(null);
   const [climateDataset, setClimateDataset] = useState<any>(initialClimateDataset || null);
   const [geoLoading, setGeoLoading] = useState(true);
-  const [hoveredDistrict, setHoveredDistrict] = useState<District | null>(null);
 
   // Time-Series Animation State (Defaults to latest year 2024)
-  const [climateYear, setClimateYear] = useState<number>(2024);
-  const [climateMonth, setClimateMonth] = useState<number>(12);
-  const [climateMode, setClimateMode] = useState<'monthly' | 'annual' | 'climatology'>('monthly');
+  const CLI_YEAR = 2024;
+  const CLI_MONTH = 12;
+  const CLI_MODE: 'monthly' | 'annual' | 'climatology' = 'monthly';
 
-  const cropSuitabilityMap = React.useMemo<Record<string, number>>(() => {
-    if (selectedPillar !== 'food' || !selectedMapCropId) return {};
-    const crop = db.getCropById(selectedMapCropId);
-    if (!crop) return {};
-    const result: Record<string, number> = {};
-    db.getAllDistricts().forEach(d => {
-      result[d.id] = computeCropSuitability(d, crop).suitabilityScore;
-    });
-    return result;
-  }, [selectedPillar, selectedMapCropId]);
 
   const [hydrologyStations, setHydrologyStations] = useState<any[]>([]);
-  const [glacialLakes, setGlacialLakes] = useState<any[]>([]);
   const [nationalRoads, setNationalRoads] = useState<any>(null);
-  const [hydroReachesData, setHydroReachesData] = useState<any>(null);
   const [gulmiRivers, setGulmiRivers] = useState<any>(null);
   const [catchmentsData, setCatchmentsData] = useState<any>(null);
   const [riversStreamsData, setRiversStreamsData] = useState<any>(null);
   const [contoursData, setContoursData] = useState<any>(null);
   const [showContours, setShowContours] = useState<boolean>(false);
-  const [showRoadOverlay, setShowRoadOverlay] = useState<boolean>(false);
 
   const [palikasData, setPalikasData] = useState<any>(null);
   const [hoveredPalika, setHoveredPalika] = useState<any>(null);
@@ -778,44 +306,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   const [showPalikaLabels, setShowPalikaLabels] = useState<boolean>(true);
 
   // Search autocomplete handler
-  const handleSearchSelect = (type: 'palika' | 'filter' | 'crop', value: string) => {
-    if (type === 'palika') {
-      const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
-      const found = gulmiPalikas.find(p => p.name.toLowerCase() === value.toLowerCase());
-      if (found) {
-        setHoveredPalika({
-          name: found.name,
-          nepaliName: PALIKA_CENTROIDS[found.name]?.nepali || found.name,
-          type: found.unitType || 'Palika',
-          elevation: found.elevation,
-          soilPh: found.soilPh
-        });
-      }
-    } else if (type === 'crop') {
-      setSelectedPillar('food');
-      onSubFilterChange({ foodMode: 'single_crop', crop: value });
-    } else if (type === 'filter') {
-      if (['river_basins', 'spring_vulnerability', 'irrigation_potential'].includes(value)) {
-        setSelectedPillar('water');
-        onSubFilterChange({ waterSubFilter: value });
-      } else if (['soil_ph', 'elevation_zones', 'agroforestry_belt'].includes(value)) {
-        setSelectedPillar('ecosystem');
-        onSubFilterChange({ ecoSubFilter: value });
-      } else if (['hydro_corridor', 'solar_irradiance', 'clean_cooking_biomass'].includes(value)) {
-        setSelectedPillar('energy');
-        onSubFilterChange({ energySubFilter: value });
-      } else if (['local_governance', 'agri_landholding'].includes(value)) {
-        setSelectedPillar('socioeconomics');
-        onSubFilterChange({ socioSubFilter: value });
-      }
-    }
-  };
 
   // 1-Click Policy Preset Handler
-  const handleApplyPreset = (pillar: WEFESPillar, presetFilters: Record<string, string>, cropId?: string) => {
-    setSelectedPillar(pillar);
-    onSubFilterChange(presetFilters);
-  };
 
   const [liveWeather, setLiveWeather] = useState<LiveGulmiWeather | null>(null);
   const [liveWeatherLoading, setLiveWeatherLoading] = useState<boolean>(true);
@@ -865,10 +357,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   }, []);
 
   // Palika Quick Matrix Handlers
-  const handleSelectPalikaFromMatrix = (palikaName: string) => {
-    const gulmiDistrict = db.getDistrictById('gulmi');
-    if (gulmiDistrict) onSelectDistrict(gulmiDistrict, palikaName);
-  };
 
   const handleHoverPalikaFromMatrix = (palikaName: string | null) => {
     if (!palikaName) {
@@ -900,18 +388,16 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       fetch('/geojson/gulmi-palikas.json').then(r => r.json()).catch(() => null),
       initialClimateDataset ? Promise.resolve(initialClimateDataset) : fetch('/geojson/gulmi-climate-monthly.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/roads/gulmi.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/gulmi-hydro-reaches.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-dhm-stations.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-rivers.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/gulmi-contours.json').then(r => r.json()).catch(() => null),
       fetch('/geojson/catchments_l10.geojson').then(r => r.json()).catch(() => null),
       fetch('/geojson/rivers_streams.geojson').then(r => r.json()).catch(() => null),
-    ]).then(([geo, palikas, climate, roads, reaches, hydroAssets, rivers, contours, catchments, riversStreams]) => {
+    ]).then(([geo, palikas, climate, roads, hydroAssets, rivers, contours, catchments, riversStreams]) => {
       if (geo) setGeoData(geo);
       if (palikas) setPalikasData(palikas);
       if (climate) setClimateDataset(climate);
       if (roads) setNationalRoads(roads);
-      if (reaches) setHydroReachesData(reaches);
       if (rivers) setGulmiRivers(rivers);
       if (contours) setContoursData(contours);
       if (catchments) setCatchmentsData(catchments);
@@ -945,142 +431,16 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     return null;
   };
 
-  const getClimateMetricValue = (distId: string, metricKey: string): number | undefined => {
-    if (!climateDataset) return undefined;
-
-    if (climateMode === 'climatology') {
-      const clim = climateDataset.climatologyMap?.[distId]?.[climateMonth];
-      return clim ? clim[metricKey] : undefined;
-    }
-
-    if (climateMode === 'annual') {
-      const targetYear = climateYear > 2019 ? 2019 : climateYear;
-      const yrMap = climateDataset.climateMap?.[distId]?.[targetYear];
-      if (!yrMap) return undefined;
-      let sum = 0, count = 0;
-      for (let m = 1; m <= 12; m++) {
-        if (yrMap[m] && yrMap[m][metricKey] !== undefined) {
-          sum += yrMap[m][metricKey];
-          count++;
-        }
-      }
-      return count > 0 ? Number((sum / count).toFixed(2)) : undefined;
-    }
-
-    const targetYear = climateYear > 2019 ? 2019 : climateYear;
-    const mData = climateDataset.climateMap?.[distId]?.[targetYear]?.[climateMonth]
-      || climateDataset.climatologyMap?.[distId]?.[climateMonth];
-    return mData ? mData[metricKey] : undefined;
-  };
-
-  // Base District Map Style - Dims all non-Gulmi districts
-  const getStyle = (feature: any) => {
-    const props = feature?.properties;
-    if (!props) return { fillColor: '#334155', weight: 1, color: '#475569', fillOpacity: 0.6 };
-
-    const isGulmi = props.id === 'gulmi';
-
-    // Completely dim and disable all other districts
-    if (!isGulmi) {
-      return {
-        fillColor: '#f1f5f9',
-        weight: 0.8,
-        opacity: 0.45,
-        color: '#cbd5e1',
-        fillOpacity: 0.12,
-        dashArray: '3, 4',
-      };
-    }
-
-    // Outer Gulmi District boundary: transparent so the 12 survey-aligned Palikas fill it seamlessly
-    return {
-      fillColor: 'transparent',
-      weight: 0,
-      opacity: 0,
-      color: 'transparent',
-      fillOpacity: 0,
-    };
-  };
-
-  const onEachFeature = (feature: any, layer: L.Layer) => {
-    const props = feature.properties;
-    if (!props || props.id !== 'gulmi') {
-      // Disable interaction on all other districts
-      (layer as any).options.interactive = false;
-      return;
-    }
-
-    layer.on({
-      click: () => {
-        const full = getDistrictFromProps(props);
-        onSelectDistrict(full);
-      },
-      mouseover: (e: any) => {
-        e.target.setStyle({
-          weight: 4,
-          color: '#10b981',
-        });
-        const full = getDistrictFromProps(props);
-        setHoveredDistrict(full);
-      },
-      mouseout: (e: any) => {
-        const defaultStyle = getStyle(feature);
-        e.target.setStyle(defaultStyle);
-        setHoveredDistrict(null);
-      },
-    });
-  };
-
   // Live Climate Telemetry for Gulmi District (MERRA-2 & NASA POWER)
   const currentRainMm = climateDataset ? Math.round(
-    climateMode === 'climatology'
-      ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.prectot ?? 150
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.prectot
-        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.prectot ?? 150)
+    (climateDataset.climateMap?.['gulmi']?.[CLI_YEAR > 2019 ? 2019 : CLI_YEAR]?.[CLI_MONTH]?.prectot
+      ?? climateDataset.climatologyMap?.['gulmi']?.[CLI_MONTH]?.prectot ?? 150)
   ) : 150;
 
   const currentTempC = climateDataset ? Number((
-    climateMode === 'climatology'
-      ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2m ?? 19.5
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.t2m
-        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2m ?? 19.5)
+    (climateDataset.climateMap?.['gulmi']?.[CLI_YEAR > 2019 ? 2019 : CLI_YEAR]?.[CLI_MONTH]?.t2m
+      ?? climateDataset.climatologyMap?.['gulmi']?.[CLI_MONTH]?.t2m ?? 19.5)
   ).toFixed(1)) : 19.5;
-
-  const currentTempMax = climateDataset ? Number((
-    climateMode === 'climatology'
-      ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2mMax ?? 23.5
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.t2mMax
-        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2mMax ?? 23.5)
-  ).toFixed(1)) : 23.5;
-
-  const currentTempMin = climateDataset ? Number((
-    climateMode === 'climatology'
-      ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2mMin ?? 16.2
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.t2mMin
-        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.t2mMin ?? 16.2)
-  ).toFixed(1)) : 16.2;
-
-  const currentHumidity = climateDataset ? Math.round(
-    climateMode === 'climatology'
-      ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.rh2m ?? 80
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.rh2m
-        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.rh2m ?? 80)
-  ) : 80;
-
-  const currentWind = climateDataset ? Number((
-    climateMode === 'climatology'
-      ? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.ws10m ?? 2.5
-      : (climateDataset.climateMap?.['gulmi']?.[climateYear > 2019 ? 2019 : climateYear]?.[climateMonth]?.ws10m
-        ?? climateDataset.climatologyMap?.['gulmi']?.[climateMonth]?.ws10m ?? 2.5)
-  ).toFixed(1)) : 2.5;
-
-  const currentSeason = [6, 7, 8, 9].includes(climateMonth)
-    ? 'Monsoon Peak'
-    : [10, 11].includes(climateMonth)
-      ? 'Post-Monsoon'
-      : [12, 1, 2].includes(climateMonth)
-        ? 'Winter Dry'
-        : 'Pre-Monsoon Spring';
 
   // Track B: Dynamic Palika Attribute Joining Hook
   const choropleth = usePalikaChoropleth({
@@ -1088,7 +448,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     selectedPillar,
     subFilters,
     selectedCropId: selectedMapCropId || undefined,
-    climateMonth,
+    climateMonth: CLI_MONTH,
     currentRainMm,
     currentTempC,
   });
@@ -1258,7 +618,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
           <DynamicLegend
             config={{
               ...rainfallConfig,
-              subtitle: `${MONTH_NAMES[climateMonth - 1]} (${climateMode === 'climatology' ? '39-Yr Climatology Baseline' : climateYear}) • Area Mean: ${Math.round(currentRainMm)}mm`,
+              subtitle: `${MONTH_NAMES[CLI_MONTH - 1]} (${CLI_YEAR}) • Area Mean: ${Math.round(currentRainMm)}mm`,
               gradient: rainfallConfig.gradient ? {
                 ...rainfallConfig.gradient,
                 minLabel: `Subtropical Valleys (~${lowMm} mm)`,
@@ -1316,9 +676,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
     lang,
     cropName: activeCropName,
     cropNameNepali: activeCropNepali,
-    climateMonth,
+    climateMonth: CLI_MONTH,
     currentRainMm,
-    monthName: MONTH_NAMES[climateMonth - 1]
+    monthName: MONTH_NAMES[CLI_MONTH - 1]
   });
 
   return (
@@ -1636,235 +996,235 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       {/* Map Workspace */}
       <div className="flex flex-col gap-2 w-full">
         {/* Map Options Pill: Directly above map on right side */}
-          <div className="flex items-center gap-2 p-1 rounded-xl bg-white/95 border border-slate-200/90 shadow-2xs glass-panel text-xs animate-fade-in w-fit ml-auto">
-            {/* Basemap Switcher */}
-              <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs font-semibold text-slate-700 shadow-2xs">
-                <button
-                  onClick={() => setBasemap('voyager')}
-                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${basemap === 'voyager' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900 text-slate-600'
-                    }`}
-                  title="Clean Vector Basemap"
-                >
-                  Clean
-                </button>
-                <button
-                  onClick={() => setBasemap('satellite')}
-                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${basemap === 'satellite' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900 text-slate-600'
-                    }`}
-                  title="ESRI World Imagery Satellite"
-                >
-                  Satellite
-                </button>
-                <button
-                  onClick={() => setBasemap('terrain')}
-                  className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${basemap === 'terrain' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900 text-slate-600'
-                    }`}
-                  title="Topographic Elevation Contours"
-                >
-                  Relief
-                </button>
-              </div>
-
-              {/* Palika Centroid Labels Toggle */}
-              <button
-                onClick={() => setShowPalikaLabels(prev => !prev)}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${showPalikaLabels
-                  ? 'bg-slate-800 text-white border-slate-700 shadow-2xs'
-                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                  }`}
-                title="Toggle Palika Name Text Labels"
-              >
-                {showPalikaLabels ? <Eye className="w-3.5 h-3.5 text-emerald-400" /> : <EyeOff className="w-3.5 h-3.5 text-slate-400" />}
-                <span>Labels</span>
-              </button>
-
-              {/* Topographic Contours Toggle */}
-              <button
-                onClick={() => setShowContours(prev => !prev)}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${showContours || basemap === 'terrain'
-                  ? 'bg-emerald-800 text-white border-emerald-700 shadow-2xs'
-                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                  }`}
-                title="Toggle 200m Topographic Elevation Contours & Life Zones"
-              >
-                <Mountain className="w-3.5 h-3.5 text-amber-300" />
-                <span>Contours</span>
-              </button>
-
-              {/* Recenter Camera Button */}
-              <button
-                onClick={() => setResetTrigger(prev => prev + 1)}
-                className="px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-2xs hover:text-emerald-700"
-                title="Reset Map Camera to Gulmi"
-              >
-                <Target className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Recenter</span>
-              </button>
+        <div className="flex items-center gap-2 p-1 rounded-xl bg-white/95 border border-slate-200/90 shadow-2xs glass-panel text-xs animate-fade-in w-fit ml-auto">
+          {/* Basemap Switcher */}
+          <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs font-semibold text-slate-700 shadow-2xs">
+            <button
+              onClick={() => setBasemap('voyager')}
+              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${basemap === 'voyager' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900 text-slate-600'
+                }`}
+              title="Clean Vector Basemap"
+            >
+              Clean
+            </button>
+            <button
+              onClick={() => setBasemap('satellite')}
+              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${basemap === 'satellite' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900 text-slate-600'
+                }`}
+              title="ESRI World Imagery Satellite"
+            >
+              Satellite
+            </button>
+            <button
+              onClick={() => setBasemap('terrain')}
+              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${basemap === 'terrain' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900 text-slate-600'
+                }`}
+              title="Topographic Elevation Contours"
+            >
+              Relief
+            </button>
           </div>
 
-          {/* Map Container */}
-          <div className="relative glass-panel p-1.5 rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-white h-[640px]">
-            {geoLoading && (
-              <div className="absolute inset-0 z-[2000] flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-sm rounded-xl">
-                <div className="w-10 h-10 border-2 border-slate-300 border-t-white rounded-full animate-spin mb-3" />
-                <p className="text-white text-xs font-medium">Loading climate GIS datasets…</p>
-              </div>
-            )}
-            <MapContainer
-              center={GULMI_MAP_CENTER}
-              zoom={GULMI_MAP_ZOOM}
-              scrollWheelZoom={false}
-              maxBounds={NEPAL_MAX_BOUNDS}
-              maxBoundsViscosity={0.5}
-              minZoom={7}
-              maxZoom={14}
-              style={{ height: '100%', width: '100%', borderRadius: '0.875rem' }}
-            >
-              <GulmiBoundsController resetTrigger={resetTrigger} />
-              <MapGestureHandler />
-              <MapPanesSetup />
+          {/* Palika Centroid Labels Toggle */}
+          <button
+            onClick={() => setShowPalikaLabels(prev => !prev)}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${showPalikaLabels
+              ? 'bg-slate-800 text-white border-slate-700 shadow-2xs'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+              }`}
+            title="Toggle Palika Name Text Labels"
+          >
+            {showPalikaLabels ? <Eye className="w-3.5 h-3.5 text-emerald-400" /> : <EyeOff className="w-3.5 h-3.5 text-slate-400" />}
+            <span>Labels</span>
+          </button>
 
-              {/* Dynamic Basemap Layer */}
-              <TileLayer
-                key={`basemap-${basemap}`}
-                attribution={
-                  basemap === 'satellite'
-                    ? '&copy; <a href="https://www.esri.com/">Esri World Imagery</a>'
-                    : basemap === 'terrain'
-                      ? '&copy; <a href="https://www.esri.com/">Esri World Topographic</a>'
-                      : '&copy; <a href="https://www.esri.com/">Esri World Light Gray</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                }
-                url={
-                  basemap === 'satellite'
-                    ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-                    : basemap === 'terrain'
-                      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
-                      : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
-                }
+          {/* Topographic Contours Toggle */}
+          <button
+            onClick={() => setShowContours(prev => !prev)}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${showContours || basemap === 'terrain'
+              ? 'bg-emerald-800 text-white border-emerald-700 shadow-2xs'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+              }`}
+            title="Toggle 200m Topographic Elevation Contours & Life Zones"
+          >
+            <Mountain className="w-3.5 h-3.5 text-amber-300" />
+            <span>Contours</span>
+          </button>
+
+          {/* Recenter Camera Button */}
+          <button
+            onClick={() => setResetTrigger(prev => prev + 1)}
+            className="px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-2xs hover:text-emerald-700"
+            title="Reset Map Camera to Gulmi"
+          >
+            <Target className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Recenter</span>
+          </button>
+        </div>
+
+        {/* Map Container */}
+        <div className="relative glass-panel p-1.5 rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-white h-[640px]">
+          {geoLoading && (
+            <div className="absolute inset-0 z-[2000] flex flex-col items-center justify-center bg-slate-900/60 backdrop-blur-sm rounded-xl">
+              <div className="w-10 h-10 border-2 border-slate-300 border-t-white rounded-full animate-spin mb-3" />
+              <p className="text-white text-xs font-medium">Loading climate GIS datasets…</p>
+            </div>
+          )}
+          <MapContainer
+            center={GULMI_MAP_CENTER}
+            zoom={GULMI_MAP_ZOOM}
+            scrollWheelZoom={false}
+            maxBounds={NEPAL_MAX_BOUNDS}
+            maxBoundsViscosity={0.5}
+            minZoom={7}
+            maxZoom={14}
+            style={{ height: '100%', width: '100%', borderRadius: '0.875rem' }}
+          >
+            <GulmiBoundsController resetTrigger={resetTrigger} />
+            <MapGestureHandler />
+            <MapPanesSetup />
+
+            {/* Dynamic Basemap Layer */}
+            <TileLayer
+              key={`basemap-${basemap}`}
+              attribution={
+                basemap === 'satellite'
+                  ? '&copy; <a href="https://www.esri.com/">Esri World Imagery</a>'
+                  : basemap === 'terrain'
+                    ? '&copy; <a href="https://www.esri.com/">Esri World Topographic</a>'
+                    : '&copy; <a href="https://www.esri.com/">Esri World Light Gray</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+              }
+              url={
+                basemap === 'satellite'
+                  ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                  : basemap === 'terrain'
+                    ? 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+                    : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+              }
+            />
+
+            {/* Continuous Spatial Rainfall Surface (IDW + Orographic Micro-Climate Lapse Rates) */}
+            {isMerraRainfallActive && geoData && (
+              <SpatialRainfallSurfaceOverlay
+                currentRainMm={currentRainMm}
+                currentTempC={currentTempC}
+                climateMonth={CLI_MONTH}
+                geoData={geoData}
+                bounds={GULMI_BOUNDS}
+                opacity={0.82}
               />
+            )}
 
-              {/* Continuous Spatial Rainfall Surface (IDW + Orographic Micro-Climate Lapse Rates) */}
-              {isMerraRainfallActive && geoData && (
-                <SpatialRainfallSurfaceOverlay
-                  currentRainMm={currentRainMm}
-                  currentTempC={currentTempC}
-                  climateMonth={climateMonth}
-                  geoData={geoData}
-                  bounds={GULMI_BOUNDS}
-                  opacity={0.82}
-                />
-              )}
+            {/* Continuous Spatial Solar Irradiance Surface (Global Solar Atlas 900m Empirical Grid) */}
+            {isSolarGhiActive && geoData && (
+              <SpatialSolarSurfaceOverlay
+                geoData={geoData}
+                bounds={GULMI_BOUNDS}
+                opacity={0.85}
+              />
+            )}
 
-              {/* Continuous Spatial Solar Irradiance Surface (Global Solar Atlas 900m Empirical Grid) */}
-              {isSolarGhiActive && geoData && (
-                <SpatialSolarSurfaceOverlay
-                  geoData={geoData}
-                  bounds={GULMI_BOUNDS}
-                  opacity={0.85}
-                />
-              )}
+            {/* Continuous Spatial Settlement Building Density Heat Wave Overlay (78,934 OSM Building Geometries) */}
+            {isLandholdingActive && geoData && (
+              <SpatialSettlementDensityOverlay
+                geoData={geoData}
+                bounds={GULMI_BOUNDS}
+                opacity={0.78}
+              />
+            )}
 
-              {/* Continuous Spatial Settlement Building Density Heat Wave Overlay (78,934 OSM Building Geometries) */}
-              {isLandholdingActive && geoData && (
-                <SpatialSettlementDensityOverlay
-                  geoData={geoData}
-                  bounds={GULMI_BOUNDS}
-                  opacity={0.78}
-                />
-              )}
+            {/* HydroSHEDS Continuous Surface Flow Accumulation Overlay */}
+            {isFlowAccumulationActive && (
+              <SpatialFlowAccumulationOverlay
+                opacity={0.88}
+                pane="rainfallPane"
+                geoData={geoData}
+              />
+            )}
 
-              {/* HydroSHEDS Continuous Surface Flow Accumulation Overlay */}
-              {isFlowAccumulationActive && (
-                <SpatialFlowAccumulationOverlay
-                  opacity={0.88}
-                  pane="rainfallPane"
-                  geoData={geoData}
-                />
-              )}
+            {/* HydroSHEDS D8 Surface Flow Direction Overlay */}
+            {isFlowDirectionActive && (
+              <SpatialFlowDirectionOverlay
+                opacity={0.85}
+                pane="rainfallPane"
+                geoData={geoData}
+              />
+            )}
 
-              {/* HydroSHEDS D8 Surface Flow Direction Overlay */}
-              {isFlowDirectionActive && (
-                <SpatialFlowDirectionOverlay
-                  opacity={0.85}
-                  pane="rainfallPane"
-                  geoData={geoData}
-                />
-              )}
+            {/* HydroBASINS Level 10 Sub-Basin Watershed Boundaries */}
+            {isCatchmentsActive && catchmentsData && (
+              <CatchmentsGeoJsonLayer data={catchmentsData} />
+            )}
 
-              {/* HydroBASINS Level 10 Sub-Basin Watershed Boundaries */}
-              {isCatchmentsActive && catchmentsData && (
-                <CatchmentsGeoJsonLayer data={catchmentsData} />
-              )}
+            {/* HydroRIVERS Multi-Tier Stream Network with Strahler Orders */}
+            {isRiversStreamsActive && riversStreamsData && (
+              <RiversStreamsGeoJsonLayer data={riversStreamsData} />
+            )}
 
-              {/* HydroRIVERS Multi-Tier Stream Network with Strahler Orders */}
-              {isRiversStreamsActive && riversStreamsData && (
-                <RiversStreamsGeoJsonLayer data={riversStreamsData} />
-              )}
+            {/* 12 Gulmi Palikas Vector Layer (Dynamically styled per Pillar, Crop, and Climate Time-Series) */}
+            {palikasData && (
+              <GeoJSON
+                key={`gulmi-palikas-${selectedPillar}-${selectedMapCropId}-${subFilters.crop || ''}-${subFilters.foodMode || ''}-${subFilters.foodOverlayType || ''}-${subFilters.waterSubFilter || ''}-${subFilters.ecoSubFilter || ''}-${subFilters.energySubFilter || ''}-${subFilters.socioSubFilter || ''}-${CLI_MONTH}-${CLI_YEAR}-${CLI_MODE}-${currentRainMm}-${hoveredPalika?.name || ''}`}
+                data={palikasData}
+                pane="palikasPane"
+                style={(feature: any) => {
+                  const pName = (feature?.properties?.name || '').toLowerCase();
+                  const isHovered = hoveredPalika?.name && (
+                    pName.includes(hoveredPalika.name.toLowerCase()) ||
+                    hoveredPalika.name.toLowerCase().includes(pName)
+                  );
+                  const isContourActive = showContours || basemap === 'terrain';
+                  const baseOpacity = isContourActive ? 0.45 : 0.72;
 
-              {/* 12 Gulmi Palikas Vector Layer (Dynamically styled per Pillar, Crop, and Climate Time-Series) */}
-              {palikasData && (
-                <GeoJSON
-                  key={`gulmi-palikas-${selectedPillar}-${selectedMapCropId}-${subFilters.crop || ''}-${subFilters.foodMode || ''}-${subFilters.foodOverlayType || ''}-${subFilters.waterSubFilter || ''}-${subFilters.ecoSubFilter || ''}-${subFilters.energySubFilter || ''}-${subFilters.socioSubFilter || ''}-${climateMonth}-${climateYear}-${climateMode}-${currentRainMm}-${hoveredPalika?.name || ''}`}
-                  data={palikasData}
-                  pane="palikasPane"
-                  style={(feature: any) => {
-                    const pName = (feature?.properties?.name || '').toLowerCase();
-                    const isHovered = hoveredPalika?.name && (
-                      pName.includes(hoveredPalika.name.toLowerCase()) ||
-                      hoveredPalika.name.toLowerCase().includes(pName)
-                    );
-                    const isContourActive = showContours || basemap === 'terrain';
-                    const baseOpacity = isContourActive ? 0.45 : 0.72;
+                  if (isOverlayModeActive) {
+                    return {
+                      fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : isGridSubstationActive ? '#0ea5e9' : '#38bdf8') : 'transparent',
+                      fillOpacity: isHovered ? 0.18 : 0,
+                      color: isHovered ? '#10b981' : (isCatchmentsActive ? '#64748b' : isGridSubstationActive ? '#475569' : '#334155'),
+                      weight: isHovered ? 3.5 : (isCatchmentsActive ? 1.2 : 1.6),
+                      dashArray: isCatchmentsActive ? '3, 4' : '',
+                    };
+                  }
 
-                    if (isOverlayModeActive) {
-                      return {
-                        fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : isGridSubstationActive ? '#0ea5e9' : '#38bdf8') : 'transparent',
-                        fillOpacity: isHovered ? 0.18 : 0,
-                        color: isHovered ? '#10b981' : (isCatchmentsActive ? '#64748b' : isGridSubstationActive ? '#475569' : '#334155'),
-                        weight: isHovered ? 3.5 : (isCatchmentsActive ? 1.2 : 1.6),
-                        dashArray: isCatchmentsActive ? '3, 4' : '',
-                      };
-                    }
-
-                    if (isLandholdingActive) {
-                      return {
-                        fillColor: choropleth.getColor(feature?.properties?.name || ''),
-                        fillOpacity: isHovered ? 0.55 : 0.32,
-                        color: isHovered ? '#10b981' : '#334155',
-                        weight: isHovered ? 3.5 : 1.5,
-                        dashArray: '',
-                      };
-                    }
-
+                  if (isLandholdingActive) {
                     return {
                       fillColor: choropleth.getColor(feature?.properties?.name || ''),
-                      fillOpacity: isHovered ? Math.min(0.92, baseOpacity + 0.3) : baseOpacity,
-                      color: isHovered ? '#10b981' : '#ffffff',
-                      weight: isHovered ? 3.5 : 1.8,
+                      fillOpacity: isHovered ? 0.55 : 0.32,
+                      color: isHovered ? '#10b981' : '#334155',
+                      weight: isHovered ? 3.5 : 1.5,
                       dashArray: '',
                     };
-                  }}
-                  onEachFeature={onEachPalika}
-                />
-              )}
+                  }
 
-              {/* Vector Topographic Contours (200m interval isolines with elevation & life zones) */}
-              {contoursData && (showContours || basemap === 'terrain') && (
-                <GeoJSON
-                  key="gulmi-contours-layer"
-                  data={contoursData}
-                  pane="contoursPane"
-                  style={(feature: any) => {
-                    const p = feature?.properties || {};
-                    return {
-                      color: p.color || '#0284c7',
-                      weight: p.weight || 1.5,
-                      opacity: p.opacity || 0.8,
-                    };
-                  }}
-                  onEachFeature={(feature: any, layer: any) => {
-                    const p = feature?.properties || {};
-                    layer.bindTooltip(`
+                  return {
+                    fillColor: choropleth.getColor(feature?.properties?.name || ''),
+                    fillOpacity: isHovered ? Math.min(0.92, baseOpacity + 0.3) : baseOpacity,
+                    color: isHovered ? '#10b981' : '#ffffff',
+                    weight: isHovered ? 3.5 : 1.8,
+                    dashArray: '',
+                  };
+                }}
+                onEachFeature={onEachPalika}
+              />
+            )}
+
+            {/* Vector Topographic Contours (200m interval isolines with elevation & life zones) */}
+            {contoursData && (showContours || basemap === 'terrain') && (
+              <GeoJSON
+                key="gulmi-contours-layer"
+                data={contoursData}
+                pane="contoursPane"
+                style={(feature: any) => {
+                  const p = feature?.properties || {};
+                  return {
+                    color: p.color || '#0284c7',
+                    weight: p.weight || 1.5,
+                    opacity: p.opacity || 0.8,
+                  };
+                }}
+                onEachFeature={(feature: any, layer: any) => {
+                  const p = feature?.properties || {};
+                  layer.bindTooltip(`
                       <div style="padding: 4px 6px; font-size: 11px; min-width: 170px;">
                         <div style="font-weight: 800; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin-bottom: 3px;">
                           ⛰️ ${p.elevation}m masl ${p.isIndex ? '(Index Contour)' : ''}
@@ -1874,107 +1234,107 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                         ${p.feasibleCrops?.length ? `<div style="color: #15803d; font-size: 9px; margin-top: 2px; line-height: 1.2;">🌾 Crops: ${p.feasibleCrops.slice(0, 3).join(', ')}</div>` : ''}
                       </div>
                     `, { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' });
-                  }}
-                />
-              )}
+                }}
+              />
+            )}
 
-              {/* Bold Outer Perimeter Frame for Gulmi District */}
-              {geoData && (
-                <GeoJSON
-                  key={`gulmi-outer-frame-${selectedDistrict?.id}`}
-                  data={geoData}
-                  style={{
-                    fillColor: 'transparent',
-                    fillOpacity: 0,
-                    color: '#475569',
-                    weight: 3.5,
-                    opacity: 1,
-                  }}
+            {/* Bold Outer Perimeter Frame for Gulmi District */}
+            {geoData && (
+              <GeoJSON
+                key={`gulmi-outer-frame-${selectedDistrict?.id}`}
+                data={geoData}
+                style={{
+                  fillColor: 'transparent',
+                  fillOpacity: 0,
+                  color: '#475569',
+                  weight: 3.5,
+                  opacity: 1,
+                }}
+                interactive={false}
+              />
+            )}
+
+            {/* Bilingual Palika Center Labels (Transparent text with halo glow) */}
+            {showPalikaLabels && Object.entries(PALIKA_CENTROIDS).map(([pName, pGeo]) => {
+              const isHovered = hoveredPalika?.name?.toLowerCase() === pName.toLowerCase();
+              return (
+                <Marker
+                  key={`label-${pName}`}
+                  position={[pGeo.lat, pGeo.lng]}
+                  icon={createPalikaLabelIcon(pName, pGeo.nepali, isHovered)}
                   interactive={false}
                 />
+              );
+            })}
+
+            {/* Contextual Layer Isolation 1: Roads strictly shown when explicitly filtering roads */}
+            {nationalRoads && (
+              subFilters.highwayFilter === 'all' ||
+              subFilters.highwayFilter === 'primary' ||
+              (selectedPillar === 'socioeconomics' && subFilters.highwayFilter !== 'none')
+            ) && (
+                <GeoJSON
+                  key={`national-roads-${subFilters.highwayFilter || 'corridor'}`}
+                  data={nationalRoads}
+                  style={(feature: any) => {
+                    const hwyType = (feature?.properties?.highway || '').toLowerCase();
+                    const isPrimary = hwyType === 'trunk' || hwyType === 'primary';
+                    return {
+                      color: isPrimary ? '#f97316' : '#fbbf24',
+                      weight: isPrimary ? 3 : 2,
+                      opacity: 0.9,
+                    };
+                  }}
+                  pane="roadsPane"
+                />
               )}
 
-              {/* Bilingual Palika Center Labels (Transparent text with halo glow) */}
-              {showPalikaLabels && Object.entries(PALIKA_CENTROIDS).map(([pName, pGeo]) => {
-                const isHovered = hoveredPalika?.name?.toLowerCase() === pName.toLowerCase();
-                return (
-                  <Marker
-                    key={`label-${pName}`}
-                    position={[pGeo.lat, pGeo.lng]}
-                    icon={createPalikaLabelIcon(pName, pGeo.nepali, isHovered)}
-                    interactive={false}
-                  />
-                );
-              })}
-
-              {/* Contextual Layer Isolation 1: Roads strictly shown when explicitly filtering roads */}
-              {nationalRoads && (
-                subFilters.highwayFilter === 'all' ||
-                subFilters.highwayFilter === 'primary' ||
-                (selectedPillar === 'socioeconomics' && subFilters.highwayFilter !== 'none')
-              ) && (
+            {/* Contextual Layer Isolation 2: Run-of-River & Micro-Hydro Potential Corridors (Styled by DOED Legend Tiers) */}
+            {isHydroCorridorActive && (
+              <>
+                {/* Full HydroRIVERS stream network classified by Hydropower Potential Tiers */}
+                {riversStreamsData && (
                   <GeoJSON
-                    key={`national-roads-${subFilters.highwayFilter || 'corridor'}`}
-                    data={nationalRoads}
+                    key={`hydro-corridor-streams-${selectedPillar}`}
+                    data={riversStreamsData}
+                    pane="riversPane"
                     style={(feature: any) => {
-                      const hwyType = (feature?.properties?.highway || '').toLowerCase();
-                      const isPrimary = hwyType === 'trunk' || hwyType === 'primary';
+                      const order = feature?.properties?.ORD_STRA || 1;
+                      // Tier 1: Commercial RoR (>1 MW) - Strahler Order 5+ (Kali Gandaki / Lower Badigad)
+                      if (order >= 5) {
+                        return {
+                          color: '#4c1d95',
+                          weight: 5.5,
+                          opacity: 0.98,
+                        };
+                      }
+                      // Tier 2: Mini Hydro (100–999 kW) - Strahler Order 3-4 (Badigad / Ridi / Panaha)
+                      if (order === 3 || order === 4) {
+                        return {
+                          color: '#7c3aed',
+                          weight: 3.8,
+                          opacity: 0.95,
+                        };
+                      }
+                      // Tier 3: Rural Micro-Hydro (<100 kW) - Strahler Order 1-2 (Headwater streams)
                       return {
-                        color: isPrimary ? '#f97316' : '#fbbf24',
-                        weight: isPrimary ? 3 : 2,
-                        opacity: 0.9,
+                        color: '#10b981',
+                        weight: 2.2,
+                        opacity: 0.88,
                       };
                     }}
-                    pane="roadsPane"
-                  />
-                )}
+                    onEachFeature={(feature: any, layer: any) => {
+                      const p = feature?.properties || {};
+                      const order = p.ORD_STRA || 1;
+                      const tierTitle = order >= 5
+                        ? '⚡ Commercial RoR (>1 MW)'
+                        : (order === 3 || order === 4)
+                          ? '⚡ Mini Hydro (100–999 kW)'
+                          : '⚡ Rural Micro-Hydro (<100 kW)';
+                      const tierColor = order >= 5 ? '#4c1d95' : (order === 3 || order === 4) ? '#7c3aed' : '#10b981';
+                      const estPower = order >= 5 ? '1,500 – 12,000 kW' : (order === 3 || order === 4) ? '150 – 950 kW' : '15 – 85 kW';
 
-              {/* Contextual Layer Isolation 2: Run-of-River & Micro-Hydro Potential Corridors (Styled by DOED Legend Tiers) */}
-              {isHydroCorridorActive && (
-                <>
-                  {/* Full HydroRIVERS stream network classified by Hydropower Potential Tiers */}
-                  {riversStreamsData && (
-                    <GeoJSON
-                      key={`hydro-corridor-streams-${selectedPillar}`}
-                      data={riversStreamsData}
-                      pane="riversPane"
-                      style={(feature: any) => {
-                        const order = feature?.properties?.ORD_STRA || 1;
-                        // Tier 1: Commercial RoR (>1 MW) - Strahler Order 5+ (Kali Gandaki / Lower Badigad)
-                        if (order >= 5) {
-                          return {
-                            color: '#4c1d95',
-                            weight: 5.5,
-                            opacity: 0.98,
-                          };
-                        }
-                        // Tier 2: Mini Hydro (100–999 kW) - Strahler Order 3-4 (Badigad / Ridi / Panaha)
-                        if (order === 3 || order === 4) {
-                          return {
-                            color: '#7c3aed',
-                            weight: 3.8,
-                            opacity: 0.95,
-                          };
-                        }
-                        // Tier 3: Rural Micro-Hydro (<100 kW) - Strahler Order 1-2 (Headwater streams)
-                        return {
-                          color: '#10b981',
-                          weight: 2.2,
-                          opacity: 0.88,
-                        };
-                      }}
-                      onEachFeature={(feature: any, layer: any) => {
-                        const p = feature?.properties || {};
-                        const order = p.ORD_STRA || 1;
-                        const tierTitle = order >= 5
-                          ? '⚡ Commercial RoR (>1 MW)'
-                          : (order === 3 || order === 4)
-                            ? '⚡ Mini Hydro (100–999 kW)'
-                            : '⚡ Rural Micro-Hydro (<100 kW)';
-                        const tierColor = order >= 5 ? '#4c1d95' : (order === 3 || order === 4) ? '#7c3aed' : '#10b981';
-                        const estPower = order >= 5 ? '1,500 – 12,000 kW' : (order === 3 || order === 4) ? '150 – 950 kW' : '15 – 85 kW';
-
-                        layer.bindTooltip(`
+                      layer.bindTooltip(`
                           <div style="padding: 5px 8px; font-size: 11px; min-width: 200px;">
                             <div style="font-weight: 800; color: ${tierColor}; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px;">
                               ${tierTitle}
@@ -1986,40 +1346,40 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                             <div style="color: #64748b; font-size: 9.5px;">Upland Basin: ${p.UPLAND_SKM ?? 'N/A'} km²</div>
                           </div>
                         `, { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' });
-                      }}
-                    />
-                  )}
+                    }}
+                  />
+                )}
 
-                  {/* 6 Named Major River Corridor Arteries with Enhanced Glowing Highlight */}
-                  {gulmiRivers && (
-                    <GeoJSON
-                      key={`hydro-corridor-named-rivers-${selectedPillar}`}
-                      data={gulmiRivers}
-                      pane="riversPane"
-                      style={(feature: any) => {
-                        const name = feature?.properties?.name || '';
-                        const isCommercial = name.includes('Kali Gandaki') || name.includes('Badigad');
-                        const isMini = name.includes('Ridi') || name.includes('Panaha');
-                        const color = isCommercial ? '#4c1d95' : isMini ? '#7c3aed' : '#10b981';
-                        const weight = isCommercial ? 6.5 : isMini ? 4.8 : 3.5;
-                        return {
-                          color,
-                          weight,
-                          opacity: 1,
-                        };
-                      }}
-                      onEachFeature={(feature: any, layer: any) => {
-                        const p = feature?.properties || {};
-                        const isCommercial = p.name?.includes('Kali Gandaki') || p.name?.includes('Badigad');
-                        const isMini = p.name?.includes('Ridi') || p.name?.includes('Panaha');
-                        const tierLabel = isCommercial
-                          ? '⚡ Commercial RoR (>1 MW) Cascade Corridor'
-                          : isMini
-                            ? '⚡ Mini-Hydro (100–999 kW) Industrial Micro-Grid Corridor'
-                            : '⚡ Rural Micro-Hydro (<100 kW) Agro-Processing Corridor';
-                        const tierColor = isCommercial ? '#4c1d95' : isMini ? '#7c3aed' : '#10b981';
+                {/* 6 Named Major River Corridor Arteries with Enhanced Glowing Highlight */}
+                {gulmiRivers && (
+                  <GeoJSON
+                    key={`hydro-corridor-named-rivers-${selectedPillar}`}
+                    data={gulmiRivers}
+                    pane="riversPane"
+                    style={(feature: any) => {
+                      const name = feature?.properties?.name || '';
+                      const isCommercial = name.includes('Kali Gandaki') || name.includes('Badigad');
+                      const isMini = name.includes('Ridi') || name.includes('Panaha');
+                      const color = isCommercial ? '#4c1d95' : isMini ? '#7c3aed' : '#10b981';
+                      const weight = isCommercial ? 6.5 : isMini ? 4.8 : 3.5;
+                      return {
+                        color,
+                        weight,
+                        opacity: 1,
+                      };
+                    }}
+                    onEachFeature={(feature: any, layer: any) => {
+                      const p = feature?.properties || {};
+                      const isCommercial = p.name?.includes('Kali Gandaki') || p.name?.includes('Badigad');
+                      const isMini = p.name?.includes('Ridi') || p.name?.includes('Panaha');
+                      const tierLabel = isCommercial
+                        ? '⚡ Commercial RoR (>1 MW) Cascade Corridor'
+                        : isMini
+                          ? '⚡ Mini-Hydro (100–999 kW) Industrial Micro-Grid Corridor'
+                          : '⚡ Rural Micro-Hydro (<100 kW) Agro-Processing Corridor';
+                      const tierColor = isCommercial ? '#4c1d95' : isMini ? '#7c3aed' : '#10b981';
 
-                        layer.bindTooltip(`
+                      layer.bindTooltip(`
                           <div style="padding: 6px 10px; font-size: 11.5px; min-width: 220px;">
                             <div style="font-weight: 800; color: ${tierColor}; font-size: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px;">
                               🌊 ${p.name} (${p.nepaliName || ''})
@@ -2031,121 +1391,121 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                             <div style="color: #059669; font-size: 9.5px; margin-top: 3px; font-style: italic;">${p.importance || ''}</div>
                           </div>
                         `, { direction: 'top', offset: [0, -6], opacity: 0.98, pane: 'popupPane' });
-                      }}
-                    />
-                  )}
-                </>
-              )}
+                    }}
+                  />
+                )}
+              </>
+            )}
 
-              {/* Contextual Layer Isolation 2.2: NEA High-Voltage Transmission Substations & Hub Points (Pure Ground Truth GPS Points) */}
-              {selectedPillar === 'energy' && (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach') && (
-                <>
-                  {/* 5 Physical Substations Overlay with Glowing Rings */}
-                  {Object.entries((palikaGridData as any).substations || {}).map(([sKey, sData]: [string, any]) => {
-                    const coords = sData.coordinates || [28.0645, 83.2685];
-                    const is132 = sData.voltage.includes('132');
-                    const markerColor = sData.color || (is132 ? (sData.tierKey === 'trunk_132kv' ? '#0ea5e9' : '#047857') : sData.tierKey === 'rural_33kv' ? '#8b5cf6' : '#f59e0b');
-                    const radius = is132 ? 10 : 8;
+            {/* Contextual Layer Isolation 2.2: NEA High-Voltage Transmission Substations & Hub Points (Pure Ground Truth GPS Points) */}
+            {selectedPillar === 'energy' && (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach') && (
+              <>
+                {/* 5 Physical Substations Overlay with Glowing Rings */}
+                {Object.entries((palikaGridData as any).substations || {}).map(([sKey, sData]: [string, any]) => {
+                  const coords = sData.coordinates || [28.0645, 83.2685];
+                  const is132 = sData.voltage.includes('132');
+                  const markerColor = sData.color || (is132 ? (sData.tierKey === 'trunk_132kv' ? '#0ea5e9' : '#047857') : sData.tierKey === 'rural_33kv' ? '#8b5cf6' : '#f59e0b');
+                  const radius = is132 ? 10 : 8;
 
-                    const isNorthern = coords[0] >= 28.15;
-                    const tooltipDirection = isNorthern ? 'bottom' : 'top';
-                    const tooltipOffset: [number, number] = isNorthern ? [0, 8] : [0, -8];
+                  const isNorthern = coords[0] >= 28.15;
+                  const tooltipDirection = isNorthern ? 'bottom' : 'top';
+                  const tooltipOffset: [number, number] = isNorthern ? [0, 8] : [0, -8];
 
-                    return (
-                      <React.Fragment key={`substation-node-${sKey}`}>
-                        {/* Outer Pulsing/Glow Halo Ring */}
-                        <CircleMarker
-                          center={[coords[0], coords[1]]}
-                          radius={radius + 6}
-                          pane="pointsPane"
-                          pathOptions={{
-                            fillColor: markerColor,
-                            fillOpacity: 0.2,
-                            color: markerColor,
-                            weight: 1.5,
-                            dashArray: '3, 3',
-                            pane: 'pointsPane',
-                          }}
-                          interactive={false}
-                        />
+                  return (
+                    <React.Fragment key={`substation-node-${sKey}`}>
+                      {/* Outer Pulsing/Glow Halo Ring */}
+                      <CircleMarker
+                        center={[coords[0], coords[1]]}
+                        radius={radius + 6}
+                        pane="pointsPane"
+                        pathOptions={{
+                          fillColor: markerColor,
+                          fillOpacity: 0.2,
+                          color: markerColor,
+                          weight: 1.5,
+                          dashArray: '3, 3',
+                          pane: 'pointsPane',
+                        }}
+                        interactive={false}
+                      />
 
-                        {/* Core Substation Node Marker */}
-                        <CircleMarker
-                          center={[coords[0], coords[1]]}
-                          radius={radius}
-                          pane="pointsPane"
-                          pathOptions={{
-                            fillColor: markerColor,
-                            fillOpacity: 1,
-                            color: '#ffffff',
-                            weight: 2.5,
-                            pane: 'pointsPane',
-                          }}
-                        >
-                          <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
-                            <div className="text-xs p-2 min-w-[230px] bg-white rounded-lg shadow-lg border border-slate-200">
-                              <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
-                                <span className="flex items-center gap-1.5 font-outfit text-[12.5px]">
-                                  ⚡ {sData.name}
-                                </span>
-                                <span
-                                  className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold text-white shadow-2xs"
-                                  style={{ backgroundColor: markerColor }}
-                                >
-                                  {sData.voltage}
-                                </span>
-                              </div>
-                              <div className="text-slate-600 text-[10px] font-medium">
-                                {sData.nepaliName} • <strong>Ward {sData.ward}, {sData.palika}</strong>
-                              </div>
-                              <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80">
-                                Capacity: <strong>{sData.capacityMVA} MVA</strong>
-                                {sData.transmissionCapacityMW && (
-                                  <span> • Power: <strong>{sData.transmissionCapacityMW} MW</strong></span>
-                                )}
-                              </div>
-                              {sData.connectedHydro && (
-                                <div className="text-amber-800 text-[9.5px] mt-1 bg-amber-50 p-1 rounded font-medium">
-                                  💧 Hydro Link: {sData.connectedHydro}
-                                </div>
-                              )}
-                              {sData.budgetNPR && (
-                                <div className="text-purple-800 text-[9.5px] mt-1 bg-purple-50 p-1 rounded font-medium">
-                                  💰 Project: {sData.budgetNPR} ({sData.contractor})
-                                </div>
-                              )}
-                              <div className="text-emerald-700 text-[9px] mt-1.5 font-semibold">
-                                ✅ {sData.status}
-                              </div>
+                      {/* Core Substation Node Marker */}
+                      <CircleMarker
+                        center={[coords[0], coords[1]]}
+                        radius={radius}
+                        pane="pointsPane"
+                        pathOptions={{
+                          fillColor: markerColor,
+                          fillOpacity: 1,
+                          color: '#ffffff',
+                          weight: 2.5,
+                          pane: 'pointsPane',
+                        }}
+                      >
+                        <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
+                          <div className="text-xs p-2 min-w-[230px] bg-white rounded-lg shadow-lg border border-slate-200">
+                            <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
+                              <span className="flex items-center gap-1.5 font-outfit text-[12.5px]">
+                                ⚡ {sData.name}
+                              </span>
+                              <span
+                                className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold text-white shadow-2xs"
+                                style={{ backgroundColor: markerColor }}
+                              >
+                                {sData.voltage}
+                              </span>
                             </div>
-                          </Tooltip>
-                        </CircleMarker>
-                      </React.Fragment>
-                    );
-                  })}
-                </>
-              )}
+                            <div className="text-slate-600 text-[10px] font-medium">
+                              {sData.nepaliName} • <strong>Ward {sData.ward}, {sData.palika}</strong>
+                            </div>
+                            <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80">
+                              Capacity: <strong>{sData.capacityMVA} MVA</strong>
+                              {sData.transmissionCapacityMW && (
+                                <span> • Power: <strong>{sData.transmissionCapacityMW} MW</strong></span>
+                              )}
+                            </div>
+                            {sData.connectedHydro && (
+                              <div className="text-amber-800 text-[9.5px] mt-1 bg-amber-50 p-1 rounded font-medium">
+                                💧 Hydro Link: {sData.connectedHydro}
+                              </div>
+                            )}
+                            {sData.budgetNPR && (
+                              <div className="text-purple-800 text-[9.5px] mt-1 bg-purple-50 p-1 rounded font-medium">
+                                💰 Project: {sData.budgetNPR} ({sData.contractor})
+                              </div>
+                            )}
+                            <div className="text-emerald-700 text-[9px] mt-1.5 font-semibold">
+                              ✅ {sData.status}
+                            </div>
+                          </div>
+                        </Tooltip>
+                      </CircleMarker>
+                    </React.Fragment>
+                  );
+                })}
+              </>
+            )}
 
-              {/* Contextual Layer Isolation 2.5: Real River Network Vector Polylines */}
-              {selectedPillar === 'water' && gulmiRivers && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterSubFilter === 'irrigation_potential' || subFilters.waterClimateMetric === 'dhm_stations') && (
-                <GeoJSON
-                  key={`gulmi-rivers-vector-${subFilters.waterSubFilter}`}
-                  data={gulmiRivers}
-                  pane="riversPane"
-                  style={(feature: any) => {
-                    const p = feature?.properties || {};
-                    const isMain = p.order === 1;
-                    const isMajor = p.order === 2;
-                    return {
-                      color: isMain ? '#0284c7' : isMajor ? '#0ea5e9' : '#38bdf8',
-                      weight: isMain ? 4 : isMajor ? 3 : 2,
-                      opacity: 0.95,
-                      dashArray: '',
-                    };
-                  }}
-                  onEachFeature={(feature: any, layer: any) => {
-                    const p = feature?.properties || {};
-                    layer.bindTooltip(`
+            {/* Contextual Layer Isolation 2.5: Real River Network Vector Polylines */}
+            {selectedPillar === 'water' && gulmiRivers && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterSubFilter === 'irrigation_potential' || subFilters.waterClimateMetric === 'dhm_stations') && (
+              <GeoJSON
+                key={`gulmi-rivers-vector-${subFilters.waterSubFilter}`}
+                data={gulmiRivers}
+                pane="riversPane"
+                style={(feature: any) => {
+                  const p = feature?.properties || {};
+                  const isMain = p.order === 1;
+                  const isMajor = p.order === 2;
+                  return {
+                    color: isMain ? '#0284c7' : isMajor ? '#0ea5e9' : '#38bdf8',
+                    weight: isMain ? 4 : isMajor ? 3 : 2,
+                    opacity: 0.95,
+                    dashArray: '',
+                  };
+                }}
+                onEachFeature={(feature: any, layer: any) => {
+                  const p = feature?.properties || {};
+                  layer.bindTooltip(`
                     <div style="padding: 4px 6px; font-size: 11px; min-width: 170px;">
                       <div style="font-weight: bold; color: #0284c7; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin-bottom: 3px;">
                         🌊 ${p.name || 'River Reach'} (${p.nepaliName || ''})
@@ -2156,145 +1516,96 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
                       ${p.dhmStation ? `<div style="color: #0369a1; font-weight: 600; font-size: 10px; margin-top: 3px;">💧 DHM Station: ${p.dhmStation}</div>` : ''}
                     </div>
                   `, { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' });
-                  }}
-                />
-              )}
+                }}
+              />
+            )}
 
-              {/* Contextual Layer Isolation 3: DHM Hydro-Meteorological Stations Overlay */}
-              {selectedPillar === 'water' && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterClimateMetric === 'dhm_stations') && hydrologyStations.map((st: any, idx: number) => {
-                const props = st.properties || st;
-                const coords = [st.lat ?? st.geometry?.coordinates[1], st.lng ?? st.geometry?.coordinates[0]];
-                if (!coords[0] || !coords[1]) return null;
+            {/* Contextual Layer Isolation 3: DHM Hydro-Meteorological Stations Overlay */}
+            {selectedPillar === 'water' && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterClimateMetric === 'dhm_stations') && hydrologyStations.map((st: any, idx: number) => {
+              const props = st.properties || st;
+              const coords = [st.lat ?? st.geometry?.coordinates[1], st.lng ?? st.geometry?.coordinates[0]];
+              if (!coords[0] || !coords[1]) return null;
 
-                const stType = (props.stationType || '').toLowerCase();
-                const isAWS = stType === 'aws';
-                const isClim = stType.includes('climat') || props.stationNo?.includes('0701');
-                const markerColor = isAWS ? '#10b981' : isClim ? '#8b5cf6' : '#0284c7';
-                const badgeLabel = isAWS ? 'Real-Time AWS' : isClim ? 'Climatological' : 'Precipitation';
-                const badgeBg = isAWS ? 'bg-emerald-100 text-emerald-800' : isClim ? 'bg-purple-100 text-purple-800' : 'bg-sky-100 text-sky-800';
+              const stType = (props.stationType || '').toLowerCase();
+              const isAWS = stType === 'aws';
+              const isClim = stType.includes('climat') || props.stationNo?.includes('0701');
+              const markerColor = isAWS ? '#10b981' : isClim ? '#8b5cf6' : '#0284c7';
+              const badgeLabel = isAWS ? 'Real-Time AWS' : isClim ? 'Climatological' : 'Precipitation';
+              const badgeBg = isAWS ? 'bg-emerald-100 text-emerald-800' : isClim ? 'bg-purple-100 text-purple-800' : 'bg-sky-100 text-sky-800';
 
-                const isNorthern = coords[0] >= 28.15;
-                const tooltipDirection = isNorthern ? 'bottom' : 'top';
-                const tooltipOffset: [number, number] = isNorthern ? [0, 8] : [0, -8];
+              const isNorthern = coords[0] >= 28.15;
+              const tooltipDirection = isNorthern ? 'bottom' : 'top';
+              const tooltipOffset: [number, number] = isNorthern ? [0, 8] : [0, -8];
 
-                const stationTitle = props.stationName || props.siteName || `Station #${props.indexNo || props.stationNo}`;
-                const elevDisplay = props.elevation_m || props.elevation || 'N/A';
-                const palikaDisplay = props.palika ? `${props.palika} Palika` : props.district || 'Gulmi';
-                const basinDisplay = props.riverBasin || props.river || 'Gulmi Catchment';
+              const stationTitle = props.stationName || props.siteName || `Station #${props.indexNo || props.stationNo}`;
+              const elevDisplay = props.elevation_m || props.elevation || 'N/A';
+              const palikaDisplay = props.palika ? `${props.palika} Palika` : props.district || 'Gulmi';
+              const basinDisplay = props.riverBasin || props.river || 'Gulmi Catchment';
 
-                return (
-                  <CircleMarker
-                    key={`hydro-${props.indexNo || props.stationNo || idx}`}
-                    center={[coords[0], coords[1]]}
-                    radius={isAWS ? 9 : 8}
-                    pane="pointsPane"
-                    pathOptions={{
-                      fillColor: markerColor,
-                      fillOpacity: 1,
-                      color: '#ffffff',
-                      weight: 2.5,
-                      pane: 'pointsPane',
-                    }}
-                  >
-                    <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
-                      <div className="text-xs p-2 min-w-[240px] bg-white rounded-lg shadow-lg border border-slate-200">
-                        <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
-                          <span className="flex items-center gap-1.5 font-outfit text-[12px]">
-                            {isAWS ? '📡' : isClim ? '🌡️' : '🌦️'} {stationTitle}
-                          </span>
-                          <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${badgeBg}`}>
-                            {badgeLabel}
-                          </span>
-                        </div>
-                        <div className="text-slate-600 text-[10px] font-medium">
-                          Index: <strong>{props.indexNo || props.stationNo || 'DHM'}</strong> • <strong>{palikaDisplay}</strong>
-                        </div>
-                        <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80 flex items-center justify-between">
-                          <span>Elev: <strong>{elevDisplay}m masl</strong></span>
-                          <span className="text-sky-700 font-sans text-[10px] font-semibold">{basinDisplay}</span>
-                        </div>
-                        {props.instruments && (
-                          <div className="text-slate-500 text-[9.5px] mt-1 bg-slate-50 p-1 rounded font-mono break-words leading-tight">
-                            ⚙️ {props.instruments}
-                          </div>
-                        )}
-                        {Array.isArray(props.monitoringParameters) && (
-                          <div className="text-emerald-700 text-[9px] mt-1 font-semibold">
-                            📊 {props.monitoringParameters.join(' • ')}
-                          </div>
-                        )}
-                        <div className="text-slate-400 text-[8.5px] mt-1">
-                          DHM Nepal National Network • Status: {props.status || 'Active'}
-                        </div>
-                      </div>
-                    </Tooltip>
-                  </CircleMarker>
-                );
-              })}
-
-              {/* 20 Potentially Dangerous Glacial Lakes Overlay */}
-              {selectedPillar === 'water' && subFilters.waterClimateMetric === 'glof_lakes' && glacialLakes.map((l: any, idx: number) => (
+              return (
                 <CircleMarker
-                  key={`glof-${l.properties.sn}-${idx}`}
-                  center={[l.geometry.coordinates[1], l.geometry.coordinates[0]]}
-                  radius={l.properties.hazardLevel === 'Critical' ? 8.5 : 7}
-                  pane="markerPane"
+                  key={`hydro-${props.indexNo || props.stationNo || idx}`}
+                  center={[coords[0], coords[1]]}
+                  radius={isAWS ? 9 : 8}
+                  pane="pointsPane"
                   pathOptions={{
-                    fillColor: l.properties.hazardLevel === 'Critical' ? '#dc2626' : '#ea580c',
-                    fillOpacity: 0.98,
+                    fillColor: markerColor,
+                    fillOpacity: 1,
                     color: '#ffffff',
                     weight: 2.5,
+                    pane: 'pointsPane',
                   }}
                 >
-                  <Tooltip direction="top" offset={[0, -10]} opacity={0.98} pane="popupPane">
-                    <div className="text-xs p-1.5 min-w-[210px] bg-white rounded shadow-md border border-red-200">
-                      <div className="font-bold text-red-700 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
-                        <span className="flex items-center gap-1">❄️ {l.properties.lakeName}</span>
-                        <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${l.properties.hazardLevel === 'Critical' ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-amber-100 text-amber-800 border border-amber-200'
-                          }`}>
-                          {l.properties.hazardLevel} GLOF Risk
+                  <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
+                    <div className="text-xs p-2 min-w-[240px] bg-white rounded-lg shadow-lg border border-slate-200">
+                      <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
+                        <span className="flex items-center gap-1.5 font-outfit text-[12px]">
+                          {isAWS ? '📡' : isClim ? '🌡️' : '🌦️'} {stationTitle}
+                        </span>
+                        <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${badgeBg}`}>
+                          {badgeLabel}
                         </span>
                       </div>
-                      <div className="text-slate-700 text-[10px]">District: <strong>{l.properties.district}</strong> • Altitude: <strong className="font-mono">{l.properties.altitude}m</strong></div>
-                      {l.properties.basin && <div className="text-slate-600 text-[10px]">Basin: <strong>{l.properties.basin}</strong></div>}
-                      {l.properties.areaSqM && (
-                        <div className="text-slate-500 text-[10px] mt-1 bg-red-50/70 p-1 rounded font-mono text-red-950">
-                          Surface Area: <strong>{(l.properties.areaSqM / 10000).toFixed(1)} ha</strong> ({l.properties.areaSqM.toLocaleString()} m²)
+                      <div className="text-slate-600 text-[10px] font-medium">
+                        Index: <strong>{props.indexNo || props.stationNo || 'DHM'}</strong> • <strong>{palikaDisplay}</strong>
+                      </div>
+                      <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80 flex items-center justify-between">
+                        <span>Elev: <strong>{elevDisplay}m masl</strong></span>
+                        <span className="text-sky-700 font-sans text-[10px] font-semibold">{basinDisplay}</span>
+                      </div>
+                      {props.instruments && (
+                        <div className="text-slate-500 text-[9.5px] mt-1 bg-slate-50 p-1 rounded font-mono break-words leading-tight">
+                          ⚙️ {props.instruments}
                         </div>
                       )}
+                      {Array.isArray(props.monitoringParameters) && (
+                        <div className="text-emerald-700 text-[9px] mt-1 font-semibold">
+                          📊 {props.monitoringParameters.join(' • ')}
+                        </div>
+                      )}
+                      <div className="text-slate-400 text-[8.5px] mt-1">
+                        DHM Nepal National Network • Status: {props.status || 'Active'}
+                      </div>
                     </div>
                   </Tooltip>
                 </CircleMarker>
-              ))}
-            </MapContainer>
+              );
+            })}
+          </MapContainer>
 
-            {/* Palika-Specific Hover Card: Shows strictly when hovering a Palika */}
-            {hoveredPalika && (
-              <PalikaHoverCard
-                palikaProp={hoveredPalika}
-                currentRainMm={currentRainMm}
-                currentTempC={currentTempC}
-                climateMonth={climateMonth}
-                climateMode={climateMode}
-                climateYear={climateYear}
-              />
-            )}
-
-            {/* District Hover Card: Shows strictly when hovering the district boundary directly without a palika */}
-            {hoveredDistrict && !hoveredPalika && (
-              <DistrictHoverCard
-                district={hoveredDistrict}
-                climateDataset={climateDataset}
-                climateYear={climateYear}
-                climateMonth={climateMonth}
-                climateMode={climateMode}
-                activeClimateMetric={getActiveClimateMetricKey() || undefined}
-                selectedPillar={selectedPillar}
-                selectedCropId={selectedMapCropId}
-              />
-            )}
-          </div>
+          {/* Palika-Specific Hover Card: Shows strictly when hovering a Palika */}
+          {hoveredPalika && (
+            <PalikaHoverCard
+              palikaProp={hoveredPalika}
+              currentRainMm={currentRainMm}
+              currentTempC={currentTempC}
+              climateMonth={CLI_MONTH}
+              climateMode={CLI_MODE}
+              climateYear={CLI_YEAR}
+            />
+          )}
         </div>
+      </div>
 
       {/* Scientific Methodology, Calculation & Data Lineage Note Card (Sole Section Below Map) */}
       <div className="glass-panel p-3 sm:p-3.5 rounded-2xl border border-slate-200/80 bg-white/95 shadow-2xs space-y-2.5">
@@ -2312,26 +1623,10 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
             <span className="text-xs text-slate-400 hidden sm:inline">
               ({activeCalc.model})
             </span>
-            <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold border ${
-              activeCalc.confidence === 'OBSERVED REAL'
-                ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
-                : activeCalc.confidence === 'CALCULATED'
-                  ? 'bg-sky-100 text-sky-800 border-sky-300'
-                  : 'bg-amber-100 text-amber-800 border-amber-300'
-            }`}>
-              {activeCalc.confidence === 'OBSERVED REAL' ? (
-                <ShieldCheck className="w-3 h-3 text-emerald-600" />
-              ) : activeCalc.confidence === 'CALCULATED' ? (
-                <Cpu className="w-3 h-3 text-sky-600" />
-              ) : (
-                <AlertTriangle className="w-3 h-3 text-amber-600" />
-              )}
-              <span>{activeCalc.confidence}</span>
-            </span>
           </div>
 
           <span className="text-[10px] text-slate-400 font-mono hidden sm:inline">
-            WEFES Polyglot Engine • Zero-Synthesis Validated
+            WEFES Polyglot Engine
           </span>
         </div>
 
@@ -2424,10 +1719,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
               </div>
               <div className="bg-slate-50/70 border border-slate-200/60 rounded-lg p-2.5 text-[11px] font-mono space-y-1.5 text-slate-600">
                 <div>Source: <strong className="text-slate-800 font-sans">{activeCalc.citation}</strong></div>
-                <div>Physical Disk: <code className="bg-slate-200/70 text-slate-800 px-1 py-0.2 rounded text-[10px] break-all select-all font-mono">{activeCalc.provenancePath}</code></div>
-                <div className="text-[10px] text-slate-400 pt-1 border-t border-slate-200/60 flex items-center justify-between">
-                  <span>Classification: {activeCalc.confidence}</span>
-                </div>
               </div>
             </div>
           </div>
