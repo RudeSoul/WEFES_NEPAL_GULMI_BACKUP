@@ -2,36 +2,41 @@
 // Data Source: apps/web/public/geojson/gulmi-contours.json, data/real/boundaries/gulmi-district.json
 // Classification: OBSERVED REAL & INTERPOLATED RELIEF
 // Citations: Survey Department / Topographical Survey of Nepal, MoFAGA, DHM Nepal
-import React, { useState, useEffect, useMemo } from 'react';
-import { MapContainer, TileLayer, GeoJSON, Marker, Popup, Polyline, Tooltip, CircleMarker, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import { District, Crop, CropSuitability, GulmiContourCollection } from '@wefes/shared-types';
 import { db } from '@wefes/database';
+import { Crop, CropSuitability, District, GulmiContourCollection } from '@wefes/shared-types';
+import L from 'leaflet';
 import {
-  MapPin, Droplets, Zap, Sprout, Layers, Eye,
-  Compass, Sparkles, Info, CloudRain, Sun, Mountain,
-  TrendingUp, Leaf, Thermometer, FlaskConical, ArrowUpRight,
-  Navigation, Filter, Award, CheckCircle2, Sliders, Activity
+  Activity,
+  ArrowUpRight,
+  Award,
+  Compass,
+  Droplets,
+  Filter,
+  FlaskConical,
+  Layers,
+  Mountain,
+  Navigation,
+  Sprout,
+  Zap
 } from 'lucide-react';
-import { MapGestureHandler } from './MapGestureHandler';
-import { DistrictElevationProfiler } from './DistrictElevationProfiler';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CircleMarker, GeoJSON, MapContainer, Marker, Polyline, Popup, TileLayer, Tooltip, useMap } from 'react-leaflet';
 import {
-  DISTRICT_LANDMARKS,
-  REAL_HYDROPOWER_PLANTS,
-  GULMI_COFFEE_LANDMARKS,
-  DistrictLandmarks,
-  RealHydropowerAsset,
-  CoffeeLandmark
-} from '../../data/districtRealAssets';
-import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
-import {
-  DANGEROUS_GLACIAL_LAKES_BY_DISTRICT,
   DHM_RIVER_STATIONS_BY_DISTRICT,
-  DetailedGlacialLake,
   DHMRiverStation
 } from '../../data/districtHydrologyAssets';
-import { generateDistrictContours, ContourLine } from '../../utils/contourGenerator';
 import { GULMI_SOIL_POINTS as gulmiSoilPoints } from '../../data/districtIndicatorAssets';
+import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
+import {
+  DISTRICT_LANDMARKS,
+  DistrictLandmarks,
+  GULMI_COFFEE_LANDMARKS,
+  REAL_HYDROPOWER_PLANTS,
+  RealHydropowerAsset
+} from '../../data/districtRealAssets';
+import { ContourLine, generateDistrictContours } from '../../utils/contourGenerator';
+import { DistrictElevationProfiler } from './DistrictElevationProfiler';
+import { MapGestureHandler } from './MapGestureHandler';
 
 const GULMI_PALIKA_NEPALI: Record<string, string> = {
   'Resunga': 'रेसुङ्गा',
@@ -137,13 +142,13 @@ function PalikaBoundsUpdater({
 const createCoffeeLandmarkIcon = (category: 'origin' | 'research' | 'processing' | 'pocket') => {
   const bg =
     category === 'origin' ? '#b45309' :
-    category === 'research' ? '#047857' :
-    category === 'processing' ? '#7c2d12' : '#92400e';
+      category === 'research' ? '#047857' :
+        category === 'processing' ? '#7c2d12' : '#92400e';
 
   const badgeText =
     category === 'origin' ? '🌱 Origin' :
-    category === 'research' ? '🔬 Lab' :
-    category === 'processing' ? '🏭 Mill' : '☕ Pocket';
+      category === 'research' ? '🔬 Lab' :
+        category === 'processing' ? '🏭 Mill' : '☕ Pocket';
 
   return L.divIcon({
     className: 'custom-coffee-marker',
@@ -288,8 +293,6 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   const [baseMapStyle, setBaseMapStyle] = useState<BaseMapStyle>('voyager');
   const [selectedCropFilter, setSelectedCropFilter] = useState<string>('all');
   const [showContours, setShowContours] = useState<boolean>(true);
-  const [showCoffeeBelt, setShowCoffeeBelt] = useState<boolean>(true);
-  const [showSoilGrid, setShowSoilGrid] = useState<boolean>(true);
 
   // Roads state
   const [districtRoadsData, setDistrictRoadsData] = useState<any>(null);
@@ -652,10 +655,10 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
       hwy === 'trunk' || hwy === 'primary'
         ? 'National Strategic Highway (Madan Bhandari / Mid-Hill)'
         : hwy === 'secondary'
-        ? 'Feeder Road (Class B)'
-        : hwy === 'tertiary'
-        ? 'Municipal Main Arterial'
-        : 'Local Agricultural Access Road';
+          ? 'Feeder Road (Class B)'
+          : hwy === 'tertiary'
+            ? 'Municipal Main Arterial'
+            : 'Local Agricultural Access Road';
 
     layer.bindPopup(
       `
@@ -715,11 +718,10 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
             <button
               key={mode.id}
               onClick={() => setLayerMode(mode.id as MapLayerMode)}
-              className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all text-xs cursor-pointer ${
-                layerMode === mode.id
+              className={`px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all text-xs cursor-pointer ${layerMode === mode.id
                   ? 'bg-white text-slate-900 shadow-xs border border-slate-200 font-bold'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
+                }`}
             >
               {mode.icon}
               <span>{mode.label}</span>
@@ -745,11 +747,10 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
             <button
               key={chip.id}
               onClick={() => setSelectedCropFilter(chip.id)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                selectedCropFilter === chip.id
+              className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${selectedCropFilter === chip.id
                   ? 'bg-emerald-700 text-white border-emerald-800 shadow-xs'
                   : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-              }`}
+                }`}
             >
               {chip.label}
             </button>
@@ -919,7 +920,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
               ))}
 
             {/* 81 Verified NARC Ground Soil Testing Sampling Points */}
-            {(layerMode === 'soil' || showSoilGrid || layerMode === 'overview') &&
+            {(layerMode === 'soil' || layerMode === 'overview') &&
               gulmiSoilPoints.map((pt: any, idx: number) => {
                 const nColor =
                   pt.nitrogen >= 0.18 ? '#059669' : pt.nitrogen >= 0.14 ? '#10b981' : '#f59e0b';
@@ -1026,11 +1027,10 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
             </select>
             <button
               onClick={() => setShowContours(!showContours)}
-              className={`px-2.5 py-1 rounded-xl text-xs font-bold border flex items-center gap-1 shadow-md transition-all cursor-pointer backdrop-blur-md ${
-                showContours
+              className={`px-2.5 py-1 rounded-xl text-xs font-bold border flex items-center gap-1 shadow-md transition-all cursor-pointer backdrop-blur-md ${showContours
                   ? 'bg-sky-600 text-white border-sky-500'
                   : 'bg-white/95 text-slate-700 border-slate-200 hover:bg-slate-100'
-              }`}
+                }`}
             >
               <Mountain className="w-3.5 h-3.5" />
               <span>Topo</span>
@@ -1151,11 +1151,10 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
                       <div
                         key={lm.id}
                         onClick={() => onSelectPalika && onSelectPalika(lm.palika)}
-                        className={`p-2 rounded-lg border flex items-center justify-between transition-all cursor-pointer ${
-                          lm.palika.toLowerCase() === activePalika.name.toLowerCase()
+                        className={`p-2 rounded-lg border flex items-center justify-between transition-all cursor-pointer ${lm.palika.toLowerCase() === activePalika.name.toLowerCase()
                             ? 'bg-amber-100 border-amber-300 font-bold'
                             : 'bg-white border-slate-200 hover:bg-amber-50'
-                        }`}
+                          }`}
                       >
                         <div className="min-w-0 pr-2">
                           <div className="text-[11px] text-slate-900 truncate flex items-center gap-1">
@@ -1239,36 +1238,32 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
                 <div className="grid grid-cols-2 gap-1.5 text-xs">
                   <button
                     onClick={() => setRoadFilter(p => ({ ...p, highways: !p.highways }))}
-                    className={`p-2 rounded-lg border text-left flex justify-between items-center transition-all cursor-pointer ${
-                      roadFilter.highways ? 'bg-orange-600 text-white font-bold' : 'bg-white text-slate-600 border-slate-200'
-                    }`}
+                    className={`p-2 rounded-lg border text-left flex justify-between items-center transition-all cursor-pointer ${roadFilter.highways ? 'bg-orange-600 text-white font-bold' : 'bg-white text-slate-600 border-slate-200'
+                      }`}
                   >
                     <span>Highways (Class A)</span>
                     <span className="font-mono text-[10px]">{roadStats.highways}</span>
                   </button>
                   <button
                     onClick={() => setRoadFilter(p => ({ ...p, feeders: !p.feeders }))}
-                    className={`p-2 rounded-lg border text-left flex justify-between items-center transition-all cursor-pointer ${
-                      roadFilter.feeders ? 'bg-amber-600 text-white font-bold' : 'bg-white text-slate-600 border-slate-200'
-                    }`}
+                    className={`p-2 rounded-lg border text-left flex justify-between items-center transition-all cursor-pointer ${roadFilter.feeders ? 'bg-amber-600 text-white font-bold' : 'bg-white text-slate-600 border-slate-200'
+                      }`}
                   >
                     <span>Feeder Roads (Class B)</span>
                     <span className="font-mono text-[10px]">{roadStats.feeders}</span>
                   </button>
                   <button
                     onClick={() => setRoadFilter(p => ({ ...p, municipal: !p.municipal }))}
-                    className={`p-2 rounded-lg border text-left flex justify-between items-center transition-all cursor-pointer ${
-                      roadFilter.municipal ? 'bg-sky-600 text-white font-bold' : 'bg-white text-slate-600 border-slate-200'
-                    }`}
+                    className={`p-2 rounded-lg border text-left flex justify-between items-center transition-all cursor-pointer ${roadFilter.municipal ? 'bg-sky-600 text-white font-bold' : 'bg-white text-slate-600 border-slate-200'
+                      }`}
                   >
                     <span>Municipal Links</span>
                     <span className="font-mono text-[10px]">{roadStats.municipal}</span>
                   </button>
                   <button
                     onClick={() => setRoadFilter(p => ({ ...p, rural: !p.rural }))}
-                    className={`p-2 rounded-lg border text-left flex justify-between items-center transition-all cursor-pointer ${
-                      roadFilter.rural ? 'bg-stone-700 text-white font-bold' : 'bg-white text-slate-600 border-slate-200'
-                    }`}
+                    className={`p-2 rounded-lg border text-left flex justify-between items-center transition-all cursor-pointer ${roadFilter.rural ? 'bg-stone-700 text-white font-bold' : 'bg-white text-slate-600 border-slate-200'
+                      }`}
                   >
                     <span>Rural Tracks</span>
                     <span className="font-mono text-[10px]">{roadStats.rural}</span>
