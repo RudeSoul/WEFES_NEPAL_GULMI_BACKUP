@@ -54,12 +54,12 @@ describe('useNexusStore (Zustand State Management)', () => {
   });
 
   it('manages modal open/close flow and crop assignment', () => {
-    const mockCrop: any = {
+    const mockCrop = {
       id: 'ginger',
       name: 'Ginger (अदुवा)',
       defaultUnit: 'kg',
       baseUnitName: 'kg',
-    };
+    } as unknown as Crop;
 
     useNexusStore.getState().openAnalysisModal(mockCrop);
     expect(useNexusStore.getState().isInputModalOpen).toBe(true);

@@ -49,26 +49,26 @@ describe('Track C: Raster Vectorization (Topographic Contours & Life Zones)', ()
   });
 
   it('accurately classifies agro-ecological life zones and crops across elevation bands', () => {
-    const tropicalLine = contoursData.features.find((f: any) => f.properties.elevation === 500);
+    const tropicalLine = contoursData.features.find((f) => f.properties.elevation === 500);
     expect(tropicalLine).toBeDefined();
     expect(tropicalLine?.properties.lifeZone).toContain('Tropical');
     expect(tropicalLine?.properties.feasibleCrops).toContain('Paddy (Rice)');
 
-    const midHillsLine = contoursData.features.find((f: any) => f.properties.elevation === 1300);
+    const midHillsLine = contoursData.features.find((f) => f.properties.elevation === 1300);
     expect(midHillsLine).toBeDefined();
     expect(midHillsLine?.properties.lifeZone).toContain('Subtropical Mid-Hills');
     expect(midHillsLine?.properties.feasibleCrops).toContain('Arabica Coffee');
 
-    const montaneLine = contoursData.features.find((f: any) => f.properties.elevation === 2100);
+    const montaneLine = contoursData.features.find((f) => f.properties.elevation === 2100);
     expect(montaneLine).toBeDefined();
     expect(montaneLine?.properties.lifeZone).toContain('Warm Temperate Montane');
     expect(montaneLine?.properties.feasibleCrops).toContain('Large Cardamom');
   });
 
   it('calculates physical lapse-rate temperatures monotonically decreasing with altitude', () => {
-    const elev500 = contoursData.features.find((f: any) => f.properties.elevation === 500);
-    const elev1500 = contoursData.features.find((f: any) => f.properties.elevation === 1500);
-    const elev2500 = contoursData.features.find((f: any) => f.properties.elevation === 2500);
+    const elev500 = contoursData.features.find((f) => f.properties.elevation === 500);
+    const elev1500 = contoursData.features.find((f) => f.properties.elevation === 1500);
+    const elev2500 = contoursData.features.find((f) => f.properties.elevation === 2500);
 
     expect(elev500?.properties.temperatureC).toBeGreaterThan(elev1500?.properties.temperatureC);
     expect(elev1500?.properties.temperatureC).toBeGreaterThan(elev2500?.properties.temperatureC);

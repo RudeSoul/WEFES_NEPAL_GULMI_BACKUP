@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest';
 
 import { DISTRICT_PALIKAS } from '../data/districtPalikaAssets';
 import { CHOROPLETH_RAMPS, computeGradientColor, normalizePalikaName } from '../hooks/choroplethUtils';
+import type { UsePalikaChoroplethParams } from '../hooks/usePalikaChoropleth';
 
 describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
   describe('normalizePalikaName', () => {
@@ -93,7 +94,7 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
     };
 
     // Test runner executing computePalikaChoropleth directly
-    async function evaluateChoropleth(params: any) {
+    async function evaluateChoropleth(params: UsePalikaChoroplethParams) {
       const { computePalikaChoropleth } = await import('../hooks/usePalikaChoropleth');
       return computePalikaChoropleth(params);
     }
