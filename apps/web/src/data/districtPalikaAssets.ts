@@ -50,7 +50,10 @@ export interface DistrictPalika {
 }
 
 export const PALIKA_GEO_CENTROIDS: Record<string, { lat: number; lng: number }> =
-  rawPalikaData.palikaCentroids as Record<string, { lat: number; lng: number }>;
+  rawPalikaData.palikas.gulmi.reduce((acc: Record<string, {lat: number, lng: number}>, palika: any) => {
+    acc[palika.name] = { lat: palika.coordinates[0], lng: palika.coordinates[1]};
+    return acc;
+  }, {}) as Record<string, {lat: number, lng: number}>;
 
 const { _provenance, ...palikaCentroidsMap } = palikaCentroidsData as any;
 export const PALIKA_CENTROIDS: Record<string, { lat: number; lng: number; nepali: string }> =

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { DistrictPalika, DISTRICT_PALIKAS, PalikaFeasibleCrop, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';  
+import { DistrictPalika, DISTRICT_PALIKAS, PalikaFeasibleCrop, GULMI_PALIKA_NEPALI, PALIKA_GEO_CENTROIDS } from '../../data/districtPalikaAssets';  
 import {
   Scale, Mountain, CloudRain, Thermometer, Sparkles, TrendingUp,
   Sprout, Zap, Trees, Building2, Sun, Droplets, Wind, Cloud, CheckCircle2,
@@ -14,21 +14,6 @@ interface PalikaBenchmarkingWidgetProps {
   currentPalika: DistrictPalika;
   lang?: 'en' | 'np';
 }
-
-const PALIKA_COORDINATES: Record<string, { lat: number; lng: number }> = {
-  'Resunga': { lat: 28.0531, lng: 83.2658 },
-  'Musikot': { lat: 28.1846, lng: 83.2826 },
-  'Ruru': { lat: 27.9822, lng: 83.4256 },
-  'Satyawati': { lat: 28.0300, lng: 83.4689 },
-  'Kaligandaki': { lat: 28.0502, lng: 83.5436 },
-  'Chandrakot': { lat: 28.1070, lng: 83.4208 },
-  'Chatrakot': { lat: 27.9862, lng: 83.3472 },
-  'Gulmidarbar': { lat: 28.0398, lng: 83.3167 },
-  'Dhurkot': { lat: 28.1181, lng: 83.1408 },
-  'Isma': { lat: 28.1643, lng: 83.2054 },
-  'Malika': { lat: 28.2131, lng: 83.1426 },
-  'Madane': { lat: 28.1750, lng: 83.0753 },
-};
 
 interface LiveWeatherTelemetry {
   temperature: number;
@@ -105,8 +90,8 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
   const [liveLoading, setLiveLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const coordA = PALIKA_COORDINATES[currentPalika.name] || { lat: 28.068, lng: 83.248 };
-    const coordB = PALIKA_COORDINATES[targetPalika.name] || { lat: 28.184, lng: 83.282 };
+    const coordA = PALIKA_GEO_CENTROIDS[currentPalika.name] || { lat: 28.068, lng: 83.248 };
+    const coordB = PALIKA_GEO_CENTROIDS[targetPalika.name] || { lat: 28.184, lng: 83.282 };
 
     setLiveLoading(true);
 
