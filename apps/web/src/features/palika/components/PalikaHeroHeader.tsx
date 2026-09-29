@@ -1,6 +1,6 @@
 import React from 'react';
 import { District } from '@wefes/shared-types';
-import { DistrictPalika } from '../../../data/districtPalikaAssets';
+import { DistrictPalika, GULMI_PALIKA_NEPALI } from '../../../data/districtPalikaAssets';
 import { PalikaLiveWeather } from './PalikaWeatherConsole';
 import {
   ArrowLeft, CloudRain, Thermometer, Droplets, Wind, Sun, Cloud
@@ -15,7 +15,6 @@ interface PalikaHeroHeaderProps {
   weatherTelemetryMode: 'live' | 'archive';
   setWeatherTelemetryMode: React.Dispatch<React.SetStateAction<'live' | 'archive'>>;
   palikaWeather: PalikaLiveWeather | null;
-  GULMI_PALIKA_NEPALI: Record<string, string>;
 }
 
 export const PalikaHeroHeader: React.FC<PalikaHeroHeaderProps> = ({
@@ -27,7 +26,6 @@ export const PalikaHeroHeader: React.FC<PalikaHeroHeaderProps> = ({
   weatherTelemetryMode,
   setWeatherTelemetryMode,
   palikaWeather,
-  GULMI_PALIKA_NEPALI,
 }) => {
   return (
     <div className="space-y-5">

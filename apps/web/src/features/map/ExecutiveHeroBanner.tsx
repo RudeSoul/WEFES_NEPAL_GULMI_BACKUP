@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mountain, Users, Layers, Sprout, Search, Info, ChevronDown, ChevronUp, Globe, Sparkles } from 'lucide-react';
-import { DISTRICT_PALIKAS } from '../../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 
 interface ExecutiveHeroBannerProps {
   onSearchSelect: (type: 'palika' | 'filter' | 'crop', value: string) => void;
@@ -20,21 +20,6 @@ export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const palikas = DISTRICT_PALIKAS['gulmi'] || [];
-
-  const GULMI_PALIKA_NEPALI: Record<string, string> = {
-    'Resunga': 'रेसुङ्गा',
-    'Musikot': 'मुसिकोट',
-    'Ruru': 'रुरुक्षेत्र',
-    'Satyawati': 'सत्यवती',
-    'Kaligandaki': 'कालीगण्डकी',
-    'Chandrakot': 'चन्द्रकोट',
-    'Chatrakot': 'छत्रकोट',
-    'Gulmidarbar': 'गुल्मीदरबार',
-    'Dhurkot': 'धुर्कोट',
-    'Isma': 'इस्मा',
-    'Malika': 'मालिका',
-    'Madane': 'मदाने',
-  };
 
   const searchOptions = [
     // Palikas

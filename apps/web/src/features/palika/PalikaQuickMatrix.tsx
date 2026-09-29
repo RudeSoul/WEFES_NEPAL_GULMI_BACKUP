@@ -1,5 +1,5 @@
 import React from 'react';
-import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS, DistrictPalika, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 import { Mountain, CloudRain, Sprout, ArrowUpRight, CheckCircle2 } from 'lucide-react';
 import { WEFESPillar } from '@wefes/shared-types';
 
@@ -27,21 +27,6 @@ export const PalikaQuickMatrix: React.FC<PalikaQuickMatrixProps> = ({
   onClose,
 }) => {
   const palikas: DistrictPalika[] = DISTRICT_PALIKAS['gulmi'] || [];
-
-  const GULMI_PALIKA_NEPALI: Record<string, string> = {
-    'Resunga': 'रेसुङ्गा',
-    'Musikot': 'मुसिकोट',
-    'Ruru': 'रुरुक्षेत्र',
-    'Satyawati': 'सत्यवती',
-    'Kaligandaki': 'कालीगण्डकी',
-    'Chandrakot': 'चन्द्रकोट',
-    'Chatrakot': 'छत्रकोट',
-    'Gulmidarbar': 'गुल्मीदरबार',
-    'Dhurkot': 'धुर्कोट',
-    'Isma': 'इस्मा',
-    'Malika': 'मालिका',
-    'Madane': 'मदाने',
-  };
 
   const [searchQuery, setSearchQuery] = React.useState('');
 

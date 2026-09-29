@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { District, Crop } from '@wefes/shared-types';
 import { db } from '@wefes/database';
-import { DISTRICT_PALIKAS, PALIKA_GEO_CENTROIDS, DistrictPalika, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS, PALIKA_GEO_CENTROIDS, DistrictPalika } from '../../data/districtPalikaAssets';
 import { extractAnnualRainfallSeries, arimaForecast } from '@wefes/wefes-engine';
 import { CloudRain, Mountain, Sparkles, Thermometer, ArrowLeft, ArrowUp } from 'lucide-react';
 import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
@@ -280,7 +280,6 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
           weatherTelemetryMode={weatherTelemetryMode}
           setWeatherTelemetryMode={setWeatherTelemetryMode}
           palikaWeather={palikaWeather}
-          GULMI_PALIKA_NEPALI={GULMI_PALIKA_NEPALI}
         />
 
         {weatherTelemetryMode === 'archive' ? (

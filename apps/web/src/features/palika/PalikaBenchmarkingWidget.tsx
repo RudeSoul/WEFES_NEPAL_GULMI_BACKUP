@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { DistrictPalika, DISTRICT_PALIKAS, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
+import { DistrictPalika, DISTRICT_PALIKAS, PalikaFeasibleCrop, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';  
 import {
   Scale, Mountain, CloudRain, Thermometer, Sparkles, TrendingUp,
   Sprout, Zap, Trees, Building2, Sun, Droplets, Wind, Cloud, CheckCircle2,
@@ -14,21 +14,6 @@ interface PalikaBenchmarkingWidgetProps {
   currentPalika: DistrictPalika;
   lang?: 'en' | 'np';
 }
-
-const GULMI_PALIKA_NEPALI: Record<string, string> = {
-  'Resunga': 'रेसुङ्गा',
-  'Musikot': 'मुसिकोट',
-  'Ruru': 'रुरुक्षेत्र',
-  'Satyawati': 'सत्यवती',
-  'Kaligandaki': 'कालीगण्डकी',
-  'Chandrakot': 'चन्द्रकोट',
-  'Chatrakot': 'छत्रकोट',
-  'Gulmidarbar': 'गुल्मीदरबार',
-  'Dhurkot': 'धुर्कोट',
-  'Isma': 'इस्मा',
-  'Malika': 'मालिका',
-  'Madane': 'मदाने',
-};
 
 const PALIKA_COORDINATES: Record<string, { lat: number; lng: number }> = {
   'Resunga': { lat: 28.0531, lng: 83.2658 },

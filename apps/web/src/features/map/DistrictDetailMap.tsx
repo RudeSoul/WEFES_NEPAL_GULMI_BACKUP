@@ -37,21 +37,7 @@ import {
 import { ContourLine, generateDistrictContours } from '../../utils/contourGenerator';
 import { DistrictElevationProfiler } from './DistrictElevationProfiler';
 import { MapGestureHandler } from './MapGestureHandler';
-
-const GULMI_PALIKA_NEPALI: Record<string, string> = {
-  'Resunga': 'रेसुङ्गा',
-  'Musikot': 'मुसिकोट',
-  'Ruru': 'रुरुक्षेत्र',
-  'Satyawati': 'सत्यवती',
-  'Kaligandaki': 'कालीगण्डकी',
-  'Chandrakot': 'चन्द्रकोट',
-  'Chatrakot': 'छत्रकोट',
-  'Gulmidarbar': 'गुल्मीदरबार',
-  'Dhurkot': 'धुर्कोट',
-  'Isma': 'इस्मा',
-  'Malika': 'मालिका',
-  'Madane': 'मदाने',
-};
+import { GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 
 interface DistrictDetailMapProps {
   district: District;
