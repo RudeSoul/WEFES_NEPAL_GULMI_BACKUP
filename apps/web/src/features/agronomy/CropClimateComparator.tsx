@@ -108,8 +108,6 @@ export const CropClimateComparator: React.FC<CropClimateComparatorProps> = ({ la
     const elev = palika.elevation;
 
     // Crop A Climate Shift
-    const distFromOptA = Math.abs(elev - (cropA.optElevMin + cropA.optElevMax) / 2 - elevShiftM);
-    const climatePenaltyA = Math.round(distFromOptA * 0.025);
     const scoreA = Math.max(
       20,
       Math.min(

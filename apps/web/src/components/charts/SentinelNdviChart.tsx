@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 interface SentinelNdviChartProps {
   districtName: string;
-  cropName: string;
   meanNdvi: number;
   vegetativeHealthClassification: string;
   ndviAnomalyVsFiveYearMeanPct: number;
@@ -12,7 +11,6 @@ interface SentinelNdviChartProps {
 
 export const SentinelNdviChart: React.FC<SentinelNdviChartProps> = ({
   districtName,
-  cropName,
   meanNdvi,
   vegetativeHealthClassification,
   ndviAnomalyVsFiveYearMeanPct,

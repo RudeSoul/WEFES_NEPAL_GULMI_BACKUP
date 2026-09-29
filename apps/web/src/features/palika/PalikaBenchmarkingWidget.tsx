@@ -386,7 +386,6 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
             {cropComparisonList.map((item) => {
               const advPalika = item.delta > 0 ? currentPalika.name : item.delta < 0 ? targetPalika.name : 'Tie';
               const isWinA = item.scoreA > item.scoreB;
-              const isWinB = item.scoreB > item.scoreA;
 
               return (
                 <div

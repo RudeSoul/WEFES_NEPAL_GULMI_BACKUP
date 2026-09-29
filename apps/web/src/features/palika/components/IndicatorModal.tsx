@@ -46,7 +46,6 @@ export const IndicatorModal: React.FC<IndicatorModalProps> = ({
   onClose,
 }) => {
   const [rainfallTimeframe, setRainfallTimeframe] = useState<'annual' | 'monthly'>('annual');
-  const [tempTimeframe, setTempTimeframe] = useState<'monthly' | 'annual'>('monthly');
 
   useEffect(() => {
     if (!modalKey) return;

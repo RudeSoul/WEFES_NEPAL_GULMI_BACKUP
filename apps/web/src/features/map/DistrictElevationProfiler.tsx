@@ -2,11 +2,10 @@ import React, { useMemo, useState } from 'react';
 
 import { Compass, Layers, Mountain, Sliders, Sprout, Thermometer, TrendingUp, Wind, XCircle } from 'lucide-react';
 
-import { Crop, District } from '@wefes/shared-types';
+import { District } from '@wefes/shared-types';
 
 interface DistrictElevationProfilerProps {
   district: District;
-  districtCrops?: { crop: Crop; suitability: any }[];
   onSelectElevation?: (elevation: number) => void;
 }
 
@@ -150,7 +149,6 @@ const CROP_ELEVATION_PROFILES: {
 
 export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps> = ({
   district,
-  districtCrops = [],
   onSelectElevation,
 }) => {
   // Parse min and max elevation from string
@@ -243,7 +241,6 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
 
   const optimalCrops = cropEvaluations.filter((c) => c.status === 'optimal');
   const moderateCrops = cropEvaluations.filter((c) => c.status === 'moderate');
-  const unfeasibleCrops = cropEvaluations.filter((c) => c.status === 'unfeasible');
 
   // Topographic cross-section points for SVG visualization
   const crossSectionPoints = useMemo(() => {

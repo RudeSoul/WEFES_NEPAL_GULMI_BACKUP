@@ -21,7 +21,7 @@ interface PresetItem {
   cropId?: string;
 }
 
-export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({ onApplyPreset, activePillar, lang }) => {
+export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({ onApplyPreset, lang }) => {
   const presets: PresetItem[] = [
     {
       id: 'coffee_expansion',

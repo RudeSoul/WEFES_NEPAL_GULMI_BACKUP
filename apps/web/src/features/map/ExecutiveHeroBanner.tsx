@@ -8,15 +8,9 @@ interface ExecutiveHeroBannerProps {
   onSearchSelect: (type: 'palika' | 'filter' | 'crop', value: string) => void;
   lang: 'en' | 'np';
   onToggleLang: () => void;
-  activePalikaName?: string | null;
 }
 
-export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
-  onSearchSelect,
-  lang,
-  onToggleLang,
-  activePalikaName,
-}) => {
+export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({ onSearchSelect, lang, onToggleLang }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);

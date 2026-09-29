@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 interface QueftsNutrientGaugeProps {
   districtName: string;
-  cropName: string;
   nitrogenKgPerHa: number;
   phosphorusKgPerHa: number;
   potassiumKgPerHa: number;
@@ -15,7 +14,6 @@ interface QueftsNutrientGaugeProps {
 
 export const QueftsNutrientGauge: React.FC<QueftsNutrientGaugeProps> = ({
   districtName,
-  cropName,
   nitrogenKgPerHa,
   phosphorusKgPerHa,
   potassiumKgPerHa,

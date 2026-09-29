@@ -31,8 +31,6 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({
   currentRainMm = 150,
   currentTempC = 19.5,
   climateMonth = 7,
-  climateMode = 'climatology',
-  climateYear = 2019,
 }) => {
   if (!palikaProp) return null;
 

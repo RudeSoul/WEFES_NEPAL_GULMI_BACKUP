@@ -1312,9 +1312,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             )}
 
             {/* Continuous Spatial Solar Irradiance Surface (Global Solar Atlas 900m Empirical Grid) */}
-            {isSolarGhiActive && geoData && (
-              <SpatialSolarSurfaceOverlay geoData={geoData} bounds={GULMI_BOUNDS} opacity={0.85} />
-            )}
+            {isSolarGhiActive && geoData && <SpatialSolarSurfaceOverlay geoData={geoData} opacity={0.85} />}
 
             {/* Continuous Spatial Settlement Building Density Heat Wave Overlay (78,934 OSM Building Geometries) */}
             {isLandholdingActive && geoData && (

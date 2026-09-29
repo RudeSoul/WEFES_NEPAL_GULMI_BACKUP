@@ -127,7 +127,6 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
   districtName,
   cropName,
   initialCapexNpr,
-  netPresentValueNpr10Pct,
   economicInternalRateOfReturnEIRR,
   benefitCostRatioBCR,
 }) => {

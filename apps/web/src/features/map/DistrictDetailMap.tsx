@@ -32,19 +32,13 @@ import {
 } from 'react-leaflet';
 
 import { db } from '@wefes/database';
-import { Crop, CropSuitability, District, GulmiContourCollection } from '@wefes/shared-types';
+import { Crop, District, GulmiContourCollection } from '@wefes/shared-types';
 
 import { DHM_RIVER_STATIONS_BY_DISTRICT, DHMRiverStation } from '../../data/districtHydrologyAssets';
 import { GULMI_SOIL_POINTS as gulmiSoilPoints } from '../../data/districtIndicatorAssets';
 import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
 import { GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
-import {
-  DISTRICT_LANDMARKS,
-  DistrictLandmarks,
-  GULMI_COFFEE_LANDMARKS,
-  REAL_HYDROPOWER_PLANTS,
-  RealHydropowerAsset,
-} from '../../data/districtRealAssets';
+import { GULMI_COFFEE_LANDMARKS, REAL_HYDROPOWER_PLANTS, RealHydropowerAsset } from '../../data/districtRealAssets';
 import { ContourLine, generateDistrictContours } from '../../utils/contourGenerator';
 
 import { DistrictElevationProfiler } from './DistrictElevationProfiler';
@@ -56,7 +50,6 @@ interface DistrictDetailMapProps {
   onSelectPalika?: (palikaName: string) => void;
   distClimatology?: any;
   rainfallARIMA?: any;
-  districtCrops?: { crop: Crop; suitability: CropSuitability }[];
   onSelectCrop?: (crop: Crop) => void;
 }
 
@@ -286,9 +279,6 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   district,
   selectedPalikaName = 'Resunga',
   onSelectPalika,
-  distClimatology,
-  rainfallARIMA,
-  districtCrops = [],
   onSelectCrop,
 }) => {
   const [districtGeoData, setDistrictGeoData] = useState<any>(null);
@@ -303,7 +293,6 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
 
   // Roads state
   const [districtRoadsData, setDistrictRoadsData] = useState<any>(null);
-  const [roadsLoading, setRoadsLoading] = useState<boolean>(false);
   const [roadFilter, setRoadFilter] = useState<{
     highways: boolean;
     feeders: boolean;
@@ -367,7 +356,6 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   // Load Gulmi Roads
   useEffect(() => {
     let isMounted = true;
-    setRoadsLoading(true);
 
     const distId = district.id.toLowerCase();
     fetch(`/geojson/roads/${distId}.json`)
@@ -375,12 +363,10 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
       .then((data) => {
         if (!isMounted) return;
         setDistrictRoadsData(data);
-        setRoadsLoading(false);
       })
       .catch(() => {
         if (isMounted) {
           setDistrictRoadsData(null);
-          setRoadsLoading(false);
         }
       });
 
@@ -433,12 +419,6 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   }, [activePalika]);
 
   // Verified crops specifically for this district
-  const availableDistrictCrops = useMemo(() => {
-    if (districtCrops && districtCrops.length > 0) {
-      return districtCrops.map((dc) => dc.crop);
-    }
-    return db.getDistrictCrops(district.id).map((dc) => dc.crop);
-  }, [districtCrops, district.id]);
 
   // Palika Crop Markers - Prioritizing high-value cash crops (Arabica Coffee, Orange, Potato, Ginger)
   const displayedPalikaCropMarkers = useMemo(() => {
@@ -506,10 +486,9 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
 
     // Priority 2: Fallback to client-side marching squares interpolation
     if (!districtGeoData) return [];
-    return generateDistrictContours(district, districtGeoData.geometry, 10);
+    return generateDistrictContours(district, districtGeoData.geometry);
   }, [contoursGeoData, district, districtGeoData]);
 
-  const landmarks: DistrictLandmarks | undefined = DISTRICT_LANDMARKS[district.id] || DISTRICT_LANDMARKS[district.name];
   const hydroPlants: RealHydropowerAsset[] =
     REAL_HYDROPOWER_PLANTS[district.id] || REAL_HYDROPOWER_PLANTS[district.name] || [];
   const dhmRiverStations = useMemo<DHMRiverStation[]>(() => {
@@ -1492,9 +1471,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
             )}
 
             {/* 7. ELEVATION PROFILER INLINE */}
-            {layerMode === 'elevation' && (
-              <DistrictElevationProfiler district={district} districtCrops={districtCrops} />
-            )}
+            {layerMode === 'elevation' && <DistrictElevationProfiler district={district} />}
 
             {/* 8. OVERVIEW (INTEGRATED PALIKA SYNTHESIS) */}
             {layerMode === 'overview' && (

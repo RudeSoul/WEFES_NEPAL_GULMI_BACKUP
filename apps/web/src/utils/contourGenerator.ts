@@ -162,11 +162,7 @@ function getInterpolatedElevation(lat: number, lng: number): number {
  * Generate strictly boundary-clipped topographic contour isolines across ALL 12 Palikas
  * with comprehensive grid-marching coverage.
  */
-export function generateDistrictContours(
-  district: District,
-  featureGeometry?: any,
-  stepMeters: number = 10
-): ContourLine[] {
+export function generateDistrictContours(district: District, featureGeometry?: any): ContourLine[] {
   let minLat = 27.91,
     maxLat = 28.25,
     minLng = 83.05,

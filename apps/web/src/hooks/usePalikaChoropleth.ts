@@ -1026,7 +1026,6 @@ export function computePalikaChoropleth({
         const subNp = matchedGrid?.substationNepali || 'अवर्गीकृत सबस्टेसन';
         const hubVolt = matchedGrid?.hubVoltage || 'N/A';
         const capMva = matchedGrid?.capacityMVA ?? 0;
-        const tierLabel = matchedGrid?.tierLabel || 'Unmapped Grid Tier';
         const tierKey = matchedGrid?.tierKey || 'unmapped';
         const color =
           matchedGrid?.color ||

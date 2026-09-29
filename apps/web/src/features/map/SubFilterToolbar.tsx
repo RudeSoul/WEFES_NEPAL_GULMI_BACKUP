@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Building2, CloudRain, Droplets, Sprout, Trees, Zap } from 'lucide-react';
+import { Building2, CloudRain, Sprout, Trees, Zap } from 'lucide-react';
 
 import { useNexusStore } from '../../store';
 
@@ -191,14 +191,6 @@ export const SubFilterToolbar: React.FC = () => {
       default:
         return null;
     }
-  };
-
-  const iconMap: Record<string, React.ReactNode> = {
-    water: <Droplets className="w-3.5 h-3.5 text-sky-600" />,
-    energy: <Zap className="w-3.5 h-3.5 text-amber-600" />,
-    food: <Sprout className="w-3.5 h-3.5 text-emerald-600" />,
-    ecosystem: <Trees className="w-3.5 h-3.5 text-teal-600" />,
-    socioeconomics: <Building2 className="w-3.5 h-3.5 text-indigo-600" />,
   };
 
   return (

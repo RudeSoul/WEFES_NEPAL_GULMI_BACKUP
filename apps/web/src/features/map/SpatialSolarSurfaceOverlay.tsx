@@ -64,16 +64,11 @@ function isPointInPolygon(point: [number, number], vs: number[][][]): boolean {
 }
 
 interface SpatialSolarSurfaceOverlayProps {
-  geoData: any; // Gulmi district boundary GeoJSON
-  bounds: [[number, number], [number, number]];
+  geoData: any;
   opacity?: number;
 }
 
-export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProps> = ({
-  geoData,
-  bounds,
-  opacity = 0.88,
-}) => {
+export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProps> = ({ geoData, opacity = 0.88 }) => {
   const overlay = useMemo(() => {
     if (typeof window === 'undefined' || typeof document === 'undefined') return null;
 

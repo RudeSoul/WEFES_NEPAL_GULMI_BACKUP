@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 interface HeatStressThermalChartProps {
   districtName: string;
-  cropName: string;
   criticalThresholdTempC: number;
   floweringSterilityRiskPct: number;
   recommendedMitigationAction: string;
@@ -10,7 +9,6 @@ interface HeatStressThermalChartProps {
 
 export const HeatStressThermalChart: React.FC<HeatStressThermalChartProps> = ({
   districtName,
-  cropName,
   criticalThresholdTempC,
   floweringSterilityRiskPct,
   recommendedMitigationAction,

@@ -3,12 +3,10 @@ import React, { useState } from 'react';
 import { CropCalendarMonth } from '@wefes/wefes-engine';
 
 interface PhenologyTimelineChartProps {
-  districtName: string;
-  cropName: string;
   calendar: CropCalendarMonth[];
 }
 
-export const PhenologyTimelineChart: React.FC<PhenologyTimelineChartProps> = ({ districtName, cropName, calendar }) => {
+export const PhenologyTimelineChart: React.FC<PhenologyTimelineChartProps> = ({ calendar }) => {
   const [activeMonthIdx, setActiveMonthIdx] = useState<number>(0);
 
   const activeMonth = calendar[activeMonthIdx] || calendar[0];

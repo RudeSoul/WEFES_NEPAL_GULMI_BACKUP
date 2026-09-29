@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 
 import { WEFESOutput } from '@wefes/shared-types';
-import { computeDeepNexusAnalysis, computePortfolioMix, simulateSensitivity } from '@wefes/wefes-engine';
+import { computeDeepNexusAnalysis } from '@wefes/wefes-engine';
 import { getVarietiesByCrop, NARC_VARIETAL_DATABASE } from '@wefes/wefes-engine';
 import { computeSiteSpecificFertilizer } from '@wefes/wefes-engine';
 import { computePostHarvestLoss } from '@wefes/wefes-engine';
@@ -271,47 +271,9 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
   const [subTab, setSubTab] = useState<string>('narc_varieties');
   const [showCircularCockpit, setShowCircularCockpit] = useState<boolean>(false);
   const [studyViewMode, setStudyViewMode] = useState<'synchronized' | 'visual_only' | 'empirical_only'>('synchronized');
-
-  // Live Sensitivity Sliders State
-  const [rainfallShift, setRainfallShift] = useState<number>(0);
-  const [wageShift, setWageShift] = useState<number>(0);
-  const [tariffShift, setTariffShift] = useState<number>(0);
-  const [solarShift, setSolarShift] = useState<number>(0);
-
-  // Multi-Crop Portfolio Blender State
-  const [primaryPct, setPrimaryPct] = useState<number>(60);
-  const [secondaryPct, setSecondaryPct] = useState<number>(25);
-  const [tertiaryPct, setTertiaryPct] = useState<number>(15);
-
   const deep = useMemo(() => computeDeepNexusAnalysis(output), [output]);
-  const {
-    pillarScores,
-    shannonEntropy,
-    shannonH,
-    giniIndex,
-    synergies,
-    tradeoffs,
-    couplingMatrix,
-    interventions,
-    naturalCapital,
-    sdgAlignments,
-    basinCascade,
-    ipccVulnerability,
-    rusle,
-    springshed,
-    gesi,
-    phenology,
-    importSubstitution,
-    gcfInvestment,
-    parametricInsurance,
-    bankCredit,
-    carbonArticle6,
-    benchmarks,
-    cropCalendar,
-    governance,
-    systemicState,
-    wefCompositeScore,
-  } = deep;
+  const { basinCascade, phenology, gcfInvestment, parametricInsurance, bankCredit, cropCalendar, wefCompositeScore } =
+    deep;
 
   const readiness = useMemo(
     () => computeNexusReadiness(deep, output.districtName, deep.agroSuitability),
@@ -369,11 +331,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
     return computeGenderAndMunicipalBudget(output.districtName, output.cropName, output.socioeconomics.laborDays);
   }, [output]);
 
-  const {
-    targets: ndcTargets,
-    carbonReadiness,
-    partnerships,
-  } = useMemo(() => {
+  const { targets: ndcTargets } = useMemo(() => {
     return computeNDCTracker(
       output.districtName,
       output.ecosystem.carbonOffsetKgCo2,
@@ -447,23 +405,6 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
       fertilizerPrescription.potassiumK2OKgPerHa
     );
   }, [output, fertilizerPrescription]);
-
-  const sensitivityResult = useMemo(() => {
-    return simulateSensitivity(output, {
-      rainfallShiftPct: rainfallShift,
-      wageShiftPct: wageShift,
-      tariffShiftPct: tariffShift,
-      solarAdoptionShiftPct: solarShift,
-    });
-  }, [output, rainfallShift, wageShift, tariffShift, solarShift]);
-
-  const portfolioResult = useMemo(() => {
-    return computePortfolioMix(output, {
-      primaryPct,
-      secondaryPct,
-      tertiaryPct,
-    });
-  }, [output, primaryPct, secondaryPct, tertiaryPct]);
 
   const handleDomainChange = (domain: MasterDomainType) => {
     setActiveDomain(domain);
@@ -1595,7 +1536,6 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
               {studyViewMode !== 'empirical_only' && (
                 <QueftsNutrientGauge
                   districtName={output.districtName}
-                  cropName={output.cropName}
                   nitrogenKgPerHa={fertilizerPrescription.nitrogenKgPerHa}
                   phosphorusKgPerHa={fertilizerPrescription.phosphorusP2O5KgPerHa}
                   potassiumKgPerHa={fertilizerPrescription.potassiumK2OKgPerHa}
@@ -1885,13 +1825,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
               />
 
               {/* Interactive Phenology Timeline Chart if not empirical_only */}
-              {studyViewMode !== 'empirical_only' && (
-                <PhenologyTimelineChart
-                  districtName={output.districtName}
-                  cropName={output.cropName}
-                  calendar={cropCalendar}
-                />
-              )}
+              {studyViewMode !== 'empirical_only' && <PhenologyTimelineChart calendar={cropCalendar} />}
 
               {studyViewMode !== 'visual_only' && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -2168,7 +2102,6 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
               {studyViewMode !== 'empirical_only' && (
                 <SentinelNdviChart
                   districtName={output.districtName}
-                  cropName={output.cropName}
                   meanNdvi={sentinel.currentNdvi}
                   vegetativeHealthClassification={sentinel.canopyChlorophyllContent}
                   ndviAnomalyVsFiveYearMeanPct={sentinel.ndviAnomalyPct}

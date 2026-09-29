@@ -24,7 +24,6 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({ lang
   const [householdTransitionCount, setHouseholdTransitionCount] = useState<number>(250); // Households
 
   const gulmiPalikas = DISTRICT_PALIKAS.gulmi || [];
-  const currentPalika = gulmiPalikas.find((p) => p.name === selectedPalikaName) || gulmiPalikas[0];
 
   // Calculations
   // 1. Solar: Annual kWh = kWp * solarHours * 365 * 0.78 (Performance Ratio)

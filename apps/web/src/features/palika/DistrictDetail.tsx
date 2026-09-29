@@ -324,7 +324,6 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
         onSelectPalika={setActivePalikaName}
         distClimatology={distClimatology}
         rainfallARIMA={rainfallARIMA}
-        districtCrops={verifiedDistrictCrops}
         onSelectCrop={onSelectCrop}
       />
 

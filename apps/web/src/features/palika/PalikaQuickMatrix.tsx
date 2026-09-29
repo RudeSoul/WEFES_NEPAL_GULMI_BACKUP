@@ -2,17 +2,13 @@ import React from 'react';
 
 import { CloudRain, Mountain } from 'lucide-react';
 
-import { WEFESPillar } from '@wefes/shared-types';
-
 import { DISTRICT_PALIKAS, DistrictPalika, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 
 interface PalikaQuickMatrixProps {
   onSelectPalika: (palikaName: string) => void;
   hoveredPalikaName: string | null;
   onHoverPalika: (palikaName: string | null) => void;
-  selectedPillar: WEFESPillar;
   selectedCropId?: string | null;
-  subFilters: Record<string, string>;
   lang: 'en' | 'np';
   docked?: boolean;
   onClose?: () => void;
@@ -22,9 +18,7 @@ export const PalikaQuickMatrix: React.FC<PalikaQuickMatrixProps> = ({
   onSelectPalika,
   hoveredPalikaName,
   onHoverPalika,
-  selectedPillar,
   selectedCropId,
-  subFilters,
   lang,
   docked = false,
   onClose,

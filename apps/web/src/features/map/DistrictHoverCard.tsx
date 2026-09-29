@@ -29,7 +29,6 @@ interface DistrictHoverCardProps {
   climateYear?: number;
   climateMonth?: number;
   climateMode?: 'monthly' | 'annual' | 'climatology';
-  activeClimateMetric?: string;
   selectedPillar?: WEFESPillar;
   selectedCropId?: string | null;
 }
@@ -65,27 +64,12 @@ function getNarcNStatus(n?: number): { label: string; color: string } {
   return { label: 'Low', color: 'text-rose-700' };
 }
 
-function getNarcPStatus(p?: number): { label: string; color: string } {
-  if (p === undefined) return { label: 'No Data', color: 'text-slate-400' };
-  if (p > 55) return { label: 'High', color: 'text-emerald-700' };
-  if (p >= 30) return { label: 'Medium', color: 'text-sky-700' };
-  return { label: 'Low', color: 'text-rose-700' };
-}
-
-function getNarcKStatus(k?: number): { label: string; color: string } {
-  if (k === undefined) return { label: 'No Data', color: 'text-slate-400' };
-  if (k > 280) return { label: 'High', color: 'text-emerald-700' };
-  if (k >= 110) return { label: 'Medium', color: 'text-purple-700' };
-  return { label: 'Low', color: 'text-rose-700' };
-}
-
 export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
   district,
   climateDataset,
   climateYear = 2024,
   climateMonth = 12,
   climateMode = 'monthly',
-  activeClimateMetric = 'prectot',
   selectedPillar,
   selectedCropId,
 }) => {
@@ -114,8 +98,6 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
       : district.nasaSolarRadiationKwh || district.solarRadiationKwh;
 
   const nStatus = getNarcNStatus(district.soilNitrogen);
-  const pStatus = getNarcPStatus(district.soilPhosphorus);
-  const kStatus = getNarcKStatus(district.soilPotassium);
 
   // 1. If user selected a specific crop via sub-filter:
   const activeCrop = selectedCropId ? db.getCropById(selectedCropId) : null;
