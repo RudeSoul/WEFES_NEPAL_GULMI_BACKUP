@@ -17,7 +17,10 @@ export class ApiClient {
     this.baseUrl = baseUrl || (typeof window !== 'undefined' ? '' : 'http://localhost:3001');
   }
 
-  public async get<T = any>(endpoint: string, params?: Record<string, string | number | boolean | undefined>): Promise<T> {
+  public async get<T = any>(
+    endpoint: string,
+    params?: Record<string, string | number | boolean | undefined>
+  ): Promise<T> {
     let url = `${this.baseUrl}${endpoint}`;
     if (params) {
       const searchParams = new URLSearchParams();
@@ -35,7 +38,7 @@ export class ApiClient {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
     });
 
@@ -53,7 +56,7 @@ export class ApiClient {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
       body: JSON.stringify(body),
     });

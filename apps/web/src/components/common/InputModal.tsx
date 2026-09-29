@@ -63,9 +63,7 @@ export const InputModal: React.FC<InputModalProps> = ({ onRunAnalysis }) => {
                   {district.name}
                 </span>
               </h3>
-              <p className="text-xs text-slate-500">
-                Specify harvest production quantity and target units
-              </p>
+              <p className="text-xs text-slate-500">Specify harvest production quantity and target units</p>
             </div>
           </div>
 
@@ -153,25 +151,19 @@ export const InputModal: React.FC<InputModalProps> = ({ onRunAnalysis }) => {
 
             <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 text-xs font-mono">
               <div className="bg-white p-2.5 rounded-lg border border-sky-200 shadow-2xs">
-                <span className="text-[10px] text-slate-500 block font-sans font-medium">
-                  Water
-                </span>
+                <span className="text-[10px] text-slate-500 block font-sans font-medium">Water</span>
                 <span className="font-extrabold text-sky-700 text-xs">
                   {liveOutput.water.consumptionLiters.toLocaleString()} L
                 </span>
               </div>
               <div className="bg-white p-2.5 rounded-lg border border-amber-200 shadow-2xs">
-                <span className="text-[10px] text-slate-500 block font-sans font-medium">
-                  Energy
-                </span>
+                <span className="text-[10px] text-slate-500 block font-sans font-medium">Energy</span>
                 <span className="font-extrabold text-amber-700 text-xs">
                   {liveOutput.energy.loadKwh.toLocaleString()} kWh
                 </span>
               </div>
               <div className="bg-white p-2.5 rounded-lg border border-emerald-200 shadow-2xs">
-                <span className="text-[10px] text-slate-500 block font-sans font-medium">
-                  Est. Revenue
-                </span>
+                <span className="text-[10px] text-slate-500 block font-sans font-medium">Est. Revenue</span>
                 <span className="font-extrabold text-emerald-700 text-xs">
                   NPR {liveOutput.socioeconomics.grossRevenueNpr.toLocaleString()}
                 </span>

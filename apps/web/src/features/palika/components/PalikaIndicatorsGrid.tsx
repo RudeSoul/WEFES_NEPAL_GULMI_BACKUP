@@ -37,10 +37,13 @@ export const PalikaIndicatorsGrid: React.FC<PalikaIndicatorsGridProps> = ({
           <div>
             <h4 className="text-xs font-bold text-slate-900 font-outfit uppercase tracking-wider flex items-center gap-2">
               <span>{activePalika.name} Agro-Ecological Baseline Benchmarks</span>
-              <span className="text-[10px] font-mono font-normal text-slate-500 lowercase">(ground surveys & climatology)</span>
+              <span className="text-[10px] font-mono font-normal text-slate-500 lowercase">
+                (ground surveys & climatology)
+              </span>
             </h4>
             <p className="text-[10px] text-slate-500">
-              Calibrated against NARC ground soil grid & NASA MERRA-2 lapse climatology • Click any pillar to inspect time-series & forecasts
+              Calibrated against NARC ground soil grid & NASA MERRA-2 lapse climatology • Click any pillar to inspect
+              time-series & forecasts
             </p>
           </div>
         </div>
@@ -61,7 +64,9 @@ export const PalikaIndicatorsGrid: React.FC<PalikaIndicatorsGridProps> = ({
               <span>Inspect</span>
               <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </div>
-            <div className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs ${iconBg}`}>
+            <div
+              className={`w-9 h-9 rounded-xl border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-xs ${iconBg}`}
+            >
               {icon}
             </div>
             <div className="min-w-0 pr-6">
@@ -69,7 +74,9 @@ export const PalikaIndicatorsGrid: React.FC<PalikaIndicatorsGridProps> = ({
                 {label}
               </div>
               <div className="text-sm font-extrabold text-slate-900 truncate mt-0.5 font-outfit">{value}</div>
-              <span className={`text-[9px] px-2 py-0.5 rounded-md font-mono font-semibold inline-flex items-center gap-1 mt-1 border ${badgeClass}`}>
+              <span
+                className={`text-[9px] px-2 py-0.5 rounded-md font-mono font-semibold inline-flex items-center gap-1 mt-1 border ${badgeClass}`}
+              >
                 <span className={`w-1.5 h-1.5 rounded-full ${badgeDot}`} />
                 {badge}
               </span>

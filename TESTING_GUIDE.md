@@ -30,12 +30,15 @@ tests/
 ## 2. Running Test Commands
 
 ### 1. Build Verification
+
 ```bash
 pnpm turbo run build
 ```
+
 Validates full TypeScript typing, bundle creation, and `.d.ts` declaration generation across all 5 workspace packages.
 
 ### 2. Microservice API Health Test
+
 ```bash
 # Verify API Gateway endpoints
 node -e "

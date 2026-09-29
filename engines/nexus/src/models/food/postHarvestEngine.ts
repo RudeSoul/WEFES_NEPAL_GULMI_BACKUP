@@ -87,16 +87,32 @@ export function computePostHarvestLoss(
   let cropCategory: PostHarvestLossModel['cropCategory'] = 'Fruits & Vegetables';
   let lossPct = 28.5; // Default 28.5% for fruits & vegetables
 
-  if (normCrop.includes('rice') || normCrop.includes('paddy') || normCrop.includes('maize') || normCrop.includes('wheat') || normCrop.includes('millet')) {
+  if (
+    normCrop.includes('rice') ||
+    normCrop.includes('paddy') ||
+    normCrop.includes('maize') ||
+    normCrop.includes('wheat') ||
+    normCrop.includes('millet')
+  ) {
     cropCategory = 'Grains & Cereals';
     lossPct = 14.8;
-  } else if (normCrop.includes('cardamom') || normCrop.includes('ginger') || normCrop.includes('tea') || normCrop.includes('coffee')) {
+  } else if (
+    normCrop.includes('cardamom') ||
+    normCrop.includes('ginger') ||
+    normCrop.includes('tea') ||
+    normCrop.includes('coffee')
+  ) {
     cropCategory = 'Perennial Spices';
     lossPct = 18.2;
   } else if (normCrop.includes('potato')) {
     cropCategory = 'Tubers & Roots';
     lossPct = 22.0;
-  } else if (normCrop.includes('apple') || normCrop.includes('tomato') || normCrop.includes('orange') || normCrop.includes('citrus')) {
+  } else if (
+    normCrop.includes('apple') ||
+    normCrop.includes('tomato') ||
+    normCrop.includes('orange') ||
+    normCrop.includes('citrus')
+  ) {
     cropCategory = 'Fruits & Vegetables';
     lossPct = 36.5;
   }
@@ -127,7 +143,7 @@ export function computePostHarvestLoss(
     spoilageAccelerationPct = 6;
   }
 
-  const salvagedVolumeKg = Math.round(grossYieldKg * (lossPct * 0.72 / 100));
+  const salvagedVolumeKg = Math.round(grossYieldKg * ((lossPct * 0.72) / 100));
   const salvagedRevenueNpr = Math.round(financialLossNpr * 0.72);
   const ghgMethaneMitigationKgCo2e = Math.round(salvagedVolumeKg * 0.45);
 
@@ -136,9 +152,21 @@ export function computePostHarvestLoss(
     baselineFieldToMarketLossPct: lossPct,
     financialLossNpr,
     primaryLossFactors: [
-      { factor: 'Lack of Palika-Level Pre-Cooling & Solar Storage', sharePct: 45, mechanism: 'Rapid enzymatic degradation and respiration heat accumulation in ambient hill valley temperatures.' },
-      { factor: 'Monsoon Feeder Road Landslide Transit Delays', sharePct: 30, mechanism: 'Vehicle stranding along steep feeder road bottlenecks during peak monsoon harvest.' },
-      { factor: 'Rough Terrain Mechanical Damage', sharePct: 25, mechanism: 'Mechanical compression damage and bruising during rough transit on unpaved mountain tracks.' },
+      {
+        factor: 'Lack of Palika-Level Pre-Cooling & Solar Storage',
+        sharePct: 45,
+        mechanism: 'Rapid enzymatic degradation and respiration heat accumulation in ambient hill valley temperatures.',
+      },
+      {
+        factor: 'Monsoon Feeder Road Landslide Transit Delays',
+        sharePct: 30,
+        mechanism: 'Vehicle stranding along steep feeder road bottlenecks during peak monsoon harvest.',
+      },
+      {
+        factor: 'Rough Terrain Mechanical Damage',
+        sharePct: 25,
+        mechanism: 'Mechanical compression damage and bruising during rough transit on unpaved mountain tracks.',
+      },
     ],
     nearestColdStorage,
     distanceToColdStorageKm: distanceKm,
@@ -150,9 +178,8 @@ export function computePostHarvestLoss(
     coldChainInterventionDividend: {
       salvagedVolumeKg,
       salvagedRevenueNpr,
-      solarColdStoragePaybackYears: salvagedRevenueNpr > 50000
-        ? Number(Math.min(10, Math.max(0.8, 1250000 / salvagedRevenueNpr)).toFixed(1))
-        : 9.5,
+      solarColdStoragePaybackYears:
+        salvagedRevenueNpr > 50000 ? Number(Math.min(10, Math.max(0.8, 1250000 / salvagedRevenueNpr)).toFixed(1)) : 9.5,
       ghgMethaneMitigationKgCo2e,
     },
   };

@@ -1,7 +1,17 @@
 import React, { useMemo } from 'react';
 import { District, Crop } from '@wefes/shared-types';
 import { evaluateCropFeasibilityMatrix } from '@wefes/wefes-engine';
-import { Layers, Sparkles, Droplets, Thermometer, Mountain, DollarSign, Award, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import {
+  Layers,
+  Sparkles,
+  Droplets,
+  Thermometer,
+  Mountain,
+  DollarSign,
+  Award,
+  ShieldAlert,
+  CheckCircle2,
+} from 'lucide-react';
 
 interface FeasibilityMatrixProps {
   district: District;
@@ -26,7 +36,7 @@ function getScoreBadge(score: number): { label: string; color: string; badgeClas
       label: 'Optimal',
       color: 'text-emerald-700',
       badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-300',
-      barClass: 'bg-emerald-500'
+      barClass: 'bg-emerald-500',
     };
   }
   if (score >= 50) {
@@ -34,14 +44,14 @@ function getScoreBadge(score: number): { label: string; color: string; badgeClas
       label: 'Suitable',
       color: 'text-amber-700',
       badgeClass: 'bg-amber-50 text-amber-800 border-amber-300',
-      barClass: 'bg-amber-500'
+      barClass: 'bg-amber-500',
     };
   }
   return {
     label: 'Marginal',
     color: 'text-rose-700',
     badgeClass: 'bg-rose-50 text-rose-800 border-rose-300',
-    barClass: 'bg-rose-500'
+    barClass: 'bg-rose-500',
   };
 }
 
@@ -63,7 +73,7 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
         description: 'Optimal nutrient uptake and rhizosphere acidity',
         unit: 'pH',
         value: `${evalResult.dPh} pH`,
-        ideal: `${evalResult.env.phOptMin}–${evalResult.env.phOptMax} pH`
+        ideal: `${evalResult.env.phOptMin}–${evalResult.env.phOptMax} pH`,
       },
       {
         label: 'Thermal Envelope',
@@ -73,7 +83,7 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
         description: 'Growing degree-days and temperature suitability',
         unit: '°C',
         value: `${evalResult.dTemp}°C`,
-        ideal: `${evalResult.env.tempOptMin}–${evalResult.env.tempOptMax}°C`
+        ideal: `${evalResult.env.tempOptMin}–${evalResult.env.tempOptMax}°C`,
       },
       {
         label: 'Moisture & Rainfall',
@@ -83,7 +93,7 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
         description: 'Annual precipitation versus crop water footprint',
         unit: 'mm',
         value: `${evalResult.dRain} mm/yr`,
-        ideal: `${evalResult.env.rainOptMin}–${evalResult.env.rainOptMax} mm`
+        ideal: `${evalResult.env.rainOptMin}–${evalResult.env.rainOptMax} mm`,
       },
       {
         label: 'Elevation & Relief',
@@ -93,7 +103,7 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
         description: 'Altitude belt overlap across district territory',
         unit: 'm',
         value: `${evalResult.dMinElev}–${evalResult.dMaxElev}m`,
-        ideal: `${evalResult.env.altOptMin}–${evalResult.env.altOptMax}m`
+        ideal: `${evalResult.env.altOptMin}–${evalResult.env.altOptMax}m`,
       },
       {
         label: 'Labor & Farmgate Margin',
@@ -103,8 +113,8 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
         description: 'Daily field wage versus harvest market value',
         unit: '',
         value: `NPR ${evalResult.dLabor}/d`,
-        ideal: `High Margin (NPR ${crop.marketValuePerUnit}/${crop.baseUnitName})`
-      }
+        ideal: `High Margin (NPR ${crop.marketValuePerUnit}/${crop.baseUnitName})`,
+      },
     ];
   }, [evalResult, crop]);
 
@@ -117,9 +127,7 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
             <Layers className="w-4 h-4 text-emerald-700" />
           </span>
           <div>
-            <h4 className="text-sm font-bold text-slate-900 font-outfit">
-              FAO Land Evaluation & AHP Matrix
-            </h4>
+            <h4 className="text-sm font-bold text-slate-900 font-outfit">FAO Land Evaluation & AHP Matrix</h4>
             <p className="text-xs text-slate-500 font-sans mt-0.5">
               Parametric agro-ecological suitability in <strong className="text-slate-800">{district.name}</strong>
             </p>
@@ -128,10 +136,14 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
 
         <div className="flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs shrink-0">
           <span className="text-xs text-slate-500 font-medium font-sans">Overall Fit:</span>
-          <span className={`text-base font-extrabold font-mono ${displayScore >= 75 ? 'text-emerald-700' : displayScore >= 50 ? 'text-amber-700' : 'text-rose-700'}`}>
+          <span
+            className={`text-base font-extrabold font-mono ${displayScore >= 75 ? 'text-emerald-700' : displayScore >= 50 ? 'text-amber-700' : 'text-rose-700'}`}
+          >
             {displayScore}%
           </span>
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${getScoreBadge(displayScore).badgeClass}`}>
+          <span
+            className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${getScoreBadge(displayScore).badgeClass}`}
+          >
             {getScoreBadge(displayScore).label}
           </span>
         </div>
@@ -142,7 +154,10 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
         {criteria.map((c) => {
           const badge = getScoreBadge(c.score);
           return (
-            <div key={c.label} className="bg-white hover:bg-slate-50/70 rounded-xl p-3.5 border border-slate-200/90 transition-colors space-y-2.5 shadow-2xs">
+            <div
+              key={c.label}
+              className="bg-white hover:bg-slate-50/70 rounded-xl p-3.5 border border-slate-200/90 transition-colors space-y-2.5 shadow-2xs"
+            >
               {/* Row 1: Criterion Label, Icon, Weight & Parameter Values */}
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 min-w-0">
@@ -161,9 +176,7 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
                   <span className="text-xs font-mono font-bold text-slate-800 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">
                     {c.value}
                   </span>
-                  <span className="text-[11px] text-slate-400 font-sans hidden sm:inline">
-                    (ideal: {c.ideal})
-                  </span>
+                  <span className="text-[11px] text-slate-400 font-sans hidden sm:inline">(ideal: {c.ideal})</span>
                 </div>
               </div>
 
@@ -177,13 +190,9 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
 
               {/* Row 3: Description on left, Score & Badge on right */}
               <div className="flex items-center justify-between text-[11px] pt-0.5">
-                <span className="text-slate-500 truncate mr-2">
-                  {c.description}
-                </span>
+                <span className="text-slate-500 truncate mr-2">{c.description}</span>
                 <div className="flex items-center gap-1.5 shrink-0">
-                  <span className={`font-mono font-bold ${badge.color}`}>
-                    {c.score}/100
-                  </span>
+                  <span className={`font-mono font-bold ${badge.color}`}>{c.score}/100</span>
                   <span className={`text-[9.5px] font-bold px-1.5 py-0.2 rounded border ${badge.badgeClass}`}>
                     {badge.label}
                   </span>

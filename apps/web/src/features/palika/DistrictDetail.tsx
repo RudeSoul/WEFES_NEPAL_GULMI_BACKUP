@@ -23,7 +23,6 @@ export interface DistrictDetailProps {
   climateDataset?: any;
 }
 
-
 export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   district,
   initialPalikaName,
@@ -56,8 +55,8 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
       return;
     }
     fetch('/geojson/gulmi-climate-monthly.json')
-      .then(res => res.json())
-      .then(data => setClimateDataset(data))
+      .then((res) => res.json())
+      .then((data) => setClimateDataset(data))
       .catch(() => null);
   }, [initialClimateDataset]);
 
@@ -75,10 +74,13 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
 
   const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
   const activePalika: DistrictPalika =
-    gulmiPalikas.find(p => p.name.toLowerCase() === activePalikaName.toLowerCase()) || gulmiPalikas[0] || ({} as DistrictPalika);
+    gulmiPalikas.find((p) => p.name.toLowerCase() === activePalikaName.toLowerCase()) ||
+    gulmiPalikas[0] ||
+    ({} as DistrictPalika);
 
   const activeSuitability =
-    displayedDistrictCrops.find((c: any) => c.crop.id === activeHoverCrop?.id)?.suitability || displayedDistrictCrops[0]?.suitability;
+    displayedDistrictCrops.find((c: any) => c.crop.id === activeHoverCrop?.id)?.suitability ||
+    displayedDistrictCrops[0]?.suitability;
 
   const radarData = activeSuitability
     ? [
@@ -109,8 +111,8 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
     fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,wind_speed_10m,direct_radiation,cloud_cover,surface_pressure,et0_fao_evapotranspiration,vapour_pressure_deficit,soil_moisture_0_to_7cm,soil_moisture_7_to_28cm,uv_index,is_day&past_days=1&forecast_days=2&hourly=precipitation,direct_radiation&timezone=Asia%2FKathmandu`
     )
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data && data.current) {
           const c = data.current;
           const topsoil = c.soil_moisture_0_to_7cm ?? 0.35;
@@ -125,8 +127,18 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
           const hourlySolar: number[] = data.hourly?.direct_radiation || [];
 
           // 1. Observed Past 24h Rainfall (Hours 0..24) & Forecast 24h (Hours 24..48)
-          const past24hRain = Number(hourlyRain.slice(0, 24).reduce((sum, v) => sum + (v || 0), 0).toFixed(1));
-          const forecast24hRain = Number(hourlyRain.slice(24, 48).reduce((sum, v) => sum + (v || 0), 0).toFixed(1));
+          const past24hRain = Number(
+            hourlyRain
+              .slice(0, 24)
+              .reduce((sum, v) => sum + (v || 0), 0)
+              .toFixed(1)
+          );
+          const forecast24hRain = Number(
+            hourlyRain
+              .slice(24, 48)
+              .reduce((sum, v) => sum + (v || 0), 0)
+              .toFixed(1)
+          );
           const currentRain1h = Number((c.precipitation || 0).toFixed(1));
 
           // 2. Soil Relative Wetness Index (Configurable saturation porosity theta = 0.48 m³/m³)
@@ -137,9 +149,9 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
           const coffeeRustStatus: 'Low' | 'Moderate' | 'High' =
             (temp >= 18 && temp <= 28 && rh >= 85 && vpdVal <= 0.4) || (rh >= 80 && past24hRain > 10)
               ? 'High'
-              : (temp >= 15 && temp <= 30 && (rh >= 75 || vpdVal <= 0.8))
-              ? 'Moderate'
-              : 'Low';
+              : temp >= 15 && temp <= 30 && (rh >= 75 || vpdVal <= 0.8)
+                ? 'Moderate'
+                : 'Low';
 
           // 4. Solar Pumping Viability (Integrated 24h solar energy kWh/m²/day vs 4.5 kWh/m² target)
           const dailySolarRadiationSum = hourlySolar.slice(24, 48).reduce((sum, v) => sum + (v || 0), 0);
@@ -152,15 +164,15 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
             topsoil < 0.18 && vpdVal > 1.4 && wind > 3.5 && past24hRain < 2
               ? 'Extreme'
               : topsoil < 0.24 && vpdVal > 1.0 && wind > 2.5 && past24hRain < 5
-              ? 'High'
-              : topsoil < 0.30 && vpdVal > 0.8 && past24hRain < 10
-              ? 'Moderate'
-              : 'Low';
+                ? 'High'
+                : topsoil < 0.3 && vpdVal > 0.8 && past24hRain < 10
+                  ? 'Moderate'
+                  : 'Low';
 
           // 6. Landslide Rainfall Exceedance Ratio (Palpa/Nepal Empirical Curve: I_threshold = 58.67 * D^-0.84)
           // Uses observed past 24h rainfall & current 1h rain intensity
           const thresh1h = 58.67 * Math.pow(1, -0.84); // ~58.7 mm/h
-          const thresh24h = (58.67 * Math.pow(24, -0.84)) * 24; // ~97.3 mm/24h
+          const thresh24h = 58.67 * Math.pow(24, -0.84) * 24; // ~97.3 mm/24h
 
           const ratio1h = currentRain1h / thresh1h;
           const ratio24h = past24hRain / thresh24h;
@@ -170,8 +182,8 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
             maxExceedanceRatio >= 1.0 || (past24hRain > 80 && soilWaterIdx > 80)
               ? 'Alert'
               : maxExceedanceRatio >= 0.4 || past24hRain > 40 || soilWaterIdx > 75
-              ? 'Moderate'
-              : 'Low';
+                ? 'Moderate'
+                : 'Low';
 
           setPalikaWeather({
             temperature: temp,
@@ -204,7 +216,8 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
       .catch(() => null);
   }, [activePalika.name]);
 
-  const hasRealSoil = district.hasRealSoilData !== false && (district.soilSampleCount || 0) > 0 && district.baseSoilPh !== undefined;
+  const hasRealSoil =
+    district.hasRealSoilData !== false && (district.soilSampleCount || 0) > 0 && district.baseSoilPh !== undefined;
 
   const indicators = [
     {
@@ -283,10 +296,7 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
         />
 
         {weatherTelemetryMode === 'archive' ? (
-          <PalikaAgroHydrologyCalendar
-            activePalika={activePalika}
-            climateDataset={climateDataset}
-          />
+          <PalikaAgroHydrologyCalendar activePalika={activePalika} climateDataset={climateDataset} />
         ) : (
           <PalikaWeatherConsole
             activePalika={activePalika}
@@ -296,16 +306,9 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
           />
         )}
 
-        <PalikaIndicatorsGrid
-          activePalika={activePalika}
-          indicators={indicators}
-          onOpenModal={setOpenModal}
-        />
+        <PalikaIndicatorsGrid activePalika={activePalika} indicators={indicators} onOpenModal={setOpenModal} />
 
-        <PalikaSeasonalRotationsCard
-          activePalika={activePalika}
-          onSelectCrop={onSelectCrop}
-        />
+        <PalikaSeasonalRotationsCard activePalika={activePalika} onSelectCrop={onSelectCrop} />
 
         <PalikaBenchmarkingWidget currentPalika={activePalika} />
       </div>

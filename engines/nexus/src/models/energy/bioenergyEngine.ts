@@ -36,10 +36,7 @@ export interface BioenergyCircularProfile {
   calibrationProvenance: string;
 }
 
-export function computeBioenergyModel(
-  districtName: string,
-  herdSize: number = 3
-): BioenergyCircularProfile {
+export function computeBioenergyModel(districtName: string, herdSize: number = 3): BioenergyCircularProfile {
   const dailyDung = herdSize * 15; // 15 kg dung/day per adult cattle/buffalo
   const dailyBiogas = Number((dailyDung * 0.042).toFixed(2)); // ~0.042 m³ biogas per kg fresh dung
   const annualBiogas = Math.round(dailyBiogas * 365);
@@ -50,7 +47,7 @@ export function computeBioenergyModel(
   const ureaBagsSaved = Number((herdSize * 2.4).toFixed(1));
   const dapBagsSaved = Number((herdSize * 1.2).toFixed(1));
   // MoALD March 2023 subsidized standard: Urea = NPR 1,250/bag, DAP = NPR 2,500/bag
-  const fertSavings = Math.round((ureaBagsSaved * 1250) + (dapBagsSaved * 2500));
+  const fertSavings = Math.round(ureaBagsSaved * 1250 + dapBagsSaved * 2500);
 
   return {
     districtName,
@@ -87,6 +84,7 @@ export function computeBioenergyModel(
       milkChillingCapacityLitersPerDay: 2000,
       dieselGeneratorFuelDisplacedLitersPerYr: 1800,
     },
-    calibrationProvenance: 'Calibrated using Alternative Energy Promotion Centre (AEPC) Technical Standards & NRREP Bioenergy Guidelines 2024.',
+    calibrationProvenance:
+      'Calibrated using Alternative Energy Promotion Centre (AEPC) Technical Standards & NRREP Bioenergy Guidelines 2024.',
   };
 }

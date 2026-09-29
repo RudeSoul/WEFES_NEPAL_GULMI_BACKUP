@@ -2,9 +2,7 @@ import React from 'react';
 import { District } from '@wefes/shared-types';
 import { DistrictPalika, GULMI_PALIKA_NEPALI } from '../../../data/districtPalikaAssets';
 import { PalikaLiveWeather } from './PalikaWeatherConsole';
-import {
-  ArrowLeft, CloudRain, Thermometer, Droplets, Wind, Sun, Cloud
-} from 'lucide-react';
+import { ArrowLeft, CloudRain, Thermometer, Droplets, Wind, Sun, Cloud } from 'lucide-react';
 
 interface PalikaHeroHeaderProps {
   district: District;
@@ -70,10 +68,11 @@ export const PalikaHeroHeader: React.FC<PalikaHeroHeaderProps> = ({
               <button
                 key={p.name}
                 onClick={() => onSelectPalika(p.name)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 border ${isSelected
-                  ? 'bg-emerald-700 text-white border-emerald-800 shadow-sm font-bold scale-102'
-                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 border ${
+                  isSelected
+                    ? 'bg-emerald-700 text-white border-emerald-800 shadow-sm font-bold scale-102'
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+                }`}
               >
                 <span>{p.name}</span>
                 <span className={`text-[10px] ${isSelected ? 'text-emerald-200' : 'text-slate-500'}`}>
@@ -104,18 +103,22 @@ export const PalikaHeroHeader: React.FC<PalikaHeroHeaderProps> = ({
               <span className="font-bold text-slate-900 font-outfit uppercase tracking-wider text-[11px]">
                 🏛️ Strategic Planning Baseline · {activePalika.name}
               </span>
-              <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-[10px] px-2 py-0.5 rounded font-mono font-semibold" title="Rainfall & Temperature from DHM / Municipal Profile (CBS 2021); Solar from NASA POWER Climatology">
+              <span
+                className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-[10px] px-2 py-0.5 rounded font-mono font-semibold"
+                title="Rainfall & Temperature from DHM / Municipal Profile (CBS 2021); Solar from NASA POWER Climatology"
+              >
                 Municipal Profile & Climatology
               </span>
             </>
           )}
 
           <button
-            onClick={() => setWeatherTelemetryMode(prev => (prev === 'live' ? 'archive' : 'live'))}
-            className={`ml-1.5 px-2.5 py-1 rounded-lg text-[10px] font-semibold border cursor-pointer transition-all shadow-xs flex items-center gap-1 ${weatherTelemetryMode === 'live'
+            onClick={() => setWeatherTelemetryMode((prev) => (prev === 'live' ? 'archive' : 'live'))}
+            className={`ml-1.5 px-2.5 py-1 rounded-lg text-[10px] font-semibold border cursor-pointer transition-all shadow-xs flex items-center gap-1 ${
+              weatherTelemetryMode === 'live'
                 ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
                 : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-300'
-              }`}
+            }`}
             title="Toggle between Strategic Planning Baseline and Live Operational Advisory"
           >
             {weatherTelemetryMode === 'live' ? '← Return to Planning Baseline' : '⚡ Live Field Advisory (Beta)'}

@@ -35,10 +35,7 @@ export function computeNexusReadiness(
   districtName: string,
   agroSuitability: DeepNexusAnalysis['agroSuitability']
 ): NexusReadinessAssessment {
-  const {
-    couplingMatrix, sdgAlignments,
-    ipccVulnerability, rusle, naturalCapital,
-  } = deep;
+  const { couplingMatrix, sdgAlignments, ipccVulnerability, rusle, naturalCapital } = deep;
 
   const gcfInvestment = { eirrPercent: 18.4, benefitCostRatio: 2.15 };
   const bankCredit = { debtServiceCoverageRatio: 1.95, bankRiskGrade: 'Class A Low Risk' };
@@ -49,7 +46,7 @@ export function computeNexusReadiness(
   const criteria: ReadinessCriterion[] = [];
 
   // 1. Nexus Integration & Cross-Pillar Synergies
-  const highCouplingCount = couplingMatrix.filter(c => Math.abs(c.coefficient) >= 0.70).length;
+  const highCouplingCount = couplingMatrix.filter((c) => Math.abs(c.coefficient) >= 0.7).length;
   let score1: 0 | 1 | 2 = 0;
   let evidence1 = 'Single-sector focus with minimal cross-pillar feedback.';
   if (highCouplingCount >= 4 && deep.synergyScoreTotal > 40) {
@@ -66,12 +63,13 @@ export function computeNexusReadiness(
     score: score1,
     maxScore: 2,
     evidence: evidence1,
-    funderRelevance: 'Ensures proposal qualifies for multi-sector nexus funding windows (PRIMA, GCF Integrated, GEF Multi-Focal).',
+    funderRelevance:
+      'Ensures proposal qualifies for multi-sector nexus funding windows (PRIMA, GCF Integrated, GEF Multi-Focal).',
     statusLabel: score1 === 2 ? 'Exemplary (2/2)' : score1 === 1 ? 'Acceptable (1/2)' : 'Deficient (0/2)',
   });
 
   // 2. Expected Outcomes & SDG Alignment
-  const highSDGs = sdgAlignments.filter(s => s.alignmentScore >= 60).length;
+  const highSDGs = sdgAlignments.filter((s) => s.alignmentScore >= 60).length;
   let score2: 0 | 1 | 2 = 0;
   let evidence2 = 'SDG metrics lack sufficient quantification or multi-target alignment.';
   if (highSDGs >= 4) {
@@ -114,7 +112,7 @@ export function computeNexusReadiness(
   });
 
   // 4. Multilateral Donor Co-Financing Presence
-  const activeDonorCount = donorAlignment.activeProjects.filter(p => p.districtActivePresence).length;
+  const activeDonorCount = donorAlignment.activeProjects.filter((p) => p.districtActivePresence).length;
   let score4: 0 | 1 | 2 = 0;
   let evidence4 = 'No active multilateral matching grant windows detected in district.';
   if (activeDonorCount >= 3 || donorAlignment.totalAvailableDonorBudgetUsd >= 50) {
@@ -222,7 +220,8 @@ export function computeNexusReadiness(
     score: score8,
     maxScore: 2,
     evidence: evidence8,
-    funderRelevance: 'Mandatory biophysical pre-screening required by FAO Land Evaluation and GCF Environmental & Social Safeguards (ESS). A permanently unsuitable crop disqualifies any project regardless of financial metrics.',
+    funderRelevance:
+      'Mandatory biophysical pre-screening required by FAO Land Evaluation and GCF Environmental & Social Safeguards (ESS). A permanently unsuitable crop disqualifies any project regardless of financial metrics.',
     statusLabel: score8 === 2 ? 'Exemplary (2/2)' : score8 === 1 ? 'Acceptable (1/2)' : 'Deficient (0/2)',
   });
 
@@ -231,42 +230,63 @@ export function computeNexusReadiness(
 
   let verdict: NexusReadinessAssessment['verdict'] = 'NOT YET READY (Pre-Feasibility Stage)';
   let verdictColor: NexusReadinessAssessment['verdictColor'] = 'rose';
-  let verdictDescription = 'Critical gaps identified in biophysical viability, cross-pillar coupling, or economic indicators. Address flagged deficits before submitting to multilateral windows.';
+  let verdictDescription =
+    'Critical gaps identified in biophysical viability, cross-pillar coupling, or economic indicators. Address flagged deficits before submitting to multilateral windows.';
 
   if (totalScore >= 13) {
     verdict = 'GO (Investment Ready)';
     verdictColor = 'emerald';
-    verdictDescription = 'Meets or exceeds all international pre-submission bankability standards across all 8 dimensions. Ready for full Project Concept Note (PCN) / Project Preparation Facility (PPF) application.';
+    verdictDescription =
+      'Meets or exceeds all international pre-submission bankability standards across all 8 dimensions. Ready for full Project Concept Note (PCN) / Project Preparation Facility (PPF) application.';
   } else if (totalScore >= 9) {
     verdict = 'CONDITIONAL GO (Requires Refinement)';
     verdictColor = 'amber';
-    verdictDescription = 'Core fundamentals are solid, but targeted refinements in biophysical crop-district alignment, commercial debt structuring, or MRV calibration are required prior to final board submission.';
+    verdictDescription =
+      'Core fundamentals are solid, but targeted refinements in biophysical crop-district alignment, commercial debt structuring, or MRV calibration are required prior to final board submission.';
   }
 
   const criticalGaps: string[] = [];
-  criteria.filter(c => c.score < 2).forEach(c => {
-    if (c.id === 'biophysical-viability') criticalGaps.push('Select a biophysically compatible crop for this district (FAO S1/S2 class) or pivot to a different district where this crop is naturally viable.');
-    if (c.id === 'co-financing-presence') criticalGaps.push('Establish formal matching grant coordination with provincial ADB/WB project offices.');
-    if (c.id === 'commercial-bankability') criticalGaps.push('Strengthen commercial off-take agreements to improve Debt Service Coverage Ratio (DSCR).');
-    if (c.id === 'mrv-readiness') criticalGaps.push('Calibrate district-level weather station data against satellite gridded precipitation indices.');
-    if (c.id === 'nexus-integration') criticalGaps.push('Incorporate biogas/biochar loops to strengthen agricultural residue valorization.');
-    if (c.id === 'economic-eligibility') criticalGaps.push('Improve realized yield and net margin: consider climate-adapted varieties, better post-harvest infrastructure, or a crop swap.');
-  });
+  criteria
+    .filter((c) => c.score < 2)
+    .forEach((c) => {
+      if (c.id === 'biophysical-viability')
+        criticalGaps.push(
+          'Select a biophysically compatible crop for this district (FAO S1/S2 class) or pivot to a different district where this crop is naturally viable.'
+        );
+      if (c.id === 'co-financing-presence')
+        criticalGaps.push('Establish formal matching grant coordination with provincial ADB/WB project offices.');
+      if (c.id === 'commercial-bankability')
+        criticalGaps.push('Strengthen commercial off-take agreements to improve Debt Service Coverage Ratio (DSCR).');
+      if (c.id === 'mrv-readiness')
+        criticalGaps.push(
+          'Calibrate district-level weather station data against satellite gridded precipitation indices.'
+        );
+      if (c.id === 'nexus-integration')
+        criticalGaps.push('Incorporate biogas/biochar loops to strengthen agricultural residue valorization.');
+      if (c.id === 'economic-eligibility')
+        criticalGaps.push(
+          'Improve realized yield and net margin: consider climate-adapted varieties, better post-harvest infrastructure, or a crop swap.'
+        );
+    });
 
   const recommendedSubmissionWindows: string[] = [];
   if (totalScore >= 13) {
-    recommendedSubmissionWindows.push('Green Climate Fund (GCF) Simplified Approval Process (SAP) — Direct Access Window');
+    recommendedSubmissionWindows.push(
+      'Green Climate Fund (GCF) Simplified Approval Process (SAP) — Direct Access Window'
+    );
     recommendedSubmissionWindows.push('World Bank REED Matching Grant Facility (Up to NPR 1 Crore / Cooperative Hub)');
     recommendedSubmissionWindows.push('ADB Climate Resilience & Water Infrastructure Facility');
   } else if (totalScore >= 9) {
-    recommendedSubmissionWindows.push('GCF Project Preparation Facility (PPF) — Technical Assistance Grant ($1.5M cap)');
+    recommendedSubmissionWindows.push(
+      'GCF Project Preparation Facility (PPF) — Technical Assistance Grant ($1.5M cap)'
+    );
     recommendedSubmissionWindows.push('Provincial Ministry Climate Adaptation Matching Fund');
     recommendedSubmissionWindows.push('Nepal NRB 15% Agriculture Priority Lending Window');
   } else {
     recommendedSubmissionWindows.push('Municipal Pre-Feasibility Seed Grant / NARC Technology Demonstration Fund');
   }
 
-  const keyStrengths = criteria.filter(c => c.score === 2).map(c => c.title);
+  const keyStrengths = criteria.filter((c) => c.score === 2).map((c) => c.title);
 
   return {
     totalScore,

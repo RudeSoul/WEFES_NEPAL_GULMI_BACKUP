@@ -42,7 +42,9 @@ export function isCropFeasibleInDistrict(cropOrId: Crop | string, district: Dist
     ...(district.feasibleVegetables || []),
     ...(district.feasibleFruits || []),
     ...(district.feasibleSpicesCashCrops || []),
-  ].join(', ').toLowerCase();
+  ]
+    .join(', ')
+    .toLowerCase();
 
   if (!keywords) {
     if (typeof cropOrId !== 'string' && cropOrId.name) {
@@ -51,7 +53,7 @@ export function isCropFeasibleInDistrict(cropOrId: Crop | string, district: Dist
     return true; // Unknown crops always shown
   }
 
-  return keywords.some(kw => allFeasible.includes(kw.toLowerCase()));
+  return keywords.some((kw) => allFeasible.includes(kw.toLowerCase()));
 }
 
 export class WEFESDatabase {
@@ -64,7 +66,7 @@ export class WEFESDatabase {
   }
 
   public getDistrictById(id: string): District | undefined {
-    return this.districts.find(d => d.id.toLowerCase() === id.toLowerCase());
+    return this.districts.find((d) => d.id.toLowerCase() === id.toLowerCase());
   }
 
   public getAllCrops(): Crop[] {
@@ -72,7 +74,7 @@ export class WEFESDatabase {
   }
 
   public getCropById(id: string): Crop | undefined {
-    return this.crops.find(c => c.id.toLowerCase() === id.toLowerCase());
+    return this.crops.find((c) => c.id.toLowerCase() === id.toLowerCase());
   }
 
   /**
@@ -84,10 +86,10 @@ export class WEFESDatabase {
     if (!district) return [];
 
     return this.crops
-      .filter(crop => isCropFeasibleInDistrict(crop, district))
-      .map(crop => ({
+      .filter((crop) => isCropFeasibleInDistrict(crop, district))
+      .map((crop) => ({
         crop,
-        suitability: computeCropSuitability(district, crop)
+        suitability: computeCropSuitability(district, crop),
       }));
   }
 
@@ -98,7 +100,7 @@ export class WEFESDatabase {
     const district = this.getDistrictById(districtId);
     if (!district) return [];
 
-    return this.crops.map(crop => ({
+    return this.crops.map((crop) => ({
       crop,
       suitability: computeCropSuitability(district, crop),
       isFeasible: isCropFeasibleInDistrict(crop, district),
@@ -113,9 +115,9 @@ export class WEFESDatabase {
     const features = this.districts.map((district, idx) => {
       const lat = district.coordinates?.lat ?? 28.0;
       const lng = district.coordinates?.lng ?? 84.0;
-      
+
       // Smooth polygon bounding box for 77 Nepal districts
-      const r = 0.18 + ((idx % 5) * 0.03);
+      const r = 0.18 + (idx % 5) * 0.03;
       const polygon = [
         [
           [lng - r * 0.9, lat - r * 0.5],
@@ -124,8 +126,8 @@ export class WEFESDatabase {
           [lng + r * 0.95, lat + r * 0.4],
           [lng + r * 0.3, lat + r * 0.9],
           [lng - r * 0.75, lat + r * 0.7],
-          [lng - r * 0.9, lat - r * 0.5]
-        ]
+          [lng - r * 0.9, lat - r * 0.5],
+        ],
       ];
 
       return {
@@ -183,14 +185,14 @@ export class WEFESDatabase {
         },
         geometry: {
           type: 'Polygon',
-          coordinates: polygon
-        }
+          coordinates: polygon,
+        },
       };
     });
 
     this.cachedGeoJSON = {
       type: 'FeatureCollection',
-      features
+      features,
     };
 
     return this.cachedGeoJSON;

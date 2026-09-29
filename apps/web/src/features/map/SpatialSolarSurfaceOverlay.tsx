@@ -11,14 +11,14 @@ import { GULMI_GHI_GRID as ghiGridData } from '../../data/districtIndicatorAsset
 // Rich, multi-stop QGIS-matched solar radiation thermal palette (GHI in kWh/m2/day):
 // Deep gorge shadow (3.03) -> Shaded north slopes (3.6) -> Lower valleys (3.9) -> Mid-hills (4.15) -> Sunny terraces (4.3) -> High ridge summits (4.53+)
 const SOLAR_GHI_COLOR_STOPS: { val: number; rgb: [number, number, number] }[] = [
-  { val: 3.00, rgb: [69, 10, 10] },     // #450a0a - Deepest canyon shadow (<3.2)
-  { val: 3.50, rgb: [124, 45, 18] },    // #7c2d12 - Severe river ravine shading (3.2–3.6)
-  { val: 3.80, rgb: [194, 65, 12] },    // #c2410c - Partially shaded lower slopes (3.6–3.9)
-  { val: 4.05, rgb: [234, 88, 12] },    // #ea580c - Lower mid-hills (3.9–4.1)
-  { val: 4.18, rgb: [245, 158, 11] },   // #f59e0b - District mean solar baseline (~4.16–4.20)
-  { val: 4.28, rgb: [251, 191, 36] },   // #fbbf24 - Bright south & west agricultural terraces (4.20–4.32)
-  { val: 4.38, rgb: [253, 224, 71] },   // #fde047 - High elevation sunny plateau (4.32–4.42)
-  { val: 4.54, rgb: [254, 240, 138] },  // #fef08a - Peak high mountain ridge crest (>4.42)
+  { val: 3.0, rgb: [69, 10, 10] }, // #450a0a - Deepest canyon shadow (<3.2)
+  { val: 3.5, rgb: [124, 45, 18] }, // #7c2d12 - Severe river ravine shading (3.2–3.6)
+  { val: 3.8, rgb: [194, 65, 12] }, // #c2410c - Partially shaded lower slopes (3.6–3.9)
+  { val: 4.05, rgb: [234, 88, 12] }, // #ea580c - Lower mid-hills (3.9–4.1)
+  { val: 4.18, rgb: [245, 158, 11] }, // #f59e0b - District mean solar baseline (~4.16–4.20)
+  { val: 4.28, rgb: [251, 191, 36] }, // #fbbf24 - Bright south & west agricultural terraces (4.20–4.32)
+  { val: 4.38, rgb: [253, 224, 71] }, // #fde047 - High elevation sunny plateau (4.32–4.42)
+  { val: 4.54, rgb: [254, 240, 138] }, // #fef08a - Peak high mountain ridge crest (>4.42)
 ];
 
 function getGhiRgb(val: number): [number, number, number] {
@@ -54,8 +54,7 @@ function isPointInPolygon(point: [number, number], vs: number[][][]): boolean {
       const xj = ring[j][0];
       const yj = ring[j][1];
 
-      const intersect = ((yi > y) !== (yj > y)) &&
-        (x < ((xj - xi) * (y - yi)) / (yj - yi) + xi);
+      const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
       if (intersect) inside = !inside;
     }
   }
@@ -244,12 +243,6 @@ export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProp
   if (!overlay) return null;
 
   return (
-    <ImageOverlay
-      bounds={overlay.bounds}
-      url={overlay.dataUrl}
-      opacity={opacity}
-      pane="rainfallPane"
-      zIndex={340}
-    />
+    <ImageOverlay bounds={overlay.bounds} url={overlay.dataUrl} opacity={opacity} pane="rainfallPane" zIndex={340} />
   );
 };

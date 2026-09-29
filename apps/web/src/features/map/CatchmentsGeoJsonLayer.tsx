@@ -1,4 +1,4 @@
-import { GeoJSON } from "react-leaflet";
+import { GeoJSON } from 'react-leaflet';
 
 interface CatchmentsGeoJsonLayerProps {
   data: any;
@@ -19,21 +19,21 @@ interface CatchmentsGeoJsonLayerProps {
  * drainage/network attribute.
  */
 const getTopologicalColor = (
-  properties: any,
+  properties: any
 ): {
   color: string;
   label: string;
   level10Digit: number | null;
 } => {
-  const pfafId = String(properties?.PFAF_ID ?? "")
+  const pfafId = String(properties?.PFAF_ID ?? '')
     .trim()
-    .replace(/\s+/g, "");
+    .replace(/\s+/g, '');
 
   // Require a valid numeric Pfafstetter code.
   if (!/^\d+$/.test(pfafId)) {
     return {
-      color: "#94a3b8",
-      label: "Unknown Pfafstetter Type",
+      color: '#94a3b8',
+      label: 'Unknown Pfafstetter Type',
       level10Digit: null,
     };
   }
@@ -44,8 +44,8 @@ const getTopologicalColor = (
    */
   if (pfafId.length < 10) {
     return {
-      color: "#94a3b8",
-      label: "Incomplete Pfafstetter Code",
+      color: '#94a3b8',
+      label: 'Incomplete Pfafstetter Code',
       level10Digit: null,
     };
   }
@@ -54,8 +54,8 @@ const getTopologicalColor = (
 
   if (level10Digit === 0) {
     return {
-      color: "#94a3b8",
-      label: "Invalid Level 10 Code",
+      color: '#94a3b8',
+      label: 'Invalid Level 10 Code',
       level10Digit,
     };
   }
@@ -63,16 +63,16 @@ const getTopologicalColor = (
   // Even Pfafstetter codes represent sub-basins.
   if (level10Digit % 2 === 0) {
     return {
-      color: "#38bdf8",
-      label: "Sub-basin",
+      color: '#38bdf8',
+      label: 'Sub-basin',
       level10Digit,
     };
   }
 
   // Odd Pfafstetter codes represent inter-basins.
   return {
-    color: "#bae6fd",
-    label: "Inter-basin",
+    color: '#bae6fd',
+    label: 'Inter-basin',
     level10Digit,
   };
 };
@@ -89,7 +89,7 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
         return {
           fillColor,
           fillOpacity: 0.65,
-          color: "#0369a1",
+          color: '#0369a1',
           weight: 1.5,
           opacity: 0.9,
         };
@@ -97,11 +97,7 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
       onEachFeature={(feature: any, layer: any) => {
         const p = feature?.properties ?? {};
 
-        const {
-          color: fillColor,
-          label: topologicalLabel,
-          level10Digit,
-        } = getTopologicalColor(p);
+        const { color: fillColor, label: topologicalLabel, level10Digit } = getTopologicalColor(p);
 
         const order = p.ORDER;
         const subArea = p.SUB_AREA;
@@ -177,7 +173,7 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
                 "
               >
                 <strong>Level 10 Digit:</strong>
-                ${level10Digit ?? "N/A"}
+                ${level10Digit ?? 'N/A'}
               </div>
 
               <div
@@ -212,7 +208,7 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
                 "
               >
                 <strong>Drainage Order:</strong>
-                ${order ?? "N/A"}
+                ${order ?? 'N/A'}
               </div>
 
               <div
@@ -223,7 +219,7 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
                 "
               >
                 Pfafstetter Code:
-                <strong>${pfafId ?? "N/A"}</strong>
+                <strong>${pfafId ?? 'N/A'}</strong>
               </div>
 
               <div
@@ -239,11 +235,11 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
             </div>
           `,
           {
-            direction: "top",
+            direction: 'top',
             offset: [0, -6],
             opacity: 0.98,
-            pane: "popupPane",
-          },
+            pane: 'popupPane',
+          }
         );
 
         layer.on({
@@ -251,7 +247,7 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
             event.target.setStyle({
               fillOpacity: 0.85,
               weight: 2.5,
-              color: "#ffffff",
+              color: '#ffffff',
             });
 
             event.target.bringToFront();
@@ -261,7 +257,7 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
             event.target.setStyle({
               fillColor,
               fillOpacity: 0.65,
-              color: "#0369a1",
+              color: '#0369a1',
               weight: 1.5,
               opacity: 0.9,
             });
@@ -277,8 +273,8 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
  * null, undefined and non-numeric values.
  */
 function formatNumber(value: unknown): string {
-  if (value === null || value === undefined || value === "") {
-    return "N/A";
+  if (value === null || value === undefined || value === '') {
+    return 'N/A';
   }
 
   const number = Number(value);

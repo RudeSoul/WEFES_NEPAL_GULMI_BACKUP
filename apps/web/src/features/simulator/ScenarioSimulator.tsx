@@ -1,7 +1,27 @@
 import React, { useState } from 'react';
 import { WEFESOutput, ScenarioParameters } from '@wefes/shared-types';
 import { simulateScenario } from '@wefes/wefes-engine';
-import { SlidersHorizontal, CloudRain, Zap, TrendingUp, Sprout, ArrowUpRight, ArrowDownRight, RefreshCw, Layers, ShieldCheck, DollarSign, Trees, Droplets, Sun, ChevronDown, ChevronUp, Coins, ArrowLeft, ArrowUp } from 'lucide-react';
+import {
+  SlidersHorizontal,
+  CloudRain,
+  Zap,
+  TrendingUp,
+  Sprout,
+  ArrowUpRight,
+  ArrowDownRight,
+  RefreshCw,
+  Layers,
+  ShieldCheck,
+  DollarSign,
+  Trees,
+  Droplets,
+  Sun,
+  ChevronDown,
+  ChevronUp,
+  Coins,
+  ArrowLeft,
+  ArrowUp,
+} from 'lucide-react';
 
 interface ScenarioSimulatorProps {
   baselineOutput: WEFESOutput;
@@ -44,10 +64,13 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
   onBackToDistrict,
   onBackToMap,
 }) => {
-  const initialParams = React.useMemo<ScenarioParameters>(() => ({
-    ...DEFAULT_PARAMS,
-    renewableEnergyShare: Math.round(100 - baselineOutput.energy.fossilSharePercent),
-  }), [baselineOutput]);
+  const initialParams = React.useMemo<ScenarioParameters>(
+    () => ({
+      ...DEFAULT_PARAMS,
+      renewableEnergyShare: Math.round(100 - baselineOutput.energy.fossilSharePercent),
+    }),
+    [baselineOutput]
+  );
 
   const [parameters, setParameters] = useState<ScenarioParameters>(initialParams);
   const [activeTab, setActiveTab] = useState<'climate' | 'energy' | 'agronomic' | 'socio'>('climate');
@@ -64,12 +87,11 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
   };
 
   const updateParam = (key: keyof ScenarioParameters, val: number) => {
-    setParameters(prev => ({ ...prev, [key]: val }));
+    setParameters((prev) => ({ ...prev, [key]: val }));
   };
 
   return (
     <div className="space-y-6 animate-fade-in-up">
-
       {/* Simulator Header & Controls Bar */}
       <div className="glass-panel p-6 rounded-2xl border border-slate-200 shadow-sm bg-white/95 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
@@ -114,7 +136,8 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             Simulating {baselineOutput.cropName} in {baselineOutput.districtName}
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            16 real-world climate, technological, ecological & market levers recalculating WEFES trade-offs in real time.
+            16 real-world climate, technological, ecological & market levers recalculating WEFES trade-offs in real
+            time.
           </p>
         </div>
 
@@ -129,10 +152,8 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
       {/* Main Grid: 16 Slider Controls (Left 6 Cols) vs Comparison & Differentials (Right 6 Cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
         {/* Controls Panel with Tabs */}
         <div className="lg:col-span-6 glass-panel p-6 rounded-2xl border border-slate-200 shadow-sm bg-white/95 space-y-5">
-
           {/* Tab Selector */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-medium">
             {[
@@ -140,14 +161,15 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
               { id: 'energy', label: 'Energy System', icon: <Zap className="w-3.5 h-3.5 text-amber-600" /> },
               { id: 'agronomic', label: 'Agronomy & Eco', icon: <Sprout className="w-3.5 h-3.5 text-emerald-600" /> },
               { id: 'socio', label: 'Socio & Market', icon: <Coins className="w-3.5 h-3.5 text-purple-600" /> },
-            ].map(tab => (
+            ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-all text-[11px] cursor-pointer ${activeTab === tab.id
-                  ? 'bg-white text-slate-900 shadow-sm border border-slate-200/90 font-bold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
-                  }`}
+                className={`py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-all text-[11px] cursor-pointer ${
+                  activeTab === tab.id
+                    ? 'bg-white text-slate-900 shadow-sm border border-slate-200/90 font-bold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                }`}
               >
                 {tab.icon}
                 <span className="truncate">{tab.label}</span>
@@ -167,7 +189,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="-30" max="30" step="1"
+                  type="range"
+                  min="-30"
+                  max="30"
+                  step="1"
                   value={parameters.monsoonShift}
                   onChange={(e) => updateParam('monsoonShift', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
@@ -188,7 +213,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="1.0" max="3.0" step="0.1"
+                  type="range"
+                  min="1.0"
+                  max="3.0"
+                  step="0.1"
                   value={parameters.droughtFrequency}
                   onChange={(e) => updateParam('droughtFrequency', parseFloat(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
@@ -205,11 +233,16 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-semibold text-slate-800">Glacier / Stream Flow Variation (%)</span>
                   <span className="font-mono text-slate-900 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 shadow-2xs font-bold">
-                    {parameters.glacierFlowVariation > 0 ? `+${parameters.glacierFlowVariation}%` : `${parameters.glacierFlowVariation}%`}
+                    {parameters.glacierFlowVariation > 0
+                      ? `+${parameters.glacierFlowVariation}%`
+                      : `${parameters.glacierFlowVariation}%`}
                   </span>
                 </div>
                 <input
-                  type="range" min="-40" max="40" step="5"
+                  type="range"
+                  min="-40"
+                  max="40"
+                  step="5"
                   value={parameters.glacierFlowVariation}
                   onChange={(e) => updateParam('glacierFlowVariation', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
@@ -230,7 +263,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="500" max="5000" step="250"
+                  type="range"
+                  min="500"
+                  max="5000"
+                  step="250"
                   value={parameters.groundwaterLimit}
                   onChange={(e) => updateParam('groundwaterLimit', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
@@ -256,7 +292,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="0" max="100" step="5"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
                   value={parameters.solarIrrigationAdoption}
                   onChange={(e) => updateParam('solarIrrigationAdoption', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
@@ -277,7 +316,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="0" max="100" step="5"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
                   value={parameters.microHydroAccess}
                   onChange={(e) => updateParam('microHydroAccess', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
@@ -298,7 +340,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="0" max="100" step="5"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
                   value={parameters.dieselDependency}
                   onChange={(e) => updateParam('dieselDependency', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
@@ -319,7 +364,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="5.0" max="25.0" step="0.5"
+                  type="range"
+                  min="5.0"
+                  max="25.0"
+                  step="0.5"
                   value={parameters.gridTariffNpr}
                   onChange={(e) => updateParam('gridTariffNpr', parseFloat(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600"
@@ -345,7 +393,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="0" max="100" step="5"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
                   value={parameters.regenerativeFarmingAdoption}
                   onChange={(e) => updateParam('regenerativeFarmingAdoption', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
@@ -366,7 +417,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="0" max="100" step="5"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
                   value={parameters.bioFertilizerRatio}
                   onChange={(e) => updateParam('bioFertilizerRatio', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
@@ -387,7 +441,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="0" max="100" step="5"
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="5"
                   value={parameters.erosionBarrierRate}
                   onChange={(e) => updateParam('erosionBarrierRate', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
@@ -408,7 +465,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="0" max="20" step="1"
+                  type="range"
+                  min="0"
+                  max="20"
+                  step="1"
                   value={parameters.deforestationRate}
                   onChange={(e) => updateParam('deforestationRate', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
@@ -430,11 +490,16 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-semibold text-slate-800">Farmgate Market Price Change (%)</span>
                   <span className="font-mono text-slate-900 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 shadow-2xs font-bold">
-                    {parameters.marketPriceFluctuation > 0 ? `+${parameters.marketPriceFluctuation}%` : `${parameters.marketPriceFluctuation}%`}
+                    {parameters.marketPriceFluctuation > 0
+                      ? `+${parameters.marketPriceFluctuation}%`
+                      : `${parameters.marketPriceFluctuation}%`}
                   </span>
                 </div>
                 <input
-                  type="range" min="-50" max="100" step="5"
+                  type="range"
+                  min="-50"
+                  max="100"
+                  step="5"
                   value={parameters.marketPriceFluctuation}
                   onChange={(e) => updateParam('marketPriceFluctuation', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
@@ -451,11 +516,16 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-semibold text-slate-800">Labor Supply / Remittance Inflow (%)</span>
                   <span className="font-mono text-slate-900 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 shadow-2xs font-bold">
-                    {parameters.laborRemittanceRate > 0 ? `+${parameters.laborRemittanceRate}%` : `${parameters.laborRemittanceRate}%`}
+                    {parameters.laborRemittanceRate > 0
+                      ? `+${parameters.laborRemittanceRate}%`
+                      : `${parameters.laborRemittanceRate}%`}
                   </span>
                 </div>
                 <input
-                  type="range" min="-30" max="30" step="5"
+                  type="range"
+                  min="-30"
+                  max="30"
+                  step="5"
                   value={parameters.laborRemittanceRate}
                   onChange={(e) => updateParam('laborRemittanceRate', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
@@ -476,7 +546,10 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   </span>
                 </div>
                 <input
-                  type="range" min="10" max="100" step="5"
+                  type="range"
+                  min="10"
+                  max="100"
+                  step="5"
                   value={parameters.transportInfraIndex}
                   onChange={(e) => updateParam('transportInfraIndex', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
@@ -493,11 +566,16 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                 <div className="flex justify-between items-center text-xs">
                   <span className="font-semibold text-slate-800">Export Tax / Subsidy Rate (%)</span>
                   <span className="font-mono text-slate-900 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 shadow-2xs font-bold">
-                    {parameters.exportTaxSubsidyRate > 0 ? `+${parameters.exportTaxSubsidyRate}% Subsidy` : `${parameters.exportTaxSubsidyRate}% Tax`}
+                    {parameters.exportTaxSubsidyRate > 0
+                      ? `+${parameters.exportTaxSubsidyRate}% Subsidy`
+                      : `${parameters.exportTaxSubsidyRate}% Tax`}
                   </span>
                 </div>
                 <input
-                  type="range" min="-20" max="50" step="5"
+                  type="range"
+                  min="-20"
+                  max="50"
+                  step="5"
                   value={parameters.exportTaxSubsidyRate}
                   onChange={(e) => updateParam('exportTaxSubsidyRate', parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
@@ -510,22 +588,34 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
               </div>
             </div>
           )}
-
         </div>
 
         {/* Split Screen Comparison & Differentials (Right 6 Cols) */}
         <div className="lg:col-span-6 space-y-4">
-
           {/* Differentials Summary Banner */}
           <div className="glass-panel p-5 rounded-2xl border border-slate-900 bg-slate-900 text-white shadow-md flex items-center justify-between">
             <div>
               <div className="text-xs text-slate-400 uppercase font-semibold">Simulated Nexus Balance Score</div>
               <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-3xl font-extrabold text-white font-outfit">{simulated.nexusBalanceIndex} / 100</span>
-                <span className={`text-xs font-bold px-2 py-0.5 rounded-md flex items-center gap-0.5 font-mono ${differentials.nexusBalanceDelta >= 0 ? 'bg-emerald-500/20 text-emerald-600 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                  }`}>
-                  {differentials.nexusBalanceDelta >= 0 ? <ArrowUpRight className="w-3.5 h-3.5" /> : <ArrowDownRight className="w-3.5 h-3.5" />}
-                  {differentials.nexusBalanceDelta > 0 ? `+${differentials.nexusBalanceDelta}` : differentials.nexusBalanceDelta} pts
+                <span className="text-3xl font-extrabold text-white font-outfit">
+                  {simulated.nexusBalanceIndex} / 100
+                </span>
+                <span
+                  className={`text-xs font-bold px-2 py-0.5 rounded-md flex items-center gap-0.5 font-mono ${
+                    differentials.nexusBalanceDelta >= 0
+                      ? 'bg-emerald-500/20 text-emerald-600 border border-emerald-500/30'
+                      : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                  }`}
+                >
+                  {differentials.nexusBalanceDelta >= 0 ? (
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  ) : (
+                    <ArrowDownRight className="w-3.5 h-3.5" />
+                  )}
+                  {differentials.nexusBalanceDelta > 0
+                    ? `+${differentials.nexusBalanceDelta}`
+                    : differentials.nexusBalanceDelta}{' '}
+                  pts
                 </span>
               </div>
             </div>
@@ -538,18 +628,21 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
           {/* Side-by-Side Baseline vs Simulated Comparison */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
             {/* Baseline Column */}
             <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3 shadow-2xs">
               <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                 <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Baseline Profile</span>
-                <span className="text-[10px] bg-white border border-slate-200 text-slate-600 px-2 py-0.5 rounded-md font-mono font-semibold">Current</span>
+                <span className="text-[10px] bg-white border border-slate-200 text-slate-600 px-2 py-0.5 rounded-md font-mono font-semibold">
+                  Current
+                </span>
               </div>
 
               <div className="space-y-2 text-xs font-mono">
                 <div className="flex justify-between">
                   <span className="text-slate-500 font-sans">Water Consumed:</span>
-                  <span className="font-bold text-slate-800">{baselineOutput.water.consumptionLiters.toLocaleString()} L</span>
+                  <span className="font-bold text-slate-800">
+                    {baselineOutput.water.consumptionLiters.toLocaleString()} L
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500 font-sans">Grid Energy:</span>
@@ -561,11 +654,15 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500 font-sans">Net Revenue:</span>
-                  <span className="font-bold text-slate-800">NPR {baselineOutput.socioeconomics.netRevenueNpr.toLocaleString()}</span>
+                  <span className="font-bold text-slate-800">
+                    NPR {baselineOutput.socioeconomics.netRevenueNpr.toLocaleString()}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500 font-sans">Direct FTE Jobs:</span>
-                  <span className="font-bold text-slate-800">{baselineOutput.socioeconomics.directJobsCreated} Jobs</span>
+                  <span className="font-bold text-slate-800">
+                    {baselineOutput.socioeconomics.directJobsCreated} Jobs
+                  </span>
                 </div>
               </div>
             </div>
@@ -574,7 +671,9 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             <div className="p-4 rounded-xl border border-emerald-300 bg-white space-y-3 shadow-md">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                 <span className="text-xs font-bold text-emerald-950 uppercase tracking-wider">Simulated Scenario</span>
-                <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-bold font-mono">Real-time</span>
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-bold font-mono">
+                  Real-time
+                </span>
               </div>
 
               <div className="space-y-2 text-xs font-mono">
@@ -582,7 +681,9 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   <span className="text-slate-500 font-sans">Water Consumed:</span>
                   <span className="font-bold text-sky-700 flex items-center gap-1">
                     {simulated.water.consumptionLiters.toLocaleString()} L
-                    <span className={`text-[10px] font-bold ${differentials.waterDeltaPercent <= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    <span
+                      className={`text-[10px] font-bold ${differentials.waterDeltaPercent <= 0 ? 'text-emerald-600' : 'text-rose-600'}`}
+                    >
                       ({differentials.waterDeltaPercent}%)
                     </span>
                   </span>
@@ -597,15 +698,23 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                   <span className="text-slate-500 font-sans">Carbon Offset:</span>
                   <span className="font-bold text-teal-700 flex items-center gap-1">
                     {simulated.ecosystem.carbonOffsetKgCo2} kg
-                    <span className="text-[10px] text-emerald-600 font-bold">(+{differentials.carbonDeltaPercent}%)</span>
+                    <span className="text-[10px] text-emerald-600 font-bold">
+                      (+{differentials.carbonDeltaPercent}%)
+                    </span>
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500 font-sans">Net Revenue:</span>
                   <span className="font-bold text-purple-700 flex items-center gap-1">
                     NPR {simulated.socioeconomics.netRevenueNpr.toLocaleString()}
-                    <span className={`text-[10px] font-bold ${differentials.revenueDeltaPercent >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                      ({differentials.revenueDeltaPercent > 0 ? `+${differentials.revenueDeltaPercent}` : differentials.revenueDeltaPercent}%)
+                    <span
+                      className={`text-[10px] font-bold ${differentials.revenueDeltaPercent >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}
+                    >
+                      (
+                      {differentials.revenueDeltaPercent > 0
+                        ? `+${differentials.revenueDeltaPercent}`
+                        : differentials.revenueDeltaPercent}
+                      %)
                     </span>
                   </span>
                 </div>
@@ -618,14 +727,15 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
                 </div>
               </div>
             </div>
-
           </div>
 
           {/* Trade-Off Differential Percentages Bar */}
           <div className="grid grid-cols-3 gap-2.5">
             <div className="bg-white p-3 rounded-xl border border-slate-200 text-center shadow-2xs">
               <span className="text-[10px] text-slate-500 uppercase font-semibold block">Water Stress Delta</span>
-              <span className={`text-sm font-extrabold font-mono ${differentials.waterDeltaPercent <= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>
+              <span
+                className={`text-sm font-extrabold font-mono ${differentials.waterDeltaPercent <= 0 ? 'text-emerald-700' : 'text-rose-700'}`}
+              >
                 {differentials.waterDeltaPercent}%
               </span>
             </div>
@@ -639,14 +749,17 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
 
             <div className="bg-white p-3 rounded-xl border border-slate-200 text-center shadow-2xs">
               <span className="text-[10px] text-slate-500 uppercase font-semibold block">Net Revenue Delta</span>
-              <span className={`text-sm font-extrabold font-mono ${differentials.revenueDeltaPercent >= 0 ? 'text-purple-700' : 'text-rose-700'}`}>
-                {differentials.revenueDeltaPercent > 0 ? `+${differentials.revenueDeltaPercent}` : differentials.revenueDeltaPercent}%
+              <span
+                className={`text-sm font-extrabold font-mono ${differentials.revenueDeltaPercent >= 0 ? 'text-purple-700' : 'text-rose-700'}`}
+              >
+                {differentials.revenueDeltaPercent > 0
+                  ? `+${differentials.revenueDeltaPercent}`
+                  : differentials.revenueDeltaPercent}
+                %
               </span>
             </div>
           </div>
-
         </div>
-
       </div>
 
       {/* Bottom Quick Navigation Bar */}

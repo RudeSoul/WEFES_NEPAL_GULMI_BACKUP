@@ -43,12 +43,14 @@ python3 engines/hydro/cli.py --help
 ## Pipeline Workflow & Mathematical Foundations
 
 ### Step 1: Topographic Modeling (`src/step1_topography.py`)
+
 - **Conditioning**: Priority-Flood algorithm (Barnes et al., 2014) to fill spurious sinks while preserving real valleys.
 - **Routing**: Deterministic 8-neighbor (D8) steepest-slope direction coding.
 - **Catchment Area**: Topological sort (Kahn's in-degree algorithm) calculating upstream accumulation in km².
 - **Reach Extraction**: Continuously traces downstream reaches at target 500m intervals, sampling upstream elevation ($Z_u$), downstream elevation ($Z_d$), gross head ($H_{\text{gross}} = Z_u - Z_d$), and bed slope.
 
 ### Step 2: Hydrology & Flow Duration (`src/step2_hydrology.py`)
+
 - **Method A (Tributaries $< 200\text{ km}^2$)**: WECS/NEA (1997) & MIP Regional Hydrology Method:
   $$Q_{\text{mean}} = 0.024 \cdot A^{0.98} \cdot \left(\frac{\text{MWI}}{1000}\right)^{1.10}$$
   $$Q_{40} = 0.0165 \cdot A^{0.99} \cdot \left(\frac{\text{MWI}}{1000}\right)^{1.05}$$
@@ -58,26 +60,30 @@ python3 engines/hydro/cli.py --help
   $$Q_{\text{reach}} = Q_{\text{gauge}} \cdot \left(\frac{A_{\text{reach}}}{A_{\text{gauge}}}\right)^{0.85}$$
 
 ### Step 3: Environmental Constraints (`src/step3_constraints.py`)
-- **Statutory E-flow ($Q_{\text{env}}$)**: By Nepal DOED policy, at least 10% of the minimum lean monthly dry-season flow must remain in the natural riverbed:
+
+- **Statutory E-flow ($Q\_{\text{env}}$)**: By Nepal DOED policy, at least 10% of the minimum lean monthly dry-season flow must remain in the natural riverbed:
   $$Q_{\text{env}} = 0.10 \times \min(Q_{\text{jan}} \dots Q_{\text{dec}})$$
   $$Q_{\text{net}} = \max(0, Q_{\text{design}} - Q_{\text{env}})$$
-- **Scale Exceedance ($Q_{\text{design}}$)**:
+- **Scale Exceedance ($Q\_{\text{design}}$)**:
   - Commercial RoR ($\ge 10\text{ km}^2$): $Q_{40}$ (wet-season peak grid export, $\eta = 0.82$).
   - Rural Micro-Hydro ($< 10\text{ km}^2$): $Q_{65}$ (reliable dry-season base load, $\eta = 0.65$).
 
 ### Step 4: Power & Energy Yield (`src/step4_energy.py`)
+
 - **Net Head**: Accounts for 10% hydraulic losses: $H_{\text{net}} = 0.90 \times H_{\text{gross}}$.
 - **Installed Capacity**:
   $$P_{\text{inst}} (\text{kW}) = 9.81 \cdot \eta \cdot Q_{\text{net}} \cdot H_{\text{net}}$$
 - **12-Month Energy Simulation**: Simulates monthly power output and integrates operating hours for dry season (Dec–May) and wet season (Jun–Nov).
 
 ### Step 5: Spatial Screening & Apportionment (`src/step5_screening.py`)
+
 - Clips reaches to Gulmi's 12 local municipal boundaries (Palikas).
 - Apportions border rivers (Kaligandaki, Badigad) with a 50% capacity factor.
 - Enforces strict viability criteria ($P \ge 5\text{ kW}$, slope $\ge 2\%$, head $\ge 5\text{ m}$).
 - Applies a 1.5 km cultural exclusion buffer around sacred pilgrimage sites (Ridi Dham confluence).
 
 ### Step 6: Ground-Truth Verification (`src/step6_verification.py`)
+
 - Cross-references results against registered AEPC installations (Chhaldi Khola, Panaha Khola, Huldi Khola, Darling Khola) and DOED commercial licenses (Upper Hugdi 5 MW, Badigad cascade).
 - Exports:
   - `reaches_screened.csv`: Tabular dataset of all viable reaches with full hydrologic, head, and energy attributes.
@@ -88,12 +94,12 @@ python3 engines/hydro/cli.py --help
 
 ## Desktop QGIS Replication Reference
 
-| Pipeline Step | Desktop QGIS Tool / Menu |
-|---|---|
-| **Fill Depressions** | Processing Toolbox $\to$ Whitebox Tools $\to$ *Fill Depressions* (or SAGA *Fill Sinks (Wang & Liu)*) |
-| **Flow Direction & Accumulation** | Processing Toolbox $\to$ Whitebox Tools $\to$ *D8 Flow Accumulation* |
-| **Stream Raster Extraction** | Raster Calculator $\to$ `("accumulation@1" >= 555)` |
-| **Reach Vectorization** | Processing Toolbox $\to$ *Stream To Feature* $\to$ *Split lines by maximum length* (500 m) |
-| **Elevation Sampling** | Processing Toolbox $\to$ *Sample raster values* (sample DEM at start and end vertices) |
-| **Attribute Calculations** | Layer Attribute Table $\to$ Field Calculator (`Ctrl + E` / `Cmd + E`) applying formulas above |
-| **Spatial Clipping & Joins** | Vector $\to$ Geoprocessing Tools $\to$ *Clip* / *Join Attributes by Location* |
+| Pipeline Step                     | Desktop QGIS Tool / Menu                                                                             |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Fill Depressions**              | Processing Toolbox $\to$ Whitebox Tools $\to$ _Fill Depressions_ (or SAGA _Fill Sinks (Wang & Liu)_) |
+| **Flow Direction & Accumulation** | Processing Toolbox $\to$ Whitebox Tools $\to$ _D8 Flow Accumulation_                                 |
+| **Stream Raster Extraction**      | Raster Calculator $\to$ `("accumulation@1" >= 555)`                                                  |
+| **Reach Vectorization**           | Processing Toolbox $\to$ _Stream To Feature_ $\to$ _Split lines by maximum length_ (500 m)           |
+| **Elevation Sampling**            | Processing Toolbox $\to$ _Sample raster values_ (sample DEM at start and end vertices)               |
+| **Attribute Calculations**        | Layer Attribute Table $\to$ Field Calculator (`Ctrl + E` / `Cmd + E`) applying formulas above        |
+| **Spatial Clipping & Joins**      | Vector $\to$ Geoprocessing Tools $\to$ _Clip_ / _Join Attributes by Location_                        |

@@ -24,17 +24,21 @@ Welcome to the WEFES Nexus Nepal platform repository. Because this project infor
 ## 2. Automated Git Hooks & Setup
 
 When you clone the repository, install dependencies with:
+
 ```bash
 pnpm install
 ```
+
 This automatically configures our pre-commit hooks via `git config core.hooksPath .githooks`.
 
 On every `git commit`, the pre-commit hook automatically:
+
 1. Blocks direct commits to `main` branch.
 2. Runs `python3 scripts/verify_data_integrity.py` to verify that all data paths exist, empirical data has not been synthesized, and engine isolation is maintained.
 3. Checks that large binary files (> 40MB) are not committed to git tracking.
 
 To manually test your branch:
+
 ```bash
 make test
 # or
@@ -46,5 +50,6 @@ pnpm test
 ## 3. AI Agent Rules
 
 If you use an AI coding assistant (Antigravity, Cursor, GitHub Copilot, Claude Code, Windsurf):
+
 - Rules are permanently configured in the repository (`AGENTS.md`, `.cursorrules`, `.github/copilot-instructions.md`, `CLAUDE.md`, `.windsurfrules`).
 - Never prompt an AI to create fake files in `data/real/` or bypass verification hooks.

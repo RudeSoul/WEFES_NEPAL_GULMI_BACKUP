@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { CloudRain, Droplets, Waves, Mountain, AlertTriangle, ShieldCheck, Gauge, TrendingUp, Info } from 'lucide-react';
+import {
+  CloudRain,
+  Droplets,
+  Waves,
+  Mountain,
+  AlertTriangle,
+  ShieldCheck,
+  Gauge,
+  TrendingUp,
+  Info,
+} from 'lucide-react';
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 interface MicroWatershedSimulatorProps {
@@ -95,10 +105,10 @@ export const MicroWatershedSimulator: React.FC<MicroWatershedSimulatorProps> = (
   const [selectedBasinId, setSelectedBasinId] = useState<string>('kaligandaki');
   const [rainModifier, setRainModifier] = useState<number>(currentRainMm);
 
-  const activeBasin = GULMI_RIVER_BASINS.find(b => b.id === selectedBasinId) || GULMI_RIVER_BASINS[0];
+  const activeBasin = GULMI_RIVER_BASINS.find((b) => b.id === selectedBasinId) || GULMI_RIVER_BASINS[0];
 
   // Dynamic Rational Streamflow Estimation: Q = C * (P / (30 days * 86400s)) * Area
-  const rainIntensityMPerSec = (rainModifier / 1000) / (30 * 86400);
+  const rainIntensityMPerSec = rainModifier / 1000 / (30 * 86400);
   const catchmentAreaSqM = activeBasin.catchmentSqKm * 1000000;
   const estimatedMonsoonRunoffM3s = Number(
     (activeBasin.baseFlowM3s + activeBasin.runoffCoefficient * rainIntensityMPerSec * catchmentAreaSqM).toFixed(1)
@@ -117,7 +127,11 @@ export const MicroWatershedSimulator: React.FC<MicroWatershedSimulatorProps> = (
           </div>
           <div>
             <h3 className="text-sm font-bold text-slate-900 font-outfit uppercase tracking-wide flex items-center gap-2">
-              <span>{lang === 'np' ? 'गुल्मी नदी जलाधार तथा बाढी-प्रवाह सिम्युलेटर' : 'Gulmi Micro-Watershed & River Streamflow Simulator'}</span>
+              <span>
+                {lang === 'np'
+                  ? 'गुल्मी नदी जलाधार तथा बाढी-प्रवाह सिम्युलेटर'
+                  : 'Gulmi Micro-Watershed & River Streamflow Simulator'}
+              </span>
               <span className="text-[10px] bg-sky-100 text-sky-800 px-2 py-0.5 rounded-full font-mono font-bold">
                 DHM Hydrology Mode
               </span>
@@ -141,7 +155,7 @@ export const MicroWatershedSimulator: React.FC<MicroWatershedSimulatorProps> = (
 
       {/* Basin Selector Pills */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {GULMI_RIVER_BASINS.map(basin => {
+        {GULMI_RIVER_BASINS.map((basin) => {
           const isSelected = basin.id === selectedBasinId;
           return (
             <button
@@ -153,8 +167,12 @@ export const MicroWatershedSimulator: React.FC<MicroWatershedSimulatorProps> = (
                   : 'bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200'
               }`}
             >
-              <div className="text-xs font-bold font-outfit truncate">{lang === 'np' ? basin.nameNp : basin.nameEn}</div>
-              <div className={`text-[10px] mt-1 flex items-center justify-between ${isSelected ? 'text-sky-100' : 'text-slate-500'}`}>
+              <div className="text-xs font-bold font-outfit truncate">
+                {lang === 'np' ? basin.nameNp : basin.nameEn}
+              </div>
+              <div
+                className={`text-[10px] mt-1 flex items-center justify-between ${isSelected ? 'text-sky-100' : 'text-slate-500'}`}
+              >
                 <span>{basin.catchmentSqKm} km²</span>
                 <span className="font-mono font-semibold">{basin.palikasCovered.length} Palikas</span>
               </div>
@@ -177,10 +195,12 @@ export const MicroWatershedSimulator: React.FC<MicroWatershedSimulatorProps> = (
             </span>
           </div>
           <div className="text-2xl font-black text-sky-950 font-mono mt-1">
-            {estimatedMonsoonRunoffM3s.toLocaleString()} <span className="text-sm font-sans font-bold text-sky-700">m³/s</span>
+            {estimatedMonsoonRunoffM3s.toLocaleString()}{' '}
+            <span className="text-sm font-sans font-bold text-sky-700">m³/s</span>
           </div>
           <p className="text-[10px] text-sky-800 mt-1 font-sans">
-            Base dry-season flow: <strong>{activeBasin.baseFlowM3s} m³/s</strong> • Runoff coefficient ($C$): <strong>{activeBasin.runoffCoefficient}</strong>
+            Base dry-season flow: <strong>{activeBasin.baseFlowM3s} m³/s</strong> • Runoff coefficient ($C$):{' '}
+            <strong>{activeBasin.runoffCoefficient}</strong>
           </p>
           {isFloodSurge && (
             <div className="mt-2 text-[10px] bg-amber-100 border border-amber-300 text-amber-900 px-2 py-1 rounded-md flex items-center gap-1 font-semibold animate-pulse">
@@ -197,21 +217,31 @@ export const MicroWatershedSimulator: React.FC<MicroWatershedSimulatorProps> = (
               <Mountain className="w-4 h-4 text-slate-600" />
               Hydraulic Relief & Springs
             </span>
-            <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold ${
-              activeBasin.springVulnerability === 'Critical' ? 'bg-red-100 text-red-800 border border-red-200' : 'bg-amber-100 text-amber-800'
-            }`}>
+            <span
+              className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold ${
+                activeBasin.springVulnerability === 'Critical'
+                  ? 'bg-red-100 text-red-800 border border-red-200'
+                  : 'bg-amber-100 text-amber-800'
+              }`}
+            >
               {activeBasin.springVulnerability} Drying Risk
             </span>
           </div>
           <div className="text-2xl font-black text-slate-900 font-mono mt-1">
-            {activeBasin.headElevationM - activeBasin.confluenceElevationM}m <span className="text-sm font-sans font-bold text-slate-500">Fall</span>
+            {activeBasin.headElevationM - activeBasin.confluenceElevationM}m{' '}
+            <span className="text-sm font-sans font-bold text-slate-500">Fall</span>
           </div>
           <p className="text-[10px] text-slate-600 mt-1">
-            Ridge Head: <strong>{activeBasin.headElevationM}m</strong> → Confluence: <strong>{activeBasin.confluenceElevationM}m</strong>
+            Ridge Head: <strong>{activeBasin.headElevationM}m</strong> → Confluence:{' '}
+            <strong>{activeBasin.confluenceElevationM}m</strong>
           </p>
           <div className="mt-2 text-[10px] text-slate-700 bg-white p-1.5 rounded border border-slate-200 font-mono flex items-center justify-between">
-            <span>Canal Offtakes: <strong>{activeBasin.irrigationOfftakesCount} Kulos</strong></span>
-            <span>Station: <strong>{activeBasin.dhmStation.split('(')[0]}</strong></span>
+            <span>
+              Canal Offtakes: <strong>{activeBasin.irrigationOfftakesCount} Kulos</strong>
+            </span>
+            <span>
+              Station: <strong>{activeBasin.dhmStation.split('(')[0]}</strong>
+            </span>
           </div>
         </div>
 
@@ -227,7 +257,8 @@ export const MicroWatershedSimulator: React.FC<MicroWatershedSimulatorProps> = (
             </span>
           </div>
           <div className="text-2xl font-black text-amber-950 font-mono mt-1">
-            {sedimentTransportTonsPerDay.toLocaleString()} <span className="text-sm font-sans font-bold text-amber-800">t/d</span>
+            {sedimentTransportTonsPerDay.toLocaleString()}{' '}
+            <span className="text-sm font-sans font-bold text-amber-800">t/d</span>
           </div>
           <p className="text-[10px] text-amber-800 mt-1">
             Silt load during {MONTH_NAMES[climateMonth - 1]} precipitation rate ({rainModifier} mm)
@@ -258,7 +289,7 @@ export const MicroWatershedSimulator: React.FC<MicroWatershedSimulatorProps> = (
             max={600}
             step={10}
             value={rainModifier}
-            onChange={e => setRainModifier(Number(e.target.value))}
+            onChange={(e) => setRainModifier(Number(e.target.value))}
             className="w-full accent-sky-600 cursor-pointer"
           />
           <span className="text-[10px] text-slate-500 font-mono">600mm</span>

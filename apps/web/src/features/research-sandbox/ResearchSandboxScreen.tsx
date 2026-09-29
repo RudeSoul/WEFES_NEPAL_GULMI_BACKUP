@@ -1,9 +1,27 @@
 import React, { useState } from 'react';
 import {
-  FlaskConical, Sliders, UploadCloud, Terminal, Database,
-  ArrowLeft, ArrowUp, Sparkles, CheckCircle2, Copy, Check,
-  BookOpen, FileCode, Cpu, Layers, GitBranch, Download,
-  ExternalLink, Share2, Compass, AlertCircle, Play
+  FlaskConical,
+  Sliders,
+  UploadCloud,
+  Terminal,
+  Database,
+  ArrowLeft,
+  ArrowUp,
+  Sparkles,
+  CheckCircle2,
+  Copy,
+  Check,
+  BookOpen,
+  FileCode,
+  Cpu,
+  Layers,
+  GitBranch,
+  Download,
+  ExternalLink,
+  Share2,
+  Compass,
+  AlertCircle,
+  Play,
 } from 'lucide-react';
 import { WEFESOutput } from '@wefes/shared-types';
 
@@ -20,7 +38,9 @@ export const ResearchSandboxScreen: React.FC<ResearchSandboxScreenProps> = ({
   onBackToMap,
   onBackToDossier,
 }) => {
-  const [activeTab, setActiveTab] = useState<'formulas' | 'ingestion' | 'monte_carlo' | 'python_sdk' | 'partnership'>('formulas');
+  const [activeTab, setActiveTab] = useState<'formulas' | 'ingestion' | 'monte_carlo' | 'python_sdk' | 'partnership'>(
+    'formulas'
+  );
   const [copiedCode, setCopiedCode] = useState<boolean>(false);
   const [activeFormula, setActiveFormula] = useState<'penman' | 'quefts' | 'aquacrop' | 'enteric'>('penman');
 
@@ -141,7 +161,10 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
             </h2>
 
             <p className="text-slate-300 text-xs sm:text-sm font-sans leading-relaxed">
-              A dedicated academic workbench engineered for university researchers, NARC agronomists, and climate modelers. In <strong>Version 2.0</strong>, researchers will be able to override mathematical coefficients, ingest localized IoT field spectrometer CSVs, execute 1,000-run Monte Carlo stochastic stress tests, and automate workflows via the <strong>Python SDK</strong>.
+              A dedicated academic workbench engineered for university researchers, NARC agronomists, and climate
+              modelers. In <strong>Version 2.0</strong>, researchers will be able to override mathematical coefficients,
+              ingest localized IoT field spectrometer CSVs, execute 1,000-run Monte Carlo stochastic stress tests, and
+              automate workflows via the <strong>Python SDK</strong>.
             </p>
           </div>
 
@@ -196,7 +219,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
         >
           <Cpu className="w-4 h-4 text-emerald-400" />
           <span>3. Monte Carlo Sensitivity Matrix</span>
-          <span className="text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded font-mono">v2.0</span>
+          <span className="text-[9px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded font-mono">
+            v2.0
+          </span>
         </button>
 
         <button
@@ -209,7 +234,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
         >
           <Terminal className="w-4 h-4 text-amber-400" />
           <span>4. Python SDK & Jupyter Bridge</span>
-          <span className="text-[9px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded font-mono">v2.0</span>
+          <span className="text-[9px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded font-mono">
+            v2.0
+          </span>
         </button>
 
         <button
@@ -237,7 +264,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                 Live Parameter Override Sandbox (v2.0 Preview):
               </strong>
               <p className="text-purple-800 font-sans mt-0.5 leading-relaxed">
-                In Version 2.0, researchers will not be locked into default national averages. You will be able to customize empirical boundary constants, adjust transpiration coefficients ($K_c$), and simulate new seed varietals directly in the browser using WebAssembly.
+                In Version 2.0, researchers will not be locked into default national averages. You will be able to
+                customize empirical boundary constants, adjust transpiration coefficients ($K_c$), and simulate new seed
+                varietals directly in the browser using WebAssembly.
               </p>
             </div>
           </div>
@@ -295,7 +324,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                     <h4 className="text-base font-bold text-slate-900 font-outfit">
                       FAO-56 Penman-Monteith Standard Evapotranspiration Equation
                     </h4>
-                    <span className="text-xs font-mono text-slate-500">Hydrologic Core • Calibrated for {districtName}</span>
+                    <span className="text-xs font-mono text-slate-500">
+                      Hydrologic Core • Calibrated for {districtName}
+                    </span>
                   </div>
                   <span className="text-xs font-mono bg-sky-50 text-sky-900 px-3 py-1 rounded-xl border border-sky-200 font-bold self-start sm:self-auto">
                     Equation ISO 7726:2024
@@ -355,13 +386,17 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                 {/* Recalculated Output Telemetry */}
                 <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
                   <div>
-                    <span className="text-emerald-950 font-bold font-sans block">Simulated Daily Crop Water Demand (ET_c):</span>
+                    <span className="text-emerald-950 font-bold font-sans block">
+                      Simulated Daily Crop Water Demand (ET_c):
+                    </span>
                     <span className="text-emerald-800 text-[11px] font-sans">
                       ET_c = {penmanKc} × ET₀(α = {penmanAlbedo}) → Recalculated live in WebAssembly memory
                     </span>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="text-2xl font-extrabold text-emerald-950">{(4.85 * penmanKc * (1 - (penmanAlbedo - 0.23) * 0.4)).toFixed(2)}</span>
+                    <span className="text-2xl font-extrabold text-emerald-950">
+                      {(4.85 * penmanKc * (1 - (penmanAlbedo - 0.23) * 0.4)).toFixed(2)}
+                    </span>
                     <span className="text-xs text-emerald-700 ml-1">mm / day</span>
                   </div>
                 </div>
@@ -375,7 +410,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                     <h4 className="text-base font-bold text-slate-900 font-outfit">
                       QUEFTS Non-Linear Nutrient Uptake & Yield Boundary Model
                     </h4>
-                    <span className="text-xs font-mono text-slate-500">Jansen et al. (1990) · NARC 2022 Soil Matrix</span>
+                    <span className="text-xs font-mono text-slate-500">
+                      Jansen et al. (1990) · NARC 2022 Soil Matrix
+                    </span>
                   </div>
                   <span className="text-xs font-mono bg-purple-50 text-purple-900 px-3 py-1 rounded-xl border border-purple-200 font-bold self-start sm:self-auto">
                     Multi-Nutrient Interaction
@@ -388,8 +425,12 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
 
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-slate-800 font-sans">Apparent Nitrogen Recovery Fraction (RE_N):</span>
-                    <span className="font-mono font-bold text-purple-700">{(queftsRecoveryFraction * 100).toFixed(0)}%</span>
+                    <span className="font-bold text-slate-800 font-sans">
+                      Apparent Nitrogen Recovery Fraction (RE_N):
+                    </span>
+                    <span className="font-mono font-bold text-purple-700">
+                      {(queftsRecoveryFraction * 100).toFixed(0)}%
+                    </span>
                   </div>
                   <input
                     type="range"
@@ -411,11 +452,14 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                   <div>
                     <span className="text-purple-950 font-bold font-sans block">Effective Plant Nitrogen Uptake:</span>
                     <span className="text-purple-800 text-[11px] font-sans">
-                      Cuts fertilizer loss by {Math.round((queftsRecoveryFraction - 0.35) * 100)}% when shifting application method
+                      Cuts fertilizer loss by {Math.round((queftsRecoveryFraction - 0.35) * 100)}% when shifting
+                      application method
                     </span>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="text-2xl font-extrabold text-purple-950">{(120 * queftsRecoveryFraction + 42).toFixed(1)}</span>
+                    <span className="text-2xl font-extrabold text-purple-950">
+                      {(120 * queftsRecoveryFraction + 42).toFixed(1)}
+                    </span>
                     <span className="text-xs text-purple-700 ml-1">kg N / ha</span>
                   </div>
                 </div>
@@ -429,7 +473,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                     <h4 className="text-base font-bold text-slate-900 font-outfit">
                       FAO AquaCrop-RS Normalized Biomass Water Productivity Equation
                     </h4>
-                    <span className="text-xs font-mono text-slate-500">Steduto et al. (2009) · C3 vs C4 Photosynthetic Partitioning</span>
+                    <span className="text-xs font-mono text-slate-500">
+                      Steduto et al. (2009) · C3 vs C4 Photosynthetic Partitioning
+                    </span>
                   </div>
                   <span className="text-xs font-mono bg-emerald-50 text-emerald-900 px-3 py-1 rounded-xl border border-emerald-200 font-bold self-start sm:self-auto">
                     Process Simulation
@@ -470,7 +516,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                     <h4 className="text-base font-bold text-slate-900 font-outfit">
                       IPCC Tier-2 Enteric Fermentation & Manure Methane Emission Factor
                     </h4>
-                    <span className="text-xs font-mono text-slate-500">2019 IPCC Refinement · MoALD DLS Cattle/Buffalo Baseline</span>
+                    <span className="text-xs font-mono text-slate-500">
+                      2019 IPCC Refinement · MoALD DLS Cattle/Buffalo Baseline
+                    </span>
                   </div>
                   <span className="text-xs font-mono bg-amber-50 text-amber-900 px-3 py-1 rounded-xl border border-amber-200 font-bold self-start sm:self-auto">
                     IPCC Tier-2 Refined
@@ -498,7 +546,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                 Custom Data Ingestion Dropzone & Field Sensor Telemetry (v2.0):
               </strong>
               <p className="text-sky-800 font-sans mt-0.5 leading-relaxed">
-                Researchers working on localized ward plots or university trial stations will be able to upload custom sensor logs, drone multispectral orthomosaics, and laboratory soil test CSVs to run hyper-localized nexus assessments.
+                Researchers working on localized ward plots or university trial stations will be able to upload custom
+                sensor logs, drone multispectral orthomosaics, and laboratory soil test CSVs to run hyper-localized
+                nexus assessments.
               </p>
             </div>
           </div>
@@ -509,11 +559,10 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
               <UploadCloud className="w-8 h-8" />
             </div>
             <div className="space-y-1">
-              <h4 className="font-bold text-base text-slate-900 font-outfit">
-                Drag & Drop Field Data, CSV or GeoJSON
-              </h4>
+              <h4 className="font-bold text-base text-slate-900 font-outfit">Drag & Drop Field Data, CSV or GeoJSON</h4>
               <p className="text-xs text-slate-500 font-sans max-w-md mx-auto">
-                Supports NARC Soil Laboratory Reports (.csv), Campbell Scientific Weather Logs (.dat), and Drone Spectral Reflectance GeoTIFFs (.tif).
+                Supports NARC Soil Laboratory Reports (.csv), Campbell Scientific Weather Logs (.dat), and Drone
+                Spectral Reflectance GeoTIFFs (.tif).
               </p>
             </div>
             <button className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs font-outfit cursor-pointer shadow-xs">
@@ -526,7 +575,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
             <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-2xs space-y-2">
               <div className="flex justify-between items-center border-b pb-2">
                 <span className="font-bold text-slate-900 font-outfit">1. Soil Spectrometer CSV</span>
-                <span className="text-[10px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded font-bold">Template</span>
+                <span className="text-[10px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded font-bold">
+                  Template
+                </span>
               </div>
               <p className="text-slate-500 font-sans text-[11px]">
                 Columns: <code>ward_id, parcel_lat, parcel_lon, ph, oc_pct, n_ppm, p_ppm, k_ppm, zn_ppm</code>
@@ -571,7 +622,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                 1,000-Iteration Stochastic Monte Carlo Engine (v2.0 Preview):
               </strong>
               <p className="text-emerald-800 font-sans mt-0.5 leading-relaxed">
-                Simulates Gaussian-distributed climatic anomalies (+1.5°C to +4.0°C warming, erratic monsoon onset shifts, and fertilizer price volatility) to output P10, P50, and P90 confidence intervals for district yield and water security.
+                Simulates Gaussian-distributed climatic anomalies (+1.5°C to +4.0°C warming, erratic monsoon onset
+                shifts, and fertilizer price volatility) to output P10, P50, and P90 confidence intervals for district
+                yield and water security.
               </p>
             </div>
           </div>
@@ -624,7 +677,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
             {/* Probability Density Bell Curve SVG */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs font-mono">
-                <span className="font-bold text-slate-800 font-outfit">Simulated Yield Probability Distribution ({simulatedRunsCount} Runs)</span>
+                <span className="font-bold text-slate-800 font-outfit">
+                  Simulated Yield Probability Distribution ({simulatedRunsCount} Runs)
+                </span>
                 <span className="text-slate-500">P50 Median: 4.82 t/ha · P10 Worst Case: 3.12 t/ha</span>
               </div>
               <div className="w-full overflow-x-auto">
@@ -650,20 +705,60 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
 
                   {/* P10, P50, P90 Marker Lines */}
                   <line x1="280" y1="30" x2="280" y2="130" stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="4 4" />
-                  <text x="280" y="24" fill="#d97706" fontSize="9" fontWeight="bold" textAnchor="middle" fontFamily="monospace">P10 (3.12 t/ha)</text>
+                  <text
+                    x="280"
+                    y="24"
+                    fill="#d97706"
+                    fontSize="9"
+                    fontWeight="bold"
+                    textAnchor="middle"
+                    fontFamily="monospace"
+                  >
+                    P10 (3.12 t/ha)
+                  </text>
 
                   <line x1="390" y1="20" x2="390" y2="130" stroke="#10b981" strokeWidth="2" />
-                  <text x="390" y="14" fill="#047857" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">P50 Median (4.82 t/ha)</text>
+                  <text
+                    x="390"
+                    y="14"
+                    fill="#047857"
+                    fontSize="10"
+                    fontWeight="bold"
+                    textAnchor="middle"
+                    fontFamily="monospace"
+                  >
+                    P50 Median (4.82 t/ha)
+                  </text>
 
                   <line x1="500" y1="30" x2="500" y2="130" stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="4 4" />
-                  <text x="500" y="24" fill="#2563eb" fontSize="9" fontWeight="bold" textAnchor="middle" fontFamily="monospace">P90 (5.64 t/ha)</text>
+                  <text
+                    x="500"
+                    y="24"
+                    fill="#2563eb"
+                    fontSize="9"
+                    fontWeight="bold"
+                    textAnchor="middle"
+                    fontFamily="monospace"
+                  >
+                    P90 (5.64 t/ha)
+                  </text>
 
                   {/* X Axis labels */}
-                  <text x="60" y="150" fill="#94a3b8" fontSize="9" textAnchor="middle" fontFamily="monospace">2.0 t/ha</text>
-                  <text x="280" y="150" fill="#94a3b8" fontSize="9" textAnchor="middle" fontFamily="monospace">3.5 t/ha</text>
-                  <text x="390" y="150" fill="#94a3b8" fontSize="9" textAnchor="middle" fontFamily="monospace">4.8 t/ha</text>
-                  <text x="500" y="150" fill="#94a3b8" fontSize="9" textAnchor="middle" fontFamily="monospace">5.6 t/ha</text>
-                  <text x="720" y="150" fill="#94a3b8" fontSize="9" textAnchor="middle" fontFamily="monospace">6.5 t/ha</text>
+                  <text x="60" y="150" fill="#94a3b8" fontSize="9" textAnchor="middle" fontFamily="monospace">
+                    2.0 t/ha
+                  </text>
+                  <text x="280" y="150" fill="#94a3b8" fontSize="9" textAnchor="middle" fontFamily="monospace">
+                    3.5 t/ha
+                  </text>
+                  <text x="390" y="150" fill="#94a3b8" fontSize="9" textAnchor="middle" fontFamily="monospace">
+                    4.8 t/ha
+                  </text>
+                  <text x="500" y="150" fill="#94a3b8" fontSize="9" textAnchor="middle" fontFamily="monospace">
+                    5.6 t/ha
+                  </text>
+                  <text x="720" y="150" fill="#94a3b8" fontSize="9" textAnchor="middle" fontFamily="monospace">
+                    6.5 t/ha
+                  </text>
                 </svg>
               </div>
             </div>
@@ -683,7 +778,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                 Official `wefes-nepal-sdk` Python & Jupyter Notebook Bridge (v2.0):
               </strong>
               <p className="text-amber-800 font-sans mt-0.5 leading-relaxed">
-                Researchers and PhD candidates will be able to query the platform programmatically, execute automated spatial batch runs across all 77 districts, and export results directly to Pandas DataFrames and NetCDF climate files.
+                Researchers and PhD candidates will be able to query the platform programmatically, execute automated
+                spatial batch runs across all 77 districts, and export results directly to Pandas DataFrames and NetCDF
+                climate files.
               </p>
             </div>
           </div>
@@ -694,7 +791,9 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                 <span className="w-3 h-3 rounded-full bg-rose-500"></span>
                 <span className="w-3 h-3 rounded-full bg-amber-500"></span>
                 <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
-                <span className="text-xs font-mono text-slate-400 ml-2">research_script.py · Jupyter Notebook Compatible</span>
+                <span className="text-xs font-mono text-slate-400 ml-2">
+                  research_script.py · Jupyter Notebook Compatible
+                </span>
               </div>
               <button
                 onClick={handleCopyPython}
@@ -753,7 +852,8 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`}</
                 University & Institutional Academic Co-Development
               </h4>
               <p className="text-xs text-slate-500 font-sans">
-                Join the national consortium building Version 2.0. We partner with Tribhuvan University, Agriculture & Forestry University, NARC, and international research organizations.
+                Join the national consortium building Version 2.0. We partner with Tribhuvan University, Agriculture &
+                Forestry University, NARC, and international research organizations.
               </p>
             </div>
 
@@ -764,7 +864,8 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`}</
                   Early Researcher Access Request Registered!
                 </h5>
                 <p className="text-xs text-emerald-800 font-sans max-w-md mx-auto">
-                  Thank you! We have added <strong>{registeredEmail}</strong> ({registeredInst}) to the Version 2.0 Academic Beta Group. You will receive pre-release Python SDK API keys and sandbox documentation.
+                  Thank you! We have added <strong>{registeredEmail}</strong> ({registeredInst}) to the Version 2.0
+                  Academic Beta Group. You will receive pre-release Python SDK API keys and sandbox documentation.
                 </p>
               </div>
             ) : (
@@ -793,8 +894,12 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`}</
                     className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-sans focus:outline-none focus:ring-2 focus:ring-purple-500 bg-slate-50"
                   >
                     <option value="Tribhuvan University (IAAS/IOE)">Tribhuvan University (IAAS / IOE)</option>
-                    <option value="Agriculture and Forestry University (AFU Rampur)">Agriculture & Forestry University (AFU Rampur)</option>
-                    <option value="Nepal Agricultural Research Council (NARC)">Nepal Agricultural Research Council (NARC)</option>
+                    <option value="Agriculture and Forestry University (AFU Rampur)">
+                      Agriculture & Forestry University (AFU Rampur)
+                    </option>
+                    <option value="Nepal Agricultural Research Council (NARC)">
+                      Nepal Agricultural Research Council (NARC)
+                    </option>
                     <option value="Kathmandu University (KU)">Kathmandu University (KU)</option>
                     <option value="ICIMOD / IWMI / CGIAR Nepal">ICIMOD / IWMI / CGIAR Nepal</option>
                     <option value="Independent Researcher / Other">Independent Researcher / Other</option>
@@ -812,9 +917,7 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`}</
 
             {/* BibTeX Citation Box */}
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 text-xs">
-              <span className="font-bold text-slate-800 font-outfit block">
-                Official Academic Citation (BibTeX):
-              </span>
+              <span className="font-bold text-slate-800 font-outfit block">Official Academic Citation (BibTeX):</span>
               <pre className="p-3 bg-slate-900 text-emerald-300 rounded-xl font-mono text-[11px] overflow-x-auto">
                 <code>{`@software{wefes_nexus_nepal_2026,
   author = {WEFES Nexus Nepal Consortium},

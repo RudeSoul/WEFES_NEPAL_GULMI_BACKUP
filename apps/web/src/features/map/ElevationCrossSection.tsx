@@ -6,10 +6,7 @@ interface ElevationCrossSectionProps {
   onSelectCropFilter?: (cropId: string) => void;
 }
 
-export const ElevationCrossSection: React.FC<ElevationCrossSectionProps> = ({
-  lang,
-  onSelectCropFilter
-}) => {
+export const ElevationCrossSection: React.FC<ElevationCrossSectionProps> = ({ lang, onSelectCropFilter }) => {
   const [activeTier, setActiveTier] = useState<number | null>(null);
 
   const tiers = [
@@ -22,10 +19,11 @@ export const ElevationCrossSection: React.FC<ElevationCrossSectionProps> = ({
       crops: [
         { name: '🥔 Seed Potato', id: 'potato' },
         { name: '🌾 Buckwheat', id: 'buckwheat' },
-        { name: '🥬 Winter Brassica', id: 'vegetables' }
+        { name: '🥬 Winter Brassica', id: 'vegetables' },
       ],
-      nexus: 'Recharge catchment for downhill springs; ideal ridge solar irradiance (5.1+ kWh/m²); community pine/oak forestry.',
-      color: 'from-purple-900/40 to-indigo-900/30 border-purple-400/40 text-purple-200'
+      nexus:
+        'Recharge catchment for downhill springs; ideal ridge solar irradiance (5.1+ kWh/m²); community pine/oak forestry.',
+      color: 'from-purple-900/40 to-indigo-900/30 border-purple-400/40 text-purple-200',
     },
     {
       id: 2,
@@ -37,10 +35,10 @@ export const ElevationCrossSection: React.FC<ElevationCrossSectionProps> = ({
         { name: '☕ Arabica Coffee', id: 'coffee' },
         { name: '🍊 Mandarin Orange', id: 'orange' },
         { name: '🫚 Ginger & Turmeric', id: 'ginger' },
-        { name: '🌽 Maize & Millets', id: 'maize' }
+        { name: '🌽 Maize & Millets', id: 'maize' },
       ],
       nexus: 'Primary commercial cash-crop zone; spring-fed terrace farming; moderate limestone buffer requirement.',
-      color: 'from-emerald-900/40 to-teal-900/30 border-emerald-400/40 text-emerald-200'
+      color: 'from-emerald-900/40 to-teal-900/30 border-emerald-400/40 text-emerald-200',
     },
     {
       id: 1,
@@ -52,11 +50,11 @@ export const ElevationCrossSection: React.FC<ElevationCrossSectionProps> = ({
         { name: '🌾 Monsoon Paddy', id: 'rice' },
         { name: '🌾 Spring Paddy (Chaite)', id: 'rice' },
         { name: '🥦 Commercial Vegetables', id: 'vegetables' },
-        { name: '🌻 Mustard & Oilseeds', id: 'oilseeds' }
+        { name: '🌻 Mustard & Oilseeds', id: 'oilseeds' },
       ],
       nexus: 'Perennial riverbed water access; high river lift & canal potential; Run-of-River hydropower corridors.',
-      color: 'from-sky-900/40 to-blue-900/30 border-sky-400/40 text-sky-200'
-    }
+      color: 'from-sky-900/40 to-blue-900/30 border-sky-400/40 text-sky-200',
+    },
   ];
 
   return (
@@ -65,7 +63,9 @@ export const ElevationCrossSection: React.FC<ElevationCrossSectionProps> = ({
         <div>
           <h3 className="text-sm font-bold text-slate-900 font-outfit flex items-center gap-2">
             <Mountain className="w-4 h-4 text-emerald-600" />
-            {lang === 'np' ? 'गुल्मीको भौगोलिक उचाइ प्रोफाइल र बाली बेल्ट' : 'Gulmi Hypsometric Elevation Profile & Agro-Ecological Zones'}
+            {lang === 'np'
+              ? 'गुल्मीको भौगोलिक उचाइ प्रोफाइल र बाली बेल्ट'
+              : 'Gulmi Hypsometric Elevation Profile & Agro-Ecological Zones'}
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
             {lang === 'np'
@@ -81,12 +81,12 @@ export const ElevationCrossSection: React.FC<ElevationCrossSectionProps> = ({
 
       {/* 3-Tier Interactive Diagram */}
       <div className="space-y-2.5">
-        {tiers.map(t => {
+        {tiers.map((t) => {
           const isExpanded = activeTier === t.id;
           return (
             <div
               key={t.id}
-              onClick={() => setActiveTier(prev => (prev === t.id ? null : t.id))}
+              onClick={() => setActiveTier((prev) => (prev === t.id ? null : t.id))}
               className={`p-3.5 rounded-xl border transition-all cursor-pointer bg-gradient-to-r ${t.color} text-slate-800 hover:shadow-md`}
             >
               <div className="flex items-center justify-between flex-wrap gap-2">
@@ -94,23 +94,23 @@ export const ElevationCrossSection: React.FC<ElevationCrossSectionProps> = ({
                   <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-white/80 text-slate-900 shadow-xs border border-slate-200">
                     {t.range}
                   </span>
-                  <span className="font-bold text-xs sm:text-sm text-slate-900 font-outfit">
-                    {t.name}
-                  </span>
+                  <span className="font-bold text-xs sm:text-sm text-slate-900 font-outfit">{t.name}</span>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <span className="text-[11px] text-slate-600 font-sans hidden sm:inline">{t.peak}</span>
-                  <ChevronRight className={`w-4 h-4 text-slate-500 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                  <ChevronRight
+                    className={`w-4 h-4 text-slate-500 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                  />
                 </div>
               </div>
 
               {/* Crop Badges */}
               <div className="flex items-center gap-1.5 flex-wrap mt-2">
-                {t.crops.map(c => (
+                {t.crops.map((c) => (
                   <button
                     key={c.name}
-                    onClick={e => {
+                    onClick={(e) => {
                       e.stopPropagation();
                       if (onSelectCropFilter) onSelectCropFilter(c.id);
                     }}
@@ -124,9 +124,15 @@ export const ElevationCrossSection: React.FC<ElevationCrossSectionProps> = ({
               {/* Expanded Nexus Detail */}
               {isExpanded && (
                 <div className="mt-3 pt-2.5 border-t border-slate-200/60 text-xs text-slate-700 space-y-1 animate-fade-in">
-                  <div><strong>Nexus Dynamic:</strong> {t.nexus}</div>
-                  <div><strong>Key Locations:</strong> {t.peak}</div>
-                  <div><strong>Thermal & Moisture Regime:</strong> {t.climate}</div>
+                  <div>
+                    <strong>Nexus Dynamic:</strong> {t.nexus}
+                  </div>
+                  <div>
+                    <strong>Key Locations:</strong> {t.peak}
+                  </div>
+                  <div>
+                    <strong>Thermal & Moisture Regime:</strong> {t.climate}
+                  </div>
                 </div>
               )}
             </div>

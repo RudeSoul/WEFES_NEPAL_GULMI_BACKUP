@@ -13,7 +13,32 @@
 import { db } from '@wefes/database';
 import { District, SUBFILTER_LEGENDS, WEFESPillar } from '@wefes/shared-types';
 import L from 'leaflet';
-import { Building2, ChevronDown, ChevronUp, Cloud, CloudDrizzle, CloudFog, CloudLightning, CloudRain, CloudSun, Droplets, Eye, EyeOff, FileText, Gauge, Moon, Mountain, ShieldCheck, Snowflake, Sprout, Sun, Target, Trees, Wind, Zap } from 'lucide-react';
+import {
+  Building2,
+  ChevronDown,
+  ChevronUp,
+  Cloud,
+  CloudDrizzle,
+  CloudFog,
+  CloudLightning,
+  CloudRain,
+  CloudSun,
+  Droplets,
+  Eye,
+  EyeOff,
+  FileText,
+  Gauge,
+  Moon,
+  Mountain,
+  ShieldCheck,
+  Snowflake,
+  Sprout,
+  Sun,
+  Target,
+  Trees,
+  Wind,
+  Zap,
+} from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { CircleMarker, GeoJSON, MapContainer, Marker, TileLayer, Tooltip, useMap } from 'react-leaflet';
 import { DynamicLegend } from '../../components/legend/DynamicLegend';
@@ -42,11 +67,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-const NEPAL_MAX_BOUNDS: [[number, number], [number, number]] = [[25.0, 78.5], [31.5, 89.5]];
+const NEPAL_MAX_BOUNDS: [[number, number], [number, number]] = [
+  [25.0, 78.5],
+  [31.5, 89.5],
+];
 const GULMI_MAP_CENTER: [number, number] = [28.095, 83.315];
 const GULMI_MAP_ZOOM = 11;
 const GULMI_BOUNDS: [[number, number], [number, number]] = [
-  [27.920, 83.024],
+  [27.92, 83.024],
   [28.271, 83.608],
 ];
 
@@ -112,7 +140,7 @@ const getWmoWeatherInfo = (code: number, isDay: boolean) => {
         en: 'Clear Sky',
         np: 'सफा आकाश',
         icon: isDay ? Sun : Moon,
-        color: 'text-amber-500'
+        color: 'text-amber-500',
       };
     case 1:
     case 2:
@@ -120,14 +148,14 @@ const getWmoWeatherInfo = (code: number, isDay: boolean) => {
         en: 'Partly Cloudy',
         np: 'आंशिक बदली',
         icon: isDay ? CloudSun : Cloud,
-        color: 'text-sky-500'
+        color: 'text-sky-500',
       };
     case 3:
       return {
         en: 'Overcast',
         np: 'पूर्ण बदली',
         icon: Cloud,
-        color: 'text-slate-500'
+        color: 'text-slate-500',
       };
     case 45:
     case 48:
@@ -135,7 +163,7 @@ const getWmoWeatherInfo = (code: number, isDay: boolean) => {
         en: 'Fog / Mist',
         np: 'कुहिरो / हुस्सु',
         icon: CloudFog,
-        color: 'text-slate-400'
+        color: 'text-slate-400',
       };
     case 51:
     case 53:
@@ -144,7 +172,7 @@ const getWmoWeatherInfo = (code: number, isDay: boolean) => {
         en: 'Drizzle',
         np: 'सिमसिमे पानी',
         icon: CloudDrizzle,
-        color: 'text-sky-500'
+        color: 'text-sky-500',
       };
     case 61:
     case 63:
@@ -153,7 +181,7 @@ const getWmoWeatherInfo = (code: number, isDay: boolean) => {
         en: 'Rain',
         np: 'वर्षा',
         icon: CloudRain,
-        color: 'text-blue-600'
+        color: 'text-blue-600',
       };
     case 71:
     case 73:
@@ -162,7 +190,7 @@ const getWmoWeatherInfo = (code: number, isDay: boolean) => {
         en: 'Snowfall',
         np: 'हिमपात',
         icon: Snowflake,
-        color: 'text-indigo-400'
+        color: 'text-indigo-400',
       };
     case 80:
     case 81:
@@ -171,7 +199,7 @@ const getWmoWeatherInfo = (code: number, isDay: boolean) => {
         en: 'Rain Showers',
         np: 'क्षणिक वर्षा',
         icon: CloudRain,
-        color: 'text-blue-500'
+        color: 'text-blue-500',
       };
     case 95:
     case 96:
@@ -180,20 +208,37 @@ const getWmoWeatherInfo = (code: number, isDay: boolean) => {
         en: 'Thunderstorm',
         np: 'मेघगर्जन सहित वर्षा',
         icon: CloudLightning,
-        color: 'text-amber-600'
+        color: 'text-amber-600',
       };
     default:
       return {
         en: 'Fair Weather',
         np: 'सामान्य मौसम',
         icon: CloudSun,
-        color: 'text-sky-500'
+        color: 'text-sky-500',
       };
   }
 };
 
 const getCardinalDirection = (deg: number): string => {
-  const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+  const directions = [
+    'N',
+    'NNE',
+    'NE',
+    'ENE',
+    'E',
+    'ESE',
+    'SE',
+    'SSE',
+    'S',
+    'SSW',
+    'SW',
+    'WSW',
+    'W',
+    'WNW',
+    'NW',
+    'NNW',
+  ];
   const index = Math.round(deg / 22.5) % 16;
   return directions[index] || 'N';
 };
@@ -251,8 +296,18 @@ function MapPanesSetup() {
 }
 
 const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
 interface DistrictMapProps {
@@ -307,9 +362,11 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
   // Fetch real-time live satellite weather for Gulmi district coordinates
   useEffect(() => {
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=28.068&longitude=83.248&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,surface_pressure,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m,direct_radiation,uv_index,dew_point_2m,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,uv_index_max,sunrise,sunset,et0_fao_evapotranspiration&timezone=Asia%2FKathmandu')
-      .then(res => res.json())
-      .then(data => {
+    fetch(
+      'https://api.open-meteo.com/v1/forecast?latitude=28.068&longitude=83.248&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,surface_pressure,cloud_cover,wind_speed_10m,wind_direction_10m,wind_gusts_10m,direct_radiation,uv_index,dew_point_2m,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,uv_index_max,sunrise,sunset,et0_fao_evapotranspiration&timezone=Asia%2FKathmandu'
+    )
+      .then((res) => res.json())
+      .then((data) => {
         if (data && data.current) {
           const wmo = getWmoWeatherInfo(data.current.weather_code || 0, data.current.is_day === 1);
           const sunriseStr = data.daily?.sunrise?.[0] ? data.daily.sunrise[0].split('T')[1]?.slice(0, 5) : '05:55';
@@ -318,24 +375,47 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
           setLiveWeather({
             temperature: Number(data.current.temperature_2m.toFixed(1)),
             apparentTemp: Number(data.current.apparent_temperature.toFixed(1)),
-            tempMin: data.daily?.temperature_2m_min?.[0] !== undefined ? Number(data.daily.temperature_2m_min[0].toFixed(1)) : undefined,
-            tempMax: data.daily?.temperature_2m_max?.[0] !== undefined ? Number(data.daily.temperature_2m_max[0].toFixed(1)) : undefined,
+            tempMin:
+              data.daily?.temperature_2m_min?.[0] !== undefined
+                ? Number(data.daily.temperature_2m_min[0].toFixed(1))
+                : undefined,
+            tempMax:
+              data.daily?.temperature_2m_max?.[0] !== undefined
+                ? Number(data.daily.temperature_2m_max[0].toFixed(1))
+                : undefined,
             humidity: Math.round(data.current.relative_humidity_2m),
             precipitation: Number(data.current.precipitation.toFixed(1)),
-            dailyPrecipSum: data.daily?.precipitation_sum?.[0] !== undefined ? Number(data.daily.precipitation_sum[0].toFixed(1)) : undefined,
+            dailyPrecipSum:
+              data.daily?.precipitation_sum?.[0] !== undefined
+                ? Number(data.daily.precipitation_sum[0].toFixed(1))
+                : undefined,
             windSpeed: Number((data.current.wind_speed_10m / 3.6).toFixed(1)),
-            windDirection: data.current.wind_direction_10m !== undefined ? Math.round(data.current.wind_direction_10m) : undefined,
-            windGusts: data.current.wind_gusts_10m !== undefined ? Number((data.current.wind_gusts_10m / 3.6).toFixed(1)) : undefined,
+            windDirection:
+              data.current.wind_direction_10m !== undefined ? Math.round(data.current.wind_direction_10m) : undefined,
+            windGusts:
+              data.current.wind_gusts_10m !== undefined
+                ? Number((data.current.wind_gusts_10m / 3.6).toFixed(1))
+                : undefined,
             solarRadiation: Math.round(data.current.direct_radiation || 0),
-            uvIndex: data.daily?.uv_index_max?.[0] !== undefined ? Number(data.daily.uv_index_max[0].toFixed(1)) : (data.current.uv_index !== undefined ? Number(data.current.uv_index.toFixed(1)) : undefined),
+            uvIndex:
+              data.daily?.uv_index_max?.[0] !== undefined
+                ? Number(data.daily.uv_index_max[0].toFixed(1))
+                : data.current.uv_index !== undefined
+                  ? Number(data.current.uv_index.toFixed(1))
+                  : undefined,
             weatherCode: data.current.weather_code ?? 0,
             conditionLabelEn: wmo.en,
             conditionLabelNp: wmo.np,
             isDay: data.current.is_day === 1,
-            surfacePressure: data.current.surface_pressure !== undefined ? Math.round(data.current.surface_pressure) : 854,
-            dewPoint: data.current.dew_point_2m !== undefined ? Number(data.current.dew_point_2m.toFixed(1)) : undefined,
+            surfacePressure:
+              data.current.surface_pressure !== undefined ? Math.round(data.current.surface_pressure) : 854,
+            dewPoint:
+              data.current.dew_point_2m !== undefined ? Number(data.current.dew_point_2m.toFixed(1)) : undefined,
             cloudCover: Math.round(data.current.cloud_cover || 0),
-            faoEvapotranspiration: data.daily?.et0_fao_evapotranspiration?.[0] !== undefined ? Number(data.daily.et0_fao_evapotranspiration[0].toFixed(1)) : 3.2,
+            faoEvapotranspiration:
+              data.daily?.et0_fao_evapotranspiration?.[0] !== undefined
+                ? Number(data.daily.et0_fao_evapotranspiration[0].toFixed(1))
+                : 3.2,
             sunrise: sunriseStr,
             sunset: sunsetStr,
             time: data.current.time,
@@ -356,14 +436,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
       return;
     }
     const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
-    const found = gulmiPalikas.find(p => p.name.toLowerCase() === palikaName.toLowerCase());
+    const found = gulmiPalikas.find((p) => p.name.toLowerCase() === palikaName.toLowerCase());
     if (found) {
       setHoveredPalika({
         name: found.name,
         nepaliName: PALIKA_CENTROIDS[found.name]?.nepali || found.name,
         type: found.unitType || 'Palika',
         elevation: found.elevation,
-        soilPh: found.soilPh
+        soilPh: found.soilPh,
       });
     }
   };
@@ -396,31 +476,39 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
         .catch(() => null),
     ])
       .then(([geo, palikas, roads, hydroAssets, rivers, contours, catchments, riversStreams]) => {
-      if (geo) setGeoData(geo);
-      if (palikas) setPalikasData(palikas);
-      if (roads) setNationalRoads(roads);
-      if (rivers) setGulmiRivers(rivers);
-      if (contours) setContoursData(contours);
-      if (catchments) setCatchmentsData(catchments);
-      if (riversStreams) setRiversStreamsData(riversStreams);
-      if (hydroAssets?.type === 'FeatureCollection' && Array.isArray(hydroAssets.features)) {
-        setHydrologyStations(hydroAssets.features);
-      }
-      setGeoLoading(false);
+        if (geo) setGeoData(geo);
+        if (palikas) setPalikasData(palikas);
+        if (roads) setNationalRoads(roads);
+        if (rivers) setGulmiRivers(rivers);
+        if (contours) setContoursData(contours);
+        if (catchments) setCatchmentsData(catchments);
+        if (riversStreams) setRiversStreamsData(riversStreams);
+        if (hydroAssets?.type === 'FeatureCollection' && Array.isArray(hydroAssets.features)) {
+          setHydrologyStations(hydroAssets.features);
+        }
+        setGeoLoading(false);
       })
       .catch(() => setGeoLoading(false));
   }, []);
 
   // Live Climate Telemetry for Gulmi District (MERRA-2 & NASA POWER)
-  const currentRainMm = climateDataset ? Math.round(
-    (climateDataset.climateMap?.['gulmi']?.[CLI_YEAR > 2019 ? 2019 : CLI_YEAR]?.[CLI_MONTH]?.prectot
-      ?? climateDataset.climatologyMap?.['gulmi']?.[CLI_MONTH]?.prectot ?? 150)
-  ) : 150;
+  const currentRainMm = climateDataset
+    ? Math.round(
+        climateDataset.climateMap?.['gulmi']?.[CLI_YEAR > 2019 ? 2019 : CLI_YEAR]?.[CLI_MONTH]?.prectot ??
+          climateDataset.climatologyMap?.['gulmi']?.[CLI_MONTH]?.prectot ??
+          150
+      )
+    : 150;
 
-  const currentTempC = climateDataset ? Number((
-    (climateDataset.climateMap?.['gulmi']?.[CLI_YEAR > 2019 ? 2019 : CLI_YEAR]?.[CLI_MONTH]?.t2m
-      ?? climateDataset.climatologyMap?.['gulmi']?.[CLI_MONTH]?.t2m ?? 19.5)
-  ).toFixed(1)) : 19.5;
+  const currentTempC = climateDataset
+    ? Number(
+        (
+          climateDataset.climateMap?.['gulmi']?.[CLI_YEAR > 2019 ? 2019 : CLI_YEAR]?.[CLI_MONTH]?.t2m ??
+          climateDataset.climatologyMap?.['gulmi']?.[CLI_MONTH]?.t2m ??
+          19.5
+        ).toFixed(1)
+      )
+    : 19.5;
 
   // Track B: Dynamic Palika Attribute Joining Hook
   const choropleth = usePalikaChoropleth({
@@ -433,17 +521,31 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
     currentTempC,
   });
 
-  const isMerraRainfallActive = selectedPillar === 'water' && (subFilters.waterSubFilter || 'merra_rainfall') === 'merra_rainfall';
+  const isMerraRainfallActive =
+    selectedPillar === 'water' && (subFilters.waterSubFilter || 'merra_rainfall') === 'merra_rainfall';
   const isCatchmentsActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'catchments';
   const isRiversStreamsActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'rivers_streams';
   const isFlowAccumulationActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'flow_accumulation';
   const isFlowDirectionActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'flow_direction';
   const isSolarGhiActive = selectedPillar === 'energy' && subFilters.energySubFilter === 'solar_irradiance';
-  const isGridSubstationActive = selectedPillar === 'energy' && (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach');
-  const isHydroCorridorActive = selectedPillar === 'energy' && (!subFilters.energySubFilter || subFilters.energySubFilter === 'hydro_corridor');
-  const isLandholdingActive = selectedPillar === 'socioeconomics' && (subFilters.socioSubFilter === 'agri_landholding' || subFilters.socioSubFilter === 'landholding');
+  const isGridSubstationActive =
+    selectedPillar === 'energy' &&
+    (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach');
+  const isHydroCorridorActive =
+    selectedPillar === 'energy' && (!subFilters.energySubFilter || subFilters.energySubFilter === 'hydro_corridor');
+  const isLandholdingActive =
+    selectedPillar === 'socioeconomics' &&
+    (subFilters.socioSubFilter === 'agri_landholding' || subFilters.socioSubFilter === 'landholding');
 
-  const isOverlayModeActive = isMerraRainfallActive || isSolarGhiActive || isFlowAccumulationActive || isFlowDirectionActive || isCatchmentsActive || isRiversStreamsActive || isGridSubstationActive || isHydroCorridorActive;
+  const isOverlayModeActive =
+    isMerraRainfallActive ||
+    isSolarGhiActive ||
+    isFlowAccumulationActive ||
+    isFlowDirectionActive ||
+    isCatchmentsActive ||
+    isRiversStreamsActive ||
+    isGridSubstationActive ||
+    isHydroCorridorActive;
 
   const getPalikaStyle = (feature: any) => {
     const props = feature?.properties;
@@ -452,7 +554,15 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
     if (isOverlayModeActive) {
       return {
-        fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : isGridSubstationActive ? '#0ea5e9' : isHydroCorridorActive ? '#7c3aed' : '#38bdf8') : 'transparent',
+        fillColor: isHovered
+          ? isSolarGhiActive
+            ? '#f59e0b'
+            : isGridSubstationActive
+              ? '#0ea5e9'
+              : isHydroCorridorActive
+                ? '#7c3aed'
+                : '#38bdf8'
+          : 'transparent',
         weight: isHovered ? 2.5 : 1.5,
         opacity: 0.95,
         color: isHovered ? '#10b981' : '#475569',
@@ -485,13 +595,16 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
     const metricSnippet = choropleth.getTooltipHtml(props.name || '');
 
-    layer.bindTooltip(`
+    layer.bindTooltip(
+      `
       <div style="font-family: sans-serif; font-size: 11px; padding: 3px 5px;">
         <div style="font-weight: 700; color: #0f172a;">${props.name} (${props.nepaliName || ''})</div>
         <div style="color: #475569; font-size: 10px;">${props.type || 'Palika'} • ${props.areaSqKm ? `${props.areaSqKm} km²` : 'Gulmi'}</div>
         ${metricSnippet}
       </div>
-    `, { sticky: true, direction: 'top', opacity: 0.95 });
+    `,
+      { sticky: true, direction: 'top', opacity: 0.95 }
+    );
 
     layer.on({
       click: () => {
@@ -543,7 +656,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
           const config = {
             ...baseConfig,
             title: `${cropLabel} Suitability`,
-            subtitle: `FAO ECOCROP Biophysical Model (Calibrated per Palika)`
+            subtitle: `FAO ECOCROP Biophysical Model (Calibrated per Palika)`,
           };
           return <DynamicLegend config={config} className="animate-fade-in-up" />;
         }
@@ -556,13 +669,13 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             cycle: 'Full Growing Cycle',
             winter_dry: 'Winter Dry Period (Nov–Feb)',
             pre_monsoon: 'Pre-Monsoon Dry Spell (Mar–May)',
-            monsoon_wet: 'Monsoon Wet Period (Jun–Sep)'
+            monsoon_wet: 'Monsoon Wet Period (Jun–Sep)',
           };
           const seasonSubtitle = seasonLabels[subFilters.waterSeason || 'cycle'] || 'Growing Cycle';
           const config = {
             ...baseConfig,
             title: `${cropLabel} Moisture Stress`,
-            subtitle: `${seasonSubtitle} • Water Footprint & Evapotranspiration Deficit`
+            subtitle: `${seasonSubtitle} • Water Footprint & Evapotranspiration Deficit`,
           };
           return <DynamicLegend config={config} className="animate-fade-in-up" />;
         }
@@ -599,11 +712,13 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             config={{
               ...rainfallConfig,
               subtitle: `${MONTH_NAMES[CLI_MONTH - 1]} (${CLI_YEAR}) • Area Mean: ${Math.round(currentRainMm)}mm`,
-              gradient: rainfallConfig.gradient ? {
-                ...rainfallConfig.gradient,
-                minLabel: `Subtropical Valleys (~${lowMm} mm)`,
-                maxLabel: `Mountain Ridges (~${highMm} mm)`
-              } : undefined
+              gradient: rainfallConfig.gradient
+                ? {
+                    ...rainfallConfig.gradient,
+                    minLabel: `Subtropical Valleys (~${lowMm} mm)`,
+                    maxLabel: `Mountain Ridges (~${highMm} mm)`,
+                  }
+                : undefined,
             }}
             className="animate-fade-in-up"
           />
@@ -647,8 +762,10 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
   // Loaded from data/formulas/analytical_methodologies.json (Strict Rule 5 Zero-Hardcoding Compliance)
   const currentCropId = selectedMapCropId || subFilters.crop || 'coffee';
   const validatedCrop = VALIDATED_CROPS[currentCropId];
-  const activeCropName = validatedCrop?.name || (selectedMapCropId ? db.getCropById(selectedMapCropId)?.name : null) || 'Arabica Coffee';
-  const activeCropNepali = validatedCrop?.nepaliName || (selectedMapCropId ? db.getCropById(selectedMapCropId)?.nepaliName : null) || 'कफी';
+  const activeCropName =
+    validatedCrop?.name || (selectedMapCropId ? db.getCropById(selectedMapCropId)?.name : null) || 'Arabica Coffee';
+  const activeCropNepali =
+    validatedCrop?.nepaliName || (selectedMapCropId ? db.getCropById(selectedMapCropId)?.nepaliName : null) || 'कफी';
 
   const activeCalc = resolveCalculationMethodology({
     selectedPillar,
@@ -658,7 +775,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
     cropNameNepali: activeCropNepali,
     climateMonth: CLI_MONTH,
     currentRainMm,
-    monthName: MONTH_NAMES[CLI_MONTH - 1]
+    monthName: MONTH_NAMES[CLI_MONTH - 1],
   });
 
   return (
@@ -671,7 +788,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2 font-outfit">
                 <Mountain className="w-5 h-5 text-emerald-600" />
-                <span>{lang === 'np' ? 'गुल्मी जिल्ला WEFES नेक्सस नक्सा' : 'WEFES Nexus Gulmi · Spatial Decision Support'}</span>
+                <span>
+                  {lang === 'np' ? 'गुल्मी जिल्ला WEFES नेक्सस नक्सा' : 'WEFES Nexus Gulmi · Spatial Decision Support'}
+                </span>
               </h2>
               <span className="text-xs bg-emerald-100 text-emerald-900 border border-emerald-300 px-2.5 py-0.5 rounded-md font-mono font-bold">
                 गुल्मी • 12 Palikas
@@ -680,7 +799,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 Lumbini Province
               </span>
               {geoLoading && (
-                <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-md animate-pulse font-mono">Loading GIS…</span>
+                <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-md animate-pulse font-mono">
+                  Loading GIS…
+                </span>
               )}
             </div>
             <p className="text-xs text-slate-500 font-sans">
@@ -689,7 +810,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 : 'Interactive 12-Palika spatial model. Hover or click any local body for real-time agro-ecological intelligence.'}
             </p>
           </div>
-
         </div>
 
         {/* 1. Top Telemetry Header (Clean Meta-Bar) */}
@@ -699,7 +819,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             <div className="flex items-center gap-1.5 font-sans font-semibold text-slate-800 text-xs">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block" />
               <span>
-                {lang === 'np' ? 'प्रत्यक्ष टेलिमेट्री — तमघास HQ (१,४५०m ASL)' : 'Live Telemetry — Tamghas HQ (1,450m ASL)'}
+                {lang === 'np'
+                  ? 'प्रत्यक्ष टेलिमेट्री — तमघास HQ (१,४५०m ASL)'
+                  : 'Live Telemetry — Tamghas HQ (1,450m ASL)'}
               </span>
             </div>
             <span className="text-slate-300">|</span>
@@ -715,23 +837,27 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
           {/* Right Side: Current Overall Weather Status */}
           <div className="flex items-center gap-2">
-            {liveWeather ? (() => {
-              const wmo = getWmoWeatherInfo(liveWeather.weatherCode, liveWeather.isDay);
-              const IconComp = wmo.icon;
-              return (
-                <div className="flex items-center gap-1.5 bg-white text-slate-700 border border-slate-200/90 px-2.5 py-1 rounded-lg text-xs font-medium shadow-2xs">
-                  <IconComp className={`w-3.5 h-3.5 ${wmo.color}`} />
-                  <span className="font-semibold text-slate-800">
-                    {lang === 'np' ? liveWeather.conditionLabelNp : liveWeather.conditionLabelEn}
-                  </span>
-                  <span className="text-slate-300">,</span>
-                  <span className="font-bold text-slate-900 font-sans">{liveWeather.temperature}°C</span>
-                  {liveWeather.precipitation > 0 && (
-                    <span className="text-sky-600 font-sans text-[11px] font-medium">• {liveWeather.precipitation} mm/h</span>
-                  )}
-                </div>
-              );
-            })() : (
+            {liveWeather ? (
+              (() => {
+                const wmo = getWmoWeatherInfo(liveWeather.weatherCode, liveWeather.isDay);
+                const IconComp = wmo.icon;
+                return (
+                  <div className="flex items-center gap-1.5 bg-white text-slate-700 border border-slate-200/90 px-2.5 py-1 rounded-lg text-xs font-medium shadow-2xs">
+                    <IconComp className={`w-3.5 h-3.5 ${wmo.color}`} />
+                    <span className="font-semibold text-slate-800">
+                      {lang === 'np' ? liveWeather.conditionLabelNp : liveWeather.conditionLabelEn}
+                    </span>
+                    <span className="text-slate-300">,</span>
+                    <span className="font-bold text-slate-900 font-sans">{liveWeather.temperature}°C</span>
+                    {liveWeather.precipitation > 0 && (
+                      <span className="text-sky-600 font-sans text-[11px] font-medium">
+                        • {liveWeather.precipitation} mm/h
+                      </span>
+                    )}
+                  </div>
+                );
+              })()
+            ) : (
               <span className="text-xs text-slate-400 font-mono">
                 {liveWeatherLoading ? (lang === 'np' ? 'मौसम लोड हुँदै...' : 'Loading Weather...') : 'Weather Offline'}
               </span>
@@ -740,7 +866,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             {/* Expand / Collapse Grid Toggle */}
             {liveWeather && (
               <button
-                onClick={() => setIsAgroMeteoOpen(prev => !prev)}
+                onClick={() => setIsAgroMeteoOpen((prev) => !prev)}
                 className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded transition-colors cursor-pointer"
                 title={isAgroMeteoOpen ? 'Collapse telemetry cards' : 'Expand telemetry cards'}
                 aria-label="Toggle telemetry cards"
@@ -752,183 +878,222 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
         </div>
 
         {/* 2. The Core 4-Card Grid */}
-        {isAgroMeteoOpen && liveWeather && (() => {
-          // Computed metric values with robust fallbacks
-          const cloudCover = liveWeather.cloudCover ?? 22;
-          const dewPoint = (liveWeather.dewPoint ?? 17.4).toFixed(1);
-          const humidity = liveWeather.humidity ?? 94;
+        {isAgroMeteoOpen &&
+          liveWeather &&
+          (() => {
+            // Computed metric values with robust fallbacks
+            const cloudCover = liveWeather.cloudCover ?? 22;
+            const dewPoint = (liveWeather.dewPoint ?? 17.4).toFixed(1);
+            const humidity = liveWeather.humidity ?? 94;
 
-          const et0Val = Number(liveWeather.faoEvapotranspiration ?? 3.7);
-          const rain24hVal = Number(liveWeather.dailyPrecipSum ?? 2.7);
-          const waterDeficit = Math.max(0, et0Val - rain24hVal).toFixed(1);
-          const deficitRatio = Math.min(100, Math.max(6, (parseFloat(waterDeficit) / Math.max(0.1, et0Val)) * 100));
+            const et0Val = Number(liveWeather.faoEvapotranspiration ?? 3.7);
+            const rain24hVal = Number(liveWeather.dailyPrecipSum ?? 2.7);
+            const waterDeficit = Math.max(0, et0Val - rain24hVal).toFixed(1);
+            const deficitRatio = Math.min(100, Math.max(6, (parseFloat(waterDeficit) / Math.max(0.1, et0Val)) * 100));
 
-          const uvVal = Number(liveWeather.uvIndex ?? 7.3);
-          const uvRatio = Math.min(100, Math.max(6, (uvVal / 11) * 100));
+            const uvVal = Number(liveWeather.uvIndex ?? 7.3);
+            const uvRatio = Math.min(100, Math.max(6, (uvVal / 11) * 100));
 
-          const windVal = Number(liveWeather.windSpeed ?? 2.6);
-          const windRatio = Math.min(100, Math.max(6, (windVal / 15) * 100));
-          const windDir = liveWeather.windDirection ?? 30;
-          const windBearing = `${windDir}° ${getCardinalDirection(windDir)}`;
+            const windVal = Number(liveWeather.windSpeed ?? 2.6);
+            const windRatio = Math.min(100, Math.max(6, (windVal / 15) * 100));
+            const windDir = liveWeather.windDirection ?? 30;
+            const windBearing = `${windDir}° ${getCardinalDirection(windDir)}`;
 
-          return (
-            <div className="border-t border-slate-200/80 bg-slate-50/50 p-3 sm:p-4 text-xs animate-fade-in">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {/* Card 1: Atmospheric Dynamics */}
-                <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-2">
-                      <span className="text-xs font-bold text-slate-800 tracking-tight flex items-center gap-1.5 font-outfit">
-                        <Gauge className="w-3.5 h-3.5 text-indigo-600" />
-                        <span>{lang === 'np' ? 'वायुमण्डलीय चाप' : 'Atmospheric Dynamics'}</span>
-                      </span>
-                      <span className="text-[9px] font-mono text-slate-400 bg-slate-100/90 border border-slate-200/70 px-1.5 py-0.5 rounded font-medium">
-                        1,450m ASL
-                      </span>
-                    </div>
+            return (
+              <div className="border-t border-slate-200/80 bg-slate-50/50 p-3 sm:p-4 text-xs animate-fade-in">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {/* Card 1: Atmospheric Dynamics */}
+                  <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <span className="text-xs font-bold text-slate-800 tracking-tight flex items-center gap-1.5 font-outfit">
+                          <Gauge className="w-3.5 h-3.5 text-indigo-600" />
+                          <span>{lang === 'np' ? 'वायुमण्डलीय चाप' : 'Atmospheric Dynamics'}</span>
+                        </span>
+                        <span className="text-[9px] font-mono text-slate-400 bg-slate-100/90 border border-slate-200/70 px-1.5 py-0.5 rounded font-medium">
+                          1,450m ASL
+                        </span>
+                      </div>
 
-                    {/* Primary BAN */}
-                    <div className="text-2xl sm:text-3xl font-black font-sans text-slate-900 tracking-tight flex items-baseline">
-                      {liveWeather.surfacePressure ?? 854}
-                      <span className="text-xs font-bold uppercase text-slate-400 ml-1.5 font-sans">hPa</span>
-                    </div>
+                      {/* Primary BAN */}
+                      <div className="text-2xl sm:text-3xl font-black font-sans text-slate-900 tracking-tight flex items-baseline">
+                        {liveWeather.surfacePressure ?? 854}
+                        <span className="text-xs font-bold uppercase text-slate-400 ml-1.5 font-sans">hPa</span>
+                      </div>
 
-                    {/* Progress Indicator: Cloud Cover */}
-                    <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden my-2" title={`Cloud Cover: ${cloudCover}%`}>
+                      {/* Progress Indicator: Cloud Cover */}
                       <div
-                        className="bg-indigo-500 h-full rounded-full transition-all duration-500"
-                        style={{ width: `${Math.min(100, Math.max(0, cloudCover))}%` }}
-                      />
+                        className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden my-2"
+                        title={`Cloud Cover: ${cloudCover}%`}
+                      >
+                        <div
+                          className="bg-indigo-500 h-full rounded-full transition-all duration-500"
+                          style={{ width: `${Math.min(100, Math.max(0, cloudCover))}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Secondary Data */}
+                    <div className="text-[11px] text-slate-500 font-sans leading-relaxed flex flex-wrap items-center gap-x-1.5 pt-1 border-t border-slate-100">
+                      <span>
+                        • Dew Point: <strong className="font-semibold text-slate-700">{dewPoint}°C</strong>
+                      </span>
+                      <span>
+                        • Cloud Cover: <strong className="font-semibold text-slate-700">{cloudCover}%</strong>
+                      </span>
+                      <span>
+                        • Humidity: <strong className="font-semibold text-slate-700">{humidity}%</strong>
+                      </span>
                     </div>
                   </div>
 
-                  {/* Secondary Data */}
-                  <div className="text-[11px] text-slate-500 font-sans leading-relaxed flex flex-wrap items-center gap-x-1.5 pt-1 border-t border-slate-100">
-                    <span>• Dew Point: <strong className="font-semibold text-slate-700">{dewPoint}°C</strong></span>
-                    <span>• Cloud Cover: <strong className="font-semibold text-slate-700">{cloudCover}%</strong></span>
-                    <span>• Humidity: <strong className="font-semibold text-slate-700">{humidity}%</strong></span>
+                  {/* Card 2: Agro-Hydrology (ET₀) */}
+                  <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <span className="text-xs font-bold text-slate-800 tracking-tight flex items-center gap-1.5 font-outfit">
+                          <Sprout className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>{lang === 'np' ? 'कृषि-जल वाष्पीकरण' : 'Agro-Hydrology (ET₀)'}</span>
+                        </span>
+                        <span className="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.5 rounded font-semibold">
+                          FAO-56
+                        </span>
+                      </div>
+
+                      {/* Primary BAN */}
+                      <div className="text-2xl sm:text-3xl font-black font-sans text-emerald-900 tracking-tight flex items-baseline">
+                        {et0Val.toFixed(1)}
+                        <span className="text-xs font-bold uppercase text-emerald-600 ml-1.5 font-sans">mm/d</span>
+                      </div>
+
+                      {/* Progress Indicator: Water Deficit */}
+                      <div
+                        className="w-full bg-emerald-100/60 h-1.5 rounded-full overflow-hidden my-2"
+                        title={`Water Deficit: ${waterDeficit} mm/d`}
+                      >
+                        <div
+                          className="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                          style={{ width: `${deficitRatio}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Secondary Data */}
+                    <div className="text-[11px] text-slate-500 font-sans leading-relaxed flex flex-wrap items-center gap-x-1.5 pt-1 border-t border-slate-100">
+                      <span>
+                        • 24h Rain: <strong className="font-semibold text-slate-700">{rain24hVal.toFixed(1)} mm</strong>
+                      </span>
+                      <span>
+                        • Water Deficit Index:{' '}
+                        <strong className="font-semibold text-emerald-700">{waterDeficit} mm/d</strong>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card 3: Solar & UV Yield */}
+                  <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <span className="text-xs font-bold text-slate-800 tracking-tight flex items-center gap-1.5 font-outfit">
+                          <Sun className="w-3.5 h-3.5 text-amber-500" />
+                          <span>{lang === 'np' ? 'सौर्य ऊर्जा र पराबैजनी' : 'Solar & UV Yield'}</span>
+                        </span>
+                        <span className="text-[9px] font-mono text-amber-700 bg-amber-50 border border-amber-200/80 px-1.5 py-0.5 rounded font-semibold">
+                          NASA Baseline
+                        </span>
+                      </div>
+
+                      {/* Primary BAN */}
+                      <div className="text-2xl sm:text-3xl font-black font-sans text-amber-900 tracking-tight flex items-baseline">
+                        {uvVal.toFixed(1)}
+                        <span className="text-xs font-bold uppercase text-amber-600 ml-1.5 font-sans">UV Index</span>
+                      </div>
+
+                      {/* Progress Indicator: UV Level */}
+                      <div
+                        className="w-full bg-amber-100/60 h-1.5 rounded-full overflow-hidden my-2"
+                        title={`UV Index: ${uvVal.toFixed(1)}`}
+                      >
+                        <div
+                          className="bg-amber-500 h-full rounded-full transition-all duration-500"
+                          style={{ width: `${uvRatio}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Secondary Data */}
+                    <div className="text-[11px] text-slate-500 font-sans leading-relaxed flex flex-wrap items-center gap-x-1.5 pt-1 border-t border-slate-100">
+                      <span>
+                        • Daylight:{' '}
+                        <strong className="font-semibold text-slate-700">
+                          {liveWeather.sunrise || '05:55'} – {liveWeather.sunset || '18:20'}
+                        </strong>
+                      </span>
+                      <span>
+                        • Elevation:{' '}
+                        <strong className="font-semibold text-amber-700">
+                          {liveWeather.isDay ? 'Daylight Phase ☀️' : 'Night Phase 🌙'}
+                        </strong>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Card 4: Wind & Terrain Shear */}
+                  <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <span className="text-xs font-bold text-slate-800 tracking-tight flex items-center gap-1.5 font-outfit">
+                          <Wind className="w-3.5 h-3.5 text-teal-600" />
+                          <span>{lang === 'np' ? 'पहाडी वायु र झोक्का' : 'Wind & Terrain Shear'}</span>
+                        </span>
+                        <span className="text-[9px] font-mono text-teal-700 bg-teal-50 border border-teal-200/80 px-1.5 py-0.5 rounded font-semibold">
+                          10m AGL
+                        </span>
+                      </div>
+
+                      {/* Primary BAN */}
+                      <div className="text-2xl sm:text-3xl font-black font-sans text-teal-900 tracking-tight flex items-baseline">
+                        {windVal.toFixed(1)}
+                        <span className="text-xs font-bold uppercase text-teal-600 ml-1.5 font-sans">m/s</span>
+                      </div>
+
+                      {/* Progress Indicator: Wind Velocity */}
+                      <div
+                        className="w-full bg-teal-100/60 h-1.5 rounded-full overflow-hidden my-2"
+                        title={`Wind Velocity: ${windVal.toFixed(1)} m/s`}
+                      >
+                        <div
+                          className="bg-teal-500 h-full rounded-full transition-all duration-500"
+                          style={{ width: `${windRatio}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Secondary Data */}
+                    <div className="text-[11px] text-slate-500 font-sans leading-relaxed flex flex-wrap items-center gap-x-1.5 pt-1 border-t border-slate-100">
+                      <span>
+                        • Bearing: <strong className="font-semibold text-slate-700">{windBearing}</strong>
+                      </span>
+                      <span className="inline-flex items-center gap-1">
+                        • Terrain Risk:
+                        <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded text-[10px] font-semibold inline-flex items-center">
+                          Low / Stable
+                        </span>
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Card 2: Agro-Hydrology (ET₀) */}
-                <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-2">
-                      <span className="text-xs font-bold text-slate-800 tracking-tight flex items-center gap-1.5 font-outfit">
-                        <Sprout className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>{lang === 'np' ? 'कृषि-जल वाष्पीकरण' : 'Agro-Hydrology (ET₀)'}</span>
-                      </span>
-                      <span className="text-[9px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.5 rounded font-semibold">
-                        FAO-56
-                      </span>
-                    </div>
-
-                    {/* Primary BAN */}
-                    <div className="text-2xl sm:text-3xl font-black font-sans text-emerald-900 tracking-tight flex items-baseline">
-                      {et0Val.toFixed(1)}
-                      <span className="text-xs font-bold uppercase text-emerald-600 ml-1.5 font-sans">mm/d</span>
-                    </div>
-
-                    {/* Progress Indicator: Water Deficit */}
-                    <div className="w-full bg-emerald-100/60 h-1.5 rounded-full overflow-hidden my-2" title={`Water Deficit: ${waterDeficit} mm/d`}>
-                      <div
-                        className="bg-emerald-500 h-full rounded-full transition-all duration-500"
-                        style={{ width: `${deficitRatio}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Secondary Data */}
-                  <div className="text-[11px] text-slate-500 font-sans leading-relaxed flex flex-wrap items-center gap-x-1.5 pt-1 border-t border-slate-100">
-                    <span>• 24h Rain: <strong className="font-semibold text-slate-700">{rain24hVal.toFixed(1)} mm</strong></span>
-                    <span>• Water Deficit Index: <strong className="font-semibold text-emerald-700">{waterDeficit} mm/d</strong></span>
-                  </div>
-                </div>
-
-                {/* Card 3: Solar & UV Yield */}
-                <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-2">
-                      <span className="text-xs font-bold text-slate-800 tracking-tight flex items-center gap-1.5 font-outfit">
-                        <Sun className="w-3.5 h-3.5 text-amber-500" />
-                        <span>{lang === 'np' ? 'सौर्य ऊर्जा र पराबैजनी' : 'Solar & UV Yield'}</span>
-                      </span>
-                      <span className="text-[9px] font-mono text-amber-700 bg-amber-50 border border-amber-200/80 px-1.5 py-0.5 rounded font-semibold">
-                        NASA Baseline
-                      </span>
-                    </div>
-
-                    {/* Primary BAN */}
-                    <div className="text-2xl sm:text-3xl font-black font-sans text-amber-900 tracking-tight flex items-baseline">
-                      {uvVal.toFixed(1)}
-                      <span className="text-xs font-bold uppercase text-amber-600 ml-1.5 font-sans">UV Index</span>
-                    </div>
-
-                    {/* Progress Indicator: UV Level */}
-                    <div className="w-full bg-amber-100/60 h-1.5 rounded-full overflow-hidden my-2" title={`UV Index: ${uvVal.toFixed(1)}`}>
-                      <div
-                        className="bg-amber-500 h-full rounded-full transition-all duration-500"
-                        style={{ width: `${uvRatio}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Secondary Data */}
-                  <div className="text-[11px] text-slate-500 font-sans leading-relaxed flex flex-wrap items-center gap-x-1.5 pt-1 border-t border-slate-100">
-                    <span>• Daylight: <strong className="font-semibold text-slate-700">{liveWeather.sunrise || '05:55'} – {liveWeather.sunset || '18:20'}</strong></span>
-                    <span>• Elevation: <strong className="font-semibold text-amber-700">{liveWeather.isDay ? 'Daylight Phase ☀️' : 'Night Phase 🌙'}</strong></span>
-                  </div>
-                </div>
-
-                {/* Card 4: Wind & Terrain Shear */}
-                <div className="bg-white rounded-xl border border-slate-200/90 p-3.5 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-2">
-                      <span className="text-xs font-bold text-slate-800 tracking-tight flex items-center gap-1.5 font-outfit">
-                        <Wind className="w-3.5 h-3.5 text-teal-600" />
-                        <span>{lang === 'np' ? 'पहाडी वायु र झोक्का' : 'Wind & Terrain Shear'}</span>
-                      </span>
-                      <span className="text-[9px] font-mono text-teal-700 bg-teal-50 border border-teal-200/80 px-1.5 py-0.5 rounded font-semibold">
-                        10m AGL
-                      </span>
-                    </div>
-
-                    {/* Primary BAN */}
-                    <div className="text-2xl sm:text-3xl font-black font-sans text-teal-900 tracking-tight flex items-baseline">
-                      {windVal.toFixed(1)}
-                      <span className="text-xs font-bold uppercase text-teal-600 ml-1.5 font-sans">m/s</span>
-                    </div>
-
-                    {/* Progress Indicator: Wind Velocity */}
-                    <div className="w-full bg-teal-100/60 h-1.5 rounded-full overflow-hidden my-2" title={`Wind Velocity: ${windVal.toFixed(1)} m/s`}>
-                      <div
-                        className="bg-teal-500 h-full rounded-full transition-all duration-500"
-                        style={{ width: `${windRatio}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Secondary Data */}
-                  <div className="text-[11px] text-slate-500 font-sans leading-relaxed flex flex-wrap items-center gap-x-1.5 pt-1 border-t border-slate-100">
-                    <span>• Bearing: <strong className="font-semibold text-slate-700">{windBearing}</strong></span>
-                    <span className="inline-flex items-center gap-1">
-                      • Terrain Risk:
-                      <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-1.5 py-0.5 rounded text-[10px] font-semibold inline-flex items-center">
-                        Low / Stable
-                      </span>
-                    </span>
-                  </div>
+                {/* Data Provenance Footnote */}
+                <div className="mt-3 pt-2 border-t border-slate-200/70 flex items-center justify-between flex-wrap gap-2 text-[10px] text-slate-400 font-mono">
+                  <span>
+                    📡 Open-Meteo High-Resolution (1.5km) NWP & Satellite Model • Tamghas HQ (28.068°N, 83.248°E)
+                  </span>
+                  <span className="text-emerald-700 font-medium">✓ Real-Time Telemetry Active</span>
                 </div>
               </div>
-
-              {/* Data Provenance Footnote */}
-              <div className="mt-3 pt-2 border-t border-slate-200/70 flex items-center justify-between flex-wrap gap-2 text-[10px] text-slate-400 font-mono">
-                <span>📡 Open-Meteo High-Resolution (1.5km) NWP & Satellite Model • Tamghas HQ (28.068°N, 83.248°E)</span>
-                <span className="text-emerald-700 font-medium">✓ Real-Time Telemetry Active</span>
-              </div>
-            </div>
-          );
-        })()}
+            );
+          })()}
       </div>
 
       {/* 3. 5-Pillar WEFES Selector Bar */}
@@ -938,22 +1103,58 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             {lang === 'np' ? '५ नेक्सस स्तम्भहरू:' : '5 WEFES Pillars:'}
           </span>
           {[
-            { id: 'water', label: 'Water', nepali: 'जल', icon: Droplets, color: 'text-sky-600', activeBg: 'bg-sky-600 text-white' },
-            { id: 'energy', label: 'Energy', nepali: 'ऊर्जा', icon: Zap, color: 'text-amber-600', activeBg: 'bg-amber-600 text-white' },
-            { id: 'food', label: 'Food', nepali: 'खाद्य', icon: Sprout, color: 'text-emerald-600', activeBg: 'bg-emerald-700 text-white' },
-            { id: 'ecosystem', label: 'Ecosystem', nepali: 'पारिस्थितिकी', icon: Trees, color: 'text-teal-600', activeBg: 'bg-teal-700 text-white' },
-            { id: 'socioeconomics', label: 'Socioeconomics', nepali: 'सामाजिक-आर्थिक', icon: Building2, color: 'text-indigo-600', activeBg: 'bg-indigo-700 text-white' },
-          ].map(p => {
+            {
+              id: 'water',
+              label: 'Water',
+              nepali: 'जल',
+              icon: Droplets,
+              color: 'text-sky-600',
+              activeBg: 'bg-sky-600 text-white',
+            },
+            {
+              id: 'energy',
+              label: 'Energy',
+              nepali: 'ऊर्जा',
+              icon: Zap,
+              color: 'text-amber-600',
+              activeBg: 'bg-amber-600 text-white',
+            },
+            {
+              id: 'food',
+              label: 'Food',
+              nepali: 'खाद्य',
+              icon: Sprout,
+              color: 'text-emerald-600',
+              activeBg: 'bg-emerald-700 text-white',
+            },
+            {
+              id: 'ecosystem',
+              label: 'Ecosystem',
+              nepali: 'पारिस्थितिकी',
+              icon: Trees,
+              color: 'text-teal-600',
+              activeBg: 'bg-teal-700 text-white',
+            },
+            {
+              id: 'socioeconomics',
+              label: 'Socioeconomics',
+              nepali: 'सामाजिक-आर्थिक',
+              icon: Building2,
+              color: 'text-indigo-600',
+              activeBg: 'bg-indigo-700 text-white',
+            },
+          ].map((p) => {
             const Icon = p.icon;
             const isActive = selectedPillar === p.id;
             return (
               <button
                 key={p.id}
                 onClick={() => setSelectedPillar(p.id as WEFESPillar)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap border ${isActive
-                  ? `${p.activeBg} border-transparent shadow-xs scale-[1.02]`
-                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
-                  }`}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap border ${
+                  isActive
+                    ? `${p.activeBg} border-transparent shadow-xs scale-[1.02]`
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
+                }`}
               >
                 <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : p.color}`} />
                 <span>{lang === 'np' ? p.nepali : p.label}</span>
@@ -977,24 +1178,33 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
           <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-xs font-semibold text-slate-700 shadow-2xs">
             <button
               onClick={() => setBasemap('voyager')}
-              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${basemap === 'voyager' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900 text-slate-600'
-                }`}
+              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                basemap === 'voyager'
+                  ? 'bg-white text-emerald-700 font-bold shadow-xs'
+                  : 'hover:text-slate-900 text-slate-600'
+              }`}
               title="Clean Vector Basemap"
             >
               Clean
             </button>
             <button
               onClick={() => setBasemap('satellite')}
-              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${basemap === 'satellite' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900 text-slate-600'
-                }`}
+              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                basemap === 'satellite'
+                  ? 'bg-white text-emerald-700 font-bold shadow-xs'
+                  : 'hover:text-slate-900 text-slate-600'
+              }`}
               title="ESRI World Imagery Satellite"
             >
               Satellite
             </button>
             <button
               onClick={() => setBasemap('terrain')}
-              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${basemap === 'terrain' ? 'bg-white text-emerald-700 font-bold shadow-xs' : 'hover:text-slate-900 text-slate-600'
-                }`}
+              className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                basemap === 'terrain'
+                  ? 'bg-white text-emerald-700 font-bold shadow-xs'
+                  : 'hover:text-slate-900 text-slate-600'
+              }`}
               title="Topographic Elevation Contours"
             >
               Relief
@@ -1003,24 +1213,30 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
           {/* Palika Centroid Labels Toggle */}
           <button
-            onClick={() => setShowPalikaLabels(prev => !prev)}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${showPalikaLabels
-              ? 'bg-slate-800 text-white border-slate-700 shadow-2xs'
-              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-              }`}
+            onClick={() => setShowPalikaLabels((prev) => !prev)}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${
+              showPalikaLabels
+                ? 'bg-slate-800 text-white border-slate-700 shadow-2xs'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+            }`}
             title="Toggle Palika Name Text Labels"
           >
-            {showPalikaLabels ? <Eye className="w-3.5 h-3.5 text-emerald-400" /> : <EyeOff className="w-3.5 h-3.5 text-slate-400" />}
+            {showPalikaLabels ? (
+              <Eye className="w-3.5 h-3.5 text-emerald-400" />
+            ) : (
+              <EyeOff className="w-3.5 h-3.5 text-slate-400" />
+            )}
             <span>Labels</span>
           </button>
 
           {/* Topographic Contours Toggle */}
           <button
-            onClick={() => setShowContours(prev => !prev)}
-            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${showContours || basemap === 'terrain'
-              ? 'bg-emerald-800 text-white border-emerald-700 shadow-2xs'
-              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-              }`}
+            onClick={() => setShowContours((prev) => !prev)}
+            className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer border ${
+              showContours || basemap === 'terrain'
+                ? 'bg-emerald-800 text-white border-emerald-700 shadow-2xs'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+            }`}
             title="Toggle 200m Topographic Elevation Contours & Life Zones"
           >
             <Mountain className="w-3.5 h-3.5 text-amber-300" />
@@ -1029,7 +1245,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
           {/* Recenter Camera Button */}
           <button
-            onClick={() => setResetTrigger(prev => prev + 1)}
+            onClick={() => setResetTrigger((prev) => prev + 1)}
             className="px-2.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 shadow-2xs hover:text-emerald-700"
             title="Reset Map Camera to Gulmi"
           >
@@ -1093,49 +1309,29 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
             {/* Continuous Spatial Solar Irradiance Surface (Global Solar Atlas 900m Empirical Grid) */}
             {isSolarGhiActive && geoData && (
-              <SpatialSolarSurfaceOverlay
-                geoData={geoData}
-                bounds={GULMI_BOUNDS}
-                opacity={0.85}
-              />
+              <SpatialSolarSurfaceOverlay geoData={geoData} bounds={GULMI_BOUNDS} opacity={0.85} />
             )}
 
             {/* Continuous Spatial Settlement Building Density Heat Wave Overlay (78,934 OSM Building Geometries) */}
             {isLandholdingActive && geoData && (
-              <SpatialSettlementDensityOverlay
-                geoData={geoData}
-                bounds={GULMI_BOUNDS}
-                opacity={0.78}
-              />
+              <SpatialSettlementDensityOverlay geoData={geoData} bounds={GULMI_BOUNDS} opacity={0.78} />
             )}
 
             {/* HydroSHEDS Continuous Surface Flow Accumulation Overlay */}
             {isFlowAccumulationActive && (
-              <SpatialFlowAccumulationOverlay
-                opacity={0.88}
-                pane="rainfallPane"
-                geoData={geoData}
-              />
+              <SpatialFlowAccumulationOverlay opacity={0.88} pane="rainfallPane" geoData={geoData} />
             )}
 
             {/* HydroSHEDS D8 Surface Flow Direction Overlay */}
             {isFlowDirectionActive && (
-              <SpatialFlowDirectionOverlay
-                opacity={0.85}
-                pane="rainfallPane"
-                geoData={geoData}
-              />
+              <SpatialFlowDirectionOverlay opacity={0.85} pane="rainfallPane" geoData={geoData} />
             )}
 
             {/* HydroBASINS Level 10 Sub-Basin Watershed Boundaries */}
-            {isCatchmentsActive && catchmentsData && (
-              <CatchmentsGeoJsonLayer data={catchmentsData} />
-            )}
+            {isCatchmentsActive && catchmentsData && <CatchmentsGeoJsonLayer data={catchmentsData} />}
 
             {/* HydroRIVERS Multi-Tier Stream Network with Strahler Orders */}
-            {isRiversStreamsActive && riversStreamsData && (
-              <RiversStreamsGeoJsonLayer data={riversStreamsData} />
-            )}
+            {isRiversStreamsActive && riversStreamsData && <RiversStreamsGeoJsonLayer data={riversStreamsData} />}
 
             {/* 12 Gulmi Palikas Vector Layer (Dynamically styled per Pillar, Crop, and Climate Time-Series) */}
             {palikasData && (
@@ -1145,19 +1341,31 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 pane="palikasPane"
                 style={(feature: any) => {
                   const pName = (feature?.properties?.name || '').toLowerCase();
-                  const isHovered = hoveredPalika?.name && (
-                    pName.includes(hoveredPalika.name.toLowerCase()) ||
-                    hoveredPalika.name.toLowerCase().includes(pName)
-                  );
+                  const isHovered =
+                    hoveredPalika?.name &&
+                    (pName.includes(hoveredPalika.name.toLowerCase()) ||
+                      hoveredPalika.name.toLowerCase().includes(pName));
                   const isContourActive = showContours || basemap === 'terrain';
                   const baseOpacity = isContourActive ? 0.45 : 0.72;
 
                   if (isOverlayModeActive) {
                     return {
-                      fillColor: isHovered ? (isSolarGhiActive ? '#f59e0b' : isGridSubstationActive ? '#0ea5e9' : '#38bdf8') : 'transparent',
+                      fillColor: isHovered
+                        ? isSolarGhiActive
+                          ? '#f59e0b'
+                          : isGridSubstationActive
+                            ? '#0ea5e9'
+                            : '#38bdf8'
+                        : 'transparent',
                       fillOpacity: isHovered ? 0.18 : 0,
-                      color: isHovered ? '#10b981' : (isCatchmentsActive ? '#64748b' : isGridSubstationActive ? '#475569' : '#334155'),
-                      weight: isHovered ? 3.5 : (isCatchmentsActive ? 1.2 : 1.6),
+                      color: isHovered
+                        ? '#10b981'
+                        : isCatchmentsActive
+                          ? '#64748b'
+                          : isGridSubstationActive
+                            ? '#475569'
+                            : '#334155',
+                      weight: isHovered ? 3.5 : isCatchmentsActive ? 1.2 : 1.6,
                       dashArray: isCatchmentsActive ? '3, 4' : '',
                     };
                   }
@@ -1200,7 +1408,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 }}
                 onEachFeature={(feature: any, layer: any) => {
                   const p = feature?.properties || {};
-                  layer.bindTooltip(`
+                  layer.bindTooltip(
+                    `
                       <div style="padding: 4px 6px; font-size: 11px; min-width: 170px;">
                         <div style="font-weight: 800; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin-bottom: 3px;">
                           ⛰️ ${p.elevation}m masl ${p.isIndex ? '(Index Contour)' : ''}
@@ -1209,7 +1418,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                         <div style="color: #475569; font-size: 9.5px; margin-top: 1px;">Lapse Temp: <strong>${p.temperatureC ?? 16}°C</strong></div>
                         ${p.feasibleCrops?.length ? `<div style="color: #15803d; font-size: 9px; margin-top: 2px; line-height: 1.2;">🌾 Crops: ${p.feasibleCrops.slice(0, 3).join(', ')}</div>` : ''}
                       </div>
-                    `, { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' });
+                    `,
+                    { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' }
+                  );
                 }}
               />
             )}
@@ -1231,24 +1442,24 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             )}
 
             {/* Bilingual Palika Center Labels (Transparent text with halo glow) */}
-            {showPalikaLabels && Object.entries(PALIKA_CENTROIDS).map(([pName, pGeo]) => {
-              const isHovered = hoveredPalika?.name?.toLowerCase() === pName.toLowerCase();
-              return (
-                <Marker
-                  key={`label-${pName}`}
-                  position={[pGeo.lat, pGeo.lng]}
-                  icon={createPalikaLabelIcon(pName, pGeo.nepali, isHovered)}
-                  interactive={false}
-                />
-              );
-            })}
+            {showPalikaLabels &&
+              Object.entries(PALIKA_CENTROIDS).map(([pName, pGeo]) => {
+                const isHovered = hoveredPalika?.name?.toLowerCase() === pName.toLowerCase();
+                return (
+                  <Marker
+                    key={`label-${pName}`}
+                    position={[pGeo.lat, pGeo.lng]}
+                    icon={createPalikaLabelIcon(pName, pGeo.nepali, isHovered)}
+                    interactive={false}
+                  />
+                );
+              })}
 
             {/* Contextual Layer Isolation 1: Roads strictly shown when explicitly filtering roads */}
-            {nationalRoads && (
-              subFilters.highwayFilter === 'all' ||
-              subFilters.highwayFilter === 'primary' ||
-              (selectedPillar === 'socioeconomics' && subFilters.highwayFilter !== 'none')
-            ) && (
+            {nationalRoads &&
+              (subFilters.highwayFilter === 'all' ||
+                subFilters.highwayFilter === 'primary' ||
+                (selectedPillar === 'socioeconomics' && subFilters.highwayFilter !== 'none')) && (
                 <GeoJSON
                   key={`national-roads-${subFilters.highwayFilter || 'corridor'}`}
                   data={nationalRoads}
@@ -1302,15 +1513,18 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                     onEachFeature={(feature: any, layer: any) => {
                       const p = feature?.properties || {};
                       const order = p.ORD_STRA || 1;
-                      const tierTitle = order >= 5
-                        ? '⚡ Commercial RoR (>1 MW)'
-                        : (order === 3 || order === 4)
-                          ? '⚡ Mini Hydro (100–999 kW)'
-                          : '⚡ Rural Micro-Hydro (<100 kW)';
-                      const tierColor = order >= 5 ? '#4c1d95' : (order === 3 || order === 4) ? '#7c3aed' : '#10b981';
-                      const estPower = order >= 5 ? '1,500 – 12,000 kW' : (order === 3 || order === 4) ? '150 – 950 kW' : '15 – 85 kW';
+                      const tierTitle =
+                        order >= 5
+                          ? '⚡ Commercial RoR (>1 MW)'
+                          : order === 3 || order === 4
+                            ? '⚡ Mini Hydro (100–999 kW)'
+                            : '⚡ Rural Micro-Hydro (<100 kW)';
+                      const tierColor = order >= 5 ? '#4c1d95' : order === 3 || order === 4 ? '#7c3aed' : '#10b981';
+                      const estPower =
+                        order >= 5 ? '1,500 – 12,000 kW' : order === 3 || order === 4 ? '150 – 950 kW' : '15 – 85 kW';
 
-                      layer.bindTooltip(`
+                      layer.bindTooltip(
+                        `
                           <div style="padding: 5px 8px; font-size: 11px; min-width: 200px;">
                             <div style="font-weight: 800; color: ${tierColor}; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px;">
                               ${tierTitle}
@@ -1321,7 +1535,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                             <div style="color: #475569; font-size: 10px; margin-top: 2px;">Corridor Reach Length: <strong>${p.LENGTH_KM ?? 'N/A'} km</strong></div>
                             <div style="color: #64748b; font-size: 9.5px;">Upland Basin: ${p.UPLAND_SKM ?? 'N/A'} km²</div>
                           </div>
-                        `, { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' });
+                        `,
+                        { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' }
+                      );
                     }}
                   />
                 )}
@@ -1355,7 +1571,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                           : '⚡ Rural Micro-Hydro (<100 kW) Agro-Processing Corridor';
                       const tierColor = isCommercial ? '#4c1d95' : isMini ? '#7c3aed' : '#10b981';
 
-                      layer.bindTooltip(`
+                      layer.bindTooltip(
+                        `
                           <div style="padding: 6px 10px; font-size: 11.5px; min-width: 220px;">
                             <div style="font-weight: 800; color: ${tierColor}; font-size: 12px; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px;">
                               🌊 ${p.name} (${p.nepaliName || ''})
@@ -1363,10 +1580,12 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                             <div style="color: #0f172a; font-weight: 600; font-size: 11px;">${tierLabel}</div>
                             <div style="color: #64748b; font-size: 10px; margin-top: 2px;"><strong>Hydrological Basin:</strong> ${p.basin || 'Gandaki Basin'}</div>
                             <div style="color: #0369a1; font-size: 10px;"><strong>Key Station:</strong> ${p.dhmStation || 'DHM Gauge'}</div>
-                            <div style="color: #475569; font-size: 10px; margin-top: 3px;"><strong>Served Palikas:</strong> ${Array.isArray(p.palikaList) ? p.palikaList.join(', ') : (Array.isArray(p.palikasServed) ? p.palikasServed.join(', ') : 'Gulmi')}</div>
+                            <div style="color: #475569; font-size: 10px; margin-top: 3px;"><strong>Served Palikas:</strong> ${Array.isArray(p.palikaList) ? p.palikaList.join(', ') : Array.isArray(p.palikasServed) ? p.palikasServed.join(', ') : 'Gulmi'}</div>
                             <div style="color: #059669; font-size: 9.5px; margin-top: 3px; font-style: italic;">${p.importance || ''}</div>
                           </div>
-                        `, { direction: 'top', offset: [0, -6], opacity: 0.98, pane: 'popupPane' });
+                        `,
+                        { direction: 'top', offset: [0, -6], opacity: 0.98, pane: 'popupPane' }
+                      );
                     }}
                   />
                 )}
@@ -1374,114 +1593,134 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             )}
 
             {/* Contextual Layer Isolation 2.2: NEA High-Voltage Transmission Substations & Hub Points (Pure Ground Truth GPS Points) */}
-            {selectedPillar === 'energy' && (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach') && (
-              <>
-                {/* 5 Physical Substations Overlay with Glowing Rings */}
-                {Object.entries((palikaGridData as any).substations || {}).map(([sKey, sData]: [string, any]) => {
-                  const coords = sData.coordinates || [28.0645, 83.2685];
-                  const is132 = sData.voltage.includes('132');
-                  const markerColor = sData.color || (is132 ? (sData.tierKey === 'trunk_132kv' ? '#0ea5e9' : '#047857') : sData.tierKey === 'rural_33kv' ? '#8b5cf6' : '#f59e0b');
-                  const radius = is132 ? 10 : 8;
+            {selectedPillar === 'energy' &&
+              (subFilters.energySubFilter === 'grid_electrification' ||
+                subFilters.energySubFilter === 'grid_reach') && (
+                <>
+                  {/* 5 Physical Substations Overlay with Glowing Rings */}
+                  {Object.entries((palikaGridData as any).substations || {}).map(([sKey, sData]: [string, any]) => {
+                    const coords = sData.coordinates || [28.0645, 83.2685];
+                    const is132 = sData.voltage.includes('132');
+                    const markerColor =
+                      sData.color ||
+                      (is132
+                        ? sData.tierKey === 'trunk_132kv'
+                          ? '#0ea5e9'
+                          : '#047857'
+                        : sData.tierKey === 'rural_33kv'
+                          ? '#8b5cf6'
+                          : '#f59e0b');
+                    const radius = is132 ? 10 : 8;
 
-                  const isNorthern = coords[0] >= 28.15;
-                  const tooltipDirection = isNorthern ? 'bottom' : 'top';
-                  const tooltipOffset: [number, number] = isNorthern ? [0, 8] : [0, -8];
+                    const isNorthern = coords[0] >= 28.15;
+                    const tooltipDirection = isNorthern ? 'bottom' : 'top';
+                    const tooltipOffset: [number, number] = isNorthern ? [0, 8] : [0, -8];
 
-                  return (
-                    <React.Fragment key={`substation-node-${sKey}`}>
-                      {/* Outer Pulsing/Glow Halo Ring */}
-                      <CircleMarker
-                        center={[coords[0], coords[1]]}
-                        radius={radius + 6}
-                        pane="pointsPane"
-                        pathOptions={{
-                          fillColor: markerColor,
-                          fillOpacity: 0.2,
-                          color: markerColor,
-                          weight: 1.5,
-                          dashArray: '3, 3',
-                          pane: 'pointsPane',
-                        }}
-                        interactive={false}
-                      />
+                    return (
+                      <React.Fragment key={`substation-node-${sKey}`}>
+                        {/* Outer Pulsing/Glow Halo Ring */}
+                        <CircleMarker
+                          center={[coords[0], coords[1]]}
+                          radius={radius + 6}
+                          pane="pointsPane"
+                          pathOptions={{
+                            fillColor: markerColor,
+                            fillOpacity: 0.2,
+                            color: markerColor,
+                            weight: 1.5,
+                            dashArray: '3, 3',
+                            pane: 'pointsPane',
+                          }}
+                          interactive={false}
+                        />
 
-                      {/* Core Substation Node Marker */}
-                      <CircleMarker
-                        center={[coords[0], coords[1]]}
-                        radius={radius}
-                        pane="pointsPane"
-                        pathOptions={{
-                          fillColor: markerColor,
-                          fillOpacity: 1,
-                          color: '#ffffff',
-                          weight: 2.5,
-                          pane: 'pointsPane',
-                        }}
-                      >
-                        <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
-                          <div className="text-xs p-2 min-w-[230px] bg-white rounded-lg shadow-lg border border-slate-200">
-                            <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
-                              <span className="flex items-center gap-1.5 font-outfit text-[12.5px]">
-                                ⚡ {sData.name}
-                              </span>
-                              <span
-                                className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold text-white shadow-2xs"
-                                style={{ backgroundColor: markerColor }}
-                              >
-                                {sData.voltage}
-                              </span>
-                            </div>
-                            <div className="text-slate-600 text-[10px] font-medium">
-                              {sData.nepaliName} • <strong>Ward {sData.ward}, {sData.palika}</strong>
-                            </div>
-                            <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80">
-                              Capacity: <strong>{sData.capacityMVA} MVA</strong>
-                              {sData.transmissionCapacityMW && (
-                                <span> • Power: <strong>{sData.transmissionCapacityMW} MW</strong></span>
+                        {/* Core Substation Node Marker */}
+                        <CircleMarker
+                          center={[coords[0], coords[1]]}
+                          radius={radius}
+                          pane="pointsPane"
+                          pathOptions={{
+                            fillColor: markerColor,
+                            fillOpacity: 1,
+                            color: '#ffffff',
+                            weight: 2.5,
+                            pane: 'pointsPane',
+                          }}
+                        >
+                          <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
+                            <div className="text-xs p-2 min-w-[230px] bg-white rounded-lg shadow-lg border border-slate-200">
+                              <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
+                                <span className="flex items-center gap-1.5 font-outfit text-[12.5px]">
+                                  ⚡ {sData.name}
+                                </span>
+                                <span
+                                  className="text-[9px] px-1.5 py-0.5 rounded font-mono font-bold text-white shadow-2xs"
+                                  style={{ backgroundColor: markerColor }}
+                                >
+                                  {sData.voltage}
+                                </span>
+                              </div>
+                              <div className="text-slate-600 text-[10px] font-medium">
+                                {sData.nepaliName} •{' '}
+                                <strong>
+                                  Ward {sData.ward}, {sData.palika}
+                                </strong>
+                              </div>
+                              <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80">
+                                Capacity: <strong>{sData.capacityMVA} MVA</strong>
+                                {sData.transmissionCapacityMW && (
+                                  <span>
+                                    {' '}
+                                    • Power: <strong>{sData.transmissionCapacityMW} MW</strong>
+                                  </span>
+                                )}
+                              </div>
+                              {sData.connectedHydro && (
+                                <div className="text-amber-800 text-[9.5px] mt-1 bg-amber-50 p-1 rounded font-medium">
+                                  💧 Hydro Link: {sData.connectedHydro}
+                                </div>
                               )}
+                              {sData.budgetNPR && (
+                                <div className="text-purple-800 text-[9.5px] mt-1 bg-purple-50 p-1 rounded font-medium">
+                                  💰 Project: {sData.budgetNPR} ({sData.contractor})
+                                </div>
+                              )}
+                              <div className="text-emerald-700 text-[9px] mt-1.5 font-semibold">✅ {sData.status}</div>
                             </div>
-                            {sData.connectedHydro && (
-                              <div className="text-amber-800 text-[9.5px] mt-1 bg-amber-50 p-1 rounded font-medium">
-                                💧 Hydro Link: {sData.connectedHydro}
-                              </div>
-                            )}
-                            {sData.budgetNPR && (
-                              <div className="text-purple-800 text-[9.5px] mt-1 bg-purple-50 p-1 rounded font-medium">
-                                💰 Project: {sData.budgetNPR} ({sData.contractor})
-                              </div>
-                            )}
-                            <div className="text-emerald-700 text-[9px] mt-1.5 font-semibold">
-                              ✅ {sData.status}
-                            </div>
-                          </div>
-                        </Tooltip>
-                      </CircleMarker>
-                    </React.Fragment>
-                  );
-                })}
-              </>
-            )}
+                          </Tooltip>
+                        </CircleMarker>
+                      </React.Fragment>
+                    );
+                  })}
+                </>
+              )}
 
             {/* Contextual Layer Isolation 2.5: Real River Network Vector Polylines */}
-            {selectedPillar === 'water' && gulmiRivers && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterSubFilter === 'irrigation_potential' || subFilters.waterClimateMetric === 'dhm_stations') && (
-              <GeoJSON
-                key={`gulmi-rivers-vector-${subFilters.waterSubFilter}`}
-                data={gulmiRivers}
-                pane="riversPane"
-                style={(feature: any) => {
-                  const p = feature?.properties || {};
-                  const isMain = p.order === 1;
-                  const isMajor = p.order === 2;
-                  return {
-                    color: isMain ? '#0284c7' : isMajor ? '#0ea5e9' : '#38bdf8',
-                    weight: isMain ? 4 : isMajor ? 3 : 2,
-                    opacity: 0.95,
-                    dashArray: '',
-                  };
-                }}
-                onEachFeature={(feature: any, layer: any) => {
-                  const p = feature?.properties || {};
-                  layer.bindTooltip(`
+            {selectedPillar === 'water' &&
+              gulmiRivers &&
+              (subFilters.waterSubFilter === 'dhm_station' ||
+                subFilters.waterSubFilter === 'river_basins' ||
+                subFilters.waterSubFilter === 'irrigation_potential' ||
+                subFilters.waterClimateMetric === 'dhm_stations') && (
+                <GeoJSON
+                  key={`gulmi-rivers-vector-${subFilters.waterSubFilter}`}
+                  data={gulmiRivers}
+                  pane="riversPane"
+                  style={(feature: any) => {
+                    const p = feature?.properties || {};
+                    const isMain = p.order === 1;
+                    const isMajor = p.order === 2;
+                    return {
+                      color: isMain ? '#0284c7' : isMajor ? '#0ea5e9' : '#38bdf8',
+                      weight: isMain ? 4 : isMajor ? 3 : 2,
+                      opacity: 0.95,
+                      dashArray: '',
+                    };
+                  }}
+                  onEachFeature={(feature: any, layer: any) => {
+                    const p = feature?.properties || {};
+                    layer.bindTooltip(
+                      `
                     <div style="padding: 4px 6px; font-size: 11px; min-width: 170px;">
                       <div style="font-weight: bold; color: #0284c7; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin-bottom: 3px;">
                         🌊 ${p.name || 'River Reach'} (${p.nepaliName || ''})
@@ -1491,82 +1730,96 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                       <div style="color: #64748b; font-size: 9px; margin-top: 2px;">${p.importance}</div>
                       ${p.dhmStation ? `<div style="color: #0369a1; font-weight: 600; font-size: 10px; margin-top: 3px;">💧 DHM Station: ${p.dhmStation}</div>` : ''}
                     </div>
-                  `, { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' });
-                }}
-              />
-            )}
+                  `,
+                      { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' }
+                    );
+                  }}
+                />
+              )}
 
             {/* Contextual Layer Isolation 3: DHM Hydro-Meteorological Stations Overlay */}
-            {selectedPillar === 'water' && (subFilters.waterSubFilter === 'dhm_station' || subFilters.waterSubFilter === 'river_basins' || subFilters.waterClimateMetric === 'dhm_stations') && hydrologyStations.map((st: any, idx: number) => {
-              const props = st.properties || st;
-              const coords = [st.lat ?? st.geometry?.coordinates[1], st.lng ?? st.geometry?.coordinates[0]];
-              if (!coords[0] || !coords[1]) return null;
+            {selectedPillar === 'water' &&
+              (subFilters.waterSubFilter === 'dhm_station' ||
+                subFilters.waterSubFilter === 'river_basins' ||
+                subFilters.waterClimateMetric === 'dhm_stations') &&
+              hydrologyStations.map((st: any, idx: number) => {
+                const props = st.properties || st;
+                const coords = [st.lat ?? st.geometry?.coordinates[1], st.lng ?? st.geometry?.coordinates[0]];
+                if (!coords[0] || !coords[1]) return null;
 
-              const stType = (props.stationType || '').toLowerCase();
-              const isAWS = stType === 'aws';
-              const isClim = stType.includes('climat') || props.stationNo?.includes('0701');
-              const markerColor = isAWS ? '#10b981' : isClim ? '#8b5cf6' : '#0284c7';
-              const badgeLabel = isAWS ? 'Real-Time AWS' : isClim ? 'Climatological' : 'Precipitation';
-              const badgeBg = isAWS ? 'bg-emerald-100 text-emerald-800' : isClim ? 'bg-purple-100 text-purple-800' : 'bg-sky-100 text-sky-800';
+                const stType = (props.stationType || '').toLowerCase();
+                const isAWS = stType === 'aws';
+                const isClim = stType.includes('climat') || props.stationNo?.includes('0701');
+                const markerColor = isAWS ? '#10b981' : isClim ? '#8b5cf6' : '#0284c7';
+                const badgeLabel = isAWS ? 'Real-Time AWS' : isClim ? 'Climatological' : 'Precipitation';
+                const badgeBg = isAWS
+                  ? 'bg-emerald-100 text-emerald-800'
+                  : isClim
+                    ? 'bg-purple-100 text-purple-800'
+                    : 'bg-sky-100 text-sky-800';
 
-              const isNorthern = coords[0] >= 28.15;
-              const tooltipDirection = isNorthern ? 'bottom' : 'top';
-              const tooltipOffset: [number, number] = isNorthern ? [0, 8] : [0, -8];
+                const isNorthern = coords[0] >= 28.15;
+                const tooltipDirection = isNorthern ? 'bottom' : 'top';
+                const tooltipOffset: [number, number] = isNorthern ? [0, 8] : [0, -8];
 
-              const stationTitle = props.stationName || props.siteName || `Station #${props.indexNo || props.stationNo}`;
-              const elevDisplay = props.elevation_m || props.elevation || 'N/A';
-              const palikaDisplay = props.palika ? `${props.palika} Palika` : props.district || 'Gulmi';
-              const basinDisplay = props.riverBasin || props.river || 'Gulmi Catchment';
+                const stationTitle =
+                  props.stationName || props.siteName || `Station #${props.indexNo || props.stationNo}`;
+                const elevDisplay = props.elevation_m || props.elevation || 'N/A';
+                const palikaDisplay = props.palika ? `${props.palika} Palika` : props.district || 'Gulmi';
+                const basinDisplay = props.riverBasin || props.river || 'Gulmi Catchment';
 
-              return (
-                <CircleMarker
-                  key={`hydro-${props.indexNo || props.stationNo || idx}`}
-                  center={[coords[0], coords[1]]}
-                  radius={isAWS ? 9 : 8}
-                  pane="pointsPane"
-                  pathOptions={{
-                    fillColor: markerColor,
-                    fillOpacity: 1,
-                    color: '#ffffff',
-                    weight: 2.5,
-                    pane: 'pointsPane',
-                  }}
-                >
-                  <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
-                    <div className="text-xs p-2 min-w-[240px] bg-white rounded-lg shadow-lg border border-slate-200">
-                      <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
-                        <span className="flex items-center gap-1.5 font-outfit text-[12px]">
-                          {isAWS ? '📡' : isClim ? '🌡️' : '🌦️'} {stationTitle}
-                        </span>
-                        <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${badgeBg}`}>
-                          {badgeLabel}
-                        </span>
-                      </div>
-                      <div className="text-slate-600 text-[10px] font-medium">
-                        Index: <strong>{props.indexNo || props.stationNo || 'DHM'}</strong> • <strong>{palikaDisplay}</strong>
-                      </div>
-                      <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80 flex items-center justify-between">
-                        <span>Elev: <strong>{elevDisplay}m masl</strong></span>
-                        <span className="text-sky-700 font-sans text-[10px] font-semibold">{basinDisplay}</span>
-                      </div>
-                      {props.instruments && (
-                        <div className="text-slate-500 text-[9.5px] mt-1 bg-slate-50 p-1 rounded font-mono break-words leading-tight">
-                          ⚙️ {props.instruments}
+                return (
+                  <CircleMarker
+                    key={`hydro-${props.indexNo || props.stationNo || idx}`}
+                    center={[coords[0], coords[1]]}
+                    radius={isAWS ? 9 : 8}
+                    pane="pointsPane"
+                    pathOptions={{
+                      fillColor: markerColor,
+                      fillOpacity: 1,
+                      color: '#ffffff',
+                      weight: 2.5,
+                      pane: 'pointsPane',
+                    }}
+                  >
+                    <Tooltip direction={tooltipDirection} offset={tooltipOffset} opacity={0.98} pane="popupPane">
+                      <div className="text-xs p-2 min-w-[240px] bg-white rounded-lg shadow-lg border border-slate-200">
+                        <div className="font-bold text-slate-800 flex items-center justify-between border-b border-slate-100 pb-1 mb-1">
+                          <span className="flex items-center gap-1.5 font-outfit text-[12px]">
+                            {isAWS ? '📡' : isClim ? '🌡️' : '🌦️'} {stationTitle}
+                          </span>
+                          <span className={`text-[9px] px-1.5 py-0.5 rounded font-mono font-bold ${badgeBg}`}>
+                            {badgeLabel}
+                          </span>
                         </div>
-                      )}
-                      {Array.isArray(props.monitoringParameters) && (
-                        <div className="text-emerald-700 text-[9px] mt-1 font-semibold">
-                          📊 {props.monitoringParameters.join(' • ')}
+                        <div className="text-slate-600 text-[10px] font-medium">
+                          Index: <strong>{props.indexNo || props.stationNo || 'DHM'}</strong> •{' '}
+                          <strong>{palikaDisplay}</strong>
                         </div>
-                      )}
-                      <div className="text-slate-400 text-[8.5px] mt-1">
-                        DHM Nepal National Network • Status: {props.status || 'Active'}
+                        <div className="text-slate-800 text-[10.5px] mt-1 bg-slate-50 p-1.5 rounded font-mono border border-slate-100/80 flex items-center justify-between">
+                          <span>
+                            Elev: <strong>{elevDisplay}m masl</strong>
+                          </span>
+                          <span className="text-sky-700 font-sans text-[10px] font-semibold">{basinDisplay}</span>
+                        </div>
+                        {props.instruments && (
+                          <div className="text-slate-500 text-[9.5px] mt-1 bg-slate-50 p-1 rounded font-mono break-words leading-tight">
+                            ⚙️ {props.instruments}
+                          </div>
+                        )}
+                        {Array.isArray(props.monitoringParameters) && (
+                          <div className="text-emerald-700 text-[9px] mt-1 font-semibold">
+                            📊 {props.monitoringParameters.join(' • ')}
+                          </div>
+                        )}
+                        <div className="text-slate-400 text-[8.5px] mt-1">
+                          DHM Nepal National Network • Status: {props.status || 'Active'}
+                        </div>
                       </div>
-                    </div>
-                  </Tooltip>
-                </CircleMarker>
-              );
-            })}
+                    </Tooltip>
+                  </CircleMarker>
+                );
+              })}
           </MapContainer>
 
           {/* Palika-Specific Hover Card: Shows strictly when hovering a Palika */}
@@ -1593,17 +1846,11 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
               <span>{lang === 'np' ? 'प्रस्तुति तथा नक्सा टिपोट' : 'Layer Briefing & Presenter Notes'}</span>
             </span>
             <span className="text-slate-300 hidden sm:inline">•</span>
-            <span className="text-xs text-slate-700 font-semibold">
-              {activeCalc.shortTitle}
-            </span>
-            <span className="text-xs text-slate-400 hidden sm:inline">
-              ({activeCalc.model})
-            </span>
+            <span className="text-xs text-slate-700 font-semibold">{activeCalc.shortTitle}</span>
+            <span className="text-xs text-slate-400 hidden sm:inline">({activeCalc.model})</span>
           </div>
 
-          <span className="text-[10px] text-slate-400 font-mono hidden sm:inline">
-            WEFES Polyglot Engine
-          </span>
+          <span className="text-[10px] text-slate-400 font-mono hidden sm:inline">WEFES Polyglot Engine</span>
         </div>
 
         {/* Minimal 3-Column Content Grid */}
@@ -1613,18 +1860,21 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             <div className="space-y-1">
               <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-outfit">
                 {activeCalc.confidence === 'OBSERVED REAL'
-                  ? (lang === 'np' ? 'प्रस्तुति तथा सञ्चालन आधार:' : 'Presenter & Operational Framework:')
-                  : (lang === 'np' ? 'गणितीय तथा विश्लेषणात्मक सूत्र:' : 'Mathematical & Analytical Model:')
-                }
+                  ? lang === 'np'
+                    ? 'प्रस्तुति तथा सञ्चालन आधार:'
+                    : 'Presenter & Operational Framework:'
+                  : lang === 'np'
+                    ? 'गणितीय तथा विश्लेषणात्मक सूत्र:'
+                    : 'Mathematical & Analytical Model:'}
               </div>
               <div className="bg-slate-50/80 border border-slate-200/70 rounded-lg p-2.5 font-mono text-xs shadow-2xs space-y-1.5">
-                <div className="font-semibold text-slate-900 break-words leading-snug">
-                  {activeCalc.formula}
-                </div>
+                <div className="font-semibold text-slate-900 break-words leading-snug">{activeCalc.formula}</div>
                 {activeCalc.parameter && (
                   <div className="text-[10px] text-slate-500 font-sans border-t border-slate-200/60 pt-1 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />
-                    <span className="font-mono text-[10.5px] text-slate-600 break-words leading-tight">{activeCalc.parameter}</span>
+                    <span className="font-mono text-[10.5px] text-slate-600 break-words leading-tight">
+                      {activeCalc.parameter}
+                    </span>
                   </div>
                 )}
                 {activeCalc.variables && activeCalc.variables.length > 0 && (
@@ -1635,7 +1885,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                     <div className="grid grid-cols-1 gap-1 text-[10.5px] font-sans">
                       {activeCalc.variables.map((v, i) => (
                         <div key={i} className="flex items-baseline gap-1.5 text-slate-600">
-                          <span className="font-mono font-bold text-slate-800 bg-white border border-slate-200 px-1 py-0.2 rounded text-[10px] shrink-0">{v.symbol}</span>
+                          <span className="font-mono font-bold text-slate-800 bg-white border border-slate-200 px-1 py-0.2 rounded text-[10px] shrink-0">
+                            {v.symbol}
+                          </span>
                           <span className="text-slate-300 text-[10px]">=</span>
                           <span className="leading-tight text-slate-600">{v.definition}</span>
                         </div>
@@ -1644,9 +1896,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                   </div>
                 )}
               </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed pt-0.5">
-                {activeCalc.description}
-              </p>
+              <p className="text-[11px] text-slate-500 leading-relaxed pt-0.5">{activeCalc.description}</p>
             </div>
           </div>
 
@@ -1663,9 +1913,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                     Unit: {activeCalc.unit}
                   </span>
                 </div>
-                <div className="text-[11px] text-slate-600 leading-snug">
-                  {activeCalc.currentStat}
-                </div>
+                <div className="text-[11px] text-slate-600 leading-snug">{activeCalc.currentStat}</div>
               </div>
               <div className="space-y-0.5 pt-0.5">
                 <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
@@ -1694,7 +1942,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 </span>
               </div>
               <div className="bg-slate-50/70 border border-slate-200/60 rounded-lg p-2.5 text-[11px] font-mono space-y-1.5 text-slate-600">
-                <div>Source: <strong className="text-slate-800 font-sans">{activeCalc.citation}</strong></div>
+                <div>
+                  Source: <strong className="text-slate-800 font-sans">{activeCalc.citation}</strong>
+                </div>
               </div>
             </div>
           </div>

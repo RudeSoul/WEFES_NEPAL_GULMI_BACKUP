@@ -5,6 +5,7 @@
 ---
 
 ## Table of Contents
+
 1. [Git Workflow & Branching Strategy](#1-git-workflow--branching-strategy)
 2. [Commit Standards](#2-commit-standards)
    - [Cohesive Atomic Commits](#cohesive-atomic-commits)
@@ -39,12 +40,15 @@ To maintain scientific integrity and code quality:
 ## 2. Commit Standards
 
 ### Cohesive Atomic Commits
+
 Commits should be **cohesive atomic units of change**:
+
 - **Logically complete:** Each commit should represent a coherent logical change. Group related files together (for example: a schema definition, the consuming component, and corresponding unit tests) in a single commit.
 - **Green at every commit:** The repository should build and pass automated tests at every individual commit point.
 - **No arbitrary fragmentation:** Do not artificially break up a single logical change across separate commits.
 
 ### Conventional Commit Format
+
 All commit messages must adhere to the [Conventional Commits](https://www.conventionalcommits.org/) specification:
 
 ```text
@@ -52,18 +56,20 @@ All commit messages must adhere to the [Conventional Commits](https://www.conven
 ```
 
 #### Allowed Types
-| Type | Description |
-| :--- | :--- |
-| `feat` | New user-facing feature or domain capability |
-| `fix` | Bug fix or calculation correction |
-| `refactor` | Code restructuring with no behavior change |
-| `test` | Adding or updating automated tests |
-| `docs` | Documentation changes only |
-| `perf` | Performance improvement |
-| `ci` | CI/CD configuration and pipeline updates |
-| `chore` | Tooling, dependencies, or repository hygiene |
+
+| Type       | Description                                  |
+| :--------- | :------------------------------------------- |
+| `feat`     | New user-facing feature or domain capability |
+| `fix`      | Bug fix or calculation correction            |
+| `refactor` | Code restructuring with no behavior change   |
+| `test`     | Adding or updating automated tests           |
+| `docs`     | Documentation changes only                   |
+| `perf`     | Performance improvement                      |
+| `ci`       | CI/CD configuration and pipeline updates     |
+| `chore`    | Tooling, dependencies, or repository hygiene |
 
 #### Common Scopes
+
 - `engine/hydro` — Water and hydrological simulation models
 - `engine/nexus` — Multi-sector nexus cross-impact models
 - `web/map` — District GIS and choropleth visualizations
@@ -72,6 +78,7 @@ All commit messages must adhere to the [Conventional Commits](https://www.conven
 - `types` — Domain schema and interface contracts
 
 #### Examples
+
 ```bash
 git commit -m "feat(types/palika): define crop water demand schema"
 git commit -m "feat(engine/nexus): implement water balance calculations"
@@ -94,6 +101,7 @@ Hooks are stored in the tracked repository directory `.githooks/`.
 ```
 
 ### Pre-Commit Hook (`.githooks/pre-commit`)
+
 Fires automatically whenever you run `git commit`. It executes three critical checks:
 
 1. **Branch Protection:**
@@ -107,13 +115,17 @@ Fires automatically whenever you run `git commit`. It executes three critical ch
    Rejects any staged file exceeding **40 MB**. Large raw raster grids (GeoTIFFs) must be tracked via dataset manifests or external storage rather than git tracking.
 
 ### Commit-Message Hook (`.githooks/commit-msg`)
+
 Fires when the commit message is created. Validates that the message starts with an approved type:
+
 ```bash
 ^(feat|fix|docs|refactor|test|perf|ci|chore)(\([a-zA-Z0-9_\-\/]+\))?: .+$
 ```
 
 ### Pre-Push Hook (`.githooks/pre-push`)
+
 Fires when running `git push`.
+
 1. Blocks pushing directly to remote `main` or `master`.
 2. Executes `pnpm test` to ensure code passes all automated tests before leaving your local machine.
 
@@ -128,11 +140,13 @@ pnpm install
 ```
 
 This sets the repository's git hooks path:
+
 ```bash
 git config core.hooksPath .githooks
 ```
 
 You can verify the configuration at any time:
+
 ```bash
 git config core.hooksPath
 # Expected output: .githooks
@@ -167,13 +181,13 @@ git config core.hooksPath
 
 ### Resolving Pre-Commit Failures
 
-| Failure Message | Cause | Resolution |
-| :--- | :--- | :--- |
-| `Direct commits to 'main' are forbidden!` | Attempted commit on `main` branch | Run `git checkout -b feat/your-branch` and commit on the new branch. |
-| `File cited in code does not physically exist` | Missing canonical data file | Download or generate the required canonical data file under `data/`, or fix the file path citation. |
-| `Engines must remain headless` | Engine imports from `apps/` or `packages/` | Remove the inward dependency. Pass data through function parameters or JSON inputs. |
-| `File size exceeds 40 MB limit` | Large binary file staged (e.g., GeoTIFF) | Unstage the file (`git reset HEAD <file>`) and record it in `data/manifest.json`. |
-| `Invalid commit message format` | Message does not match conventional format | Format message with a valid type, e.g., `feat(web): update palette`. |
+| Failure Message                                | Cause                                      | Resolution                                                                                          |
+| :--------------------------------------------- | :----------------------------------------- | :-------------------------------------------------------------------------------------------------- |
+| `Direct commits to 'main' are forbidden!`      | Attempted commit on `main` branch          | Run `git checkout -b feat/your-branch` and commit on the new branch.                                |
+| `File cited in code does not physically exist` | Missing canonical data file                | Download or generate the required canonical data file under `data/`, or fix the file path citation. |
+| `Engines must remain headless`                 | Engine imports from `apps/` or `packages/` | Remove the inward dependency. Pass data through function parameters or JSON inputs.                 |
+| `File size exceeds 40 MB limit`                | Large binary file staged (e.g., GeoTIFF)   | Unstage the file (`git reset HEAD <file>`) and record it in `data/manifest.json`.                   |
+| `Invalid commit message format`                | Message does not match conventional format | Format message with a valid type, e.g., `feat(web): update palette`.                                |
 
 ### Emergency Bypass Options
 
@@ -191,4 +205,4 @@ If you need to bypass hooks during emergency local testing or non-code documenta
   ```bash
   git config --unset core.hooksPath
   ```
-  *(To re-enable: `git config core.hooksPath .githooks`)*
+  _(To re-enable: `git config core.hooksPath .githooks`)_

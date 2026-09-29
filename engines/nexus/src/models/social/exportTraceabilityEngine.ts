@@ -1,6 +1,7 @@
 export interface ExportTraceabilityProfile {
   cropName: string;
-  exportPotentialTier: 'High Export Value (Spices/Tea/Coffee)' | 'Regional SAARC Commodity' | 'Domestic Consumption Priority';
+  exportPotentialTier:
+    'High Export Value (Spices/Tea/Coffee)' | 'Regional SAARC Commodity' | 'Domestic Consumption Priority';
   targetExportDestinations: string[];
   organicCertificationEconomics: {
     certificationStandard: 'EU Organic (EC 834/2007) / USDA NOP / India NPOP';
@@ -104,6 +105,7 @@ export function computeExportTraceability(
       narcCertifiedSeedLot: `NARC-NSB-LOT-${cropName.substring(0, 3).toUpperCase()}-2025`,
       zeroSyntheticPesticideResidueVerification: 'Verified (HPLC Lab Certified - DFTQC)',
     },
-    calibrationProvenance: 'Calibrated using MoALD Agribusiness Promotion & Trade Standards & EU Organic Import Regulation (EC 834/2007).',
+    calibrationProvenance:
+      'Calibrated using MoALD Agribusiness Promotion & Trade Standards & EU Organic Import Regulation (EC 834/2007).',
   };
 }

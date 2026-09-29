@@ -1,13 +1,49 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { DistrictPalika, DISTRICT_PALIKAS, PalikaFeasibleCrop, GULMI_PALIKA_NEPALI, PALIKA_GEO_CENTROIDS } from '../../data/districtPalikaAssets';  
 import {
-  Scale, Mountain, CloudRain, Thermometer, Sparkles, TrendingUp,
-  Sprout, Zap, Trees, Building2, Sun, Droplets, Wind, Cloud, CheckCircle2,
-  ArrowRight, ShieldCheck, Layers, Calendar, BarChart3, Radio
+  DistrictPalika,
+  DISTRICT_PALIKAS,
+  PalikaFeasibleCrop,
+  GULMI_PALIKA_NEPALI,
+  PALIKA_GEO_CENTROIDS,
+} from '../../data/districtPalikaAssets';
+import {
+  Scale,
+  Mountain,
+  CloudRain,
+  Thermometer,
+  Sparkles,
+  TrendingUp,
+  Sprout,
+  Zap,
+  Trees,
+  Building2,
+  Sun,
+  Droplets,
+  Wind,
+  Cloud,
+  CheckCircle2,
+  ArrowRight,
+  ShieldCheck,
+  Layers,
+  Calendar,
+  BarChart3,
+  Radio,
 } from 'lucide-react';
 import {
-  ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
-  BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid, Cell
+  ResponsiveContainer,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  Radar,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid,
+  Cell,
 } from 'recharts';
 
 interface PalikaBenchmarkingWidgetProps {
@@ -40,9 +76,10 @@ function computePalikaPillars(p: Partial<DistrictPalika>) {
   const rain = p.rainfallMm || 1750;
   const ph = p.soilPh || 6.5;
   const cropCount = p.feasibleCropsCount || p.feasibleCrops?.length || 7;
-  const avgCropScore = p.feasibleCrops && p.feasibleCrops.length > 0
-    ? Math.round(p.feasibleCrops.reduce((sum, c) => sum + c.score, 0) / p.feasibleCrops.length)
-    : 85;
+  const avgCropScore =
+    p.feasibleCrops && p.feasibleCrops.length > 0
+      ? Math.round(p.feasibleCrops.reduce((sum, c) => sum + c.score, 0) / p.feasibleCrops.length)
+      : 85;
 
   // Water: Precipitation abundance and mountain aquifer retention
   const waterScore = Math.min(100, Math.round((rain / 2200) * 100));
@@ -57,9 +94,10 @@ function computePalikaPillars(p: Partial<DistrictPalika>) {
   const ecoScore = Math.min(100, Math.round((1 - Math.abs(ph - 6.6) / 2.5) * 60 + 35));
 
   // Socio: Market connectivity and cash crop high-margin index
-  const socioScore = p.name?.toLowerCase().includes('resunga') || p.name?.toLowerCase().includes('musikot')
-    ? 88
-    : Math.min(100, Math.round(70 + (cropCount * 2)));
+  const socioScore =
+    p.name?.toLowerCase().includes('resunga') || p.name?.toLowerCase().includes('musikot')
+      ? 88
+      : Math.min(100, Math.round(70 + cropCount * 2));
 
   return {
     water: waterScore,
@@ -71,17 +109,15 @@ function computePalikaPillars(p: Partial<DistrictPalika>) {
   };
 }
 
-export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> = ({
-  currentPalika,
-  lang = 'en'
-}) => {
+export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> = ({ currentPalika, lang = 'en' }) => {
   const allPalikas = DISTRICT_PALIKAS['gulmi'] || [];
   const [compareTargetName, setCompareTargetName] = useState<string>('Musikot');
   const [activeBenchmarkTab, setActiveBenchmarkTab] = useState<'crops' | 'pillars' | 'live' | 'rotations'>('live');
 
   // Find target Palika or fallback to another Palika
-  const targetPalika: DistrictPalika = allPalikas.find(p => p.name === compareTargetName) ||
-    allPalikas.find(p => p.name !== currentPalika.name) ||
+  const targetPalika: DistrictPalika =
+    allPalikas.find((p) => p.name === compareTargetName) ||
+    allPalikas.find((p) => p.name !== currentPalika.name) ||
     currentPalika;
 
   // Live Satellite Weather for Both Palikas
@@ -98,10 +134,7 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
     const buildUrl = (coord: { lat: number; lng: number }) =>
       `https://api.open-meteo.com/v1/forecast?latitude=${coord.lat}&longitude=${coord.lng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,wind_speed_10m,direct_radiation,cloud_cover,surface_pressure,et0_fao_evapotranspiration,vapour_pressure_deficit,soil_moisture_0_to_7cm,soil_moisture_7_to_28cm,uv_index&timezone=Asia%2FKathmandu`;
 
-    Promise.all([
-      fetch(buildUrl(coordA)).then(r => r.json()),
-      fetch(buildUrl(coordB)).then(r => r.json()),
-    ])
+    Promise.all([fetch(buildUrl(coordA)).then((r) => r.json()), fetch(buildUrl(coordB)).then((r) => r.json())])
       .then(([dataA, dataB]) => {
         const parseWeather = (data: any): LiveWeatherTelemetry | null => {
           if (!data?.current) return null;
@@ -116,15 +149,18 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
 
           const soilSat = Math.min(100, Math.round((topsoil / 0.55) * 100));
           const fungalStatus: 'Low' | 'Moderate' | 'High' =
-            (rh > 85 && vpdVal < 0.4 && temp > 15) ? 'High' : (rh > 72 || vpdVal < 0.6) ? 'Moderate' : 'Low';
+            rh > 85 && vpdVal < 0.4 && temp > 15 ? 'High' : rh > 72 || vpdVal < 0.6 ? 'Moderate' : 'Low';
           const solarPumpScore = Math.min(100, Math.round((solar / 750) * 100));
           const fireIndex: 'Low' | 'Moderate' | 'High' | 'Extreme' =
-            (topsoil < 0.20 && vpdVal > 1.3 && wind > 3.5) ? 'Extreme' :
-            (topsoil < 0.26 && vpdVal > 0.9) ? 'High' :
-            (topsoil < 0.32) ? 'Moderate' : 'Low';
+            topsoil < 0.2 && vpdVal > 1.3 && wind > 3.5
+              ? 'Extreme'
+              : topsoil < 0.26 && vpdVal > 0.9
+                ? 'High'
+                : topsoil < 0.32
+                  ? 'Moderate'
+                  : 'Low';
           const landslideAlert: 'Low' | 'Moderate' | 'Alert' =
-            (c.precipitation > 15 && soilSat > 82) ? 'Alert' :
-            (c.precipitation > 5 || soilSat > 75) ? 'Moderate' : 'Low';
+            c.precipitation > 15 && soilSat > 82 ? 'Alert' : c.precipitation > 5 || soilSat > 75 ? 'Moderate' : 'Low';
 
           return {
             temperature: temp,
@@ -158,48 +194,58 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
     const mapA = new Map<string, PalikaFeasibleCrop>();
     const mapB = new Map<string, PalikaFeasibleCrop>();
 
-    (currentPalika.feasibleCrops || []).forEach(c => mapA.set(c.cropId, c));
-    (targetPalika.feasibleCrops || []).forEach(c => mapB.set(c.cropId, c));
+    (currentPalika.feasibleCrops || []).forEach((c) => mapA.set(c.cropId, c));
+    (targetPalika.feasibleCrops || []).forEach((c) => mapB.set(c.cropId, c));
 
     // Combine all unique crops
     const allCropIds = Array.from(new Set([...Array.from(mapA.keys()), ...Array.from(mapB.keys())]));
 
-    return allCropIds.map(cropId => {
-      const cropA = mapA.get(cropId);
-      const cropB = mapB.get(cropId);
-      const name = cropA?.cropName || cropB?.cropName || cropId;
-      const nepali = cropA?.nepaliName || cropB?.nepaliName || '';
-      const emoji = cropA?.emoji || cropB?.emoji || '🌱';
-      const scoreA = cropA?.score || 0;
-      const scoreB = cropB?.score || 0;
-      const delta = scoreA - scoreB;
+    return allCropIds
+      .map((cropId) => {
+        const cropA = mapA.get(cropId);
+        const cropB = mapB.get(cropId);
+        const name = cropA?.cropName || cropB?.cropName || cropId;
+        const nepali = cropA?.nepaliName || cropB?.nepaliName || '';
+        const emoji = cropA?.emoji || cropB?.emoji || '🌱';
+        const scoreA = cropA?.score || 0;
+        const scoreB = cropB?.score || 0;
+        const delta = scoreA - scoreB;
 
-      return {
-        cropId,
-        name: `${emoji} ${name}`,
-        nepali,
-        emoji,
-        [currentPalika.name]: scoreA,
-        [targetPalika.name]: scoreB,
-        scoreA,
-        scoreB,
-        delta,
-        category: cropA?.category || cropB?.category || 'General',
-      };
-    }).sort((a, b) => (b.scoreA + b.scoreB) - (a.scoreA + a.scoreB));
+        return {
+          cropId,
+          name: `${emoji} ${name}`,
+          nepali,
+          emoji,
+          [currentPalika.name]: scoreA,
+          [targetPalika.name]: scoreB,
+          scoreA,
+          scoreB,
+          delta,
+          category: cropA?.category || cropB?.category || 'General',
+        };
+      })
+      .sort((a, b) => b.scoreA + b.scoreB - (a.scoreA + a.scoreB));
   }, [currentPalika, targetPalika]);
 
   // WEFES Pillars Comparison Data
   const pillarsA = useMemo(() => computePalikaPillars(currentPalika), [currentPalika]);
   const pillarsB = useMemo(() => computePalikaPillars(targetPalika), [targetPalika]);
 
-  const radarData = useMemo(() => [
-    { pillar: '💧 Water', [currentPalika.name]: pillarsA.water, [targetPalika.name]: pillarsB.water, fullMark: 100 },
-    { pillar: '⚡ Energy', [currentPalika.name]: pillarsA.energy, [targetPalika.name]: pillarsB.energy, fullMark: 100 },
-    { pillar: '🌾 Food', [currentPalika.name]: pillarsA.food, [targetPalika.name]: pillarsB.food, fullMark: 100 },
-    { pillar: '🌲 Eco', [currentPalika.name]: pillarsA.eco, [targetPalika.name]: pillarsB.eco, fullMark: 100 },
-    { pillar: '🏛️ Socio', [currentPalika.name]: pillarsA.socio, [targetPalika.name]: pillarsB.socio, fullMark: 100 },
-  ], [pillarsA, pillarsB, currentPalika.name, targetPalika.name]);
+  const radarData = useMemo(
+    () => [
+      { pillar: '💧 Water', [currentPalika.name]: pillarsA.water, [targetPalika.name]: pillarsB.water, fullMark: 100 },
+      {
+        pillar: '⚡ Energy',
+        [currentPalika.name]: pillarsA.energy,
+        [targetPalika.name]: pillarsB.energy,
+        fullMark: 100,
+      },
+      { pillar: '🌾 Food', [currentPalika.name]: pillarsA.food, [targetPalika.name]: pillarsB.food, fullMark: 100 },
+      { pillar: '🌲 Eco', [currentPalika.name]: pillarsA.eco, [targetPalika.name]: pillarsB.eco, fullMark: 100 },
+      { pillar: '🏛️ Socio', [currentPalika.name]: pillarsA.socio, [targetPalika.name]: pillarsB.socio, fullMark: 100 },
+    ],
+    [pillarsA, pillarsB, currentPalika.name, targetPalika.name]
+  );
 
   return (
     <div className="glass-panel p-5 rounded-2xl border border-slate-200/90 shadow-sm bg-white/95 space-y-4 animate-fade-in">
@@ -231,11 +277,13 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
             onChange={(e) => setCompareTargetName(e.target.value)}
             className="text-xs font-bold px-3 py-1.5 rounded-lg border border-indigo-200 bg-white text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer shadow-2xs font-outfit"
           >
-            {allPalikas.filter(p => p.name !== currentPalika.name).map(p => (
-              <option key={p.name} value={p.name}>
-                {p.name} ({GULMI_PALIKA_NEPALI[p.name] || p.unitType}) • {p.elevation}m
-              </option>
-            ))}
+            {allPalikas
+              .filter((p) => p.name !== currentPalika.name)
+              .map((p) => (
+                <option key={p.name} value={p.name}>
+                  {p.name} ({GULMI_PALIKA_NEPALI[p.name] || p.unitType}) • {p.elevation}m
+                </option>
+              ))}
           </select>
         </div>
       </div>
@@ -362,16 +410,20 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-xs text-slate-900 font-outfit">{item.name}</span>
                       {item.nepali && <span className="text-[11px] text-slate-500 font-serif">({item.nepali})</span>}
-                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-slate-200 text-slate-700 font-semibold">{item.category}</span>
+                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-slate-200 text-slate-700 font-semibold">
+                        {item.category}
+                      </span>
                     </div>
 
                     <div className="flex items-center gap-2">
                       {Math.abs(item.delta) > 0 ? (
-                        <span className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded border ${
-                          isWinA
-                            ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
-                            : 'bg-indigo-100 text-indigo-900 border-indigo-300'
-                        }`}>
+                        <span
+                          className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded border ${
+                            isWinA
+                              ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                              : 'bg-indigo-100 text-indigo-900 border-indigo-300'
+                          }`}
+                        >
                           +{Math.abs(item.delta)}% {advPalika} Advantage
                         </span>
                       ) : (
@@ -422,8 +474,20 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
                 <PolarGrid stroke="#cbd5e1" strokeDasharray="3 3" />
                 <PolarAngleAxis dataKey="pillar" tick={{ fill: '#334155', fontSize: 11, fontWeight: 700 }} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#94a3b8" />
-                <Radar name={currentPalika.name} dataKey={currentPalika.name} stroke="#059669" fill="#10b981" fillOpacity={0.4} />
-                <Radar name={targetPalika.name} dataKey={targetPalika.name} stroke="#4f46e5" fill="#6366f1" fillOpacity={0.3} />
+                <Radar
+                  name={currentPalika.name}
+                  dataKey={currentPalika.name}
+                  stroke="#059669"
+                  fill="#10b981"
+                  fillOpacity={0.4}
+                />
+                <Radar
+                  name={targetPalika.name}
+                  dataKey={targetPalika.name}
+                  stroke="#4f46e5"
+                  fill="#6366f1"
+                  fillOpacity={0.3}
+                />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: 11, paddingTop: 6 }} />
                 <Tooltip />
               </RadarChart>
@@ -445,7 +509,8 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
                   </div>
                 </div>
                 <div className="font-mono text-right">
-                  <span className="text-emerald-700 font-bold">{pillarsA.water}%</span> vs <span className="text-indigo-700 font-bold">{pillarsB.water}%</span>
+                  <span className="text-emerald-700 font-bold">{pillarsA.water}%</span> vs{' '}
+                  <span className="text-indigo-700 font-bold">{pillarsB.water}%</span>
                 </div>
               </div>
 
@@ -458,7 +523,8 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
                   </div>
                 </div>
                 <div className="font-mono text-right">
-                  <span className="text-emerald-700 font-bold">{pillarsA.energy}%</span> vs <span className="text-indigo-700 font-bold">{pillarsB.energy}%</span>
+                  <span className="text-emerald-700 font-bold">{pillarsA.energy}%</span> vs{' '}
+                  <span className="text-indigo-700 font-bold">{pillarsB.energy}%</span>
                 </div>
               </div>
 
@@ -471,7 +537,8 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
                   </div>
                 </div>
                 <div className="font-mono text-right">
-                  <span className="text-emerald-700 font-bold">{pillarsA.food}%</span> vs <span className="text-indigo-700 font-bold">{pillarsB.food}%</span>
+                  <span className="text-emerald-700 font-bold">{pillarsA.food}%</span> vs{' '}
+                  <span className="text-indigo-700 font-bold">{pillarsB.food}%</span>
                 </div>
               </div>
 
@@ -484,7 +551,8 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
                   </div>
                 </div>
                 <div className="font-mono text-right">
-                  <span className="text-emerald-700 font-bold">{pillarsA.eco}%</span> vs <span className="text-indigo-700 font-bold">{pillarsB.eco}%</span>
+                  <span className="text-emerald-700 font-bold">{pillarsA.eco}%</span> vs{' '}
+                  <span className="text-indigo-700 font-bold">{pillarsB.eco}%</span>
                 </div>
               </div>
 
@@ -497,7 +565,8 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
                   </div>
                 </div>
                 <div className="font-mono text-right">
-                  <span className="text-emerald-700 font-bold">{pillarsA.socio}%</span> vs <span className="text-indigo-700 font-bold">{pillarsB.socio}%</span>
+                  <span className="text-emerald-700 font-bold">{pillarsA.socio}%</span> vs{' '}
+                  <span className="text-indigo-700 font-bold">{pillarsB.socio}%</span>
                 </div>
               </div>
             </div>
@@ -696,7 +765,9 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
                   <strong className="text-emerald-900 font-bold text-sm">
                     {currentLiveWeather?.landslideHazard} Slide
                   </strong>
-                  <span className="text-[9px] text-emerald-700 block">FDRI: {currentLiveWeather?.fireDangerRating}</span>
+                  <span className="text-[9px] text-emerald-700 block">
+                    FDRI: {currentLiveWeather?.fireDangerRating}
+                  </span>
                 </div>
                 <div className="text-right">
                   <span className="text-[10px] text-slate-500 block">{targetPalika.name}:</span>
@@ -718,25 +789,35 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
           <div className="p-4 bg-emerald-50/50 rounded-xl border border-emerald-200 space-y-2.5">
             <div className="font-bold text-emerald-950 font-outfit text-xs flex items-center justify-between">
               <span>🌱 {currentPalika.name} 4-Season Cycle:</span>
-              <span className="text-[10px] font-mono text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">Active Palika</span>
+              <span className="text-[10px] font-mono text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
+                Active Palika
+              </span>
             </div>
 
             <div className="space-y-2 text-xs">
               <div className="p-2 bg-white rounded-lg border border-emerald-100 flex justify-between items-center">
                 <span className="text-slate-600">🌧️ Monsoon (Barkhe):</span>
-                <strong className="text-slate-900">{currentPalika.seasonalRotations?.barkhe?.cropName || 'Paddy / Maize'}</strong>
+                <strong className="text-slate-900">
+                  {currentPalika.seasonalRotations?.barkhe?.cropName || 'Paddy / Maize'}
+                </strong>
               </div>
               <div className="p-2 bg-white rounded-lg border border-emerald-100 flex justify-between items-center">
                 <span className="text-slate-600">❄️ Winter (Hiunde):</span>
-                <strong className="text-slate-900">{currentPalika.seasonalRotations?.hiunde?.cropName || 'Winter Wheat / Potato'}</strong>
+                <strong className="text-slate-900">
+                  {currentPalika.seasonalRotations?.hiunde?.cropName || 'Winter Wheat / Potato'}
+                </strong>
               </div>
               <div className="p-2 bg-white rounded-lg border border-emerald-100 flex justify-between items-center">
                 <span className="text-slate-600">☀️ Spring (Chaite):</span>
-                <strong className="text-slate-900">{currentPalika.seasonalRotations?.chaite?.cropName || 'Off-Season Vegetables'}</strong>
+                <strong className="text-slate-900">
+                  {currentPalika.seasonalRotations?.chaite?.cropName || 'Off-Season Vegetables'}
+                </strong>
               </div>
               <div className="p-2 bg-white rounded-lg border border-emerald-100 flex justify-between items-center">
                 <span className="text-slate-600">☕ Perennial (Baahramase):</span>
-                <strong className="text-emerald-800">{currentPalika.seasonalRotations?.baahramase?.cropName || 'Arabica Coffee / Mandarin'}</strong>
+                <strong className="text-emerald-800">
+                  {currentPalika.seasonalRotations?.baahramase?.cropName || 'Arabica Coffee / Mandarin'}
+                </strong>
               </div>
             </div>
           </div>
@@ -745,25 +826,35 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
           <div className="p-4 bg-indigo-50/50 rounded-xl border border-indigo-200 space-y-2.5">
             <div className="font-bold text-indigo-950 font-outfit text-xs flex items-center justify-between">
               <span>🌱 {targetPalika.name} 4-Season Cycle:</span>
-              <span className="text-[10px] font-mono text-indigo-800 bg-indigo-100 px-2 py-0.5 rounded">Benchmark Target</span>
+              <span className="text-[10px] font-mono text-indigo-800 bg-indigo-100 px-2 py-0.5 rounded">
+                Benchmark Target
+              </span>
             </div>
 
             <div className="space-y-2 text-xs">
               <div className="p-2 bg-white rounded-lg border border-indigo-100 flex justify-between items-center">
                 <span className="text-slate-600">🌧️ Monsoon (Barkhe):</span>
-                <strong className="text-slate-900">{targetPalika.seasonalRotations?.barkhe?.cropName || 'Paddy / Maize'}</strong>
+                <strong className="text-slate-900">
+                  {targetPalika.seasonalRotations?.barkhe?.cropName || 'Paddy / Maize'}
+                </strong>
               </div>
               <div className="p-2 bg-white rounded-lg border border-indigo-100 flex justify-between items-center">
                 <span className="text-slate-600">❄️ Winter (Hiunde):</span>
-                <strong className="text-slate-900">{targetPalika.seasonalRotations?.hiunde?.cropName || 'Winter Wheat / Potato'}</strong>
+                <strong className="text-slate-900">
+                  {targetPalika.seasonalRotations?.hiunde?.cropName || 'Winter Wheat / Potato'}
+                </strong>
               </div>
               <div className="p-2 bg-white rounded-lg border border-indigo-100 flex justify-between items-center">
                 <span className="text-slate-600">☀️ Spring (Chaite):</span>
-                <strong className="text-slate-900">{targetPalika.seasonalRotations?.chaite?.cropName || 'Spring Maize / Veg'}</strong>
+                <strong className="text-slate-900">
+                  {targetPalika.seasonalRotations?.chaite?.cropName || 'Spring Maize / Veg'}
+                </strong>
               </div>
               <div className="p-2 bg-white rounded-lg border border-indigo-100 flex justify-between items-center">
                 <span className="text-slate-600">☕ Perennial (Baahramase):</span>
-                <strong className="text-indigo-800">{targetPalika.seasonalRotations?.baahramase?.cropName || 'Arabica Coffee / Mandarin'}</strong>
+                <strong className="text-indigo-800">
+                  {targetPalika.seasonalRotations?.baahramase?.cropName || 'Arabica Coffee / Mandarin'}
+                </strong>
               </div>
             </div>
           </div>

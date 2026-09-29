@@ -23,9 +23,7 @@ export interface GroundwaterConjunctiveProfile {
   calibrationProvenance: string;
 }
 
-export function computeGroundwaterConjunctiveModel(
-  districtName: string
-): GroundwaterConjunctiveProfile {
+export function computeGroundwaterConjunctiveModel(districtName: string): GroundwaterConjunctiveProfile {
   const dNorm = districtName.toLowerCase();
 
   const isTerai = ['rupandehi', 'kapilvastu', 'nawalparasi'].includes(dNorm);
@@ -52,16 +50,18 @@ export function computeGroundwaterConjunctiveModel(
       seasonalWaterTableCollapseRisk: isMadhesh
         ? 'High Critical (Dry Baisakh Drop)'
         : isTerai
-        ? 'Moderate Risk'
-        : 'Stable Surface Recharge',
+          ? 'Moderate Risk'
+          : 'Stable Surface Recharge',
       chureBhabarRechargeHealthScore: isTerai ? 48 : 82,
     },
     mandatoryRechargeMitigation: {
       farmRechargePondDimensions: '50 m² Surface Area × 2.0 m Depth',
       annualRunoffCapturedM3: 450,
       annualWaterTableRestorationCm: isTerai ? 12.5 : 5.0,
-      chureCatchmentAfforestationDividend: 'Upstream Chure conservation restores 340 m³/ha of subsurface infiltration into the Bhabar porous gravel belt.',
+      chureCatchmentAfforestationDividend:
+        'Upstream Chure conservation restores 340 m³/ha of subsurface infiltration into the Bhabar porous gravel belt.',
     },
-    calibrationProvenance: 'Calibrated using Groundwater Resources Development Board (GWRDB) & ADB Mechanized Irrigation Innovation Project (MIIP 2024-2025).',
+    calibrationProvenance:
+      'Calibrated using Groundwater Resources Development Board (GWRDB) & ADB Mechanized Irrigation Innovation Project (MIIP 2024-2025).',
   };
 }

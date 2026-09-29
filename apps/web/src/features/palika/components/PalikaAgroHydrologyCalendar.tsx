@@ -6,7 +6,17 @@ import React, { useMemo } from 'react';
 import { DistrictPalika } from '../../../data/districtPalikaAssets';
 import { Droplets, Sun, AlertTriangle, ShieldCheck } from 'lucide-react';
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceLine, Legend, Area, ComposedChart
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+  ReferenceLine,
+  Legend,
+  Area,
+  ComposedChart,
 } from 'recharts';
 
 interface SeasonalAgroHydrologyProps {
@@ -44,10 +54,7 @@ const MONTH_NAMES = [
   { en: 'Dec', np: 'पुस', days: 31, season: 'Hiunde (Dry Winter)', defaultGhi: 3.6 },
 ];
 
-export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> = ({
-  activePalika,
-  climateDataset,
-}) => {
+export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> = ({ activePalika, climateDataset }) => {
   const climatology = climateDataset?.climatologyMap?.['gulmi'];
 
   const monthlyRecords: MonthHydrologyRecord[] = useMemo(() => {
@@ -98,12 +105,13 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
       const latRad = (28.1 * Math.PI) / 180;
       const jDay = idx * 30.4 + 15;
       const dr = 1 + 0.033 * Math.cos((2 * Math.PI * jDay) / 365);
-      const solarDecl = 0.409 * Math.sin(((2 * Math.PI * jDay) / 365) - 1.39);
+      const solarDecl = 0.409 * Math.sin((2 * Math.PI * jDay) / 365 - 1.39);
       const ws = Math.acos(-Math.tan(latRad) * Math.tan(solarDecl));
-      const raDaily = (24 * 60 / Math.PI) * 0.0820 * dr * (
-        ws * Math.sin(latRad) * Math.sin(solarDecl) +
-        Math.cos(latRad) * Math.cos(solarDecl) * Math.sin(ws)
-      ); // MJ/m2/day
+      const raDaily =
+        ((24 * 60) / Math.PI) *
+        0.082 *
+        dr *
+        (ws * Math.sin(latRad) * Math.sin(solarDecl) + Math.cos(latRad) * Math.cos(solarDecl) * Math.sin(ws)); // MJ/m2/day
       const raMmEquivalent = raDaily * 0.408;
 
       const tempDiff = Math.max(2, tMax - tMin);
@@ -151,8 +159,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
     const totalET0 = monthlyRecords.reduce((acc, r) => acc + r.et0Mm, 0);
     const totalDeficit = monthlyRecords.reduce((acc, r) => acc + r.deficitMm, 0);
     const totalSurplus = monthlyRecords.reduce((acc, r) => acc + r.surplusMm, 0);
-    const deficitMonths = monthlyRecords.filter(r => r.deficitMm > 0).length;
-    const surplusMonths = monthlyRecords.filter(r => r.surplusMm > 0).length;
+    const deficitMonths = monthlyRecords.filter((r) => r.deficitMm > 0).length;
+    const surplusMonths = monthlyRecords.filter((r) => r.surplusMm > 0).length;
     const drySeasonStart = 'Nov (मंसिर)';
     const drySeasonEnd = 'May (जेठ)';
 
@@ -189,7 +197,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            Monthly precipitation ($P$) vs. Crop Evapotranspiration Demand ($ET_0$) for <strong>{activePalika.name}</strong> ({activePalika.elevation}m ASL).
+            Monthly precipitation ($P$) vs. Crop Evapotranspiration Demand ($ET_0$) for{' '}
+            <strong>{activePalika.name}</strong> ({activePalika.elevation}m ASL).
           </p>
         </div>
 
@@ -216,11 +225,7 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               tick={{ fontSize: 10, fill: '#475569' }}
               axisLine={{ stroke: '#cbd5e1' }}
             />
-            <YAxis
-              tick={{ fontSize: 10, fill: '#475569' }}
-              axisLine={{ stroke: '#cbd5e1' }}
-              unit=" mm"
-            />
+            <YAxis tick={{ fontSize: 10, fill: '#475569' }} axisLine={{ stroke: '#cbd5e1' }} unit=" mm" />
             <Tooltip
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
@@ -251,10 +256,7 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                 return null;
               }}
             />
-            <Legend
-              wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }}
-              iconType="circle"
-            />
+            <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }} iconType="circle" />
             <ReferenceLine y={0} stroke="#94a3b8" />
             <Bar dataKey="rainfallMm" name="Precipitation (mm)" fill="#38bdf8" radius={[4, 4, 0, 0]} />
             <Bar dataKey="et0Mm" name="Evapotranspiration ET₀ (mm)" fill="#f59e0b" radius={[4, 4, 0, 0]} />
@@ -281,7 +283,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
             {summary?.totalDeficit || 0} <span className="text-[10px] font-normal text-slate-500">mm cumulative</span>
           </div>
           <div className="text-[10px] text-slate-600 mt-1 leading-snug">
-            Rainfall cannot sustain winter wheat & vegetables without irrigation. Triggers solar lift or recharge pond demand.
+            Rainfall cannot sustain winter wheat & vegetables without irrigation. Triggers solar lift or recharge pond
+            demand.
           </div>
         </div>
 
@@ -307,7 +310,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
             {summary?.totalSurplus || 0} <span className="text-[10px] font-normal text-slate-500">mm surplus</span>
           </div>
           <div className="text-[10px] text-slate-600 mt-1 leading-snug">
-            80% of annual moisture surplus. Crucial period for conservation pond capture and spring aquifer replenishment.
+            80% of annual moisture surplus. Crucial period for conservation pond capture and spring aquifer
+            replenishment.
           </div>
         </div>
 
@@ -316,11 +320,10 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             <span>Recommended Policy Action</span>
           </div>
-          <div className="text-xs font-bold text-emerald-950 font-mono mt-1">
-            Terrace Storage & Lift
-          </div>
+          <div className="text-xs font-bold text-emerald-950 font-mono mt-1">Terrace Storage & Lift</div>
           <div className="text-[10px] text-slate-600 mt-1 leading-snug">
-            Target {activePalika.name} municipal subsidies toward dry-season lift pumps and rain-harvesting plastic ponds.
+            Target {activePalika.name} municipal subsidies toward dry-season lift pumps and rain-harvesting plastic
+            ponds.
           </div>
         </div>
       </div>

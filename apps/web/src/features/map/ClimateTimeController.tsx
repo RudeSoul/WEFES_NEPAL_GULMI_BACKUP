@@ -12,10 +12,7 @@ interface ClimateTimeControllerProps {
   maxYear?: number;
 }
 
-const MONTH_NAMES = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-];
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export const ClimateTimeController: React.FC<ClimateTimeControllerProps> = ({
   year,
@@ -63,28 +60,31 @@ export const ClimateTimeController: React.FC<ClimateTimeControllerProps> = ({
           <div className="flex items-center bg-slate-100 rounded-lg p-0.5 border border-slate-200">
             <button
               onClick={() => onModeChange('monthly')}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all cursor-pointer ${mode === 'monthly'
-                ? 'bg-white text-slate-900 font-semibold shadow-sm border border-slate-200/80'
-                : 'text-slate-600 hover:text-slate-900'
-                }`}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all cursor-pointer ${
+                mode === 'monthly'
+                  ? 'bg-white text-slate-900 font-semibold shadow-sm border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
               Monthly Frame
             </button>
             <button
               onClick={() => onModeChange('annual')}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all cursor-pointer ${mode === 'annual'
-                ? 'bg-white text-slate-900 font-semibold shadow-sm border border-slate-200/80'
-                : 'text-slate-600 hover:text-slate-900'
-                }`}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all cursor-pointer ${
+                mode === 'annual'
+                  ? 'bg-white text-slate-900 font-semibold shadow-sm border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
               Annual Avg
             </button>
             <button
               onClick={() => onModeChange('climatology')}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all cursor-pointer ${mode === 'climatology'
-                ? 'bg-white text-slate-900 font-semibold shadow-sm border border-slate-200/80'
-                : 'text-slate-600 hover:text-slate-900'
-                }`}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all cursor-pointer ${
+                mode === 'climatology'
+                  ? 'bg-white text-slate-900 font-semibold shadow-sm border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
               39-Yr Climatology
             </button>
@@ -96,13 +96,18 @@ export const ClimateTimeController: React.FC<ClimateTimeControllerProps> = ({
           {/* Play / Pause Animation Button */}
           <button
             onClick={togglePlay}
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-sm ${isPlaying
-              ? 'bg-amber-500 text-slate-950 hover:bg-amber-400'
-              : 'bg-slate-900 text-white hover:bg-slate-800'
-              }`}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-sm ${
+              isPlaying
+                ? 'bg-amber-500 text-slate-950 hover:bg-amber-400'
+                : 'bg-slate-900 text-white hover:bg-slate-800'
+            }`}
             title={isPlaying ? 'Pause animation' : 'Play monthly time-series animation'}
           >
-            {isPlaying ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current " />}
+            {isPlaying ? (
+              <Pause className="w-3.5 h-3.5 fill-current" />
+            ) : (
+              <Play className="w-3.5 h-3.5 fill-current " />
+            )}
             <span>{isPlaying ? 'Pause' : 'Play Timeline'}</span>
           </button>
 
@@ -154,10 +159,11 @@ export const ClimateTimeController: React.FC<ClimateTimeControllerProps> = ({
               <button
                 key={name}
                 onClick={() => onMonthChange(m)}
-                className={`flex-1 py-1.5 rounded-md text-[11px] font-semibold transition-all text-center cursor-pointer ${isActive
-                  ? 'bg-sky-600 text-white shadow-sm font-bold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-                  }`}
+                className={`flex-1 py-1.5 rounded-md text-[11px] font-semibold transition-all text-center cursor-pointer ${
+                  isActive
+                    ? 'bg-sky-600 text-white shadow-sm font-bold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                }`}
               >
                 {name}
               </button>

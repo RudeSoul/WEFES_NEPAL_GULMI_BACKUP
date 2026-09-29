@@ -15,10 +15,7 @@ export interface HeatStressRiskEvaluation {
   calibrationProvenance: string;
 }
 
-export function computeHeatStressRisk(
-  districtName: string,
-  cropName: string
-): HeatStressRiskEvaluation {
+export function computeHeatStressRisk(districtName: string, cropName: string): HeatStressRiskEvaluation {
   const norm = cropName.toLowerCase();
   const dNorm = districtName.toLowerCase();
 
@@ -35,7 +32,8 @@ export function computeHeatStressRisk(
       projectedPeakTemperatureCelsius: peakTemp,
       heatStressSeverity: isExceeded ? 'Severe Lethal Threshold Exceeded' : 'Thermal Safety Zone',
       projectedYieldCollapsePct: isExceeded ? 34.5 : 8.0,
-      biophysicalMechanism: 'Soluble starch synthase enzymes denature above 24.5°C, shortening grain filling duration from 42 to 24 days.',
+      biophysicalMechanism:
+        'Soluble starch synthase enzymes denature above 24.5°C, shortening grain filling duration from 42 to 24 days.',
       recommendedHeatTolerantGenotypes: [
         {
           varietyName: 'NL 1368 (Terminal Heat Tolerant)',
@@ -56,7 +54,8 @@ export function computeHeatStressRisk(
       adaptationAgronomicAction: isExceeded
         ? 'Advance sowing date to Kartik 25 – Mangshir 10 to ensure heading concludes before March temperature surges.'
         : 'Maintain standard winter irrigation schedule during panicle emergence.',
-      calibrationProvenance: 'Calibrated using NWRP Bhairahawa & IAAS Paklihawa Thermal Agronomy Trials (Research on Crops 2024).',
+      calibrationProvenance:
+        'Calibrated using NWRP Bhairahawa & IAAS Paklihawa Thermal Agronomy Trials (Research on Crops 2024).',
     };
   }
 
@@ -71,7 +70,8 @@ export function computeHeatStressRisk(
       projectedPeakTemperatureCelsius: peakTemp,
       heatStressSeverity: isExceeded ? 'Severe Lethal Threshold Exceeded' : 'Moderate Heat Stress Risk',
       projectedYieldCollapsePct: isExceeded ? 68.0 : 15.0,
-      biophysicalMechanism: 'Pollen viability collapses above 33°C with total silk desiccation and blank cob formation above 37°C.',
+      biophysicalMechanism:
+        'Pollen viability collapses above 33°C with total silk desiccation and blank cob formation above 37°C.',
       recommendedHeatTolerantGenotypes: [
         {
           varietyName: 'Rampur Hybrid-10 (Heat Resilient)',
@@ -87,7 +87,8 @@ export function computeHeatStressRisk(
       adaptationAgronomicAction: isExceeded
         ? 'Shift to spring heat-resilient hybrids (Rampur Hybrid-10) + apply sprinkler misting during noon peak heat.'
         : 'Standard spring maize cultivation practice.',
-      calibrationProvenance: 'Calibrated using NMRP Rampur & Frontiers in Sustainable Food Systems Heat Stress Data (2023–2024).',
+      calibrationProvenance:
+        'Calibrated using NMRP Rampur & Frontiers in Sustainable Food Systems Heat Stress Data (2023–2024).',
     };
   }
 
@@ -100,7 +101,8 @@ export function computeHeatStressRisk(
     projectedPeakTemperatureCelsius: peakTemp,
     heatStressSeverity: peakTemp > 30.0 ? 'Moderate Heat Stress Risk' : 'Thermal Safety Zone',
     projectedYieldCollapsePct: peakTemp > 30.0 ? 18.0 : 5.0,
-    biophysicalMechanism: 'Elevated daytime temperatures accelerate respiration loss over photosynthetic carbon assimilation.',
+    biophysicalMechanism:
+      'Elevated daytime temperatures accelerate respiration loss over photosynthetic carbon assimilation.',
     recommendedHeatTolerantGenotypes: [
       {
         varietyName: 'Climatic Resilient Local Landrace Selection',
@@ -108,7 +110,8 @@ export function computeHeatStressRisk(
         heatToleranceMechanism: 'Dense canopy self-shading and thick waxy cuticle.',
       },
     ],
-    adaptationAgronomicAction: 'Deploy 35% shade netting or agro-forestry canopy intercropping to moderate microclimate.',
+    adaptationAgronomicAction:
+      'Deploy 35% shade netting or agro-forestry canopy intercropping to moderate microclimate.',
     calibrationProvenance: 'Calibrated using NARC Agro-Climatic Thermal Limits Database.',
   };
 }

@@ -33,7 +33,8 @@ export const SensitivityTab: React.FC<SensitivityTabProps> = ({
         <div className="flex items-start gap-2">
           <SlidersHorizontal className="w-4 h-4 text-sky-700 shrink-0 mt-0.5" />
           <span>
-            <strong>Dynamic Sobol Sensitivity Simulator:</strong> Drag the parameter levers below to test how climate shocks, wage inflation, and energy policies shift the Nexus Balance Score in real time.
+            <strong>Dynamic Sobol Sensitivity Simulator:</strong> Drag the parameter levers below to test how climate
+            shocks, wage inflation, and energy policies shift the Nexus Balance Score in real time.
           </span>
         </div>
         <button
@@ -53,7 +54,9 @@ export const SensitivityTab: React.FC<SensitivityTabProps> = ({
               <Droplets className="w-4 h-4 text-sky-600" />
               <span>Monsoon Rainfall Shock</span>
             </span>
-            <span className={`font-mono font-bold px-2 py-0.5 rounded text-xs ${rainfallShift < 0 ? 'bg-rose-100 text-rose-800' : rainfallShift > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}`}>
+            <span
+              className={`font-mono font-bold px-2 py-0.5 rounded text-xs ${rainfallShift < 0 ? 'bg-rose-100 text-rose-800' : rainfallShift > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}`}
+            >
               {rainfallShift > 0 ? `+${rainfallShift}%` : `${rainfallShift}%`}
             </span>
           </div>
@@ -79,7 +82,9 @@ export const SensitivityTab: React.FC<SensitivityTabProps> = ({
               <Coins className="w-4 h-4 text-purple-600" />
               <span>Agricultural Labor Wage Rate</span>
             </span>
-            <span className={`font-mono font-bold px-2 py-0.5 rounded text-xs ${wageShift > 0 ? 'bg-rose-100 text-rose-800' : wageShift < 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}`}>
+            <span
+              className={`font-mono font-bold px-2 py-0.5 rounded text-xs ${wageShift > 0 ? 'bg-rose-100 text-rose-800' : wageShift < 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}`}
+            >
               {wageShift > 0 ? `+${wageShift}%` : `${wageShift}%`}
             </span>
           </div>
@@ -105,7 +110,9 @@ export const SensitivityTab: React.FC<SensitivityTabProps> = ({
               <Zap className="w-4 h-4 text-amber-600" />
               <span>Grid Electricity Tariff (NEA)</span>
             </span>
-            <span className={`font-mono font-bold px-2 py-0.5 rounded text-xs ${tariffShift > 0 ? 'bg-rose-100 text-rose-800' : tariffShift < 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}`}>
+            <span
+              className={`font-mono font-bold px-2 py-0.5 rounded text-xs ${tariffShift > 0 ? 'bg-rose-100 text-rose-800' : tariffShift < 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-700'}`}
+            >
               {tariffShift > 0 ? `+${tariffShift}%` : `${tariffShift}%`}
             </span>
           </div>
@@ -160,33 +167,47 @@ export const SensitivityTab: React.FC<SensitivityTabProps> = ({
             Real-Time Shock Response & Elasticity
           </span>
           <span className="text-xs font-mono">
-            Score Shift: <strong className={sensitivityResult.scoreDelta >= 0 ? 'text-emerald-400' : 'text-rose-400'}>{sensitivityResult.scoreDelta > 0 ? `+${sensitivityResult.scoreDelta}` : sensitivityResult.scoreDelta} pts</strong>
+            Score Shift:{' '}
+            <strong className={sensitivityResult.scoreDelta >= 0 ? 'text-emerald-400' : 'text-rose-400'}>
+              {sensitivityResult.scoreDelta > 0 ? `+${sensitivityResult.scoreDelta}` : sensitivityResult.scoreDelta} pts
+            </strong>
           </span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
           <div className="bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-center">
             <div className="text-[10px] text-slate-400 font-sans">Simulated Nexus Score</div>
-            <div className="text-xl font-extrabold text-white mt-1">{sensitivityResult.simulatedScore} <span className="text-xs font-normal text-slate-400">/ 100</span></div>
+            <div className="text-xl font-extrabold text-white mt-1">
+              {sensitivityResult.simulatedScore} <span className="text-xs font-normal text-slate-400">/ 100</span>
+            </div>
           </div>
           <div className="bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-center">
             <div className="text-[10px] text-slate-400 font-sans">Simulated Water Stress</div>
-            <div className={`text-xl font-extrabold mt-1 ${sensitivityResult.simulatedWaterStress > 50 ? 'text-rose-400' : 'text-sky-400'}`}>
+            <div
+              className={`text-xl font-extrabold mt-1 ${sensitivityResult.simulatedWaterStress > 50 ? 'text-rose-400' : 'text-sky-400'}`}
+            >
               {sensitivityResult.simulatedWaterStress}%
             </div>
           </div>
           <div className="bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-center">
             <div className="text-[10px] text-slate-400 font-sans">Net Farmer Margin</div>
-            <div className="text-xl font-extrabold text-purple-400 mt-1">{sensitivityResult.simulatedNetMarginPct}%</div>
+            <div className="text-xl font-extrabold text-purple-400 mt-1">
+              {sensitivityResult.simulatedNetMarginPct}%
+            </div>
           </div>
           <div className="bg-slate-950/80 p-3 rounded-lg border border-slate-800 text-center">
             <div className="text-[10px] text-slate-400 font-sans">MRTS (Water/Capital)</div>
-            <div className="text-xl font-extrabold text-emerald-400 mt-1">{sensitivityResult.mrtsWaterToCapital} <span className="text-xs font-normal text-slate-400">m³/k NPR</span></div>
+            <div className="text-xl font-extrabold text-emerald-400 mt-1">
+              {sensitivityResult.mrtsWaterToCapital}{' '}
+              <span className="text-xs font-normal text-slate-400">m³/k NPR</span>
+            </div>
           </div>
         </div>
 
         <div className="text-[11px] text-slate-400 font-sans">
-          <strong>Marginal Rate of Technical Substitution (MRTS):</strong> Every NPR 1,000 invested in clean solar drip irrigation recovers approximately <strong>{sensitivityResult.mrtsWaterToCapital} m³</strong> of agricultural water footprint under current district agro-climatic conditions.
+          <strong>Marginal Rate of Technical Substitution (MRTS):</strong> Every NPR 1,000 invested in clean solar drip
+          irrigation recovers approximately <strong>{sensitivityResult.mrtsWaterToCapital} m³</strong> of agricultural
+          water footprint under current district agro-climatic conditions.
         </div>
       </div>
     </div>

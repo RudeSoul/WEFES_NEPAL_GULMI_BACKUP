@@ -21,6 +21,7 @@ engines/
 ---
 
 ## Architectural Principles
+
 1. **Zero Inward Imports**: Engines are autonomous domain packages. They NEVER import code from `apps/` or `packages/`.
 2. **Headless Execution**: All engines are headless and deterministic. They can be executed via CLI, tests, or sub-processes without requiring a browser or web server.
 3. **Polyglot Harmony**:
@@ -31,6 +32,7 @@ engines/
 ---
 
 ## Standalone Repository Extraction
+
 Any engine in this directory can be carved out into an independent GitHub repository at any time:
 
 ```bash

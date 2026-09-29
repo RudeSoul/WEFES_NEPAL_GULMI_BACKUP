@@ -51,10 +51,10 @@ describe('Track E: Biophysical Climate Lapse & Crop Suitability Coupling', () =>
       const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
       expect(gulmiPalikas.length).toBe(12);
 
-      const coffeeHotspot = gulmiPalikas.find(p => p.name.toLowerCase() === 'resunga');
+      const coffeeHotspot = gulmiPalikas.find((p) => p.name.toLowerCase() === 'resunga');
       expect(coffeeHotspot).toBeDefined();
 
-      const coffeeCrop = coffeeHotspot?.feasibleCrops.find(c => c.cropId === 'coffee');
+      const coffeeCrop = coffeeHotspot?.feasibleCrops.find((c) => c.cropId === 'coffee');
       expect(coffeeCrop).toBeDefined();
       expect(coffeeCrop?.score).toBeGreaterThanOrEqual(85);
       expect(coffeeCrop?.rating).toMatch(/Optimal|High/);
@@ -62,11 +62,11 @@ describe('Track E: Biophysical Climate Lapse & Crop Suitability Coupling', () =>
 
     it('identifies limiting factors when crops are pushed outside optimal agro-climatic envelopes', () => {
       const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
-      const madaneHigh = gulmiPalikas.find(p => p.name.toLowerCase() === 'madane');
+      const madaneHigh = gulmiPalikas.find((p) => p.name.toLowerCase() === 'madane');
       expect(madaneHigh).toBeDefined();
 
       // High massifs have limiting factor annotations
-      const constrainedCrop = madaneHigh?.feasibleCrops.find(c => c.score < 70);
+      const constrainedCrop = madaneHigh?.feasibleCrops.find((c) => c.score < 70);
       if (constrainedCrop) {
         expect(constrainedCrop.limitingFactor).toBeDefined();
         expect(typeof constrainedCrop.limitingFactor).toBe('string');

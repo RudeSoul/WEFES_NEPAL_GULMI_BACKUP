@@ -13,7 +13,9 @@ export function computeNaturalCapital(output: WEFESOutput): NaturalCapitalAccoun
   const trueNexusNetValueNpr = Math.round(
     conventionalNetProfitNpr - waterShadowCostNpr - soilNutrientDepletionCostNpr + carbonCreditAssetNpr
   );
-  const naturalCapitalRatioPct = Math.round(((waterShadowCostNpr + soilNutrientDepletionCostNpr) / Math.max(1, grossFinancialRevenueNpr)) * 100);
+  const naturalCapitalRatioPct = Math.round(
+    ((waterShadowCostNpr + soilNutrientDepletionCostNpr) / Math.max(1, grossFinancialRevenueNpr)) * 100
+  );
 
   return {
     grossFinancialRevenueNpr,

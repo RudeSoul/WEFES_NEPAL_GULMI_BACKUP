@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {
@@ -15,13 +12,13 @@ export default {
           ecosystem: '#059669', // Teal Green
           socio: '#8b5cf6', // Violet/Purple
           dark: '#0f172a',
-          card: '#1e293b'
-        }
+          card: '#1e293b',
+        },
       },
       fontFamily: {
         sans: ['Inter', 'Outfit', 'sans-serif'],
-      }
+      },
     },
   },
   plugins: [],
-}
+};

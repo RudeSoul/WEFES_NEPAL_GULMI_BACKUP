@@ -24,7 +24,6 @@ export const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 glass-panel border-b border-slate-200/90 px-4 lg:px-8 py-2.5 bg-white/95 shadow-xs backdrop-blur-md">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
-
         {/* Logo & Platform Title */}
         <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => handleNav(ROUTES.MAP)}>
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-800 border border-emerald-500/40 flex items-center justify-center shadow-xs group-hover:scale-105 transition-all">
@@ -55,9 +54,9 @@ export const Header: React.FC = () => {
             onClick={() => handleNav(ROUTES.MAP)}
             className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
               isMapActive
-              ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-              }`}
+                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+            }`}
           >
             <MapPin className="w-3.5 h-3.5 text-emerald-600" />
             <span>Map</span>
@@ -66,17 +65,24 @@ export const Header: React.FC = () => {
           {/* Step 2: Palika Detail */}
           <button
             onClick={() => {
-              const palikaPath = selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS;
+              const palikaPath = selectedPalikaName
+                ? `/palikas/${encodeURIComponent(selectedPalikaName)}`
+                : ROUTES.PALIKAS;
               handleNav(palikaPath);
             }}
             disabled={!selectedPalikaName}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${isPalikaActive
-              ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-              : selectedPalikaName
-                ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
-                : 'text-slate-400 opacity-60 cursor-not-allowed'
-              }`}
-            title={selectedPalikaName ? `View ${selectedPalikaName} Palika Details` : 'Select a Palika from the map or search to view details'}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${
+              isPalikaActive
+                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+                : selectedPalikaName
+                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
+                  : 'text-slate-400 opacity-60 cursor-not-allowed'
+            }`}
+            title={
+              selectedPalikaName
+                ? `View ${selectedPalikaName} Palika Details`
+                : 'Select a Palika from the map or search to view details'
+            }
           >
             <span>{selectedPalikaName ? `${selectedPalikaName} Palika` : '____ Palika'}</span>
           </button>
@@ -85,12 +91,13 @@ export const Header: React.FC = () => {
           <button
             onClick={() => handleNav(ROUTES.ANALYSIS)}
             disabled={!selectedCropName}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${isAnalysisActive
-              ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-              : selectedCropName
-                ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
-                : 'text-slate-400 opacity-60 cursor-not-allowed'
-              }`}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${
+              isAnalysisActive
+                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+                : selectedCropName
+                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
+                  : 'text-slate-400 opacity-60 cursor-not-allowed'
+            }`}
           >
             <Layers className="w-3.5 h-3.5 text-blue-600" />
             <span>Analysis</span>
@@ -100,17 +107,17 @@ export const Header: React.FC = () => {
           <button
             onClick={() => handleNav(ROUTES.SIMULATOR)}
             disabled={!selectedCropName}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${isSimulatorActive
-              ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-              : selectedCropName
-                ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
-                : 'text-slate-400 opacity-60 cursor-not-allowed'
-              }`}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${
+              isSimulatorActive
+                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+                : selectedCropName
+                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
+                  : 'text-slate-400 opacity-60 cursor-not-allowed'
+            }`}
           >
             <span>Simulator</span>
           </button>
         </div>
-
       </div>
     </header>
   );

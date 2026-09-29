@@ -5,6 +5,7 @@ This document serves as the absolute, non-negotiable engineering constitution fo
 ---
 
 ## Rule 1: Zero Inward Code Imports & Engine Autonomy
+
 - Engines (`engines/water/hydro`, `engines/nexus`, `engines/energy`, `engines/food`) must be 100% headless, isolated, and domain-pure.
 - Under NO circumstances may an engine import from `apps/` or `packages/`.
 - Code flows OUTWARD ONLY: `engines/` -> `apps/` or `packages/` -> `apps/`.
@@ -14,6 +15,7 @@ This document serves as the absolute, non-negotiable engineering constitution fo
   3. Clean REST/IPC APIs.
 
 ### Standalone Engine Execution & Git Subtree Splitting
+
 Every computational engine must be capable of running completely standalone outside of this repository.
 
 ```bash
@@ -27,6 +29,7 @@ git subtree split -P engines/nexus -b standalone-nexus-engine
 ---
 
 ## Rule 2: The "Zero Hardcoded Data" Law
+
 - Hardcoding scientific numbers, geographical coordinates, percentages, crop parameters, tariff estimates, or indicator thresholds inside application source code (`.ts`, `.tsx`, `.py`) is **STRICTLY PROHIBITED**.
 - All domain constants, boundary coordinates, and scientific parameters MUST be loaded from designated files in `data/`.
 - Configuration files (`.env`, `vite.config.ts`, etc.) may only contain operational/infrastructure variables (port numbers, API timeouts, base URLs), never scientific data.
@@ -34,7 +37,9 @@ git subtree split -P engines/nexus -b standalone-nexus-engine
 ---
 
 ## Rule 3: Mandatory In-Code Data Provenance Citations
+
 Every module, hook, service, or script that consumes or transforms data must begin with an explicit top-level provenance declaration:
+
 ```python
 # ==============================================================================
 # DATA PROVENANCE CITATION
@@ -48,7 +53,9 @@ Every module, hook, service, or script that consumes or transforms data must beg
 ---
 
 ## Rule 4: Data Tri-Tier Architecture & Governance
+
 All project data must reside in one of three strictly governed tiers:
+
 1. `data/real/` (Observed Official Records):
    - Official records from recognized agencies (DHM, MoALD, CBS, Survey Department).
    - **Immutable & Read-Only**: Code must never modify or overwrite files in this folder.
@@ -59,11 +66,12 @@ All project data must reside in one of three strictly governed tiers:
    - Used only when empirical data is unavailable.
    - Must include an explicit justification, confidence rating, and replacement roadmap in its `DATAINFO.md`.
 
-*Every subfolder in `data/` MUST contain a `DATAINFO.md` file describing its provenance, fields, and confidence.*
+_Every subfolder in `data/` MUST contain a `DATAINFO.md` file describing its provenance, fields, and confidence._
 
 ---
 
 ## Rule 5: Large Raster & Binary Git Hygiene
+
 - Binary rasters (`*.tif`, `*.nc`, `*.h5`, `*.geotiff`) > 40 MB must **NEVER** be committed directly to Git.
 - Binary rasters are tracked via `data/manifest.json` with cryptographic SHA-256 checksums and automated download scripts (`scripts/sync_data.py`).
 - Developers can clone the repository in seconds and run `make sync-data` to retrieve heavy assets locally.
@@ -71,12 +79,14 @@ All project data must reside in one of three strictly governed tiers:
 ---
 
 ## Rule 6: Dynamic Frontend Presentation (No Hardcoded Ranges)
+
 - UI legends, scale bars, and filter ranges in `apps/web` must **NEVER** use arbitrary hardcoded tier arrays (such as the legacy 6-tier array).
 - Legend ranges must be dynamically computed from datasets (Min/Max, Quantiles) or driven by domain-specific agronomic/hydrologic metadata defined in `packages/shared-types`.
 
 ---
 
 ## Rule 7: Cohesive Atomic Commits & Conventional Commits
+
 - **Logical Coherence**: Commits should be atomic and represent a single logical change (e.g., updating a schema and its consuming components together so the build passes at every commit).
 - **Conventional Commits**: Commit messages must conform to `<type>(<scope>): <subject>` (e.g., `feat(web): update climate overlay`).
 - **No Artificial File-Count Restrictions**: Multi-file commits are allowed and encouraged when files belong to the same cohesive change.
@@ -84,6 +94,7 @@ All project data must reside in one of three strictly governed tiers:
 ---
 
 ## Rule 8: Branch Protection & Zero-Tolerance PR Gatekeeper
+
 - Direct pushes to `main` are **strictly blocked** locally (via `.githooks/pre-push`) and remotely on GitHub.
 - All development must occur on feature branches (`feat/*`, `fix/*`, `refactor/*`) and merge via Pull Request.
 - Pull Requests will only be approved if:
@@ -94,18 +105,22 @@ All project data must reside in one of three strictly governed tiers:
 ---
 
 ## Rule 9: AI Context Documentation
+
 - Standard project documentation (`README.md`, `RULESET.md`, `CODING_STANDARDS.md`) provides context for developers and AI agents.
 
 ---
 
 ## Rule 10: Dual-Documentation Standard
+
 Every architectural folder (`apps/`, `engines/`, `packages/`, `data/`, `scripts/`) must maintain:
+
 - `README.md`: Explains what the folder does, how it works, data flows, and alternatives considered.
 - `RULES.md`: Defines strict rules on how to add, edit, test, and delete files within that folder.
 
 ---
 
 ## Rule 11: Polyglot Architecture & Package Isolation
+
 - TypeScript packages use `pnpm` workspace protocols.
 - Python engines use isolated virtual environments, `pyproject.toml`, and standard typing (`from __future__ import annotations`).
 - Future Go or Rust engines will use `go.mod` or `Cargo.toml` in dedicated subdirectories under `engines/`.

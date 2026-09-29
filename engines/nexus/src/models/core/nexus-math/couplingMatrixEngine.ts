@@ -24,8 +24,10 @@ export function computeCouplingMatrix(output: WEFESOutput): CouplingMatrixCell[]
       from: 'Food (Biomass)',
       to: 'Ecosystem (Carbon)',
       type: 'synergy',
-      coefficient: isCoffee ? 0.92 : 0.70,
-      mechanism: isCoffee ? 'Shade-grown Arabica canopy sequesters woody carbon and leaf litter humus.' : 'Crop root biomass enriches soil organic matter and microbial activity.',
+      coefficient: isCoffee ? 0.92 : 0.7,
+      mechanism: isCoffee
+        ? 'Shade-grown Arabica canopy sequesters woody carbon and leaf litter humus.'
+        : 'Crop root biomass enriches soil organic matter and microbial activity.',
     },
     {
       from: 'Ecosystem (Topsoil)',

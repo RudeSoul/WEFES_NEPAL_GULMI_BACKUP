@@ -30,7 +30,7 @@ export function computeSentinelCropHealth(
   baseYieldTon: number
 ): SentinelCropHealthProfile {
   // Compute NDVI based on water availability and vegetative health
-  const baseNdvi = Math.max(0.35, Math.min(0.88, 0.78 - (waterStressIndex * 0.0035)));
+  const baseNdvi = Math.max(0.35, Math.min(0.88, 0.78 - waterStressIndex * 0.0035));
   const historicalNdvi = 0.72;
   const ndviAnomalyPct = Number((((baseNdvi - historicalNdvi) / historicalNdvi) * 100).toFixed(1));
 
@@ -85,9 +85,10 @@ export function computeSentinelCropHealth(
       yieldVariancePct,
       cnnModelConfidenceAccuracyPct: 92.4,
       forecastLeadTimeWeeks: 5,
-      primaryYieldLimitingFactor: waterStressIndex > 50
-        ? 'Mid-season dry spell reducing active tillering panicle density.'
-        : 'Cloudburst kinetic splash inducing slight soil nutrient leaching.',
+      primaryYieldLimitingFactor:
+        waterStressIndex > 50
+          ? 'Mid-season dry spell reducing active tillering panicle density.'
+          : 'Cloudburst kinetic splash inducing slight soil nutrient leaching.',
     },
   };
 }

@@ -8,11 +8,7 @@ interface NexusRadarWidgetProps {
   lang: 'en' | 'np';
 }
 
-export const NexusRadarWidget: React.FC<NexusRadarWidgetProps> = ({
-  activePillar,
-  onSelectPillar,
-  lang
-}) => {
+export const NexusRadarWidget: React.FC<NexusRadarWidgetProps> = ({ activePillar, onSelectPillar, lang }) => {
   const axes = [
     {
       pillar: 'water' as WEFESPillar,
@@ -20,7 +16,7 @@ export const NexusRadarWidget: React.FC<NexusRadarWidgetProps> = ({
       score: 84,
       icon: Droplets,
       color: '#0284c7',
-      desc: 'Glacial Kali Gandaki + Perennial Badigad Basin'
+      desc: 'Glacial Kali Gandaki + Perennial Badigad Basin',
     },
     {
       pillar: 'food' as WEFESPillar,
@@ -28,7 +24,7 @@ export const NexusRadarWidget: React.FC<NexusRadarWidgetProps> = ({
       score: 78,
       icon: Sprout,
       color: '#059669',
-      desc: 'Arabica Coffee, Citrus, Grains & Potato Pockets'
+      desc: 'Arabica Coffee, Citrus, Grains & Potato Pockets',
     },
     {
       pillar: 'energy' as WEFESPillar,
@@ -36,7 +32,7 @@ export const NexusRadarWidget: React.FC<NexusRadarWidgetProps> = ({
       score: 64,
       icon: Zap,
       color: '#d97706',
-      desc: 'Hydro Corridors & 5.1 kWh/m² Solar Ridges'
+      desc: 'Hydro Corridors & 5.1 kWh/m² Solar Ridges',
     },
     {
       pillar: 'ecosystem' as WEFESPillar,
@@ -44,7 +40,7 @@ export const NexusRadarWidget: React.FC<NexusRadarWidgetProps> = ({
       score: 72,
       icon: Sparkles,
       color: '#10b981',
-      desc: 'Community Forestry & NARC Ground Samples'
+      desc: 'Community Forestry & NARC Ground Samples',
     },
     {
       pillar: 'socioeconomics' as WEFESPillar,
@@ -52,8 +48,8 @@ export const NexusRadarWidget: React.FC<NexusRadarWidgetProps> = ({
       score: 69,
       icon: Coins,
       color: '#4f46e5',
-      desc: 'Tamghas Hub Proximity & Feeder Road Corridors'
-    }
+      desc: 'Tamghas Hub Proximity & Feeder Road Corridors',
+    },
   ];
 
   // Calculate radar polygon points (radius 75, center 90, 90)
@@ -62,11 +58,11 @@ export const NexusRadarWidget: React.FC<NexusRadarWidgetProps> = ({
   const radius = 65;
 
   const getCoordinates = (index: number, total: number, valueRatio: number) => {
-    const angle = (Math.PI * 2 / total) * index - Math.PI / 2;
+    const angle = ((Math.PI * 2) / total) * index - Math.PI / 2;
     const r = radius * valueRatio;
     return {
       x: center + r * Math.cos(angle),
-      y: center + r * Math.sin(angle)
+      y: center + r * Math.sin(angle),
     };
   };
 
@@ -106,7 +102,7 @@ export const NexusRadarWidget: React.FC<NexusRadarWidgetProps> = ({
           <div className="relative">
             <svg width={size} height={size} className="overflow-visible">
               {/* Background grid rings */}
-              {gridCircles.map(ratio => (
+              {gridCircles.map((ratio) => (
                 <polygon
                   key={ratio}
                   points={axes
@@ -125,17 +121,7 @@ export const NexusRadarWidget: React.FC<NexusRadarWidgetProps> = ({
               {/* Axis lines */}
               {axes.map((_, i) => {
                 const { x, y } = getCoordinates(i, axes.length, 1.0);
-                return (
-                  <line
-                    key={i}
-                    x1={center}
-                    y1={center}
-                    x2={x}
-                    y2={y}
-                    stroke="#cbd5e1"
-                    strokeWidth="1"
-                  />
-                );
+                return <line key={i} x1={center} y1={center} x2={x} y2={y} stroke="#cbd5e1" strokeWidth="1" />;
               })}
 
               {/* Filled Polygon */}
@@ -171,7 +157,7 @@ export const NexusRadarWidget: React.FC<NexusRadarWidgetProps> = ({
 
         {/* Pillar Metric Cards List */}
         <div className="md:col-span-7 space-y-2">
-          {axes.map(a => {
+          {axes.map((a) => {
             const isSelected = activePillar === a.pillar;
             const Icon = a.icon;
             return (

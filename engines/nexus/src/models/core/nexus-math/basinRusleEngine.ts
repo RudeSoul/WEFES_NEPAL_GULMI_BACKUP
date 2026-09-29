@@ -12,7 +12,8 @@ export function computeBasinCascade(output: WEFESOutput): BasinCascadeModel {
     basinAreaKm2: 11461,
     basinPopulationM: 1.85,
     downstreamDistrictsAffected: 6,
-    watershedGovernanceNote: 'Integrated watershed coordination links upstream Gulmi sustainable slopes with downstream hydropower and irrigation infrastructure.',
+    watershedGovernanceNote:
+      'Integrated watershed coordination links upstream Gulmi sustainable slopes with downstream hydropower and irrigation infrastructure.',
   };
 }
 
@@ -29,9 +30,21 @@ export function computeIpccVulnerability(output: WEFESOutput): IPCCVulnerability
     vulnerabilityIndex,
     riskCategory: 'Moderate Vulnerability',
     hazardProfiles: [
-      { hazard: 'Monsoon Flash Floods & Landslides', riskLevel: 'Medium', detail: 'High relief slopes vulnerable to cloudburst events during July–August.' },
-      { hazard: 'Spring Water Depletion (Mulpani Drying)', riskLevel: 'High', detail: 'Traditional drinking springs experiencing reduced dry-season discharge.' },
-      { hazard: 'Terminal Heat Stress in Winter Crops', riskLevel: 'Low', detail: 'Mid-hills elevation maintains temperate growing conditions.' },
+      {
+        hazard: 'Monsoon Flash Floods & Landslides',
+        riskLevel: 'Medium',
+        detail: 'High relief slopes vulnerable to cloudburst events during July–August.',
+      },
+      {
+        hazard: 'Spring Water Depletion (Mulpani Drying)',
+        riskLevel: 'High',
+        detail: 'Traditional drinking springs experiencing reduced dry-season discharge.',
+      },
+      {
+        hazard: 'Terminal Heat Stress in Winter Crops',
+        riskLevel: 'Low',
+        detail: 'Mid-hills elevation maintains temperate growing conditions.',
+      },
     ],
   };
 }
@@ -44,7 +57,9 @@ export function computeRusle(output: WEFESOutput): RUSLEModel {
   const cropCoverC = isCoffee ? 0.08 : 0.22;
   const conservationP = 0.45;
 
-  const annualSoilLossTonsPerHa = Number((rainfallErosivityR * soilErodibilityK * slopeGradientLS * cropCoverC * conservationP).toFixed(1));
+  const annualSoilLossTonsPerHa = Number(
+    (rainfallErosivityR * soilErodibilityK * slopeGradientLS * cropCoverC * conservationP).toFixed(1)
+  );
   const topsoilPreservedTons = Number((18.5 - annualSoilLossTonsPerHa).toFixed(1));
   const topsoilEconomicValueNpr = Math.round(topsoilPreservedTons * 2800);
 
@@ -67,6 +82,7 @@ export function computeSpringshed(output: WEFESOutput): SpringshedModel {
     annualPercolationMm: 420,
     rechargeCoefficient: 0.23,
     drinkingSpringsProtected: 850,
-    springInfiltrationMechanism: 'Terraced agroforestry enhances root-zone soil porosity, converting monsoon surface runoff into shallow groundwater infiltration that feeds downhill community drinking water taps.',
+    springInfiltrationMechanism:
+      'Terraced agroforestry enhances root-zone soil porosity, converting monsoon surface runoff into shallow groundwater infiltration that feeds downhill community drinking water taps.',
   };
 }

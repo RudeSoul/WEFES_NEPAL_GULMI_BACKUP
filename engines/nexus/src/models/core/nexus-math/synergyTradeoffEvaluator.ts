@@ -37,7 +37,8 @@ export function computeSynergiesAndTradeoffs(output: WEFESOutput): {
       title: 'Terrace Slope Stabilization',
       metric: `${output.ecosystem.erosionMitigationIndex}/100 Erosion Index`,
       pointsContribution: 11.8,
-      description: 'Root system cohesion and vegetative canopy reduce monsoonal topsoil erosion on steep mountain slopes.',
+      description:
+        'Root system cohesion and vegetative canopy reduce monsoonal topsoil erosion on steep mountain slopes.',
       icon: 'Mountain',
       timeHorizon: 'long',
     },
@@ -50,7 +51,8 @@ export function computeSynergiesAndTradeoffs(output: WEFESOutput): {
       title: 'Dry-Season Water Drawdown',
       metric: `${output.water.consumptionM3.toLocaleString()} m³ Total Evapotranspiration`,
       pointsPenalty: isPaddy ? 18.5 : 8.0,
-      description: 'Supplemental irrigation during pre-monsoon draws from local spring aquifers and small stream catchments.',
+      description:
+        'Supplemental irrigation during pre-monsoon draws from local spring aquifers and small stream catchments.',
       severity: isPaddy ? 'high' : 'moderate',
       icon: 'Droplets',
       timeHorizon: 'short',

@@ -9,4 +9,4 @@ export const ROUTES = {
   RESEARCH_SANDBOX: '/research-sandbox',
 } as const;
 
-export type AppRoute = typeof ROUTES[keyof typeof ROUTES];
+export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES];

@@ -13,7 +13,8 @@ export interface GenderResponsiveInputPlan {
     drudgeryReductionPct: number;
     laborHoursSavedPerHa: number;
     costNpr: number;
-    womenCooperativeSubsidyEligibility: '85% Subsidized by Ministry' | '50% Cooperative Loan' | 'Custom Hiring Center (CHC) Rental' | string;
+    womenCooperativeSubsidyEligibility:
+      '85% Subsidized by Ministry' | '50% Cooperative Loan' | 'Custom Hiring Center (CHC) Rental' | string;
   }[];
   autonomousCreditAccessIndex: number;
   ndcWomenRepresentationTargetPct: number;
@@ -31,7 +32,8 @@ export interface MunicipalBudgetOptimizer {
     allocatedAmountNpr: number;
     expectedOutcome: string;
   }[];
-  dataIngestionStatus: 'Manual Entry Verified' | 'MOU Data Drop Ready (Provincial MEAP)' | 'Automated API (Pending Gov Gateway)';
+  dataIngestionStatus:
+    'Manual Entry Verified' | 'MOU Data Drop Ready (Provincial MEAP)' | 'Automated API (Pending Gov Gateway)';
 }
 
 export function computeGenderAndMunicipalBudget(
@@ -40,7 +42,9 @@ export function computeGenderAndMunicipalBudget(
   totalLaborDays: number
 ): { gender: GenderResponsiveInputPlan; budget: MunicipalBudgetOptimizer } {
   const femaleLaborShare = proxyCoefficients.femaleLaborSharePct;
-  const weedingHours = Math.round(totalLaborDays * proxyCoefficients.drudgeryWeedingFraction * proxyCoefficients.dailyWorkHours);
+  const weedingHours = Math.round(
+    totalLaborDays * proxyCoefficients.drudgeryWeedingFraction * proxyCoefficients.dailyWorkHours
+  );
 
   const gender: GenderResponsiveInputPlan = {
     femaleLaborSharePct: femaleLaborShare,
@@ -59,7 +63,7 @@ export function computeGenderAndMunicipalBudget(
     totalAnnualMunicipalBudgetNpr: totalMunBudget,
     agriBudgetSharePct: agriShare,
     actualAgriAllocationNpr: totalAgri,
-    optimizedSubAllocations: proxyCoefficients.defaultMunicipalBudget.defaultSubAllocations.map(alloc => ({
+    optimizedSubAllocations: proxyCoefficients.defaultMunicipalBudget.defaultSubAllocations.map((alloc) => ({
       program: alloc.program,
       currentSharePct: alloc.currentSharePct,
       recommendedSharePct: alloc.recommendedSharePct,

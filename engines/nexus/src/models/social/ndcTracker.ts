@@ -9,7 +9,10 @@ export interface NDCAgricultureTarget {
 }
 
 export interface CarbonReadinessProfile {
-  article6ReadinessStatus: 'Policy Framework Formulation Stage (Non-operational base case)' | 'Bilateral Readiness Active' | 'Fully Authorized ITMO Registry';
+  article6ReadinessStatus:
+    | 'Policy Framework Formulation Stage (Non-operational base case)'
+    | 'Bilateral Readiness Active'
+    | 'Fully Authorized ITMO Registry';
   unfcccSubmissionStatus: 'Nepal 2nd NDC (2020) & Long-Term Strategy 2045 Active';
   forestDevelopmentFundFDFStatus: 'Operational for Domestic Afforestation Levies';
   reddPlusReadinessStatus: 'ERPA Signed with World Bank FCPF ($25M USD for 13 Terai Districts)';
@@ -19,16 +22,26 @@ export interface CarbonReadinessProfile {
 export interface DataPartnershipMOUPathway {
   institution: string;
   dataDomain: string;
-  currentIngestionMode: 'NASA POWER / CHIRPS Gridded Fallback' | 'Community Scraped Real-Time Cache' | 'Direct Government Open Data CSV / Geoportal';
+  currentIngestionMode:
+    | 'NASA POWER / CHIRPS Gridded Fallback'
+    | 'Community Scraped Real-Time Cache'
+    | 'Direct Government Open Data CSV / Geoportal';
   mouPartnershipPathway: string;
-  apiReadinessStatus: 'Under Procurement / Infrastructure Upgrade (2024-2026)' | 'Draft MOU Ready for Signing' | 'Direct API Ingestion Active';
+  apiReadinessStatus:
+    | 'Under Procurement / Infrastructure Upgrade (2024-2026)'
+    | 'Draft MOU Ready for Signing'
+    | 'Direct API Ingestion Active';
 }
 
 export function computeNDCTracker(
   districtName: string,
   carbonOffsetKg: number,
   compostTons: number
-): { targets: NDCAgricultureTarget[]; carbonReadiness: CarbonReadinessProfile; partnerships: DataPartnershipMOUPathway[] } {
+): {
+  targets: NDCAgricultureTarget[];
+  carbonReadiness: CarbonReadinessProfile;
+  partnerships: DataPartnershipMOUPathway[];
+} {
   const targets: NDCAgricultureTarget[] = [
     {
       targetId: 'ndc-som-395',
@@ -52,7 +65,8 @@ export function computeNDCTracker(
       targetId: 'ndc-organic-fertilizer-100',
       ndcCommitmentTitle: 'Domestic Organic Fertilizer Plants',
       national2030Target: 'Establish 100 commercial organic and bio-fertilizer production facilities.',
-      currentDistrictContribution: 'Decentralized municipal biochar kiln integration displacing chemical synthetic imports.',
+      currentDistrictContribution:
+        'Decentralized municipal biochar kiln integration displacing chemical synthetic imports.',
       districtProgressPct: 45,
       sdgLinkage: 'SDG 12.4 (Chemical Waste Reduction)',
       verificationSource: 'Nepal 15th Five-Year Development Plan',
@@ -64,7 +78,8 @@ export function computeNDCTracker(
     unfcccSubmissionStatus: 'Nepal 2nd NDC (2020) & Long-Term Strategy 2045 Active',
     forestDevelopmentFundFDFStatus: 'Operational for Domestic Afforestation Levies',
     reddPlusReadinessStatus: 'ERPA Signed with World Bank FCPF ($25M USD for 13 Terai Districts)',
-    carbonMonetizationPolicyRecommendation: 'Model carbon revenue as a sensitivity scenario rather than baseline cash flow until Article 6.2 bilateral agreements are finalized with buyer countries.',
+    carbonMonetizationPolicyRecommendation:
+      'Model carbon revenue as a sensitivity scenario rather than baseline cash flow until Article 6.2 bilateral agreements are finalized with buyer countries.',
   };
 
   const partnerships: DataPartnershipMOUPathway[] = [
@@ -79,14 +94,16 @@ export function computeNDCTracker(
       institution: 'Kalimati Fruits and Vegetable Market Development Board',
       dataDomain: 'Daily Wholesale Crop Farmgate & Terminal Market Prices',
       currentIngestionMode: 'Community Scraped Real-Time Cache',
-      mouPartnershipPathway: 'Data-sharing partnership with Kalimati Market Information System (MIS) for automated daily JSON feed.',
+      mouPartnershipPathway:
+        'Data-sharing partnership with Kalimati Market Information System (MIS) for automated daily JSON feed.',
       apiReadinessStatus: 'Draft MOU Ready for Signing',
     },
     {
       institution: 'Nepal Electricity Authority (NEA)',
       dataDomain: 'Agricultural Feeder Grid Tariffs & Substation Outage Logs',
       currentIngestionMode: 'Direct Government Open Data CSV / Geoportal',
-      mouPartnershipPathway: 'Integration with NEA SCADA grid distribution portal for dedicated rural agricultural feeder tariffs (5.5 NPR/kWh).',
+      mouPartnershipPathway:
+        'Integration with NEA SCADA grid distribution portal for dedicated rural agricultural feeder tariffs (5.5 NPR/kWh).',
       apiReadinessStatus: 'Draft MOU Ready for Signing',
     },
   ];

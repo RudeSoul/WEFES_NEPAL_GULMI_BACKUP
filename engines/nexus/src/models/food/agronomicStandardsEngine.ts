@@ -91,11 +91,13 @@ export function computeAgronomicStandards(
   // 1. Hoekstra et al. (2011) Water Footprint Assessment
   const greenWf = Number(((effectiveRainfallMm * 10) / yieldTon).toFixed(1));
   const blueWf = Number(((irrigationMm * 10) / yieldTon).toFixed(1));
-  const greyWf = Number(((nAppliedKg * 0.10 * 10) / (0.01 * yieldTon)).toFixed(1)); // 10% leaching to drinking standard 10mg/L
+  const greyWf = Number(((nAppliedKg * 0.1 * 10) / (0.01 * yieldTon)).toFixed(1)); // 10% leaching to drinking standard 10mg/L
   const totalWf = greenWf + blueWf + greyWf;
   const totalWaterMm = Math.max(1, irrigationMm + effectiveRainfallMm);
   const wue = Number((yieldKgPerHa / totalWaterMm).toFixed(2));
-  const depletedFraction = Number((Math.min(totalWaterMm, effectiveRainfallMm + irrigationMm * 0.8) / totalWaterMm).toFixed(2));
+  const depletedFraction = Number(
+    (Math.min(totalWaterMm, effectiveRainfallMm + irrigationMm * 0.8) / totalWaterMm).toFixed(2)
+  );
 
   // 2. Hall et al. (2014) & Lal (2004) Energy Budgeting (Calibrated for Nepal NEA Hydro & Mini-Tillers)
   const seedEnergyMJ = 25 * 14.7; // 25 kg seed @ 14.7 MJ/kg
@@ -141,7 +143,7 @@ export function computeAgronomicStandards(
   const efPManufacture = p2o5AppliedKg * 1.61;
   const efKManufacture = k2oAppliedKg * 0.57;
   // Direct soil N2O: 1% of applied N emitted as N2O-N, converted to N2O (44/28) x GWP 273 (IPCC AR6)
-  const soilN2oKg = (nAppliedKg * 0.01 * (44 / 28));
+  const soilN2oKg = nAppliedKg * 0.01 * (44 / 28);
   const soilN2oCo2e = soilN2oKg * 273;
   // Paddy CH4 (IPCC AR6 GWP = 27)
   const isPaddy = norm.includes('paddy') || norm.includes('rice');
@@ -149,11 +151,17 @@ export function computeAgronomicStandards(
   const ch4Co2e = ch4EmissionKg * 27;
   // NEA Hydropower grid emission factor in Nepal = 0.025 kg CO2/kWh (clean renewable baseline)
   const gridElectricityCo2e = electricityKwh * 0.025;
-  const seedPesticideCo2e = (25 * 0.58) + (1.2 * 10.97);
+  const seedPesticideCo2e = 25 * 0.58 + 1.2 * 10.97;
 
   const totalCarbonKgCo2e = Math.round(
-    efDiesel + efNManufacture + efPManufacture + efKManufacture +
-    soilN2oCo2e + ch4Co2e + gridElectricityCo2e + seedPesticideCo2e
+    efDiesel +
+      efNManufacture +
+      efPManufacture +
+      efKManufacture +
+      soilN2oCo2e +
+      ch4Co2e +
+      gridElectricityCo2e +
+      seedPesticideCo2e
   );
   const carbonIntensity = Number((totalCarbonKgCo2e / Math.max(1, yieldKgPerHa)).toFixed(3));
   // Soil Carbon Stock: SOC 1.8% x Bulk Density 1.35 Mg/m³ x 30cm depth x 100
@@ -221,11 +229,16 @@ export function computeAgronomicStandards(
       citation: 'Mead & Willey (1980) Land Equivalent Ratio & Hay (1995) Harvest Index',
     },
     provenanceNotes: {
-      waterStandard: 'Formula: WF = (Water mm × 10) / Yield (t/ha). Evaluates Green (Rain), Blue (Irrigation), and Grey (Pollution dilution). Cites Hoekstra et al. (2011).',
-      energyStandard: 'Formula: EROI = E_out / E_in (MJ/ha). Calibrated with Nepal NEA Hydropower electricity and Lal (2004) equivalents.',
-      nutrientStandard: 'Formula: PFP = Y / N_applied (kg/kg). Validates QUEFTS site-specific nutrient schedules. Cites Dobermann (2007) IFA.',
-      carbonStandard: 'Formula: CF = Sum(Activity × EF) with IPCC AR6 100-year GWP (N2O=273, CH4=27). Grid electricity calibrated to Nepal NEA Hydro (0.025 kg CO2/kWh).',
-      intercroppingStandard: 'Formula: LER = (Y_interA / Y_soleA) + (Y_interB / Y_soleB). Proves yield advantage of mixed agro-forestry over monoculture. Cites Mead & Willey (1980).',
+      waterStandard:
+        'Formula: WF = (Water mm × 10) / Yield (t/ha). Evaluates Green (Rain), Blue (Irrigation), and Grey (Pollution dilution). Cites Hoekstra et al. (2011).',
+      energyStandard:
+        'Formula: EROI = E_out / E_in (MJ/ha). Calibrated with Nepal NEA Hydropower electricity and Lal (2004) equivalents.',
+      nutrientStandard:
+        'Formula: PFP = Y / N_applied (kg/kg). Validates QUEFTS site-specific nutrient schedules. Cites Dobermann (2007) IFA.',
+      carbonStandard:
+        'Formula: CF = Sum(Activity × EF) with IPCC AR6 100-year GWP (N2O=273, CH4=27). Grid electricity calibrated to Nepal NEA Hydro (0.025 kg CO2/kWh).',
+      intercroppingStandard:
+        'Formula: LER = (Y_interA / Y_soleA) + (Y_interB / Y_soleB). Proves yield advantage of mixed agro-forestry over monoculture. Cites Mead & Willey (1980).',
     },
   };
 }

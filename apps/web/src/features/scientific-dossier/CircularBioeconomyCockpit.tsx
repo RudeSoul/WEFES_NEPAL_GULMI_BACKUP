@@ -1,14 +1,28 @@
 import React, { useState, useMemo } from 'react';
+import { computeCircularBioeconomy, CircularBioeconomyInput, CircularBioeconomyResult } from '@wefes/wefes-engine';
 import {
-  computeCircularBioeconomy,
-  CircularBioeconomyInput,
-  CircularBioeconomyResult
-} from '@wefes/wefes-engine';
-import {
-  RefreshCw, Sprout, Milk, Fish, Flame, Waves, TrendingUp,
-  DollarSign, CheckCircle2, AlertTriangle, ShieldCheck, ArrowRight,
-  Download, Layers, Sliders, ChevronDown, ChevronUp, PieChart,
-  Landmark, Activity, Zap, Sparkles
+  RefreshCw,
+  Sprout,
+  Milk,
+  Fish,
+  Flame,
+  Waves,
+  TrendingUp,
+  DollarSign,
+  CheckCircle2,
+  AlertTriangle,
+  ShieldCheck,
+  ArrowRight,
+  Download,
+  Layers,
+  Sliders,
+  ChevronDown,
+  ChevronUp,
+  PieChart,
+  Landmark,
+  Activity,
+  Zap,
+  Sparkles,
 } from 'lucide-react';
 
 interface CircularBioeconomyCockpitProps {
@@ -16,10 +30,7 @@ interface CircularBioeconomyCockpitProps {
   cropName: string;
 }
 
-export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps> = ({
-  districtName,
-  cropName,
-}) => {
+export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps> = ({ districtName, cropName }) => {
   // Interactive Slider States
   const [cropLandHa, setCropLandHa] = useState<number>(2.0);
   const [dairyHerdSize, setDairyHerdSize] = useState<number>(4);
@@ -29,29 +40,51 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
   const [rechargePondEnabled, setRechargePondEnabled] = useState<boolean>(true);
   const [showFullDcfTable, setShowFullDcfTable] = useState<boolean>(false);
 
-  const input: CircularBioeconomyInput = useMemo(() => ({
-    districtName,
-    cropName,
-    cropLandHa,
-    dairyHerdSize,
-    isBuffalo,
-    aquaculturePondHa,
-    biogasDigestersCount,
-    rechargePondEnabled,
-  }), [districtName, cropName, cropLandHa, dairyHerdSize, isBuffalo, aquaculturePondHa, biogasDigestersCount, rechargePondEnabled]);
+  const input: CircularBioeconomyInput = useMemo(
+    () => ({
+      districtName,
+      cropName,
+      cropLandHa,
+      dairyHerdSize,
+      isBuffalo,
+      aquaculturePondHa,
+      biogasDigestersCount,
+      rechargePondEnabled,
+    }),
+    [
+      districtName,
+      cropName,
+      cropLandHa,
+      dairyHerdSize,
+      isBuffalo,
+      aquaculturePondHa,
+      biogasDigestersCount,
+      rechargePondEnabled,
+    ]
+  );
 
   const result: CircularBioeconomyResult = useMemo(() => {
     return computeCircularBioeconomy(input);
   }, [input]);
 
-  const { circularResourceFlows, unified5PillarScorecard, financialSummary, discountedCashFlow15Years, enterpriseProductionTotals } = result;
+  const {
+    circularResourceFlows,
+    unified5PillarScorecard,
+    financialSummary,
+    discountedCashFlow15Years,
+    enterpriseProductionTotals,
+  } = result;
 
   const handleExportCsv = () => {
-    const headers = 'Year,CAPEX (NPR),Gross Revenue (NPR),OPEX (NPR),Net Cash Flow (NPR),Discounted Flow @ 10% (NPR),Cumulative Flow (NPR)\n';
-    const rows = discountedCashFlow15Years.cashFlowSchedule.map(c => 
-      `${c.year},${c.capexNpr},${c.grossRevenueNpr},${c.opexNpr},${c.netCashFlowNpr},${c.discountedCashFlow10Pct},${c.cumulativeCashFlowNpr}`
-    ).join('\n');
-    
+    const headers =
+      'Year,CAPEX (NPR),Gross Revenue (NPR),OPEX (NPR),Net Cash Flow (NPR),Discounted Flow @ 10% (NPR),Cumulative Flow (NPR)\n';
+    const rows = discountedCashFlow15Years.cashFlowSchedule
+      .map(
+        (c) =>
+          `${c.year},${c.capexNpr},${c.grossRevenueNpr},${c.opexNpr},${c.netCashFlowNpr},${c.discountedCashFlow10Pct},${c.cumulativeCashFlowNpr}`
+      )
+      .join('\n');
+
     const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -64,7 +97,6 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
 
   return (
     <div className="space-y-6 animate-fade-in-up">
-      
       {/* Cockpit Top Header */}
       <div className="p-6 rounded-2xl border border-emerald-300/80 bg-gradient-to-br from-emerald-50/90 via-teal-50/60 to-slate-50/80 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-200/80 pb-3">
@@ -82,15 +114,21 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
                 </span>
               </div>
               <p className="text-xs text-slate-600 font-sans mt-0.5">
-                Simulate mass-balance bio-slurry fertilizer replacement, livestock fodder cycles, and 15-year bankable cash flows.
+                Simulate mass-balance bio-slurry fertilizer replacement, livestock fodder cycles, and 15-year bankable
+                cash flows.
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
             <div className="text-right">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">Unified Nexus Score</span>
-              <span className="text-xl font-extrabold text-emerald-950 font-outfit">{unified5PillarScorecard.compositeNexusBalanceScore} <span className="text-xs text-slate-500 font-normal">/ 100</span></span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 block">
+                Unified Nexus Score
+              </span>
+              <span className="text-xl font-extrabold text-emerald-950 font-outfit">
+                {unified5PillarScorecard.compositeNexusBalanceScore}{' '}
+                <span className="text-xs text-slate-500 font-normal">/ 100</span>
+              </span>
             </div>
             <div className="w-12 h-12 rounded-xl bg-slate-900 text-emerald-400 flex items-center justify-center font-extrabold text-xl font-mono shadow-2xs border border-slate-800">
               {unified5PillarScorecard.compositeNexusBalanceScore}
@@ -109,7 +147,9 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
                 <Sprout className="w-4 h-4 text-emerald-600" />
                 <span>Crop Area ({cropName})</span>
               </span>
-              <span className="font-mono font-bold text-emerald-900 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">{cropLandHa} ha</span>
+              <span className="font-mono font-bold text-emerald-900 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                {cropLandHa} ha
+              </span>
             </div>
             <input
               type="range"
@@ -133,7 +173,9 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
                 <Milk className="w-4 h-4 text-blue-600" />
                 <span>Dairy Herd</span>
               </span>
-              <span className="font-mono font-bold text-blue-900 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">{dairyHerdSize} Heads</span>
+              <span className="font-mono font-bold text-blue-900 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                {dairyHerdSize} Heads
+              </span>
             </div>
             <input
               type="range"
@@ -151,7 +193,9 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
               >
                 <span>{isBuffalo ? 'Murrah Buffalo (71%)' : 'Crossbred Cow'}</span>
               </button>
-              <span className="text-slate-500 font-mono">{(enterpriseProductionTotals.totalMilkLitersPerYear / 1000).toFixed(0)}k L/yr</span>
+              <span className="text-slate-500 font-mono">
+                {(enterpriseProductionTotals.totalMilkLitersPerYear / 1000).toFixed(0)}k L/yr
+              </span>
             </div>
           </div>
 
@@ -162,7 +206,9 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
                 <Fish className="w-4 h-4 text-cyan-600" />
                 <span>Fish Pond Area</span>
               </span>
-              <span className="font-mono font-bold text-cyan-900 bg-cyan-50 px-2 py-0.5 rounded border border-cyan-200">{aquaculturePondHa} ha</span>
+              <span className="font-mono font-bold text-cyan-900 bg-cyan-50 px-2 py-0.5 rounded border border-cyan-200">
+                {aquaculturePondHa} ha
+              </span>
             </div>
             <input
               type="range"
@@ -186,7 +232,9 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
                 <Flame className="w-4 h-4 text-amber-600" />
                 <span>Biogas Plants</span>
               </span>
-              <span className="font-mono font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">{biogasDigestersCount} Plants</span>
+              <span className="font-mono font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                {biogasDigestersCount} Plants
+              </span>
             </div>
             <input
               type="range"
@@ -210,23 +258,37 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
                 <Waves className="w-4 h-4 text-sky-600" />
                 <span>50m² Recharge Pond</span>
               </span>
-              <span className={`font-mono font-bold px-2 py-0.5 rounded text-[10px] ${
-                rechargePondEnabled ? 'bg-emerald-100 text-emerald-900 border border-emerald-300' : 'bg-slate-100 text-slate-500'
-              }`}>
+              <span
+                className={`font-mono font-bold px-2 py-0.5 rounded text-[10px] ${
+                  rechargePondEnabled
+                    ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                    : 'bg-slate-100 text-slate-500'
+                }`}
+              >
                 {rechargePondEnabled ? 'ACTIVE' : 'OFF'}
               </span>
             </div>
             <button
               onClick={() => setRechargePondEnabled(!rechargePondEnabled)}
               className={`w-full py-1.5 rounded-xl text-xs font-bold font-outfit transition-all cursor-pointer ${
-                rechargePondEnabled ? 'bg-emerald-700 text-white shadow-2xs hover:bg-emerald-800' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                rechargePondEnabled
+                  ? 'bg-emerald-700 text-white shadow-2xs hover:bg-emerald-800'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
               {rechargePondEnabled ? '✓ Restoring Groundwater' : 'Enable Recharge Pond'}
             </button>
             <div className="text-[10px] text-slate-500 font-mono text-center pt-1 border-t border-slate-100">
-              Aquifer Shift: <strong className={circularResourceFlows.netGroundwaterImpactCmPerYear >= 0 ? 'text-emerald-700' : 'text-rose-700'}>
-                {circularResourceFlows.netGroundwaterImpactCmPerYear > 0 ? `+${circularResourceFlows.netGroundwaterImpactCmPerYear}` : circularResourceFlows.netGroundwaterImpactCmPerYear} cm/yr
+              Aquifer Shift:{' '}
+              <strong
+                className={
+                  circularResourceFlows.netGroundwaterImpactCmPerYear >= 0 ? 'text-emerald-700' : 'text-rose-700'
+                }
+              >
+                {circularResourceFlows.netGroundwaterImpactCmPerYear > 0
+                  ? `+${circularResourceFlows.netGroundwaterImpactCmPerYear}`
+                  : circularResourceFlows.netGroundwaterImpactCmPerYear}{' '}
+                cm/yr
               </strong>
             </div>
           </div>
@@ -256,8 +318,12 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
               <span>🌾 Straw Residue</span>
               <span className="text-emerald-400">→ Fodder</span>
             </div>
-            <div className="text-lg font-bold text-white mt-1">{circularResourceFlows.cropResidueFodderTonsPerYear} Tons/yr</div>
-            <div className="text-[10px] text-slate-400 font-sans">Meets <strong>{circularResourceFlows.dairyFodderDemandMetPct}%</strong> of herd dry matter</div>
+            <div className="text-lg font-bold text-white mt-1">
+              {circularResourceFlows.cropResidueFodderTonsPerYear} Tons/yr
+            </div>
+            <div className="text-[10px] text-slate-400 font-sans">
+              Meets <strong>{circularResourceFlows.dairyFodderDemandMetPct}%</strong> of herd dry matter
+            </div>
           </div>
 
           {/* Loop 2: Dung to Biogas */}
@@ -266,8 +332,12 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
               <span>🐄 Animal Dung</span>
               <span className="text-amber-400">→ Biogas</span>
             </div>
-            <div className="text-lg font-bold text-amber-400 mt-1">{circularResourceFlows.lpgCylindersSavedPerYear} Cylinders</div>
-            <div className="text-[10px] text-slate-400 font-sans">Saved: <strong>NPR {circularResourceFlows.lpgCostSavingsNprPerYear.toLocaleString()}</strong>/yr</div>
+            <div className="text-lg font-bold text-amber-400 mt-1">
+              {circularResourceFlows.lpgCylindersSavedPerYear} Cylinders
+            </div>
+            <div className="text-[10px] text-slate-400 font-sans">
+              Saved: <strong>NPR {circularResourceFlows.lpgCostSavingsNprPerYear.toLocaleString()}</strong>/yr
+            </div>
           </div>
 
           {/* Loop 3: Bio-Slurry to Fertilizer */}
@@ -276,8 +346,16 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
               <span>🧪 Bio-Slurry</span>
               <span className="text-blue-400">→ Saves Urea</span>
             </div>
-            <div className="text-lg font-bold text-blue-400 mt-1">-{circularResourceFlows.chemicalFertilizerSubstituted.ureaBags50kgSaved} Bags</div>
-            <div className="text-[10px] text-slate-400 font-sans">Saved: <strong>NPR {circularResourceFlows.chemicalFertilizerSubstituted.fertilizerCostSavedNpr.toLocaleString()}</strong>/yr</div>
+            <div className="text-lg font-bold text-blue-400 mt-1">
+              -{circularResourceFlows.chemicalFertilizerSubstituted.ureaBags50kgSaved} Bags
+            </div>
+            <div className="text-[10px] text-slate-400 font-sans">
+              Saved:{' '}
+              <strong>
+                NPR {circularResourceFlows.chemicalFertilizerSubstituted.fertilizerCostSavedNpr.toLocaleString()}
+              </strong>
+              /yr
+            </div>
           </div>
 
           {/* Loop 4: Recharge Pond to Groundwater */}
@@ -286,10 +364,17 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
               <span>🌊 Recharge Pond</span>
               <span className="text-cyan-400">→ Aquifer</span>
             </div>
-            <div className={`text-lg font-bold mt-1 ${circularResourceFlows.netGroundwaterImpactCmPerYear >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-              {circularResourceFlows.netGroundwaterImpactCmPerYear >= 0 ? `+${circularResourceFlows.netGroundwaterImpactCmPerYear}` : circularResourceFlows.netGroundwaterImpactCmPerYear} cm/yr
+            <div
+              className={`text-lg font-bold mt-1 ${circularResourceFlows.netGroundwaterImpactCmPerYear >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}
+            >
+              {circularResourceFlows.netGroundwaterImpactCmPerYear >= 0
+                ? `+${circularResourceFlows.netGroundwaterImpactCmPerYear}`
+                : circularResourceFlows.netGroundwaterImpactCmPerYear}{' '}
+              cm/yr
             </div>
-            <div className="text-[10px] text-slate-400 font-sans">{rechargePondEnabled ? 'Aquifer Restored' : 'Depletion Warning'}</div>
+            <div className="text-[10px] text-slate-400 font-sans">
+              {rechargePondEnabled ? 'Aquifer Restored' : 'Depletion Warning'}
+            </div>
           </div>
 
           {/* Loop 5: Hoekstra Water Footprint */}
@@ -327,7 +412,8 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
               </h4>
             </div>
             <p className="text-xs text-slate-500 font-sans">
-              Calculated using standard 10% and 12% social discount rates for multilateral bankability (World Bank / ADB / ADBL).
+              Calculated using standard 10% and 12% social discount rates for multilateral bankability (World Bank / ADB
+              / ADBL).
             </p>
           </div>
 
@@ -353,31 +439,41 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 font-mono text-xs text-center">
           <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
             <div className="text-slate-500 font-sans text-xs">Initial Total CAPEX</div>
-            <div className="text-lg font-bold text-slate-900 mt-1">NPR {(discountedCashFlow15Years.initialTotalCapexNpr / 100000).toFixed(2)} Lakh</div>
+            <div className="text-lg font-bold text-slate-900 mt-1">
+              NPR {(discountedCashFlow15Years.initialTotalCapexNpr / 100000).toFixed(2)} Lakh
+            </div>
             <div className="text-[10px] text-slate-400 font-sans">Year 0 Assets</div>
           </div>
 
           <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200">
             <div className="text-emerald-800 font-sans text-xs">Net Present Value (NPV)</div>
-            <div className="text-lg font-bold text-emerald-950 mt-1">NPR {(discountedCashFlow15Years.netPresentValueNpr10Pct / 100000).toFixed(2)} Lakh</div>
+            <div className="text-lg font-bold text-emerald-950 mt-1">
+              NPR {(discountedCashFlow15Years.netPresentValueNpr10Pct / 100000).toFixed(2)} Lakh
+            </div>
             <div className="text-[10px] text-emerald-700 font-sans">@ 10% Discount</div>
           </div>
 
           <div className="p-4 bg-blue-50 rounded-2xl border border-blue-200">
             <div className="text-blue-800 font-sans text-xs">Economic IRR (EIRR)</div>
-            <div className="text-xl font-extrabold text-blue-950 mt-1">{discountedCashFlow15Years.economicInternalRateOfReturnEIRR}%</div>
+            <div className="text-xl font-extrabold text-blue-950 mt-1">
+              {discountedCashFlow15Years.economicInternalRateOfReturnEIRR}%
+            </div>
             <div className="text-[10px] text-blue-700 font-sans">Benchmark: &gt; 12%</div>
           </div>
 
           <div className="p-4 bg-purple-50 rounded-2xl border border-purple-200">
             <div className="text-purple-800 font-sans text-xs">Benefit-Cost Ratio (BCR)</div>
-            <div className="text-xl font-extrabold text-purple-950 mt-1">{discountedCashFlow15Years.benefitCostRatioBCR}x</div>
+            <div className="text-xl font-extrabold text-purple-950 mt-1">
+              {discountedCashFlow15Years.benefitCostRatioBCR}x
+            </div>
             <div className="text-[10px] text-purple-700 font-sans">High Commercial Viability</div>
           </div>
 
           <div className="p-4 bg-amber-50 rounded-2xl border border-amber-200 col-span-2 sm:col-span-1">
             <div className="text-amber-800 font-sans text-xs">Payback Period</div>
-            <div className="text-xl font-extrabold text-amber-950 mt-1">{discountedCashFlow15Years.paybackPeriodYears} <span className="text-xs font-normal">Years</span></div>
+            <div className="text-xl font-extrabold text-amber-950 mt-1">
+              {discountedCashFlow15Years.paybackPeriodYears} <span className="text-xs font-normal">Years</span>
+            </div>
             <div className="text-[10px] text-amber-700 font-sans">Rapid Capital Amortization</div>
           </div>
         </div>
@@ -401,14 +497,24 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
                 {discountedCashFlow15Years.cashFlowSchedule.map((c) => (
                   <tr key={c.year} className={`hover:bg-slate-50 ${c.year === 0 ? 'bg-slate-50/50 font-bold' : ''}`}>
                     <td className="p-2.5 text-center font-bold font-sans">Yr {c.year}</td>
-                    <td className="p-2.5 text-right text-rose-700">{c.capexNpr > 0 ? `-${c.capexNpr.toLocaleString()}` : '-'}</td>
-                    <td className="p-2.5 text-right text-slate-800">{c.grossRevenueNpr > 0 ? c.grossRevenueNpr.toLocaleString() : '-'}</td>
-                    <td className="p-2.5 text-right text-slate-500">{c.opexNpr > 0 ? `-${c.opexNpr.toLocaleString()}` : '-'}</td>
-                    <td className={`p-2.5 text-right font-bold ${c.netCashFlowNpr >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>
+                    <td className="p-2.5 text-right text-rose-700">
+                      {c.capexNpr > 0 ? `-${c.capexNpr.toLocaleString()}` : '-'}
+                    </td>
+                    <td className="p-2.5 text-right text-slate-800">
+                      {c.grossRevenueNpr > 0 ? c.grossRevenueNpr.toLocaleString() : '-'}
+                    </td>
+                    <td className="p-2.5 text-right text-slate-500">
+                      {c.opexNpr > 0 ? `-${c.opexNpr.toLocaleString()}` : '-'}
+                    </td>
+                    <td
+                      className={`p-2.5 text-right font-bold ${c.netCashFlowNpr >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}
+                    >
                       {c.netCashFlowNpr.toLocaleString()}
                     </td>
                     <td className="p-2.5 text-right text-blue-700">{c.discountedCashFlow10Pct.toLocaleString()}</td>
-                    <td className={`p-2.5 text-right font-bold ${c.cumulativeCashFlowNpr >= 0 ? 'text-emerald-700' : 'text-slate-500'}`}>
+                    <td
+                      className={`p-2.5 text-right font-bold ${c.cumulativeCashFlowNpr >= 0 ? 'text-emerald-700' : 'text-slate-500'}`}
+                    >
                       {c.cumulativeCashFlowNpr.toLocaleString()}
                     </td>
                   </tr>
@@ -418,7 +524,6 @@ export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps>
           </div>
         )}
       </div>
-
     </div>
   );
 };

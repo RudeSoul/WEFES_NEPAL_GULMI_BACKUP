@@ -23,16 +23,18 @@ This document establishes the architecture rules, code organization patterns, fi
 
 To maintain high readability, maintainability, and testability, strict line-of-code (LOC) limits are enforced across the repository:
 
-| File Type | Target LOC | Hard Maximum Limit | Action Required When Exceeded |
-|---|:---:|:---:|---|
-| **React UI Components (`.tsx`)** | 100 – 250 lines | **350 lines** | Split into sub-components in a local `components/` or `tabs/` directory. |
-| **Domain Engine Models (`.ts`)** | 150 – 300 lines | **400 lines** | Decompose into sub-domain calculations under a feature sub-folder. |
-| **API Services & Controllers (`.ts`)** | 80 – 200 lines | **300 lines** | Separate controller handlers and business service logic. |
-| **Custom Hooks (`use*.ts`)** | 50 – 150 lines | **200 lines** | Separate data fetching, state management, and side effects. |
-| **Types & Interfaces (`.ts`)** | 50 – 200 lines | **250 lines** | Group into domain-specific type files. |
+| File Type                              |   Target LOC    | Hard Maximum Limit | Action Required When Exceeded                                            |
+| -------------------------------------- | :-------------: | :----------------: | ------------------------------------------------------------------------ |
+| **React UI Components (`.tsx`)**       | 100 – 250 lines |   **350 lines**    | Split into sub-components in a local `components/` or `tabs/` directory. |
+| **Domain Engine Models (`.ts`)**       | 150 – 300 lines |   **400 lines**    | Decompose into sub-domain calculations under a feature sub-folder.       |
+| **API Services & Controllers (`.ts`)** | 80 – 200 lines  |   **300 lines**    | Separate controller handlers and business service logic.                 |
+| **Custom Hooks (`use*.ts`)**           | 50 – 150 lines  |   **200 lines**    | Separate data fetching, state management, and side effects.              |
+| **Types & Interfaces (`.ts`)**         | 50 – 200 lines  |   **250 lines**    | Group into domain-specific type files.                                   |
 
 ### Decomposition Pattern
+
 When a component or service grows beyond 350 lines:
+
 ```
 feature-name/
 ├── components/                    # Focused sub-components (≤ 250 lines each)
@@ -83,6 +85,7 @@ feature-name/
      - `POST /api/v1/nexus/calculate`
 
 2. **Standardized Response Envelope**:
+
    ```json
    {
      "success": true,
@@ -109,6 +112,7 @@ feature-name/
 ## 5. Quality Assurance & Pre-Commit Checklist
 
 Before committing or pushing any changes, verify:
+
 - [ ] `pnpm turbo run build` passes with **0 errors**.
 - [ ] No single `.tsx` component exceeds **350 lines**.
 - [ ] All new calculations are added to `@wefes/wefes-engine`.

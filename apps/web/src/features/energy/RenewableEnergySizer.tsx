@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
-import { Zap, Sun, Droplets, Flame, Sparkles, TrendingUp, Calculator, ShieldCheck, BatteryCharging, Leaf } from 'lucide-react';
+import {
+  Zap,
+  Sun,
+  Droplets,
+  Flame,
+  Sparkles,
+  TrendingUp,
+  Calculator,
+  ShieldCheck,
+  BatteryCharging,
+  Leaf,
+} from 'lucide-react';
 import { DISTRICT_PALIKAS } from '../../data/districtPalikaAssets';
 
 interface RenewableEnergySizerProps {
   lang?: 'en' | 'np';
 }
 
-export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
-  lang = 'en',
-}) => {
+export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({ lang = 'en' }) => {
   const [selectedPalikaName, setSelectedPalikaName] = useState<string>('Resunga');
   const [systemType, setSystemType] = useState<'solar' | 'hydro' | 'cooking'>('solar');
 
@@ -24,7 +33,7 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
   const [householdTransitionCount, setHouseholdTransitionCount] = useState<number>(250); // Households
 
   const gulmiPalikas = DISTRICT_PALIKAS.gulmi || [];
-  const currentPalika = gulmiPalikas.find(p => p.name === selectedPalikaName) || gulmiPalikas[0];
+  const currentPalika = gulmiPalikas.find((p) => p.name === selectedPalikaName) || gulmiPalikas[0];
 
   // Calculations
   // 1. Solar: Annual kWh = kWp * solarHours * 365 * 0.78 (Performance Ratio)
@@ -54,7 +63,11 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
           </div>
           <div>
             <h3 className="text-sm font-bold text-slate-900 font-outfit uppercase tracking-wide flex items-center gap-2">
-              <span>{lang === 'np' ? 'नवीकरणीय ऊर्जा तथा स्वच्छ चुलो रूपान्तरण क्यालकुलेटर' : 'Renewable Energy Sizing & Clean Cooking Transition Tool'}</span>
+              <span>
+                {lang === 'np'
+                  ? 'नवीकरणीय ऊर्जा तथा स्वच्छ चुलो रूपान्तरण क्यालकुलेटर'
+                  : 'Renewable Energy Sizing & Clean Cooking Transition Tool'}
+              </span>
               <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-mono font-bold">
                 NASA POWER & NEA Specs
               </span>
@@ -72,10 +85,10 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
           <span className="text-slate-600 font-medium">Palika:</span>
           <select
             value={selectedPalikaName}
-            onChange={e => setSelectedPalikaName(e.target.value)}
+            onChange={(e) => setSelectedPalikaName(e.target.value)}
             className="bg-transparent font-bold text-slate-900 cursor-pointer focus:outline-none"
           >
-            {gulmiPalikas.map(p => (
+            {gulmiPalikas.map((p) => (
               <option key={p.id} value={p.name}>
                 {p.name} ({p.elevation}m)
               </option>
@@ -130,7 +143,9 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
             <div>
               <label className="text-[11px] font-bold text-slate-800 block mb-1 flex items-center justify-between">
                 <span>Installed Solar PV Capacity (kWp):</span>
-                <span className="text-amber-800 font-mono font-bold bg-amber-100 px-2 py-0.5 rounded">{rooftopKw} kWp</span>
+                <span className="text-amber-800 font-mono font-bold bg-amber-100 px-2 py-0.5 rounded">
+                  {rooftopKw} kWp
+                </span>
               </label>
               <input
                 type="range"
@@ -138,7 +153,7 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
                 max={100}
                 step={1}
                 value={rooftopKw}
-                onChange={e => setRooftopKw(Number(e.target.value))}
+                onChange={(e) => setRooftopKw(Number(e.target.value))}
                 className="w-full accent-amber-600 cursor-pointer"
               />
               <div className="flex justify-between text-[9px] text-slate-500 font-mono mt-0.5">
@@ -151,7 +166,9 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
             <div>
               <label className="text-[11px] font-bold text-slate-800 block mb-1 flex items-center justify-between">
                 <span>NASA POWER Solar Insolation (kWh/m²/day):</span>
-                <span className="text-amber-800 font-mono font-bold bg-amber-100 px-2 py-0.5 rounded">{solarHours} kWh/m²/d</span>
+                <span className="text-amber-800 font-mono font-bold bg-amber-100 px-2 py-0.5 rounded">
+                  {solarHours} kWh/m²/d
+                </span>
               </label>
               <input
                 type="range"
@@ -159,7 +176,7 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
                 max={5.8}
                 step={0.1}
                 value={solarHours}
-                onChange={e => setSolarHours(Number(e.target.value))}
+                onChange={(e) => setSolarHours(Number(e.target.value))}
                 className="w-full accent-amber-600 cursor-pointer"
               />
               <div className="flex justify-between text-[9px] text-slate-500 font-mono mt-0.5">
@@ -174,7 +191,9 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
             <div className="p-3 bg-white rounded-xl border border-amber-200">
               <div className="text-[10px] text-slate-500 font-medium">Annual Clean Generation</div>
-              <div className="text-xl font-black text-amber-900 font-mono mt-0.5">{annualSolarKwh.toLocaleString()}</div>
+              <div className="text-xl font-black text-amber-900 font-mono mt-0.5">
+                {annualSolarKwh.toLocaleString()}
+              </div>
               <div className="text-[9px] text-slate-400 font-mono">kWh/year</div>
             </div>
 
@@ -192,7 +211,9 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
 
             <div className="p-3 bg-white rounded-xl border border-amber-200">
               <div className="text-[10px] text-slate-500 font-medium">Estimated CAPEX</div>
-              <div className="text-xl font-black text-slate-900 font-mono mt-0.5">NPR {(solarEstimatedCostNpr / 100000).toFixed(1)}L</div>
+              <div className="text-xl font-black text-slate-900 font-mono mt-0.5">
+                NPR {(solarEstimatedCostNpr / 100000).toFixed(1)}L
+              </div>
               <div className="text-[9px] text-slate-400 font-mono">~4.8 yr Payback</div>
             </div>
           </div>
@@ -206,7 +227,9 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
             <div>
               <label className="text-[11px] font-bold text-slate-800 block mb-1 flex items-center justify-between">
                 <span>Design Stream Discharge ($Q$):</span>
-                <span className="text-purple-800 font-mono font-bold bg-purple-100 px-2 py-0.5 rounded">{streamFlowLps} L/s</span>
+                <span className="text-purple-800 font-mono font-bold bg-purple-100 px-2 py-0.5 rounded">
+                  {streamFlowLps} L/s
+                </span>
               </label>
               <input
                 type="range"
@@ -214,7 +237,7 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
                 max={500}
                 step={10}
                 value={streamFlowLps}
-                onChange={e => setStreamFlowLps(Number(e.target.value))}
+                onChange={(e) => setStreamFlowLps(Number(e.target.value))}
                 className="w-full accent-purple-600 cursor-pointer"
               />
               <div className="flex justify-between text-[9px] text-slate-500 font-mono mt-0.5">
@@ -227,7 +250,9 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
             <div>
               <label className="text-[11px] font-bold text-slate-800 block mb-1 flex items-center justify-between">
                 <span>Gross Hydraulic Head ($H$):</span>
-                <span className="text-purple-800 font-mono font-bold bg-purple-100 px-2 py-0.5 rounded">{hydraulicHeadM} Meters</span>
+                <span className="text-purple-800 font-mono font-bold bg-purple-100 px-2 py-0.5 rounded">
+                  {hydraulicHeadM} Meters
+                </span>
               </label>
               <input
                 type="range"
@@ -235,7 +260,7 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
                 max={150}
                 step={5}
                 value={hydraulicHeadM}
-                onChange={e => setHydraulicHeadM(Number(e.target.value))}
+                onChange={(e) => setHydraulicHeadM(Number(e.target.value))}
                 className="w-full accent-purple-600 cursor-pointer"
               />
               <div className="flex justify-between text-[9px] text-slate-500 font-mono mt-0.5">
@@ -256,7 +281,9 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
 
             <div className="p-3 bg-white rounded-xl border border-purple-200">
               <div className="text-[10px] text-slate-500 font-medium">Annual Hydro Generation</div>
-              <div className="text-xl font-black text-slate-900 font-mono mt-0.5">{annualHydroKwh.toLocaleString()}</div>
+              <div className="text-xl font-black text-slate-900 font-mono mt-0.5">
+                {annualHydroKwh.toLocaleString()}
+              </div>
               <div className="text-[9px] text-slate-400 font-mono">kWh / year</div>
             </div>
 
@@ -281,7 +308,9 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
           <div className="bg-emerald-50/50 p-3 rounded-xl border border-emerald-200">
             <label className="text-[11px] font-bold text-slate-800 block mb-1 flex items-center justify-between">
               <span>Target Household Induction Transition Count:</span>
-              <span className="text-emerald-800 font-mono font-bold bg-emerald-100 px-2 py-0.5 rounded">{householdTransitionCount} Households</span>
+              <span className="text-emerald-800 font-mono font-bold bg-emerald-100 px-2 py-0.5 rounded">
+                {householdTransitionCount} Households
+              </span>
             </label>
             <input
               type="range"
@@ -289,7 +318,7 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
               max={2500}
               step={50}
               value={householdTransitionCount}
-              onChange={e => setHouseholdTransitionCount(Number(e.target.value))}
+              onChange={(e) => setHouseholdTransitionCount(Number(e.target.value))}
               className="w-full accent-emerald-600 cursor-pointer"
             />
             <div className="flex justify-between text-[9px] text-slate-500 font-mono mt-0.5">
@@ -303,7 +332,9 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
             <div className="p-3 bg-white rounded-xl border border-emerald-200">
               <div className="text-[10px] text-slate-500 font-medium">Firewood Displaced</div>
-              <div className="text-xl font-black text-emerald-900 font-mono mt-0.5">{firewoodDisplacedTons.toLocaleString()}</div>
+              <div className="text-xl font-black text-emerald-900 font-mono mt-0.5">
+                {firewoodDisplacedTons.toLocaleString()}
+              </div>
               <div className="text-[9px] text-slate-400 font-mono">Tons / year</div>
             </div>
 
@@ -315,7 +346,9 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({
 
             <div className="p-3 bg-white rounded-xl border border-emerald-200">
               <div className="text-[10px] text-slate-500 font-medium">Greenhouse Gas Offset</div>
-              <div className="text-xl font-black text-emerald-800 font-mono mt-0.5">{cookingCo2OffsetTons.toLocaleString()}</div>
+              <div className="text-xl font-black text-emerald-800 font-mono mt-0.5">
+                {cookingCo2OffsetTons.toLocaleString()}
+              </div>
               <div className="text-[9px] text-emerald-600 font-mono">tCO₂e / year</div>
             </div>
 

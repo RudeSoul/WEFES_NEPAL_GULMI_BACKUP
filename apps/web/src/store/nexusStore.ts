@@ -10,9 +10,7 @@ export interface NexusState {
   selectedMapCropId: string | null;
   setSelectedPillar: (pillar: WEFESPillar) => void;
   setSubFilter: (key: string, value: string) => void;
-  setSubFilters: (
-    filters: Record<string, string> | ((prev: Record<string, string>) => Record<string, string>)
-  ) => void;
+  setSubFilters: (filters: Record<string, string> | ((prev: Record<string, string>) => Record<string, string>)) => void;
   setSelectedMapCropId: (cropId: string | null) => void;
   resetFilters: () => void;
 
@@ -83,10 +81,7 @@ export const useNexusStore = create<NexusState>()(
 
       setSubFilters: (updater) => {
         set((state) => {
-          const next =
-            typeof updater === 'function'
-              ? updater(state.subFilters)
-              : { ...state.subFilters, ...updater };
+          const next = typeof updater === 'function' ? updater(state.subFilters) : { ...state.subFilters, ...updater };
           let nextCropId = state.selectedMapCropId;
 
           if (next.crop !== undefined) {
@@ -144,8 +139,7 @@ export const useNexusStore = create<NexusState>()(
         })),
       setShowPalikaLabels: (updater) =>
         set((state) => ({
-          showPalikaLabels:
-            typeof updater === 'function' ? updater(state.showPalikaLabels) : updater,
+          showPalikaLabels: typeof updater === 'function' ? updater(state.showPalikaLabels) : updater,
         })),
 
       // Climate Cache

@@ -14,10 +14,10 @@ import { PALIKA_CENTROIDS } from '../../data/districtPalikaAssets';
 const RAINFALL_COLOR_RAMP: [number, number, number][] = [
   [254, 215, 170], // #fed7aa - Low valley
   [253, 186, 116], // #fdba74 - Warm subtropical
-  [56, 189, 248],  // #38bdf8 - Lower mid-hills
-  [2, 132, 199],   // #0284c7 - Central mid-hills
-  [3, 105, 161],   // #0369a1 - Upper ridge
-  [30, 58, 138],   // #1e3a8a - Peak high mountain ridge
+  [56, 189, 248], // #38bdf8 - Lower mid-hills
+  [2, 132, 199], // #0284c7 - Central mid-hills
+  [3, 105, 161], // #0369a1 - Upper ridge
+  [30, 58, 138], // #1e3a8a - Peak high mountain ridge
 ];
 
 function interpolateRgb(factor: number): [number, number, number] {
@@ -49,8 +49,7 @@ function isPointInPolygon(point: [number, number], vs: number[][][]): boolean {
       const xj = ring[j][0];
       const yj = ring[j][1];
 
-      const intersect = ((yi > y) !== (yj > y)) &&
-        (x < ((xj - xi) * (y - yi)) / (yj - yi) + xi);
+      const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
       if (intersect) inside = !inside;
     }
   }
@@ -171,9 +170,7 @@ export const SpatialRainfallSurfaceOverlay: React.FC<SpatialRainfallSurfaceOverl
           weightedFactor += weight * sample.rainFactor;
         }
 
-        const interpolatedFactor = exactMatch !== null
-          ? exactMatch
-          : weightedFactor / weightSum;
+        const interpolatedFactor = exactMatch !== null ? exactMatch : weightedFactor / weightSum;
 
         // Normalize factor [0.82, 1.25] -> [0, 1]
         const norm = (interpolatedFactor - minFactor) / (maxFactor - minFactor);
@@ -192,13 +189,5 @@ export const SpatialRainfallSurfaceOverlay: React.FC<SpatialRainfallSurfaceOverl
 
   if (!dataUrl) return null;
 
-  return (
-    <ImageOverlay
-      bounds={bounds}
-      url={dataUrl}
-      opacity={opacity}
-      pane="rainfallPane"
-      zIndex={340}
-    />
-  );
+  return <ImageOverlay bounds={bounds} url={dataUrl} opacity={opacity} pane="rainfallPane" zIndex={340} />;
 };

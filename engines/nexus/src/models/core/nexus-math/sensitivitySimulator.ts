@@ -11,7 +11,13 @@ export function simulateSensitivity(
   }
 ): SensitivitySimulationResult {
   const baseWaterStress = output.water.waterStressIndex;
-  const waterStressShift = Math.max(5, Math.min(100, Math.round(baseWaterStress * (1 - shifts.rainfallShiftPct / 100) * (1 - shifts.solarAdoptionShiftPct / 200))));
+  const waterStressShift = Math.max(
+    5,
+    Math.min(
+      100,
+      Math.round(baseWaterStress * (1 - shifts.rainfallShiftPct / 100) * (1 - shifts.solarAdoptionShiftPct / 200))
+    )
+  );
 
   const baseLaborDays = output.socioeconomics.laborDays;
   const distWage = 760;
@@ -29,10 +35,10 @@ export function simulateSensitivity(
   const simulatedNetMarginPct = Math.round((netRevenue / Math.max(1, grossRevenue)) * 100);
 
   const rawDelta =
-    (shifts.rainfallShiftPct * 0.18) -
-    (shifts.wageShiftPct * 0.22) -
-    (shifts.tariffShiftPct * 0.12) +
-    (shifts.solarAdoptionShiftPct * 0.35);
+    shifts.rainfallShiftPct * 0.18 -
+    shifts.wageShiftPct * 0.22 -
+    shifts.tariffShiftPct * 0.12 +
+    shifts.solarAdoptionShiftPct * 0.35;
 
   const scoreDelta = Number(rawDelta.toFixed(1));
   const simulatedScore = Math.max(5, Math.min(100, Math.round(output.nexusBalanceIndex + scoreDelta)));
@@ -67,7 +73,7 @@ export function computePortfolioMix(
     output.socioeconomics.grossRevenueNpr * (normPrimary * 1.0 + normSecondary * 0.75 + normTertiary * 1.65)
   );
 
-  const dietaryDiversityScore = Math.min(100, Math.round(55 + (normSecondary * 25) + (normTertiary * 20)));
+  const dietaryDiversityScore = Math.min(100, Math.round(55 + normSecondary * 25 + normTertiary * 20));
   const incomeStabilityIndex = Math.min(100, Math.round(50 + (1 - Math.abs(normPrimary - 0.5)) * 40));
   const riskReductionPct = Math.round(normSecondary * 22 + normTertiary * 28);
 
@@ -75,8 +81,8 @@ export function computePortfolioMix(
     100,
     Math.round(
       output.nexusBalanceIndex * normPrimary +
-      (output.nexusBalanceIndex + 14) * normSecondary +
-      (output.nexusBalanceIndex + 18) * normTertiary
+        (output.nexusBalanceIndex + 14) * normSecondary +
+        (output.nexusBalanceIndex + 18) * normTertiary
     )
   );
 
@@ -89,4 +95,3 @@ export function computePortfolioMix(
     riskReductionPct,
   };
 }
-

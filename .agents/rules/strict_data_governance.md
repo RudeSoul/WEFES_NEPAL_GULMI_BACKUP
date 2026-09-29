@@ -1,9 +1,13 @@
 # Scientific Data Governance & Absolute Ground-Truth Rules
+
 # ==============================================================================
+
 # MANDATORY COMPLIANCE FOR ALL AI AGENTS AND DEVELOPERS OPERATING IN THIS REPO
+
 # ==============================================================================
 
 ## 1. ABSOLUTE ZERO-FABRICATION IN `data/real/`
+
 - **Strict Prohibition**: Under NO CIRCUMSTANCES shall an agent create, mock, estimate, or synthesize data records inside `data/real/`.
 - `data/real/` is an **IMMUTABLE, READ-ONLY** tier reserved exclusively for official government records from recognized sovereign agencies:
   - Department of Hydrology and Meteorology (DHM)
@@ -19,13 +23,16 @@
 ---
 
 ## 2. PHYSICAL DISK VERIFICATION REQUIREMENT
+
 - Every file path cited in `dataSourceCitation`, in-code provenance blocks (`// [DATA PROVENANCE]`), or API endpoints MUST be verified to physically exist on disk before writing or committing code.
 - Never assume a file exists based on markdown examples, comments, or documentation. Check with `ls` or `test -f`.
 
 ---
 
 ## 3. TRI-TIER DATA CLASSIFICATION DISCIPLINE
+
 Data must strictly reside in its proper tier:
+
 1. `data/real/` [Confidence: HIGH / REAL]:
    - Raw observed records, official census tables, verified hydrometric gauge records.
 2. `data/calculated/` [Confidence: CALCULATED]:
@@ -38,17 +45,20 @@ Data must strictly reside in its proper tier:
 ---
 
 ## 4. ZERO INWARD IMPORTS (ENGINE ISOLATION)
+
 - Code under `engines/` must NEVER import anything from `apps/web/` or `apps/api/`.
 - Scientific engines are headless, autonomous core libraries.
 
 ---
 
 ## 5. ZERO HARDCODED CONSTANTS
+
 - Hardcoding scientific numbers, geographical coordinates, percentages, crop parameters, tariff estimates, or indicator thresholds inside application code (`.ts`, `.tsx`, `.py`) is strictly forbidden.
 - All domain parameters must be loaded from canonical files in `data/`.
 
 ---
 
 ## 6. GIT HYGIENE & ATOMIC COMMITS
+
 - Commits should be logically coherent units of change with all related files committed together.
 - Never push directly to `main`. Always work on dedicated feature branches.

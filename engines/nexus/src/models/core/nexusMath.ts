@@ -3,7 +3,12 @@ import { DeepNexusAnalysis, CropCalendarMonth } from './nexus-math/nexusMathType
 import { computeSynergiesAndTradeoffs } from './nexus-math/synergyTradeoffEvaluator';
 import { computeCouplingMatrix, computeInterventions } from './nexus-math/couplingMatrixEngine';
 import { computeNaturalCapital, computeSdgAlignments } from './nexus-math/naturalCapitalSdgEngine';
-import { computeBasinCascade, computeIpccVulnerability, computeRusle, computeSpringshed } from './nexus-math/basinRusleEngine';
+import {
+  computeBasinCascade,
+  computeIpccVulnerability,
+  computeRusle,
+  computeSpringshed,
+} from './nexus-math/basinRusleEngine';
 import { computeGesi, computePhenology, computeImportSubstitution } from './nexus-math/gesiPhenologyEngine';
 
 export * from './nexus-math/nexusMathTypes';
@@ -37,7 +42,7 @@ export function computeDeepNexusAnalysis(output: WEFESOutput): DeepNexusAnalysis
   const sumScores = values.reduce((a, b) => a + b, 0);
 
   // 2. Shannon Entropy Equitability Index H / ln(5)
-  const p = values.map(v => v / Math.max(1, sumScores));
+  const p = values.map((v) => v / Math.max(1, sumScores));
   const shannonH = -p.reduce((acc, pi) => (pi > 0 ? acc + pi * Math.log(pi) : acc), 0);
   const shannonEntropy = Number((shannonH / Math.log(5)).toFixed(3));
 
@@ -75,15 +80,41 @@ export function computeDeepNexusAnalysis(output: WEFESOutput): DeepNexusAnalysis
     totalProjectInvestmentNpr: 247900000,
     baselineSiloedCostUsd: 2600000,
     incrementalCostUsd: 750000,
-    incrementalCostRationale: 'Integrated solar micro-drip and watershed springshed protection creates 2.8x higher multi-pillar resilience than isolated infrastructure.',
+    incrementalCostRationale:
+      'Integrated solar micro-drip and watershed springshed protection creates 2.8x higher multi-pillar resilience than isolated infrastructure.',
     incrementalBenefitMultiplier: 2.8,
     directBeneficiariesTotal: 14200,
     gcfScorecard: [
-      { criterion: 'Climate Impact Potential', score: 9.2, maxScore: 10, rationale: 'Directly addresses HKH mountain water stress and carbon sequestration.' },
-      { criterion: 'Paradigm Shift Potential', score: 8.8, maxScore: 10, rationale: 'Scalable municipal micro-drip & bioeconomy model across Lumbini Province.' },
-      { criterion: 'Sustainable Development Potential', score: 9.5, maxScore: 10, rationale: 'Enhances female smallholder income and reduces fertilizer imports.' },
-      { criterion: 'Country Ownership & Alignment', score: 9.0, maxScore: 10, rationale: 'Fully aligned with Nepal National Adaptation Plan (NAP 2021-2050).' },
-      { criterion: 'Financial & Economic Hurdle', score: 8.9, maxScore: 10, rationale: 'EIRR of 24.8% exceeds the 10% social discount rate requirement.' },
+      {
+        criterion: 'Climate Impact Potential',
+        score: 9.2,
+        maxScore: 10,
+        rationale: 'Directly addresses HKH mountain water stress and carbon sequestration.',
+      },
+      {
+        criterion: 'Paradigm Shift Potential',
+        score: 8.8,
+        maxScore: 10,
+        rationale: 'Scalable municipal micro-drip & bioeconomy model across Lumbini Province.',
+      },
+      {
+        criterion: 'Sustainable Development Potential',
+        score: 9.5,
+        maxScore: 10,
+        rationale: 'Enhances female smallholder income and reduces fertilizer imports.',
+      },
+      {
+        criterion: 'Country Ownership & Alignment',
+        score: 9.0,
+        maxScore: 10,
+        rationale: 'Fully aligned with Nepal National Adaptation Plan (NAP 2021-2050).',
+      },
+      {
+        criterion: 'Financial & Economic Hurdle',
+        score: 8.9,
+        maxScore: 10,
+        rationale: 'EIRR of 24.8% exceeds the 10% social discount rate requirement.',
+      },
     ],
   };
 
@@ -148,7 +179,13 @@ export function computeDeepNexusAnalysis(output: WEFESOutput): DeepNexusAnalysis
       status: isMonsoon ? 'Surplus Rain' : idx >= 1 && idx <= 4 ? 'Deficit Irrigation Required' : 'Moderate Moisture',
       irrigationDeficitMm: isMonsoon ? 0 : 35,
       riskAlert: idx === 3 ? 'Spring Drought Alert' : undefined,
-      activity: isMonsoon ? 'Monsoon Growth' : isPlanting ? 'Sowing & Field Prep' : isHarvest ? 'Harvesting' : 'Maintenance',
+      activity: isMonsoon
+        ? 'Monsoon Growth'
+        : isPlanting
+          ? 'Sowing & Field Prep'
+          : isHarvest
+            ? 'Harvesting'
+            : 'Maintenance',
       activityStage: isMonsoon ? 'Vegetative / Reproductive' : isHarvest ? 'Maturity' : 'Fallow / Dormant',
       growthStage: isMonsoon ? 'Vegetative / Reproductive' : isHarvest ? 'Maturity' : 'Fallow / Dormant',
     };
@@ -180,7 +217,8 @@ export function computeDeepNexusAnalysis(output: WEFESOutput): DeepNexusAnalysis
   if (score >= 78) {
     systemicState = {
       title: 'Optimal Multi-Pillar Harmony',
-      description: 'System is operating near the Pareto frontier with balanced resource circularity and minimal inter-pillar friction.',
+      description:
+        'System is operating near the Pareto frontier with balanced resource circularity and minimal inter-pillar friction.',
       badgeBg: 'bg-emerald-100',
       color: 'text-emerald-900',
       badgeBorder: 'border-emerald-300',
@@ -188,7 +226,8 @@ export function computeDeepNexusAnalysis(output: WEFESOutput): DeepNexusAnalysis
   } else if (score >= 60) {
     systemicState = {
       title: 'Moderate Nexus Balance with Manageable Trade-offs',
-      description: 'Co-benefits outweigh resource conflicts, but targeted policy intervention is recommended to buffer dry-season stress.',
+      description:
+        'Co-benefits outweigh resource conflicts, but targeted policy intervention is recommended to buffer dry-season stress.',
       badgeBg: 'bg-sky-100',
       color: 'text-sky-900',
       badgeBorder: 'border-sky-300',
@@ -196,7 +235,8 @@ export function computeDeepNexusAnalysis(output: WEFESOutput): DeepNexusAnalysis
   } else {
     systemicState = {
       title: 'Asymmetric Sectoral Tension (Bottleneck Alert)',
-      description: 'Severe inter-pillar imbalance detected. High extraction rates or economic deficit threaten long-term resource sustainability.',
+      description:
+        'Severe inter-pillar imbalance detected. High extraction rates or economic deficit threaten long-term resource sustainability.',
       badgeBg: 'bg-rose-100',
       color: 'text-rose-900',
       badgeBorder: 'border-rose-300',

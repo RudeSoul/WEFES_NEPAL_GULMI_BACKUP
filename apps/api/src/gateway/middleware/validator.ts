@@ -12,7 +12,7 @@ export function validateBody(schema: ZodSchema) {
           success: false,
           statusCode: 400,
           error: 'Validation failed',
-          details: error.errors.map(e => ({ field: e.path.join('.'), message: e.message })),
+          details: error.errors.map((e) => ({ field: e.path.join('.'), message: e.message })),
           timestamp: new Date().toISOString(),
         });
       }

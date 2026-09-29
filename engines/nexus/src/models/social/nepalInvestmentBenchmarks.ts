@@ -7,7 +7,11 @@ import rawBenchmarks from '../../../../../data/real/socioeconomics/nepal_investm
 
 export interface NepalProjectFinancialBenchmark {
   commodity: string;
-  sourceProject: 'World Bank REED (Rural Enterprise & Economic Development)' | 'USAID Feed the Future (FtF)' | 'IFAD AAFIS' | 'NARC Commercial Trial';
+  sourceProject:
+    | 'World Bank REED (Rural Enterprise & Economic Development)'
+    | 'USAID Feed the Future (FtF)'
+    | 'IFAD AAFIS'
+    | 'NARC Commercial Trial';
   agroDomain: string;
   economicInternalRateOfReturnEIRR: number;
   financialNPVNpr: number;
@@ -19,14 +23,14 @@ export interface NepalProjectFinancialBenchmark {
   verifiedFieldReference: string;
 }
 
-export const NEPAL_FINANCIAL_BENCHMARKS: NepalProjectFinancialBenchmark[] = rawBenchmarks as NepalProjectFinancialBenchmark[];
+export const NEPAL_FINANCIAL_BENCHMARKS: NepalProjectFinancialBenchmark[] =
+  rawBenchmarks as NepalProjectFinancialBenchmark[];
 
 export function getBenchmarkByCrop(cropName: string): NepalProjectFinancialBenchmark {
   const norm = cropName.toLowerCase();
-  const found = NEPAL_FINANCIAL_BENCHMARKS.find(b => {
+  const found = NEPAL_FINANCIAL_BENCHMARKS.find((b) => {
     const c = b.commodity.toLowerCase();
     return norm.includes(c) || c.includes(norm) || (norm.includes('rice') && c.includes('paddy'));
   });
   return found || NEPAL_FINANCIAL_BENCHMARKS[0];
 }
-

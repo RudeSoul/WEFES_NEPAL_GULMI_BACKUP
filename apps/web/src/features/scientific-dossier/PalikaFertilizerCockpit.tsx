@@ -1,14 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import {
-  WEFESOutput,
-  FertilizerImpactProfile,
-  District,
-  Crop,
-} from '@wefes/shared-types';
-import {
-  DISTRICTS_SEED_DATA,
-  CROPS_SEED_DATA,
-} from '@wefes/database';
+import { WEFESOutput, FertilizerImpactProfile, District, Crop } from '@wefes/shared-types';
+import { DISTRICTS_SEED_DATA, CROPS_SEED_DATA } from '@wefes/database';
 import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
 import { calculateFertilizerNexusImpact } from '@wefes/wefes-engine';
 import {
@@ -45,20 +37,19 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
   const district: District = useMemo(() => {
     return (
       DISTRICTS_SEED_DATA.find(
-        d => d.id.toLowerCase() === output.districtId?.toLowerCase() ||
-             d.name.toLowerCase() === output.districtName?.toLowerCase()
-      ) ||
-      DISTRICTS_SEED_DATA[0]
+        (d) =>
+          d.id.toLowerCase() === output.districtId?.toLowerCase() ||
+          d.name.toLowerCase() === output.districtName?.toLowerCase()
+      ) || DISTRICTS_SEED_DATA[0]
     );
   }, [output.districtId, output.districtName]);
 
   const crop: Crop = useMemo(() => {
     return (
       CROPS_SEED_DATA.find(
-        c => c.id.toLowerCase() === output.cropId?.toLowerCase() ||
-             c.name.toLowerCase() === output.cropName?.toLowerCase()
-      ) ||
-      CROPS_SEED_DATA[0]
+        (c) =>
+          c.id.toLowerCase() === output.cropId?.toLowerCase() || c.name.toLowerCase() === output.cropName?.toLowerCase()
+      ) || CROPS_SEED_DATA[0]
     );
   }, [output.cropId, output.cropName]);
 
@@ -74,8 +65,9 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
   );
 
   const activePalika = useMemo(() => {
-    return palikasForDistrict.find(p => p.id === selectedPalikaId) || (
-      palikasForDistrict.length > 0 ? palikasForDistrict[0] : null
+    return (
+      palikasForDistrict.find((p) => p.id === selectedPalikaId) ||
+      (palikasForDistrict.length > 0 ? palikasForDistrict[0] : null)
     );
   }, [palikasForDistrict, selectedPalikaId]);
 
@@ -97,13 +89,23 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
       scarcityMarkupPct,
       dieselPriceNprPerLiter: dieselPriceNpr,
       customFreightRates: {
-        terai: 5.50 * freightMultiplier,
-        mountain: 14.00 * freightMultiplier,
-        lastMile: 40.00 * freightMultiplier,
+        terai: 5.5 * freightMultiplier,
+        mountain: 14.0 * freightMultiplier,
+        lastMile: 40.0 * freightMultiplier,
         transshipment: 750 * freightMultiplier,
       },
     });
-  }, [district, crop, output.baseQuantity, activePalika, selectedPalikaId, organicSubstitutionPct, scarcityMarkupPct, dieselPriceNpr, freightMultiplier]);
+  }, [
+    district,
+    crop,
+    output.baseQuantity,
+    activePalika,
+    selectedPalikaId,
+    organicSubstitutionPct,
+    scarcityMarkupPct,
+    dieselPriceNpr,
+    freightMultiplier,
+  ]);
 
   const { agronomic, economic, energy, ecosystem, water, bioeconomyTippingPoint, logisticsRoute } = profile;
 
@@ -132,7 +134,8 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
               </span>
             </div>
             <p className="text-xs text-slate-400 font-sans">
-              Calculates terrain freight physics, sovereign forex drain, GoN subsidy burden, and local circular bio-slurry tipping points across Nepal’s 753 Local Levels.
+              Calculates terrain freight physics, sovereign forex drain, GoN subsidy burden, and local circular
+              bio-slurry tipping points across Nepal’s 753 Local Levels.
             </p>
           </div>
 
@@ -170,27 +173,31 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
           <div className="p-3 bg-slate-800/60 rounded-2xl border border-slate-700/80 space-y-1">
             <span className="text-[11px] text-slate-400 font-sans block">Total Distance &amp; Elevation:</span>
             <div className="font-bold text-white text-sm">
-              {logisticsRoute.totalDistanceKm} km <span className="text-emerald-400 text-xs">(+Δ{logisticsRoute.elevationDeltaM}m)</span>
+              {logisticsRoute.totalDistanceKm} km{' '}
+              <span className="text-emerald-400 text-xs">(+Δ{logisticsRoute.elevationDeltaM}m)</span>
             </div>
             <div className="text-[10px] text-slate-400 font-sans">
-              Terai: {logisticsRoute.distanceTeraiKm}km · Hill: {logisticsRoute.distanceHillKm}km · Earthen: {logisticsRoute.distanceLastMileKm}km
+              Terai: {logisticsRoute.distanceTeraiKm}km · Hill: {logisticsRoute.distanceHillKm}km · Earthen:{' '}
+              {logisticsRoute.distanceLastMileKm}km
             </div>
           </div>
 
           <div className="p-3 bg-slate-800/60 rounded-2xl border border-slate-700/80 space-y-1">
             <span className="text-[11px] text-slate-400 font-sans block">Freight Surcharge (Terrain):</span>
-            <div className="font-bold text-amber-400 text-sm">
-              +NPR {economic.freightCostPerKgNpr.toFixed(2)} / kg
-            </div>
+            <div className="font-bold text-amber-400 text-sm">+NPR {economic.freightCostPerKgNpr.toFixed(2)} / kg</div>
             <div className="text-[10px] text-slate-400 font-sans">
-              Syndicate: {freightMultiplier.toFixed(1)}x · Fuel index: {((1.0 + 0.45 * ((dieselPriceNpr - 175) / 175))).toFixed(2)}x
+              Syndicate: {freightMultiplier.toFixed(1)}x · Fuel index:{' '}
+              {(1.0 + 0.45 * ((dieselPriceNpr - 175) / 175)).toFixed(2)}x
             </div>
           </div>
 
           <div className="p-3 bg-slate-800/60 rounded-2xl border border-slate-700/80 space-y-1">
             <span className="text-[11px] text-slate-400 font-sans block">Transport Diesel &amp; Fuel Spend:</span>
             <div className="font-bold text-rose-400 text-sm">
-              {energy.transportDieselLiters} L <span className="text-xs text-slate-300 font-normal font-mono">(NPR {Math.round(energy.transportDieselLiters * dieselPriceNpr).toLocaleString()})</span>
+              {energy.transportDieselLiters} L{' '}
+              <span className="text-xs text-slate-300 font-normal font-mono">
+                (NPR {Math.round(energy.transportDieselLiters * dieselPriceNpr).toLocaleString()})
+              </span>
             </div>
             <div className="text-[10px] text-slate-400 font-sans">
               +{ecosystem.transportEmissionsKgCo2e} kg CO₂e @ NPR {dieselPriceNpr}/L
@@ -259,7 +266,16 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
             <div className="flex justify-between text-xs">
               <span className="font-medium text-slate-700">Diesel Fuel Tariff:</span>
               <span className="font-mono font-bold text-sky-700">
-                NPR {dieselPriceNpr}/L <span className="text-[10px] text-slate-500 font-normal">({dieselPriceNpr > 175 ? `+${Math.round(((dieselPriceNpr - 175) / 175) * 100)}%` : dieselPriceNpr < 175 ? `${Math.round(((dieselPriceNpr - 175) / 175) * 100)}%` : 'Base'})</span>
+                NPR {dieselPriceNpr}/L{' '}
+                <span className="text-[10px] text-slate-500 font-normal">
+                  (
+                  {dieselPriceNpr > 175
+                    ? `+${Math.round(((dieselPriceNpr - 175) / 175) * 100)}%`
+                    : dieselPriceNpr < 175
+                      ? `${Math.round(((dieselPriceNpr - 175) / 175) * 100)}%`
+                      : 'Base'}
+                  )
+                </span>
               </span>
             </div>
             <input
@@ -282,7 +298,16 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
             <div className="flex justify-between text-xs">
               <span className="font-medium text-slate-700">Syndicate Freight Factor:</span>
               <span className="font-mono font-bold text-amber-700">
-                {freightMultiplier.toFixed(1)}x <span className="text-[10px] text-slate-500 font-normal">({freightMultiplier > 1.0 ? `+${Math.round((freightMultiplier - 1.0) * 100)}% Tariff` : freightMultiplier < 1.0 ? `-${Math.round((1.0 - freightMultiplier) * 100)}% Rebate` : 'Baseline'})</span>
+                {freightMultiplier.toFixed(1)}x{' '}
+                <span className="text-[10px] text-slate-500 font-normal">
+                  (
+                  {freightMultiplier > 1.0
+                    ? `+${Math.round((freightMultiplier - 1.0) * 100)}% Tariff`
+                    : freightMultiplier < 1.0
+                      ? `-${Math.round((1.0 - freightMultiplier) * 100)}% Rebate`
+                      : 'Baseline'}
+                  )
+                </span>
               </span>
             </div>
             <input
@@ -311,12 +336,31 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
             <DollarSign className="w-4 h-4 text-emerald-600" />
           </div>
           <div className="text-2xl font-extrabold text-slate-900 font-mono">
-            NPR {economic.landedFarmgatePriceNprPerKg.averageWeighted.toFixed(2)} <span className="text-xs font-normal text-slate-500">/ kg</span>
+            NPR {economic.landedFarmgatePriceNprPerKg.averageWeighted.toFixed(2)}{' '}
+            <span className="text-xs font-normal text-slate-500">/ kg</span>
           </div>
           <div className="text-[11px] text-slate-600 font-sans space-y-0.5 border-t border-slate-100 pt-2">
-            <div>Urea: <strong className="text-slate-800 font-mono">NPR {economic.landedFarmgatePriceNprPerKg.urea.toFixed(2)}/kg</strong> (NPR {Math.round(economic.landedFarmgatePriceNprPerKg.urea * 50)}/bag)</div>
-            <div>DAP: <strong className="text-slate-800 font-mono">NPR {economic.landedFarmgatePriceNprPerKg.dap.toFixed(2)}/kg</strong> (NPR {Math.round(economic.landedFarmgatePriceNprPerKg.dap * 50)}/bag)</div>
-            <div>MOP: <strong className="text-slate-800 font-mono">NPR {economic.landedFarmgatePriceNprPerKg.mop.toFixed(2)}/kg</strong> (NPR {Math.round(economic.landedFarmgatePriceNprPerKg.mop * 50)}/bag)</div>
+            <div>
+              Urea:{' '}
+              <strong className="text-slate-800 font-mono">
+                NPR {economic.landedFarmgatePriceNprPerKg.urea.toFixed(2)}/kg
+              </strong>{' '}
+              (NPR {Math.round(economic.landedFarmgatePriceNprPerKg.urea * 50)}/bag)
+            </div>
+            <div>
+              DAP:{' '}
+              <strong className="text-slate-800 font-mono">
+                NPR {economic.landedFarmgatePriceNprPerKg.dap.toFixed(2)}/kg
+              </strong>{' '}
+              (NPR {Math.round(economic.landedFarmgatePriceNprPerKg.dap * 50)}/bag)
+            </div>
+            <div>
+              MOP:{' '}
+              <strong className="text-slate-800 font-mono">
+                NPR {economic.landedFarmgatePriceNprPerKg.mop.toFixed(2)}/kg
+              </strong>{' '}
+              (NPR {Math.round(economic.landedFarmgatePriceNprPerKg.mop * 50)}/bag)
+            </div>
             <div className="text-amber-700 font-mono text-[10px] pt-1">
               Terrain &amp; Freight Surcharge: +NPR {(economic.freightCostPerKgNpr * 50).toFixed(0)}/50kg bag
             </div>
@@ -330,13 +374,24 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
             <TrendingDown className="w-4 h-4 text-rose-600" />
           </div>
           <div className="text-2xl font-extrabold text-rose-700 font-mono">
-            ${economic.sovereignImportForexDrainUsd.toLocaleString()} <span className="text-xs font-normal text-slate-500">USD</span>
+            ${economic.sovereignImportForexDrainUsd.toLocaleString()}{' '}
+            <span className="text-xs font-normal text-slate-500">USD</span>
           </div>
           <div className="text-[11px] text-slate-600 font-sans space-y-0.5 border-t border-slate-100 pt-2">
-            <div>GoN Subsidy Deficit: <strong className="text-slate-800 font-mono">NPR {economic.gonSubsidyBurdenNpr.toLocaleString()}</strong></div>
-            <div>Total Farmer Outlay: <strong className="text-slate-800 font-mono">NPR {economic.totalFarmerFertilizerSpendNpr.toLocaleString()}</strong></div>
+            <div>
+              GoN Subsidy Deficit:{' '}
+              <strong className="text-slate-800 font-mono">NPR {economic.gonSubsidyBurdenNpr.toLocaleString()}</strong>
+            </div>
+            <div>
+              Total Farmer Outlay:{' '}
+              <strong className="text-slate-800 font-mono">
+                NPR {economic.totalFarmerFertilizerSpendNpr.toLocaleString()}
+              </strong>
+            </div>
             <div className="text-emerald-700 font-bold">
-              {organicSubstitutionPct > 0 ? `Saved $${Math.round((economic.sovereignImportForexDrainUsd / (1 - organicSubstitutionPct / 100)) - economic.sovereignImportForexDrainUsd).toLocaleString()} USD via Bio-Slurry` : '100% Foreign Currency Outflow'}
+              {organicSubstitutionPct > 0
+                ? `Saved $${Math.round(economic.sovereignImportForexDrainUsd / (1 - organicSubstitutionPct / 100) - economic.sovereignImportForexDrainUsd).toLocaleString()} USD via Bio-Slurry`
+                : '100% Foreign Currency Outflow'}
             </div>
           </div>
         </div>
@@ -347,13 +402,19 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
             <span className="text-xs font-sans text-slate-500">Value-Cost Ratio (VCR)</span>
             <Scale className="w-4 h-4 text-sky-600" />
           </div>
-          <div className={`text-2xl font-extrabold font-mono ${economic.farmerValueCostRatioVCR >= 2.0 ? 'text-emerald-700' : 'text-rose-700'}`}>
+          <div
+            className={`text-2xl font-extrabold font-mono ${economic.farmerValueCostRatioVCR >= 2.0 ? 'text-emerald-700' : 'text-rose-700'}`}
+          >
             {economic.farmerValueCostRatioVCR}x
           </div>
           <div className="text-[11px] text-slate-600 font-sans space-y-0.5 border-t border-slate-100 pt-2">
             <div className="font-medium text-slate-800">{economic.vcrStatus}</div>
             <div className="text-[10px] text-slate-500">Benchmark: VCR ≥ 2.0 required for smallholder adoption</div>
-            <div>Yield Realized: <strong className="text-slate-800 font-mono">{agronomic.realizedYieldKg.toLocaleString()} kg</strong> ({agronomic.yieldGapPercent}% gap)</div>
+            <div>
+              Yield Realized:{' '}
+              <strong className="text-slate-800 font-mono">{agronomic.realizedYieldKg.toLocaleString()} kg</strong> (
+              {agronomic.yieldGapPercent}% gap)
+            </div>
           </div>
         </div>
 
@@ -363,28 +424,52 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
             <span className="text-xs font-sans text-slate-500">Soil Carbon &amp; Water Leaching</span>
             <Droplets className="w-4 h-4 text-teal-600" />
           </div>
-          <div className={`text-2xl font-extrabold font-mono ${ecosystem.soilOrganicCarbonDeltaPct >= 0 ? 'text-emerald-700' : 'text-amber-700'}`}>
-            {ecosystem.soilOrganicCarbonDeltaPct >= 0 ? `+${ecosystem.soilOrganicCarbonDeltaPct}%` : `${ecosystem.soilOrganicCarbonDeltaPct}%`} <span className="text-xs font-normal text-slate-500">SOC/yr</span>
+          <div
+            className={`text-2xl font-extrabold font-mono ${ecosystem.soilOrganicCarbonDeltaPct >= 0 ? 'text-emerald-700' : 'text-amber-700'}`}
+          >
+            {ecosystem.soilOrganicCarbonDeltaPct >= 0
+              ? `+${ecosystem.soilOrganicCarbonDeltaPct}%`
+              : `${ecosystem.soilOrganicCarbonDeltaPct}%`}{' '}
+            <span className="text-xs font-normal text-slate-500">SOC/yr</span>
           </div>
           <div className="text-[11px] text-slate-600 font-sans space-y-0.5 border-t border-slate-100 pt-2">
-            <div>Nitrate Leaching: <strong className="text-slate-800 font-mono">{water.nitrateLeachingKgPerHa} kg N/ha</strong></div>
-            <div>Aquifer Hazard: <strong className={`${water.groundwaterEutrophicationRisk === 'Low' ? 'text-emerald-700' : 'text-rose-700'}`}>{water.groundwaterEutrophicationRisk}</strong></div>
-            <div>Limiting Factor: <strong className="text-slate-800 font-mono">{agronomic.limitingNutrient} (Liebig Gate)</strong></div>
+            <div>
+              Nitrate Leaching:{' '}
+              <strong className="text-slate-800 font-mono">{water.nitrateLeachingKgPerHa} kg N/ha</strong>
+            </div>
+            <div>
+              Aquifer Hazard:{' '}
+              <strong
+                className={`${water.groundwaterEutrophicationRisk === 'Low' ? 'text-emerald-700' : 'text-rose-700'}`}
+              >
+                {water.groundwaterEutrophicationRisk}
+              </strong>
+            </div>
+            <div>
+              Limiting Factor:{' '}
+              <strong className="text-slate-800 font-mono">{agronomic.limitingNutrient} (Liebig Gate)</strong>
+            </div>
           </div>
         </div>
       </div>
 
       {/* ── THE CIRCULAR BIOECONOMY "ORGANIC TIPPING POINT" BANNER ─────────── */}
-      <div className={`p-6 rounded-3xl border ${
-        bioeconomyTippingPoint.isBioeconomySuperior
-          ? 'bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-900 border-emerald-700 text-white'
-          : 'bg-gradient-to-r from-slate-900 to-slate-950 border-slate-800 text-white'
-      } shadow-md space-y-3`}>
+      <div
+        className={`p-6 rounded-3xl border ${
+          bioeconomyTippingPoint.isBioeconomySuperior
+            ? 'bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-900 border-emerald-700 text-white'
+            : 'bg-gradient-to-r from-slate-900 to-slate-950 border-slate-800 text-white'
+        } shadow-md space-y-3`}
+      >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-lg ${
-              bioeconomyTippingPoint.isBioeconomySuperior ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-300'
-            }`}>
+            <div
+              className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-lg ${
+                bioeconomyTippingPoint.isBioeconomySuperior
+                  ? 'bg-emerald-500 text-slate-950'
+                  : 'bg-slate-800 text-slate-300'
+              }`}
+            >
               {bioeconomyTippingPoint.isBioeconomySuperior ? '⭐' : '⚖️'}
             </div>
             <div>
@@ -404,11 +489,15 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
           <div className="flex items-center gap-3 shrink-0 font-mono text-xs">
             <div className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-center">
               <span className="text-[10px] text-slate-400 font-sans block">Landed Chemical:</span>
-              <strong className="text-rose-400">NPR {bioeconomyTippingPoint.landedChemicalCostPerHaNpr.toLocaleString()}/ha</strong>
+              <strong className="text-rose-400">
+                NPR {bioeconomyTippingPoint.landedChemicalCostPerHaNpr.toLocaleString()}/ha
+              </strong>
             </div>
             <div className="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-center">
               <span className="text-[10px] text-slate-400 font-sans block">Bio-Slurry Equiv:</span>
-              <strong className="text-emerald-400">NPR {bioeconomyTippingPoint.equivalentBioSlurryCostPerHaNpr.toLocaleString()}/ha</strong>
+              <strong className="text-emerald-400">
+                NPR {bioeconomyTippingPoint.equivalentBioSlurryCostPerHaNpr.toLocaleString()}/ha
+              </strong>
             </div>
           </div>
         </div>
@@ -421,7 +510,9 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
             <Leaf className="w-4 h-4 text-emerald-600" />
             <span>NARC 2023 Site-Specific Dosing &amp; Commercial Bag Requirements</span>
           </h4>
-          <span className="text-xs font-mono text-slate-500">{crop.name} · {district.name}</span>
+          <span className="text-xs font-mono text-slate-500">
+            {crop.name} · {district.name}
+          </span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 font-mono text-xs">

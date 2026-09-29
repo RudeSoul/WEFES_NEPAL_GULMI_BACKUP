@@ -33,7 +33,9 @@ function yuleWalker(series: number[], order: number): number[] {
     return [Math.max(-0.99, Math.min(0.99, gamma[1] / gamma[0]))];
   }
   if (order === 2) {
-    const r0 = gamma[0], r1 = gamma[1], r2 = gamma[2];
+    const r0 = gamma[0],
+      r1 = gamma[1],
+      r2 = gamma[2];
     const det = r0 * r0 - r1 * r1;
     if (Math.abs(det) < 1e-12) return [0, 0];
     const phi1 = (r1 * r0 - r2 * r1) / det;
@@ -60,11 +62,7 @@ export interface ARIMAResult {
   };
 }
 
-export function arimaForecast(
-  series: number[],
-  startYear: number,
-  steps: number = 10
-): ARIMAResult {
+export function arimaForecast(series: number[], startYear: number, steps: number = 10): ARIMAResult {
   const n = series.length;
   const historicalYears = Array.from({ length: n }, (_, i) => startYear + i);
   const lastYear = startYear + n - 1;
@@ -73,7 +71,9 @@ export function arimaForecast(
   if (n < 8) {
     const flat = series[n - 1] ?? 0;
     return {
-      historicalYears, historicalValues: series, forecastYears,
+      historicalYears,
+      historicalValues: series,
+      forecastYears,
       forecasts: Array(steps).fill(flat),
       lower95: Array(steps).fill(Math.max(0, flat * 0.8)),
       upper95: Array(steps).fill(flat * 1.2),
@@ -110,7 +110,7 @@ export function arimaForecast(
   }
 
   const window = Math.min(15, res2.length);
-  const residualStd = Math.sqrt(mean(res2.slice(-window).map(r => r * r)));
+  const residualStd = Math.sqrt(mean(res2.slice(-window).map((r) => r * r)));
 
   // Step 6: Recursive forecast
   const extDiff = [...diff];
@@ -136,10 +136,15 @@ export function arimaForecast(
   }
 
   return {
-    historicalYears, historicalValues: series, forecastYears, forecasts, lower95, upper95,
+    historicalYears,
+    historicalValues: series,
+    forecastYears,
+    forecasts,
+    lower95,
+    upper95,
     modelInfo: {
       order: 'ARIMA(2,1,1)',
-      arCoefficients: phi.map(v => Number(v.toFixed(4))),
+      arCoefficients: phi.map((v) => Number(v.toFixed(4))),
       maCoefficient: Number(theta.toFixed(4)),
       residualStd: Number(residualStd.toFixed(1)),
       meanDiff: Number(diffMu.toFixed(1)),
@@ -154,7 +159,9 @@ export function extractAnnualRainfallSeries(
 ): { values: number[]; startYear: number } {
   const distMap = climateMap?.[districtId];
   if (!distMap) return { values: [], startYear: 1981 };
-  const years = Object.keys(distMap).map(Number).sort((a, b) => a - b);
+  const years = Object.keys(distMap)
+    .map(Number)
+    .sort((a, b) => a - b);
   const values: number[] = [];
   for (const yr of years) {
     let annual = 0;

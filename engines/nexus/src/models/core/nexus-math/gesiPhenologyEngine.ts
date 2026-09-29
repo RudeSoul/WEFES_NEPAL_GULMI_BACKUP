@@ -8,7 +8,8 @@ export function computeGesi(output: WEFESOutput): GESIModel {
     peakSeasonLaborDeficitPct: 35,
     fallowLandRiskCategory: 'Moderate Abandonment Risk',
     mechanizationSuitability: 'Mini-Tiller & Drip Compatible',
-    womenEmpowermentDividend: 'Adoption of ergonomic mini-tillers and gravity micro-drip saves an average of 4.2 labor-hours daily for female heads of household, enabling high-value marketing participation.',
+    womenEmpowermentDividend:
+      'Adoption of ergonomic mini-tillers and gravity micro-drip saves an average of 4.2 labor-hours daily for female heads of household, enabling high-value marketing participation.',
   };
 }
 
@@ -32,7 +33,8 @@ export function computeImportSubstitution(output: WEFESOutput): ImportSubstituti
     annualImportDisplacedNpr,
     foreignExchangeRetainedUsd,
     nationalFoodSovereigntyIndex: Math.min(100, Math.round(output.food.foodSecurityIndex * 1.15)),
-    strategicSignificance: 'Domestic production directly substitutes imported agro-commodities arriving via the Bhairahawa border corridor, strengthening national foreign currency reserves.',
+    strategicSignificance:
+      'Domestic production directly substitutes imported agro-commodities arriving via the Bhairahawa border corridor, strengthening national foreign currency reserves.',
     districtGdpMultiplier: 1.64,
   };
 }

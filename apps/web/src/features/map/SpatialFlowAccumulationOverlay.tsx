@@ -222,12 +222,5 @@ export const SpatialFlowAccumulationOverlay: React.FC<SpatialFlowAccumulationOve
 
   if (loading || !dataUrl || !bounds) return null;
 
-  return (
-    <ImageOverlay
-      url={dataUrl}
-      bounds={bounds}
-      opacity={opacity}
-      pane={pane}
-    />
-  );
+  return <ImageOverlay url={dataUrl} bounds={bounds} opacity={opacity} pane={pane} />;
 };

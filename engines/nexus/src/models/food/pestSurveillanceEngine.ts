@@ -3,7 +3,12 @@ export interface PestDiseaseAlert {
   commonName: string;
   scientificName: string;
   targetCrops: string[];
-  vectorType: 'Fungal Pathogen' | 'Insect Pest (Leaf-Feeding)' | 'Insect Pest (Sap-Sucking)' | 'Viral / Bacterial Complex' | 'Soil-Borne Nematode/Rot';
+  vectorType:
+    | 'Fungal Pathogen'
+    | 'Insect Pest (Leaf-Feeding)'
+    | 'Insect Pest (Sap-Sucking)'
+    | 'Viral / Bacterial Complex'
+    | 'Soil-Borne Nematode/Rot';
   currentThreatLevel: 'High Alert (Outbreak Imminent)' | 'Moderate Surveillance Required' | 'Low Seasonal Risk';
   riskScore: number; // 0 - 100
   degreeDayThermalThresholdGdd: number;
@@ -46,9 +51,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     moistureSensitivity: 'Spikes in High Humidity / Rain',
     soilPhSensitivity: 'Acidic Soils (<5.5)',
     potentialYieldLossPct: 38.0,
-    symptoms: 'Diamond spindle-shaped lesions with whitish-grey centres on leaves, black girdling lesions at panicle base (neck rot causing blank grains).',
+    symptoms:
+      'Diamond spindle-shaped lesions with whitish-grey centres on leaves, black girdling lesions at panicle base (neck rot causing blank grains).',
     aiProtocol: 'Leaf diagnostic pattern recognition via PlantVillage Nepal image pipeline (98.4% model accuracy).',
-    ipmAction: 'Adopt certified blast-resistant seeds (Khumal-18, Sukhadhan-6), avoid excessive basal urea, and apply Tricyclazole 75 WP (0.6g/L) at boot stage.',
+    ipmAction:
+      'Adopt certified blast-resistant seeds (Khumal-18, Sukhadhan-6), avoid excessive basal urea, and apply Tricyclazole 75 WP (0.6g/L) at boot stage.',
   },
   {
     id: 'rice-blb',
@@ -59,9 +66,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 1250,
     moistureSensitivity: 'Spikes in High Humidity / Rain',
     potentialYieldLossPct: 30.0,
-    symptoms: 'Water-soaked wavy yellowish lesions along leaf margins spreading downwards, bacterial ooze beads on young morning leaves.',
+    symptoms:
+      'Water-soaked wavy yellowish lesions along leaf margins spreading downwards, bacterial ooze beads on young morning leaves.',
     aiProtocol: 'Symptom matching via NARC NRRP Khumaltar digital extension portal.',
-    ipmAction: 'Drain stagnant field water for 3–4 days, balance nitrogen with higher potassium (MOP), apply Streptocycline (1g in 10L water).',
+    ipmAction:
+      'Drain stagnant field water for 3–4 days, balance nitrogen with higher potassium (MOP), apply Streptocycline (1g in 10L water).',
   },
   {
     id: 'rice-bph',
@@ -74,7 +83,8 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     potentialYieldLossPct: 45.0,
     symptoms: 'Circular patches of drying and lodged plants termed "hopper burn" in dense irrigated crop canopies.',
     aiProtocol: 'Stem base photo inspection on PlantVillage Nepal mobile app.',
-    ipmAction: 'Alternate wetting and drying (AWD) water management, conserve predatory mirid bugs (Cyrtorhinus), spray Pymetrozine 50 WG (0.6g/L).',
+    ipmAction:
+      'Alternate wetting and drying (AWD) water management, conserve predatory mirid bugs (Cyrtorhinus), spray Pymetrozine 50 WG (0.6g/L).',
   },
 
   // ── MAIZE ─────────────────────────────────────────────────────────────────
@@ -87,9 +97,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 1350,
     moistureSensitivity: 'Moderate / Constant',
     potentialYieldLossPct: 55.0,
-    symptoms: 'Window-paning on leaf whorls, heavy sawdust-like fecal frass accumulation in funnels, larval feeding on developing cobs.',
+    symptoms:
+      'Window-paning on leaf whorls, heavy sawdust-like fecal frass accumulation in funnels, larval feeding on developing cobs.',
     aiProtocol: 'Upload close-up photo of leaf funnel to PlantVillage Nepal app for automated CNN verification.',
-    ipmAction: 'Deploy Spodoptera sex pheromone traps (5 traps/ha) + apply bio-pesticide Bacillus thuringiensis (Bt) or Spinosad 45 SC (0.3ml/L).',
+    ipmAction:
+      'Deploy Spodoptera sex pheromone traps (5 traps/ha) + apply bio-pesticide Bacillus thuringiensis (Bt) or Spinosad 45 SC (0.3ml/L).',
   },
   {
     id: 'maize-turcicum',
@@ -100,7 +112,8 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 1050,
     moistureSensitivity: 'Spikes in High Humidity / Rain',
     potentialYieldLossPct: 35.0,
-    symptoms: 'Large elliptical greyish-green to tan necrosis streaks parallel to leaf veins leading to premature canopy dieback.',
+    symptoms:
+      'Large elliptical greyish-green to tan necrosis streaks parallel to leaf veins leading to premature canopy dieback.',
     aiProtocol: 'Leaf necrosis scanner via National Maize Research Program (NMRP) Rampur.',
     ipmAction: 'Plant resistant hybrid varieties (Poshilo Makai-2, Rampur Hybrid-10), spray Mancozeb 75 WP (2.5g/L).',
   },
@@ -115,9 +128,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 850,
     moistureSensitivity: 'Spikes in High Humidity / Rain',
     potentialYieldLossPct: 50.0,
-    symptoms: 'Linear yellow-orange powdery pustule stripes parallel to leaf veins, releasing dust on fingers when touched.',
+    symptoms:
+      'Linear yellow-orange powdery pustule stripes parallel to leaf veins, releasing dust on fingers when touched.',
     aiProtocol: 'Rust leaf scan matching via CIMMYT-NARC Global Rust Reference Center protocols.',
-    ipmAction: 'Sow resistant varieties (WK-1204, Banganga, Tilottama), spray Propiconazole 25 EC (Tilt @ 1ml/L) at first sign of pustules.',
+    ipmAction:
+      'Sow resistant varieties (WK-1204, Banganga, Tilottama), spray Propiconazole 25 EC (Tilt @ 1ml/L) at first sign of pustules.',
   },
   {
     id: 'wheat-aphid',
@@ -128,9 +143,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 900,
     moistureSensitivity: 'Spikes in Dry Moisture Stress',
     potentialYieldLossPct: 25.0,
-    symptoms: 'Dense colonies of green aphids clustering on ear heads and flag leaves, secreting sticky honeydew attracting sooty mold.',
+    symptoms:
+      'Dense colonies of green aphids clustering on ear heads and flag leaves, secreting sticky honeydew attracting sooty mold.',
     aiProtocol: 'Earhead colony density scanner on PlantVillage.',
-    ipmAction: 'Conserve coccinellid ladybird beetles, spray botanical Azadirachtin (Neem 1500 ppm @ 3ml/L) or Dimethoate 30 EC (1.5ml/L).',
+    ipmAction:
+      'Conserve coccinellid ladybird beetles, spray botanical Azadirachtin (Neem 1500 ppm @ 3ml/L) or Dimethoate 30 EC (1.5ml/L).',
   },
 
   // ── MUSTARD & OILSEEDS ───────────────────────────────────────────────────
@@ -143,9 +160,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 800,
     moistureSensitivity: 'Spikes in Dry Moisture Stress',
     potentialYieldLossPct: 65.0,
-    symptoms: 'Massive colonies suffocating inflorescences, curling tender leaves, causing stunted pod formation with shriveled seeds.',
+    symptoms:
+      'Massive colonies suffocating inflorescences, curling tender leaves, causing stunted pod formation with shriveled seeds.',
     aiProtocol: 'Inflorescence clustering image recognition via Oilseed Research Program Nawalpur.',
-    ipmAction: 'Early sowing (Kartik 1st–2nd week) to escape peak aphid flight, install yellow sticky traps (15 traps/ha), spray Oxydemeton-methyl (1ml/L).',
+    ipmAction:
+      'Early sowing (Kartik 1st–2nd week) to escape peak aphid flight, install yellow sticky traps (15 traps/ha), spray Oxydemeton-methyl (1ml/L).',
   },
   {
     id: 'mustard-alternaria',
@@ -156,7 +175,8 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 950,
     moistureSensitivity: 'Spikes in High Humidity / Rain',
     potentialYieldLossPct: 32.0,
-    symptoms: 'Concentric dark brown target-board circular spots on lower leaves spreading to siliquae pods causing seed shattering.',
+    symptoms:
+      'Concentric dark brown target-board circular spots on lower leaves spreading to siliquae pods causing seed shattering.',
     aiProtocol: 'Concentric target leaf symptom classifier.',
     ipmAction: 'Seed treatment with Trichoderma viride (5g/kg seed), spray Iprodione 50 WP (2g/L) or Mancozeb.',
   },
@@ -171,9 +191,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 900,
     moistureSensitivity: 'Spikes in High Humidity / Rain',
     potentialYieldLossPct: 60.0,
-    symptoms: 'Pinhead brown spots rapidly enlarging into irregular leaf blights, defoliation leaving bare twigs under heavy morning fog.',
+    symptoms:
+      'Pinhead brown spots rapidly enlarging into irregular leaf blights, defoliation leaving bare twigs under heavy morning fog.',
     aiProtocol: 'Foliar blight scanner via National Grain Legumes Research Program (NGLRP) Khajura.',
-    ipmAction: 'Plant tolerant cultivars (Shital, Khajura-2, Sagun), prophylactic foliar spray of Chlorothalonil (2g/L) before canopy closure.',
+    ipmAction:
+      'Plant tolerant cultivars (Shital, Khajura-2, Sagun), prophylactic foliar spray of Chlorothalonil (2g/L) before canopy closure.',
   },
   {
     id: 'pulse-pod-borer',
@@ -184,9 +206,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 1150,
     moistureSensitivity: 'Moderate / Constant',
     potentialYieldLossPct: 40.0,
-    symptoms: 'Circular neat entry holes bored into developing green pods with larvae feeding with head thrust inside the pod.',
+    symptoms:
+      'Circular neat entry holes bored into developing green pods with larvae feeding with head thrust inside the pod.',
     aiProtocol: 'Pod perforation visual recognition model.',
-    ipmAction: 'Deploy Helicoverpa pheromone traps (Helilure @ 5 traps/ha) + spray Nuclear Polyhedrosis Virus (HaNPV @ 250 LE/ha).',
+    ipmAction:
+      'Deploy Helicoverpa pheromone traps (Helilure @ 5 traps/ha) + spray Nuclear Polyhedrosis Virus (HaNPV @ 250 LE/ha).',
   },
 
   // ── POTATO & TOMATO / HORTICULTURE ───────────────────────────────────────
@@ -200,9 +224,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     moistureSensitivity: 'Spikes in High Humidity / Rain',
     soilPhSensitivity: 'Acidic Soils (<5.5)',
     potentialYieldLossPct: 75.0,
-    symptoms: 'Water-soaked purplish-brown lesions with white cottony mildew on leaf undersides on foggy mornings, rotten tubers with brown dry decay.',
+    symptoms:
+      'Water-soaked purplish-brown lesions with white cottony mildew on leaf undersides on foggy mornings, rotten tubers with brown dry decay.',
     aiProtocol: 'Late Blight AI Diagnostic module developed with CIP and NARC NPRP Khumaltar.',
-    ipmAction: 'Plant field-resistant Janakdev or Kufri Jyoti potato, apply systemic Cymoxanil + Mancozeb (2.5g/L) before monsoon cloudbursts.',
+    ipmAction:
+      'Plant field-resistant Janakdev or Kufri Jyoti potato, apply systemic Cymoxanil + Mancozeb (2.5g/L) before monsoon cloudbursts.',
   },
   {
     id: 'tuta-absoluta',
@@ -213,9 +239,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 1200,
     moistureSensitivity: 'Moderate / Constant',
     potentialYieldLossPct: 80.0,
-    symptoms: 'Blotchy irregular translucent mines on leaves, pinholes on tomato fruits near calyx with black frass contamination.',
+    symptoms:
+      'Blotchy irregular translucent mines on leaves, pinholes on tomato fruits near calyx with black frass contamination.',
     aiProtocol: 'Tomato foliar mine geometry detection via PlantVillage Nepal.',
-    ipmAction: 'Install Tuta lure pheromone water traps (10/ha), install 40-mesh insect netting in polyhouses, spray Bacillus thuringiensis (Bt).',
+    ipmAction:
+      'Install Tuta lure pheromone water traps (10/ha), install 40-mesh insect netting in polyhouses, spray Bacillus thuringiensis (Bt).',
   },
 
   // ── GINGER & SPICES ──────────────────────────────────────────────────────
@@ -229,9 +257,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     moistureSensitivity: 'Spikes in High Humidity / Rain',
     soilPhSensitivity: 'Acidic Soils (<5.5)',
     potentialYieldLossPct: 65.0,
-    symptoms: 'Yellowing of lower leaf margins spreading upward, pseudostem collar soft and water-soaked, foul-smelling rotting rhizomes.',
+    symptoms:
+      'Yellowing of lower leaf margins spreading upward, pseudostem collar soft and water-soaked, foul-smelling rotting rhizomes.',
     aiProtocol: 'Collar rot symptom verification with Ginger Research Program Kapurkot.',
-    ipmAction: 'Construct raised beds (15–20cm high) for rapid drainage, solarize soil with clear plastic, treat seed rhizomes with Trichoderma.',
+    ipmAction:
+      'Construct raised beds (15–20cm high) for rapid drainage, solarize soil with clear plastic, treat seed rhizomes with Trichoderma.',
   },
   {
     id: 'cardamom-viral-complex',
@@ -242,9 +272,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 850,
     moistureSensitivity: 'Spikes in High Humidity / Rain',
     potentialYieldLossPct: 50.0,
-    symptoms: 'Chirke: Mosaic mosaic flecking parallel to veins; Furkey: Stunted bushy clump proliferation with sterile rosettes.',
+    symptoms:
+      'Chirke: Mosaic mosaic flecking parallel to veins; Furkey: Stunted bushy clump proliferation with sterile rosettes.',
     aiProtocol: 'Cardamom canopy mosaic scanner via CDC Fikkal Ilam.',
-    ipmAction: 'Immediate eradication and burning of infected clumps, vector aphid control using mineral oil sprays, plant virus-free tissue culture seedlings.',
+    ipmAction:
+      'Immediate eradication and burning of infected clumps, vector aphid control using mineral oil sprays, plant virus-free tissue culture seedlings.',
   },
 
   // ── TEA & COFFEE ──────────────────────────────────────────────────────────
@@ -257,9 +289,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 1000,
     moistureSensitivity: 'Spikes in Dry Moisture Stress',
     potentialYieldLossPct: 35.0,
-    symptoms: 'Rusty copper-bronze discoloration on upper leaf surfaces along main veins, fine webbing, premature defoliation in dry springs.',
+    symptoms:
+      'Rusty copper-bronze discoloration on upper leaf surfaces along main veins, fine webbing, premature defoliation in dry springs.',
     aiProtocol: 'Tea leaf bronzing index on National Tea and Coffee Development Board app.',
-    ipmAction: 'Ensure adequate shade tree canopy (Albizia), spray wettable sulphur 80 WP (2.5g/L) or neem extract during dry spells.',
+    ipmAction:
+      'Ensure adequate shade tree canopy (Albizia), spray wettable sulphur 80 WP (2.5g/L) or neem extract during dry spells.',
   },
   {
     id: 'coffee-stem-borer',
@@ -270,9 +304,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 1100,
     moistureSensitivity: 'Moderate / Constant',
     potentialYieldLossPct: 60.0,
-    symptoms: 'Ridges and rings forming on main stem bark, bore holes with wood frass, wilting of top branches and stem dieback.',
+    symptoms:
+      'Ridges and rings forming on main stem bark, bore holes with wood frass, wilting of top branches and stem dieback.',
     aiProtocol: 'Coffee trunk bark ring visual inspection protocol.',
-    ipmAction: 'Maintain 50% shade cover over coffee bushes, bark tracing and stem swabbing with 10% lime wash + neem oil before October flight.',
+    ipmAction:
+      'Maintain 50% shade cover over coffee bushes, bark tracing and stem swabbing with 10% lime wash + neem oil before October flight.',
   },
 
   // ── FRUITS (APPLE & CITRUS) ───────────────────────────────────────────────
@@ -285,9 +321,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 750,
     moistureSensitivity: 'Spikes in High Humidity / Rain',
     potentialYieldLossPct: 55.0,
-    symptoms: 'Olive-green velvety spots on young spring leaves turning into dark brown scabby corky lesions and cracks on apple fruits.',
+    symptoms:
+      'Olive-green velvety spots on young spring leaves turning into dark brown scabby corky lesions and cracks on apple fruits.',
     aiProtocol: 'Apple fruit scab image detection via Temperate Horticulture Centre Marpha.',
-    ipmAction: 'Post-harvest urea spray (5%) to accelerate fallen leaf decomposition, apply Dodine 65 WP or Captan 50 WP (2g/L) at pink bud stage.',
+    ipmAction:
+      'Post-harvest urea spray (5%) to accelerate fallen leaf decomposition, apply Dodine 65 WP or Captan 50 WP (2g/L) at pink bud stage.',
   },
   {
     id: 'citrus-hlb-psyllid',
@@ -298,9 +336,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 1200,
     moistureSensitivity: 'Moderate / Constant',
     potentialYieldLossPct: 70.0,
-    symptoms: 'Asymmetrical blotchy mottle chlorosis across leaf veins, upright twig dieback, small misshapen lopsided bitter fruits remaining green.',
+    symptoms:
+      'Asymmetrical blotchy mottle chlorosis across leaf veins, upright twig dieback, small misshapen lopsided bitter fruits remaining green.',
     aiProtocol: 'Citrus foliar mottle pattern recognition via National Citrus Research Program Paripatle.',
-    ipmAction: 'Use certified disease-free grafted saplings from screen houses, control vector psyllid using yellow sticky traps and Imidacloprid (0.5ml/L).',
+    ipmAction:
+      'Use certified disease-free grafted saplings from screen houses, control vector psyllid using yellow sticky traps and Imidacloprid (0.5ml/L).',
   },
 
   // ── COLE CROPS (CAULIFLOWER / CABBAGE) ─────────────────────────────────────
@@ -313,9 +353,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     baseGddThreshold: 950,
     moistureSensitivity: 'Spikes in Dry Moisture Stress',
     potentialYieldLossPct: 60.0,
-    symptoms: 'Numerous small shot-holes eaten through leaves, delicate silk webbing, small green larvae wriggling backwards when disturbed.',
+    symptoms:
+      'Numerous small shot-holes eaten through leaves, delicate silk webbing, small green larvae wriggling backwards when disturbed.',
     aiProtocol: 'Cole crop windowing and larval classifier on PlantVillage.',
-    ipmAction: 'Intercrop with Indian mustard as a trap crop (2 rows mustard every 25 rows cabbage), spray Bt (Dipel @ 1.5g/L) or Spinetoram.',
+    ipmAction:
+      'Intercrop with Indian mustard as a trap crop (2 rows mustard every 25 rows cabbage), spray Bt (Dipel @ 1.5g/L) or Spinetoram.',
   },
   {
     id: 'clubroot-brassica',
@@ -327,9 +369,11 @@ const NEPAL_PEST_MASTER_CATALOG: RawPestDefinition[] = [
     moistureSensitivity: 'Spikes in High Humidity / Rain',
     soilPhSensitivity: 'Acidic Soils (<5.5)',
     potentialYieldLossPct: 50.0,
-    symptoms: 'Daytime wilting of leaves followed by nighttime recovery, massive spindle-shaped gall swellings (clubs) on roots restricting water uptake.',
+    symptoms:
+      'Daytime wilting of leaves followed by nighttime recovery, massive spindle-shaped gall swellings (clubs) on roots restricting water uptake.',
     aiProtocol: 'Root gall symptom identification with Horticulture Research Division.',
-    ipmAction: 'Apply agricultural agricultural lime (CaCO3 @ 2.5 t/ha) to raise soil pH above 7.2, rotate with non-brassica crops for 4+ years.',
+    ipmAction:
+      'Apply agricultural agricultural lime (CaCO3 @ 2.5 t/ha) to raise soil pH above 7.2, rotate with non-brassica crops for 4+ years.',
   },
 ];
 
@@ -344,8 +388,8 @@ export function computePestSurveillance(
   const normCrop = cropName.toLowerCase();
 
   // Find all matched pests for this crop
-  const matched = NEPAL_PEST_MASTER_CATALOG.filter(pest => {
-    return pest.targetCrops.some(t => {
+  const matched = NEPAL_PEST_MASTER_CATALOG.filter((pest) => {
+    return pest.targetCrops.some((t) => {
       const normT = t.toLowerCase();
       return normCrop.includes(normT) || normT.includes(normCrop);
     });
@@ -355,11 +399,15 @@ export function computePestSurveillance(
   let selectedPests = matched;
   if (selectedPests.length === 0) {
     if (normCrop.includes('cereal') || normCrop.includes('grain')) {
-      selectedPests = NEPAL_PEST_MASTER_CATALOG.filter(p => p.id === 'faw-spodoptera' || p.id === 'rice-blast');
+      selectedPests = NEPAL_PEST_MASTER_CATALOG.filter((p) => p.id === 'faw-spodoptera' || p.id === 'rice-blast');
     } else if (normCrop.includes('vegetable') || normCrop.includes('fruit')) {
-      selectedPests = NEPAL_PEST_MASTER_CATALOG.filter(p => p.id === 'late-blight-solanaceae' || p.id === 'dbm-cauliflower');
+      selectedPests = NEPAL_PEST_MASTER_CATALOG.filter(
+        (p) => p.id === 'late-blight-solanaceae' || p.id === 'dbm-cauliflower'
+      );
     } else if (normCrop.includes('spice') || normCrop.includes('cash')) {
-      selectedPests = NEPAL_PEST_MASTER_CATALOG.filter(p => p.id === 'ginger-rhizome-rot' || p.id === 'cardamom-viral-complex');
+      selectedPests = NEPAL_PEST_MASTER_CATALOG.filter(
+        (p) => p.id === 'ginger-rhizome-rot' || p.id === 'cardamom-viral-complex'
+      );
     } else {
       // General resilient pest profile
       selectedPests = [NEPAL_PEST_MASTER_CATALOG[0], NEPAL_PEST_MASTER_CATALOG[3]];
@@ -367,7 +415,7 @@ export function computePestSurveillance(
   }
 
   // Calculate Biophysical Composite Risk for each vector
-  return selectedPests.map(pest => {
+  return selectedPests.map((pest) => {
     let score = 40; // Base baseline surveillance score
 
     // 1. GDD Thermal Accumulation Modulation
@@ -383,7 +431,8 @@ export function computePestSurveillance(
     // 2. Moisture / Water Stress Modulation
     let moistureStatus = 'Standard ambient seasonal moisture.';
     if (pest.moistureSensitivity === 'Spikes in High Humidity / Rain') {
-      if (waterStressIndex < 35) { // High moisture / saturated soil
+      if (waterStressIndex < 35) {
+        // High moisture / saturated soil
         score += 25;
         moistureStatus = 'High soil saturation and humidity accelerate fungal zoospore release and foliar infection.';
       } else {
@@ -391,9 +440,11 @@ export function computePestSurveillance(
         moistureStatus = 'Dry canopy aeration suppresses fungal spore germination.';
       }
     } else if (pest.moistureSensitivity === 'Spikes in Dry Moisture Stress') {
-      if (waterStressIndex > 45) { // Dry conditions
+      if (waterStressIndex > 45) {
+        // Dry conditions
         score += 28;
-        moistureStatus = 'Dry moisture stress concentrates plant sap sugars, triggering explosive sap-sucking pest proliferation.';
+        moistureStatus =
+          'Dry moisture stress concentrates plant sap sugars, triggering explosive sap-sucking pest proliferation.';
       } else {
         score -= 10;
         moistureStatus = 'Rain showers mechanically wash insect nymphs from foliage.';

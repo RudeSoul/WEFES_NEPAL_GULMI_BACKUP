@@ -7,7 +7,11 @@ export const logisticsMarketRouter = Router();
 logisticsMarketRouter.get('/route', (req, res, next) => logisticsMarketController.getPalikaRoute(req, res, next));
 
 // GET /api/v1/logistics/customs-ports - List ICP border customs ports
-logisticsMarketRouter.get('/customs-ports', (req, res, next) => logisticsMarketController.getCustomsPorts(req, res, next));
+logisticsMarketRouter.get('/customs-ports', (req, res, next) =>
+  logisticsMarketController.getCustomsPorts(req, res, next)
+);
 
 // GET /api/v1/logistics/socioeconomics/:districtId - Socioeconomics, labor rates & wealth index
-logisticsMarketRouter.get('/socioeconomics/:districtId?', (req, res, next) => logisticsMarketController.getSocioeconomics(req, res, next));
+logisticsMarketRouter.get('/socioeconomics/:districtId?', (req, res, next) =>
+  logisticsMarketController.getSocioeconomics(req, res, next)
+);

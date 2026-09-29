@@ -4,7 +4,17 @@
 // Citations: MoALD, MoFAGA Nepal, DHM Nepal, Survey Department
 import React from 'react';
 import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
-import { Mountain, Thermometer, CloudRain, Sparkles, Sprout, ArrowRight, Layers, Compass, AlertTriangle } from 'lucide-react';
+import {
+  Mountain,
+  Thermometer,
+  CloudRain,
+  Sparkles,
+  Sprout,
+  ArrowRight,
+  Layers,
+  Compass,
+  AlertTriangle,
+} from 'lucide-react';
 import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../../utils/climateDownscaling';
 
 interface PalikaHoverCardProps {
@@ -37,9 +47,10 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({
   // Find rich agro-ecological asset data for this palika in Gulmi
   const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
   const richData = gulmiPalikas.find(
-    p => p.name.toLowerCase() === palikaProp.name.toLowerCase() ||
-         palikaProp.name.toLowerCase().includes(p.name.toLowerCase()) ||
-         p.name.toLowerCase().includes(palikaProp.name.toLowerCase())
+    (p) =>
+      p.name.toLowerCase() === palikaProp.name.toLowerCase() ||
+      palikaProp.name.toLowerCase().includes(p.name.toLowerCase()) ||
+      p.name.toLowerCase().includes(palikaProp.name.toLowerCase())
   );
 
   const elevation = richData?.elevation || 1450;
@@ -59,13 +70,9 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({
         <div>
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-            <h3 className="font-bold text-slate-900 text-xs sm:text-sm font-outfit">
-              {palikaProp.name}
-            </h3>
+            <h3 className="font-bold text-slate-900 text-xs sm:text-sm font-outfit">{palikaProp.name}</h3>
             {palikaProp.nepaliName && (
-              <span className="text-[11px] text-slate-500 font-sans">
-                ({palikaProp.nepaliName})
-              </span>
+              <span className="text-[11px] text-slate-500 font-sans">({palikaProp.nepaliName})</span>
             )}
           </div>
           <p className="text-[10px] text-slate-500">
@@ -106,7 +113,10 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({
             <CloudRain className="w-2.5 h-2.5 text-blue-600" />
             <span>Rain/Mo</span>
           </div>
-          <span className="text-[11px] font-bold text-blue-900 font-mono" title={`${micro.monthlyRainMm} mm in active month (${orographicStr} Orographic uplift vs Tamghas)`}>
+          <span
+            className="text-[11px] font-bold text-blue-900 font-mono"
+            title={`${micro.monthlyRainMm} mm in active month (${orographicStr} Orographic uplift vs Tamghas)`}
+          >
             {micro.monthlyRainMm}mm
           </span>
         </div>
@@ -122,8 +132,12 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({
 
       {/* Downscaled Micro-Climate Telemetry Row */}
       <div className="flex items-center justify-between text-[9.5px] px-2 py-1 mb-2 bg-slate-100/70 rounded border border-slate-200 text-slate-600 font-mono">
-        <span>Orographic Factor: <strong className="text-slate-900">{orographicStr}</strong></span>
-        <span>Annual Rain: <strong className="text-slate-900">{micro.annualRainMm} mm</strong></span>
+        <span>
+          Orographic Factor: <strong className="text-slate-900">{orographicStr}</strong>
+        </span>
+        <span>
+          Annual Rain: <strong className="text-slate-900">{micro.annualRainMm} mm</strong>
+        </span>
       </div>
 
       {/* Feasible Crops List */}
@@ -134,9 +148,7 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({
               <Sprout className="w-3 h-3 text-emerald-600" />
               Calibrated Feasible Crops
             </span>
-            <span className="text-[9px] font-mono text-slate-500">
-              {topCrops.length} Crops
-            </span>
+            <span className="text-[9px] font-mono text-slate-500">{topCrops.length} Crops</span>
           </div>
           <div className="flex flex-wrap gap-1">
             {topCrops.slice(0, 4).map((crop) => (
@@ -159,20 +171,32 @@ export const PalikaHoverCard: React.FC<PalikaHoverCardProps> = ({
           <div className="flex items-center justify-between font-semibold text-emerald-900 border-b border-emerald-200/60 pb-1 mb-1">
             <span>📅 Seasonal Crop Cycle:</span>
             <span className="font-mono text-[9px] text-emerald-800">
-              {[6, 7, 8, 9].includes(climateMonth) ? 'Active: Barkhe (Monsoon)' : [11, 12, 1, 2].includes(climateMonth) ? 'Active: Hiunde (Winter)' : 'Active: Chaite (Spring)'}
+              {[6, 7, 8, 9].includes(climateMonth)
+                ? 'Active: Barkhe (Monsoon)'
+                : [11, 12, 1, 2].includes(climateMonth)
+                  ? 'Active: Hiunde (Winter)'
+                  : 'Active: Chaite (Spring)'}
             </span>
           </div>
           <div className="grid grid-cols-2 gap-2">
             {rotations.barkhe && (
-              <div className={`p-1 rounded ${[6, 7, 8, 9].includes(climateMonth) ? 'bg-emerald-100/90 font-bold text-emerald-950 shadow-2xs' : 'opacity-80'}`}>
+              <div
+                className={`p-1 rounded ${[6, 7, 8, 9].includes(climateMonth) ? 'bg-emerald-100/90 font-bold text-emerald-950 shadow-2xs' : 'opacity-80'}`}
+              >
                 <span className="block text-[8.5px] text-emerald-800 uppercase font-mono">बरखे (Summer):</span>
-                <span>{rotations.barkhe.emoji} {rotations.barkhe.cropName.split('(')[0]}</span>
+                <span>
+                  {rotations.barkhe.emoji} {rotations.barkhe.cropName.split('(')[0]}
+                </span>
               </div>
             )}
             {rotations.hiunde && (
-              <div className={`p-1 rounded text-right ${[11, 12, 1, 2].includes(climateMonth) ? 'bg-emerald-100/90 font-bold text-emerald-950 shadow-2xs' : 'opacity-80'}`}>
+              <div
+                className={`p-1 rounded text-right ${[11, 12, 1, 2].includes(climateMonth) ? 'bg-emerald-100/90 font-bold text-emerald-950 shadow-2xs' : 'opacity-80'}`}
+              >
                 <span className="block text-[8.5px] text-emerald-800 uppercase font-mono">हिउँदे (Winter):</span>
-                <span>{rotations.hiunde.emoji} {rotations.hiunde.cropName.split('(')[0]}</span>
+                <span>
+                  {rotations.hiunde.emoji} {rotations.hiunde.cropName.split('(')[0]}
+                </span>
               </div>
             )}
           </div>

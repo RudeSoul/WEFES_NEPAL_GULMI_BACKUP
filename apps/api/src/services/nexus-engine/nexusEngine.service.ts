@@ -29,12 +29,7 @@ export class NexusEngineService {
       throw new Error(`Crop '${input.cropId}' not found in database`);
     }
 
-    return calculateHarvestImpact(
-      district,
-      crop,
-      input.quantity,
-      input.unit
-    );
+    return calculateHarvestImpact(district, crop, input.quantity, input.unit);
   }
 
   public simulate(baselineOutput: WEFESOutput, params: ScenarioParameters): ScenarioResult {

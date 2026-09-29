@@ -5,6 +5,7 @@ High-speed TypeScript simulation engine for the agricultural, crop suitability, 
 ---
 
 ## Capabilities
+
 - **Crop Suitability Scoring**: FAO ECOCROP parametric thermal/hygrometric models calibrated for Nepal agro-ecological zones (Low Valley, Mid-Hills, Lekh).
 - **Fertilizer & Nutrient Balance**: N-P-K stoichiometric requirements, bio-slurry substitution, and soil acidity buffering.
 - **Circular Bioeconomy**: Biogas generation potential from livestock manure and agricultural crop residues.
@@ -13,12 +14,15 @@ High-speed TypeScript simulation engine for the agricultural, crop suitability, 
 ---
 
 ## Usage
+
 Run tests:
+
 ```bash
 pnpm --filter @wefes/wefes-engine test
 ```
 
 Build distribution bundle:
+
 ```bash
 pnpm --filter @wefes/wefes-engine build
 ```

@@ -36,10 +36,7 @@ export interface AquacultureFishProfile {
   calibrationProvenance: string;
 }
 
-export function computeAquacultureModel(
-  districtName: string,
-  pondAreaHa: number = 1.0
-): AquacultureFishProfile {
+export function computeAquacultureModel(districtName: string, pondAreaHa: number = 1.0): AquacultureFishProfile {
   const dNorm = districtName.toLowerCase();
 
   let yieldTon = 4.8;
@@ -58,7 +55,7 @@ export function computeAquacultureModel(
 
   // Water calculations: 1350 mm evap + 2.5 mm/day seepage across 1 ha (10,000 m²)
   const evapM3 = Math.round(pondAreaHa * 10000 * 1.35);
-  const seepageM3 = Math.round(pondAreaHa * 10000 * (2.5 * 365 / 1000));
+  const seepageM3 = Math.round(pondAreaHa * 10000 * ((2.5 * 365) / 1000));
   const totalWaterM3 = evapM3 + seepageM3;
   const pumpingHours = Math.round(totalWaterM3 / 18); // 5 L/s STW discharge = 18 m³/hr
 
@@ -75,7 +72,12 @@ export function computeAquacultureModel(
     },
     pondOperationalModel: {
       pondSurfaceAreaHectares: pondAreaHa,
-      primarySpeciesMix: ['Rohu (Labeo rohita - 35%)', 'Catla (Gibelion catla - 25%)', 'Mrigal (Cirrhinus mrigala - 20%)', 'Grass Carp (20%)'],
+      primarySpeciesMix: [
+        'Rohu (Labeo rohita - 35%)',
+        'Catla (Gibelion catla - 25%)',
+        'Mrigal (Cirrhinus mrigala - 20%)',
+        'Grass Carp (20%)',
+      ],
       stockingDensityFingerlingsPerHa: 7500,
       feedConversionRatioFCR: 1.55,
       annualFishYieldTonnesPerHa: yieldTon,
@@ -101,6 +103,7 @@ export function computeAquacultureModel(
       riceYieldBoostPct: 12.5,
       pestSuppressionByCarpPct: 45.0,
     },
-    calibrationProvenance: 'Calibrated using Directorate of Fisheries / Dhanusha Fish Super-Zone Empirical Economics (Archives of Ag & Env Sci 2024).',
+    calibrationProvenance:
+      'Calibrated using Directorate of Fisheries / Dhanusha Fish Super-Zone Empirical Economics (Archives of Ag & Env Sci 2024).',
   };
 }

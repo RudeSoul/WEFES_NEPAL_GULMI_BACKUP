@@ -274,4 +274,3 @@ export interface PortfolioBlendResult {
   incomeStabilityIndex: number;
   riskReductionPct: number;
 }
-

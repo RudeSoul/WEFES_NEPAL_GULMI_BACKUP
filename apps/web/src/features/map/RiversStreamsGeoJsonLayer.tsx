@@ -25,7 +25,8 @@ export function RiversStreamsGeoJsonLayer({ data }: RiversStreamsGeoJsonLayerPro
       onEachFeature={(feature: any, layer: any) => {
         const p = feature?.properties || {};
 
-        layer.bindTooltip(`
+        layer.bindTooltip(
+          `
           <div style="padding: 5px 8px; font-size: 11px; min-width: 190px;">
             <div style="font-weight: 800; color: #0284c7; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px;">
               🌊 HydroRIVERS Stream Reach #${p.HYRIV_ID || ''}
@@ -35,7 +36,9 @@ export function RiversStreamsGeoJsonLayer({ data }: RiversStreamsGeoJsonLayerPro
             <div style="color: #475569; font-size: 10px; margin-top: 2px;">Reach Length: <strong>${p.LENGTH_KM ?? 'N/A'} km</strong></div>
             <div style="color: #64748b; font-size: 9.5px;">Upland Catchment: ${p.UPLAND_SKM ?? 'N/A'} km²</div>
           </div>
-        `, { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' });
+        `,
+          { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' }
+        );
       }}
     />
   );

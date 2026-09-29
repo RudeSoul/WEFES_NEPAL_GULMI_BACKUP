@@ -21,11 +21,19 @@ export const nexusEngineService = {
     return apiClient.post('/api/v1/nexus/calculate', payload);
   },
 
-  simulateScenario: async (baselineOutput: WEFESOutput, parameters: ScenarioParameters): Promise<ApiResponse<WEFESOutput>> => {
+  simulateScenario: async (
+    baselineOutput: WEFESOutput,
+    parameters: ScenarioParameters
+  ): Promise<ApiResponse<WEFESOutput>> => {
     return apiClient.post('/api/v1/nexus/simulate', { baselineOutput, parameters });
   },
 
-  calculateFertilizer: async (districtId: string, cropId: string, harvestQuantityKg: number, palikaName?: string): Promise<ApiResponse> => {
+  calculateFertilizer: async (
+    districtId: string,
+    cropId: string,
+    harvestQuantityKg: number,
+    palikaName?: string
+  ): Promise<ApiResponse> => {
     return apiClient.post('/api/v1/nexus/fertilizer', { districtId, cropId, harvestQuantityKg, palikaName });
   },
 };

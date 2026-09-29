@@ -19,9 +19,7 @@ interface SpatialSettlementDensityOverlayProps {
   opacity?: number;
 }
 
-export const SpatialSettlementDensityOverlay: React.FC<SpatialSettlementDensityOverlayProps> = ({
-  opacity = 0.78,
-}) => {
+export const SpatialSettlementDensityOverlay: React.FC<SpatialSettlementDensityOverlayProps> = ({ opacity = 0.78 }) => {
   return (
     <ImageOverlay
       url="/tiles/gulmi_settlement_density_overlay.png"

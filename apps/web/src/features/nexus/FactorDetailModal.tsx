@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { WEFESOutput } from '@wefes/shared-types';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+  ReferenceLine,
 } from 'recharts';
 import { X, TrendingUp, TrendingDown, Info, SlidersHorizontal } from 'lucide-react';
 
@@ -54,8 +62,7 @@ const FACTOR_META: Record<string, FactorMeta> = {
     sliderMin: 0,
     sliderMax: 100,
     sliderStep: 5,
-    projectFn: (base, year, renew) =>
-      Math.round(base * Math.pow(0.98, year) * (1 - (renew / 100) * 0.3)),
+    projectFn: (base, year, renew) => Math.round(base * Math.pow(0.98, year) * (1 - (renew / 100) * 0.3)),
   },
   food: {
     title: 'Crop Yield Biomass (kg)',
@@ -69,14 +76,13 @@ const FACTOR_META: Record<string, FactorMeta> = {
     sliderMin: 0,
     sliderMax: 100,
     sliderStep: 5,
-    projectFn: (base, year, regen) =>
-      Math.round(base * Math.pow(1.015 + regen * 0.001, year)),
+    projectFn: (base, year, regen) => Math.round(base * Math.pow(1.015 + regen * 0.001, year)),
   },
   ecosystem: {
     title: 'Carbon Offset (kg CO₂e)',
     color: '#14b8a6',
     unit: 'kg CO₂e',
-    why: 'Carbon offset reflects the ecosystem service value of sequestering carbon in biomass and soil. It directly feeds into Nepal\'s REDD+ national carbon credit accounting.',
+    why: "Carbon offset reflects the ecosystem service value of sequestering carbon in biomass and soil. It directly feeds into Nepal's REDD+ national carbon credit accounting.",
     how: 'carbonOffset = baseQuantity × crop.carbonOffsetPerUnit. Eco health score is composited with erosion mitigation index weighted by eco-zone.',
     what: 'A higher carbon offset means the crop activity contributes positively to climate goals. This can be monetized as carbon credits (e.g., ~NPR 500/t CO₂e).',
     baseValue: 0,
@@ -84,8 +90,7 @@ const FACTOR_META: Record<string, FactorMeta> = {
     sliderMin: -50,
     sliderMax: 0,
     sliderStep: 5,
-    projectFn: (base, year, deforest) =>
-      Math.round(base * Math.pow(1.02 + Math.abs(deforest) * 0.003, year)),
+    projectFn: (base, year, deforest) => Math.round(base * Math.pow(1.02 + Math.abs(deforest) * 0.003, year)),
   },
   revenue: {
     title: 'Net Economic Return (NPR)',
@@ -99,8 +104,7 @@ const FACTOR_META: Record<string, FactorMeta> = {
     sliderMin: -50,
     sliderMax: 100,
     sliderStep: 5,
-    projectFn: (base, year, price) =>
-      Math.round(base * Math.pow(1.04 + price * 0.004, year)),
+    projectFn: (base, year, price) => Math.round(base * Math.pow(1.04 + price * 0.004, year)),
   },
   jobs: {
     title: 'Jobs Created (Direct FTE)',
@@ -108,14 +112,13 @@ const FACTOR_META: Record<string, FactorMeta> = {
     unit: 'FTE',
     why: 'Job creation is the most tangible socioeconomic output — directly reducing rural out-migration and poverty. Each FTE is 250 person-days of agricultural labor.',
     how: 'directJobs = laborDays ÷ 250. Indirect jobs = directJobs × 0.5 (supply chain multiplier). Regenerative farming is ~20% more labor-intensive than conventional methods.',
-    what: 'FTE count drives community-level income generation, school enrollment, healthcare access, and reduces Nepal\'s remittance-dependency cycle.',
+    what: "FTE count drives community-level income generation, school enrollment, healthcare access, and reduces Nepal's remittance-dependency cycle.",
     baseValue: 0,
     sliderLabel: 'Labor Market Expansion (%)',
     sliderMin: 0,
     sliderMax: 100,
     sliderStep: 5,
-    projectFn: (base, year, labor) =>
-      Math.round((base * Math.pow(1.03 + labor * 0.002, year)) * 10) / 10,
+    projectFn: (base, year, labor) => Math.round(base * Math.pow(1.03 + labor * 0.002, year) * 10) / 10,
   },
 };
 
@@ -127,13 +130,20 @@ export const FactorDetailModal: React.FC<FactorDetailModalProps> = ({ factorKey,
 
   const getBaseValue = () => {
     switch (factorKey) {
-      case 'water': return output.water.waterStressIndex;
-      case 'energy': return output.energy.loadKwh;
-      case 'food': return output.food.yieldKg;
-      case 'ecosystem': return output.ecosystem.carbonOffsetKgCo2;
-      case 'revenue': return output.socioeconomics.netRevenueNpr;
-      case 'jobs': return output.socioeconomics.directJobsCreated;
-      default: return 0;
+      case 'water':
+        return output.water.waterStressIndex;
+      case 'energy':
+        return output.energy.loadKwh;
+      case 'food':
+        return output.food.yieldKg;
+      case 'ecosystem':
+        return output.ecosystem.carbonOffsetKgCo2;
+      case 'revenue':
+        return output.socioeconomics.netRevenueNpr;
+      case 'jobs':
+        return output.socioeconomics.directJobsCreated;
+      default:
+        return 0;
     }
   };
 
@@ -193,16 +203,44 @@ export const FactorDetailModal: React.FC<FactorDetailModalProps> = ({ factorKey,
                 <LineChart data={projectionData} margin={{ top: 5, right: 20, bottom: 5, left: 10 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                   <XAxis dataKey="year" stroke="#64748b" tick={{ fill: '#64748b', fontSize: 11 }} />
-                  <YAxis stroke="#64748b" tick={{ fill: '#64748b', fontSize: 10 }}
-                    tickFormatter={(v) => v > 999999 ? `${(v/1000000).toFixed(1)}M` : v > 999 ? `${(v/1000).toFixed(0)}k` : v} />
+                  <YAxis
+                    stroke="#64748b"
+                    tick={{ fill: '#64748b', fontSize: 10 }}
+                    tickFormatter={(v) =>
+                      v > 999999 ? `${(v / 1000000).toFixed(1)}M` : v > 999 ? `${(v / 1000).toFixed(0)}k` : v
+                    }
+                  />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#ffffff', borderColor: '#cbd5e1', borderRadius: '0.5rem', color: '#0f172a', fontSize: 11, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                    contentStyle={{
+                      backgroundColor: '#ffffff',
+                      borderColor: '#cbd5e1',
+                      borderRadius: '0.5rem',
+                      color: '#0f172a',
+                      fontSize: 11,
+                      boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                    }}
                     formatter={(v: number) => [v.toLocaleString(), '']}
                   />
                   <Legend wrapperStyle={{ fontSize: 11, color: '#475569' }} />
                   <ReferenceLine y={base} stroke="#94a3b8" strokeDasharray="4 4" />
-                  <Line type="monotone" dataKey="baseline" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="5 3" name="Baseline" dot={false} />
-                  <Line type="monotone" dataKey="simulated" stroke={meta.color} strokeWidth={2.5} name="Simulated" dot={{ r: 3 }} activeDot={{ r: 5 }} />
+                  <Line
+                    type="monotone"
+                    dataKey="baseline"
+                    stroke="#94a3b8"
+                    strokeWidth={1.5}
+                    strokeDasharray="5 3"
+                    name="Baseline"
+                    dot={false}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="simulated"
+                    stroke={meta.color}
+                    strokeWidth={2.5}
+                    name="Simulated"
+                    dot={{ r: 3 }}
+                    activeDot={{ r: 5 }}
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -217,7 +255,8 @@ export const FactorDetailModal: React.FC<FactorDetailModalProps> = ({ factorKey,
             <div className="flex justify-between items-center text-xs">
               <span className="text-slate-700 font-medium">{meta.sliderLabel}</span>
               <span className="font-bold font-mono text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200 shadow-2xs">
-                {sliderVal > 0 ? `+${sliderVal}` : sliderVal}{meta.sliderLabel.includes('%') ? '%' : ''}
+                {sliderVal > 0 ? `+${sliderVal}` : sliderVal}
+                {meta.sliderLabel.includes('%') ? '%' : ''}
               </span>
             </div>
             <input
@@ -226,7 +265,7 @@ export const FactorDetailModal: React.FC<FactorDetailModalProps> = ({ factorKey,
               max={meta.sliderMax}
               step={meta.sliderStep}
               value={sliderVal}
-              onChange={e => setSliderVal(parseInt(e.target.value))}
+              onChange={(e) => setSliderVal(parseInt(e.target.value))}
               className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-slate-200"
               style={{ accentColor: meta.color }}
             />
@@ -240,12 +279,21 @@ export const FactorDetailModal: React.FC<FactorDetailModalProps> = ({ factorKey,
               <span className="font-bold font-mono text-slate-900">
                 {projectionData[10]?.simulated.toLocaleString()} {meta.unit}
               </span>
-              {projectionData[10]?.simulated > projectionData[10]?.baseline
-                ? <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
-                : <TrendingDown className="w-3.5 h-3.5 text-rose-600" />}
-              <span className={`font-mono font-semibold ${projectionData[10]?.simulated > projectionData[10]?.baseline ? 'text-emerald-700' : 'text-rose-700'}`}>
+              {projectionData[10]?.simulated > projectionData[10]?.baseline ? (
+                <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+              ) : (
+                <TrendingDown className="w-3.5 h-3.5 text-rose-600" />
+              )}
+              <span
+                className={`font-mono font-semibold ${projectionData[10]?.simulated > projectionData[10]?.baseline ? 'text-emerald-700' : 'text-rose-700'}`}
+              >
                 ({projectionData[10]?.simulated > projectionData[10]?.baseline ? '+' : ''}
-                {Math.round(((projectionData[10]?.simulated - projectionData[10]?.baseline) / Math.max(1, projectionData[10]?.baseline)) * 1000) / 10}% vs baseline)
+                {Math.round(
+                  ((projectionData[10]?.simulated - projectionData[10]?.baseline) /
+                    Math.max(1, projectionData[10]?.baseline)) *
+                    1000
+                ) / 10}
+                % vs baseline)
               </span>
             </div>
           </div>

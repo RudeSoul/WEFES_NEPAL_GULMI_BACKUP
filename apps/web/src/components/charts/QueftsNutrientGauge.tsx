@@ -28,15 +28,55 @@ export const QueftsNutrientGauge: React.FC<QueftsNutrientGaugeProps> = ({
   const [selectedNutrient, setSelectedNutrient] = useState<string>('nitrogen');
 
   const nutrients = [
-    { id: 'nitrogen', name: 'Nitrogen (N)', req: nitrogenKgPerHa, supply: Math.round(nitrogenKgPerHa * 0.38), bags: `${ureaBags} Bags Urea`, color: '#10b981', desc: 'Promotes vegetative canopy growth, chlorophyll density, and protein synthesis.' },
-    { id: 'phosphorus', name: 'Phosphorus (P₂O₅)', req: phosphorusKgPerHa, supply: Math.round(phosphorusKgPerHa * 0.42), bags: `${dapBags} Bags DAP`, color: '#0ea5e9', desc: 'Stimulates root elongation, early tillering, and reproductive panicle formation.' },
-    { id: 'potassium', name: 'Potassium (K₂O)', req: potassiumKgPerHa, supply: Math.round(potassiumKgPerHa * 0.45), bags: `${mopBags} Bags MOP`, color: '#8b5cf6', desc: 'Regulates stomatal conductance, lodging resistance, and grain starch filling.' },
-    { id: 'zinc', name: 'Zinc (ZnSO₄)', req: zincKgPerHa, supply: Math.round(zincKgPerHa * 0.30), bags: `${zincKgPerHa} kg ZnSO₄`, color: '#f59e0b', desc: 'Essential micronutrient enzyme cofactor; prevents Khaira disease and chlorosis.' },
-    { id: 'boron', name: 'Borax (B)', req: boraxKgPerHa, supply: Math.round(boraxKgPerHa * 0.25), bags: `${boraxKgPerHa} kg Borax`, color: '#06b6d4', desc: 'Critical for pollen viability, spikelet fertility, and flower fertilization.' },
+    {
+      id: 'nitrogen',
+      name: 'Nitrogen (N)',
+      req: nitrogenKgPerHa,
+      supply: Math.round(nitrogenKgPerHa * 0.38),
+      bags: `${ureaBags} Bags Urea`,
+      color: '#10b981',
+      desc: 'Promotes vegetative canopy growth, chlorophyll density, and protein synthesis.',
+    },
+    {
+      id: 'phosphorus',
+      name: 'Phosphorus (P₂O₅)',
+      req: phosphorusKgPerHa,
+      supply: Math.round(phosphorusKgPerHa * 0.42),
+      bags: `${dapBags} Bags DAP`,
+      color: '#0ea5e9',
+      desc: 'Stimulates root elongation, early tillering, and reproductive panicle formation.',
+    },
+    {
+      id: 'potassium',
+      name: 'Potassium (K₂O)',
+      req: potassiumKgPerHa,
+      supply: Math.round(potassiumKgPerHa * 0.45),
+      bags: `${mopBags} Bags MOP`,
+      color: '#8b5cf6',
+      desc: 'Regulates stomatal conductance, lodging resistance, and grain starch filling.',
+    },
+    {
+      id: 'zinc',
+      name: 'Zinc (ZnSO₄)',
+      req: zincKgPerHa,
+      supply: Math.round(zincKgPerHa * 0.3),
+      bags: `${zincKgPerHa} kg ZnSO₄`,
+      color: '#f59e0b',
+      desc: 'Essential micronutrient enzyme cofactor; prevents Khaira disease and chlorosis.',
+    },
+    {
+      id: 'boron',
+      name: 'Borax (B)',
+      req: boraxKgPerHa,
+      supply: Math.round(boraxKgPerHa * 0.25),
+      bags: `${boraxKgPerHa} kg Borax`,
+      color: '#06b6d4',
+      desc: 'Critical for pollen viability, spikelet fertility, and flower fertilization.',
+    },
   ];
 
-  const maxVal = Math.max(...nutrients.map(n => n.req), 150);
-  const activeN = nutrients.find(n => n.id === selectedNutrient) || nutrients[0];
+  const maxVal = Math.max(...nutrients.map((n) => n.req), 150);
+  const activeN = nutrients.find((n) => n.id === selectedNutrient) || nutrients[0];
 
   return (
     <div className="p-5 sm:p-6 bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-md space-y-4">
@@ -74,7 +114,9 @@ export const QueftsNutrientGauge: React.FC<QueftsNutrientGaugeProps> = ({
               key={n.id}
               onClick={() => setSelectedNutrient(n.id)}
               className={`p-3 rounded-2xl border transition-all cursor-pointer space-y-1.5 ${
-                isSelected ? 'bg-slate-800 border-emerald-500 shadow-xs' : 'bg-slate-800/60 border-slate-700 hover:bg-slate-800'
+                isSelected
+                  ? 'bg-slate-800 border-emerald-500 shadow-xs'
+                  : 'bg-slate-800/60 border-slate-700 hover:bg-slate-800'
               }`}
             >
               <div className="flex items-center justify-between text-xs">
@@ -118,9 +160,7 @@ export const QueftsNutrientGauge: React.FC<QueftsNutrientGaugeProps> = ({
             {activeN.bags} / ha
           </span>
         </div>
-        <p className="text-slate-300 font-sans leading-relaxed text-[11px] pt-1">
-          {activeN.desc}
-        </p>
+        <p className="text-slate-300 font-sans leading-relaxed text-[11px] pt-1">{activeN.desc}</p>
       </div>
     </div>
   );

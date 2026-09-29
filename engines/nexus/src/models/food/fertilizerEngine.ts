@@ -1,5 +1,12 @@
 export interface SiteSpecificNutrientPrescription {
-  agroZone: 'Eastern Terai' | 'Central Terai' | 'Western Terai' | 'Far-Western Terai' | 'Inner Terai' | 'Mid-Hills' | 'High Mountains';
+  agroZone:
+    | 'Eastern Terai'
+    | 'Central Terai'
+    | 'Western Terai'
+    | 'Far-Western Terai'
+    | 'Inner Terai'
+    | 'Mid-Hills'
+    | 'High Mountains';
   cropName: string;
   targetYieldTonPerHa: number;
   nitrogenKgPerHa: number;
@@ -79,11 +86,11 @@ export function computeSiteSpecificFertilizer(
   }
 
   // Commercial bag conversions (Urea: 46% N, DAP: 18% N + 46% P2O5, MOP: 60% K2O)
-  const dapKg = (baseP / 0.46);
+  const dapKg = baseP / 0.46;
   const nFromDap = dapKg * 0.18;
   const remainingN = Math.max(0, baseN - nFromDap);
   const ureaKg = remainingN / 0.46;
-  const mopKg = baseK / 0.60;
+  const mopKg = baseK / 0.6;
 
   const ureaBags50kg = Number((ureaKg / 50).toFixed(1));
   const dapBags50kg = Number((dapKg / 50).toFixed(1));
@@ -91,7 +98,7 @@ export function computeSiteSpecificFertilizer(
 
   // Official March 2023 MoALD subsidized pricing (Urea: NPR 1,250/bag, DAP: NPR 2,500/bag, MOP: NPR 2,000/bag)
   const fertilizerCostNprPerHa = Math.round(
-    (ureaBags50kg * 1250) + (dapBags50kg * 2500) + (mopBags50kg * 2000) + (baseZn * 140) + (baseB * 180)
+    ureaBags50kg * 1250 + dapBags50kg * 2500 + mopBags50kg * 2000 + baseZn * 140 + baseB * 180
   );
 
   return {
@@ -118,7 +125,7 @@ export function computeSiteSpecificFertilizer(
         timing: 'Day 0 (At Final Land Preparation)',
         ureaKg: Math.round(ureaKg * 0.33),
         dapKg: Math.round(dapKg),
-        mopKg: Math.round(mopKg * 0.50),
+        mopKg: Math.round(mopKg * 0.5),
         micronutrients: `${baseZn} kg Zinc Sulphate + ${baseB} kg Borax incorporated in soil`,
       },
       {
@@ -134,7 +141,7 @@ export function computeSiteSpecificFertilizer(
         timing: 'Day 45–50 After Sowing',
         ureaKg: Math.round(ureaKg * 0.34),
         dapKg: 0,
-        mopKg: Math.round(mopKg * 0.50),
+        mopKg: Math.round(mopKg * 0.5),
         micronutrients: 'No additional micronutrients needed',
       },
     ],

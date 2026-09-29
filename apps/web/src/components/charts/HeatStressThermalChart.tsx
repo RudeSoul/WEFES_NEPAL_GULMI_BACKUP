@@ -109,10 +109,25 @@ export const HeatStressThermalChart: React.FC<HeatStressThermalChartProps> = ({
                 />
 
                 {/* Temp Values */}
-                <text x={colX} y={topY - 6} textAnchor="middle" fill="#ffffff" fontSize="9.5" fontWeight="bold" fontFamily="monospace">
+                <text
+                  x={colX}
+                  y={topY - 6}
+                  textAnchor="middle"
+                  fill="#ffffff"
+                  fontSize="9.5"
+                  fontWeight="bold"
+                  fontFamily="monospace"
+                >
                   {m.maxTemp}°
                 </text>
-                <text x={colX} y={bottomY + 12} textAnchor="middle" fill="#94a3b8" fontSize="8.5" fontFamily="monospace">
+                <text
+                  x={colX}
+                  y={bottomY + 12}
+                  textAnchor="middle"
+                  fill="#94a3b8"
+                  fontSize="8.5"
+                  fontFamily="monospace"
+                >
                   {m.minTemp}°
                 </text>
 
@@ -138,7 +153,9 @@ export const HeatStressThermalChart: React.FC<HeatStressThermalChartProps> = ({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1 border-t border-slate-800 text-xs font-mono">
         <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700">
           <span className="text-slate-400 font-sans text-[11px] block">{activeM.month} Daytime Peak:</span>
-          <div className={`text-sm font-bold mt-0.5 ${activeM.maxTemp > criticalThresholdTempC ? 'text-rose-400' : 'text-amber-400'}`}>
+          <div
+            className={`text-sm font-bold mt-0.5 ${activeM.maxTemp > criticalThresholdTempC ? 'text-rose-400' : 'text-amber-400'}`}
+          >
             {activeM.maxTemp}°C (VPD: {activeM.vpdKpa} kPa)
           </div>
         </div>
@@ -150,9 +167,7 @@ export const HeatStressThermalChart: React.FC<HeatStressThermalChartProps> = ({
         </div>
         <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700 col-span-2">
           <span className="text-slate-400 font-sans text-[11px] block">Agronomic Heat Mitigation:</span>
-          <div className="text-emerald-300 font-sans text-[11px] mt-0.5 font-medium">
-            {recommendedMitigationAction}
-          </div>
+          <div className="text-emerald-300 font-sans text-[11px] mt-0.5 font-medium">{recommendedMitigationAction}</div>
         </div>
       </div>
     </div>

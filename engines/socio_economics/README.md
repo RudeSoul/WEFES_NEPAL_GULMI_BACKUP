@@ -1,7 +1,9 @@
 # Socio-Economics Pillar Computational Engines
 
 ## Mandate & Scope
+
 The Socio-Economics & Governance Pillar quantifies human welfare, gender equity, financial feasibility, and policy alignment:
+
 1. **Gender-Responsive Budgeting & GESI**:
    - Female agricultural labor burden, time poverty reduction through micro-irrigation, and municipal GESI allocation.
 2. **NDC & Climate Emission Targets**:
@@ -12,4 +14,5 @@ The Socio-Economics & Governance Pillar quantifies human welfare, gender equity,
    - Palika-level capex/opex benchmarks, return on investment (ROI), and local revenue generation.
 
 ## Modules Location
+
 - Interactive policy and social models are located in `engines/nexus/src/models/social/`.

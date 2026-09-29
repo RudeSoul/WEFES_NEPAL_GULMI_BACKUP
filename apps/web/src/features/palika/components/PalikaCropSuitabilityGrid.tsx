@@ -122,10 +122,10 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                 (crop.season === 'barkhe'
                   ? '🌧️ बर्खे'
                   : crop.season === 'hiunde'
-                  ? '❄️ हिउँदे'
-                  : crop.season === 'chaite'
-                  ? '☀️ चैते'
-                  : '🌳 बाह्रमासे');
+                    ? '❄️ हिउँदे'
+                    : crop.season === 'chaite'
+                      ? '☀️ चैते'
+                      : '🌳 बाह्रमासे');
 
               return (
                 <div
@@ -159,18 +159,21 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     </div>
 
                     <div className="text-right shrink-0 flex flex-col items-end gap-0.5">
-                      <span className={`text-xs px-2 py-0.5 rounded-md font-mono font-extrabold border shadow-2xs ${scoreBadgeClass}`}>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-md font-mono font-extrabold border shadow-2xs ${scoreBadgeClass}`}
+                      >
                         {score}%
                       </span>
-                      <span className="text-[9px] font-mono font-bold text-slate-500">
-                        {faoClassBadge}
-                      </span>
+                      <span className="text-[9px] font-mono font-bold text-slate-500">{faoClassBadge}</span>
                     </div>
                   </div>
 
                   <div className="space-y-1">
                     <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-slate-200">
-                      <div className={`h-full rounded-full transition-all duration-300 ${barClass}`} style={{ width: `${score}%` }} />
+                      <div
+                        className={`h-full rounded-full transition-all duration-300 ${barClass}`}
+                        style={{ width: `${score}%` }}
+                      />
                     </div>
                     {score < 75 && suitability.limitingFactor && suitability.limitingFactor !== 'None' && (
                       <div className="text-[10px] text-amber-700 font-mono truncate">
@@ -219,9 +222,7 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-lg font-bold text-slate-900 font-outfit">
-                    {activeHoverCrop?.name}
-                  </h3>
+                  <h3 className="text-lg font-bold text-slate-900 font-outfit">{activeHoverCrop?.name}</h3>
                   {activeHoverCrop?.nepaliName && (
                     <span className="text-sm text-slate-600 font-serif font-semibold">
                       ({activeHoverCrop.nepaliName})
@@ -232,7 +233,14 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Market Value: <strong className="text-slate-800 font-mono">NPR {activeHoverCrop?.marketValuePerUnit}/{activeHoverCrop?.baseUnitName}</strong> • Season: <strong className="text-slate-800">{activeHoverCrop?.seasonLabelNepali || activeHoverCrop?.season}</strong>
+                  Market Value:{' '}
+                  <strong className="text-slate-800 font-mono">
+                    NPR {activeHoverCrop?.marketValuePerUnit}/{activeHoverCrop?.baseUnitName}
+                  </strong>{' '}
+                  • Season:{' '}
+                  <strong className="text-slate-800">
+                    {activeHoverCrop?.seasonLabelNepali || activeHoverCrop?.season}
+                  </strong>
                 </p>
               </div>
             </div>
@@ -241,7 +249,9 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
               <div className="flex items-center gap-2">
                 <div className="text-right">
                   <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Suitability Score</div>
-                  <div className="text-xl font-extrabold font-mono text-emerald-700">{activeSuitability.suitabilityScore}/100</div>
+                  <div className="text-xl font-extrabold font-mono text-emerald-700">
+                    {activeSuitability.suitabilityScore}/100
+                  </div>
                 </div>
               </div>
             )}
@@ -262,10 +272,23 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                   <ResponsiveContainer width="100%" height={220}>
                     <RadarChart data={radarData}>
                       <PolarGrid stroke="#cbd5e1" />
-                      <PolarAngleAxis dataKey="pillar" stroke="#475569" tick={{ fill: '#334155', fontSize: 10, fontWeight: 700 }} />
+                      <PolarAngleAxis
+                        dataKey="pillar"
+                        stroke="#475569"
+                        tick={{ fill: '#334155', fontSize: 10, fontWeight: 700 }}
+                      />
                       <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#cbd5e1" />
                       <Radar name="Pillar Score" dataKey="score" stroke="#0284c7" fill="#0284c7" fillOpacity={0.3} />
-                      <Tooltip contentStyle={{ backgroundColor: '#ffffff', borderColor: '#cbd5e1', borderRadius: '0.5rem', color: '#0f172a', fontSize: 11, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: '#ffffff',
+                          borderColor: '#cbd5e1',
+                          borderRadius: '0.5rem',
+                          color: '#0f172a',
+                          fontSize: 11,
+                          boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                        }}
+                      />
                     </RadarChart>
                   </ResponsiveContainer>
                 </div>
@@ -281,23 +304,33 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     <div className="grid grid-cols-5 gap-1.5 sm:gap-2 text-center font-mono">
                       <div className="bg-white p-1.5 sm:p-2 rounded-xl border border-sky-200/90 shadow-2xs flex flex-col items-center justify-center">
                         <span className="text-[10px] font-bold text-sky-700 leading-tight">💧 Water</span>
-                        <span className="text-xs sm:text-sm font-extrabold text-sky-950 mt-0.5">{activeSuitability.pillarScores.water}</span>
+                        <span className="text-xs sm:text-sm font-extrabold text-sky-950 mt-0.5">
+                          {activeSuitability.pillarScores.water}
+                        </span>
                       </div>
                       <div className="bg-white p-1.5 sm:p-2 rounded-xl border border-amber-200/90 shadow-2xs flex flex-col items-center justify-center">
                         <span className="text-[10px] font-bold text-amber-700 leading-tight">⚡ Energy</span>
-                        <span className="text-xs sm:text-sm font-extrabold text-amber-950 mt-0.5">{activeSuitability.pillarScores.energy}</span>
+                        <span className="text-xs sm:text-sm font-extrabold text-amber-950 mt-0.5">
+                          {activeSuitability.pillarScores.energy}
+                        </span>
                       </div>
                       <div className="bg-white p-1.5 sm:p-2 rounded-xl border border-emerald-200/90 shadow-2xs flex flex-col items-center justify-center">
                         <span className="text-[10px] font-bold text-emerald-700 leading-tight">🌾 Food</span>
-                        <span className="text-xs sm:text-sm font-extrabold text-emerald-950 mt-0.5">{activeSuitability.pillarScores.food}</span>
+                        <span className="text-xs sm:text-sm font-extrabold text-emerald-950 mt-0.5">
+                          {activeSuitability.pillarScores.food}
+                        </span>
                       </div>
                       <div className="bg-white p-1.5 sm:p-2 rounded-xl border border-teal-200/90 shadow-2xs flex flex-col items-center justify-center">
                         <span className="text-[10px] font-bold text-teal-700 leading-tight">🌲 Eco</span>
-                        <span className="text-xs sm:text-sm font-extrabold text-teal-950 mt-0.5">{activeSuitability.pillarScores.ecosystem}</span>
+                        <span className="text-xs sm:text-sm font-extrabold text-teal-950 mt-0.5">
+                          {activeSuitability.pillarScores.ecosystem}
+                        </span>
                       </div>
                       <div className="bg-white p-1.5 sm:p-2 rounded-xl border border-purple-200/90 shadow-2xs flex flex-col items-center justify-center">
                         <span className="text-[10px] font-bold text-purple-700 leading-tight">🏛️ Socio</span>
-                        <span className="text-xs sm:text-sm font-extrabold text-purple-950 mt-0.5">{activeSuitability.pillarScores.socioeconomics}</span>
+                        <span className="text-xs sm:text-sm font-extrabold text-purple-950 mt-0.5">
+                          {activeSuitability.pillarScores.socioeconomics}
+                        </span>
                       </div>
                     </div>
                   </div>

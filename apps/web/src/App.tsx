@@ -27,7 +27,7 @@ function PalikaRouteWrapper({
   climateDataset: any;
 }) {
   const { palikaName } = useParams<{ palikaName?: string }>();
-  const effectivePalikaName = palikaName ? decodeURIComponent(palikaName) : (selectedPalikaName || 'Resunga');
+  const effectivePalikaName = palikaName ? decodeURIComponent(palikaName) : selectedPalikaName || 'Resunga';
 
   useEffect(() => {
     if (palikaName && decodeURIComponent(palikaName) !== selectedPalikaName) {
@@ -136,12 +136,16 @@ export function App() {
                   output={analysisOutput}
                   onOpenSimulator={() => navigate(ROUTES.SIMULATOR)}
                   onOpenDossier={() => navigate(ROUTES.DOSSIER)}
-                  onBackToDistrict={() => navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS)}
+                  onBackToDistrict={() =>
+                    navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS)
+                  }
                   onBackToMap={() => navigate(ROUTES.MAP)}
                 />
               ) : (
                 <div className="p-8 text-center bg-white rounded-xl border border-slate-200">
-                  <p className="text-slate-600 font-medium mb-4">No active analysis loaded. Please select a Palika and crop to run analysis.</p>
+                  <p className="text-slate-600 font-medium mb-4">
+                    No active analysis loaded. Please select a Palika and crop to run analysis.
+                  </p>
                   <button
                     onClick={() => navigate(ROUTES.MAP)}
                     className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-colors"
@@ -160,12 +164,16 @@ export function App() {
                 <ScenarioSimulator
                   baselineOutput={analysisOutput}
                   onBackToAnalysis={() => navigate(ROUTES.ANALYSIS)}
-                  onBackToDistrict={() => navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS)}
+                  onBackToDistrict={() =>
+                    navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS)
+                  }
                   onBackToMap={() => navigate(ROUTES.MAP)}
                 />
               ) : (
                 <div className="p-8 text-center bg-white rounded-xl border border-slate-200">
-                  <p className="text-slate-600 font-medium mb-4">Scenario Simulator requires an initial analysis baseline. Start from the map or a Palika profile.</p>
+                  <p className="text-slate-600 font-medium mb-4">
+                    Scenario Simulator requires an initial analysis baseline. Start from the map or a Palika profile.
+                  </p>
                   <button
                     onClick={() => navigate(ROUTES.MAP)}
                     className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-colors"
@@ -184,7 +192,9 @@ export function App() {
                 <ScientificDossierScreen
                   output={analysisOutput}
                   onBackToAnalysis={() => navigate(ROUTES.ANALYSIS)}
-                  onBackToDistrict={() => navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS)}
+                  onBackToDistrict={() =>
+                    navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS)
+                  }
                   onBackToMap={() => navigate(ROUTES.MAP)}
                   onOpenSimulator={() => navigate(ROUTES.SIMULATOR)}
                   onOpenResearchSandbox={() => navigate(ROUTES.RESEARCH_SANDBOX)}
@@ -216,7 +226,9 @@ export function App() {
 
       <footer className="border-t border-slate-200 bg-white py-4 px-4 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="font-semibold text-slate-700">WEFES Nexus · Gulmi District (गुल्मी जिल्ला) • Lumbini Province, Nepal</span>
+          <span className="font-semibold text-slate-700">
+            WEFES Nexus · Gulmi District (गुल्मी जिल्ला) • Lumbini Province, Nepal
+          </span>
           <span className="text-[11px] text-slate-500 font-mono">
             Water · Energy · Food · Ecosystem · Socioeconomics
           </span>

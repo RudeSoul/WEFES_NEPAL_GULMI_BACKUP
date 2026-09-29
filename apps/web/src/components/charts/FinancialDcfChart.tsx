@@ -33,7 +33,7 @@ function getCropLifecycleProfile(cropName: string): CropLifecycleProfile {
         if (yr === 7) return 1.25; // commercial thinning dividend
         if (yr === 8) return 0.85;
         if (yr <= 11) return 1.05;
-        return 1.30; // mature standing volume
+        return 1.3; // mature standing volume
       },
       getPhaseDescription: (yr) => {
         if (yr <= 2) return 'Sapling Nursery & Plantation Establishment';
@@ -48,7 +48,7 @@ function getCropLifecycleProfile(cropName: string): CropLifecycleProfile {
     return {
       categoryLabel: 'Perennial Fruit Orchard (4-Yr Gestation J-Curve)',
       getYieldFactor: (yr) => {
-        if (yr === 1) return 0.10; // sapling stage
+        if (yr === 1) return 0.1; // sapling stage
         if (yr === 2) return 0.32; // vegetative branching
         if (yr === 3) return 0.65; // first commercial bearing
         if (yr === 4) return 0.92; // near full yield
@@ -74,7 +74,7 @@ function getCropLifecycleProfile(cropName: string): CropLifecycleProfile {
         if (yr === 3) return 0.85; // first full commercial harvest
         if (yr === 4) return 1.02; // prime harvest
         if (yr === 8) return 0.86; // coppicing / shade tree thinning
-        if (yr <= 12) return 1.10;
+        if (yr <= 12) return 1.1;
         return 1.14;
       },
       getPhaseDescription: (yr) => {
@@ -109,10 +109,10 @@ function getCropLifecycleProfile(cropName: string): CropLifecycleProfile {
     categoryLabel: 'Annual Cropping System (Adoption & Soil Building Ramp)',
     getYieldFactor: (yr) => {
       if (yr === 1) return 0.72; // adoption learning curve & micro-irrigation commissioning
-      if (yr === 2) return 0.90; // full adoption of precision agronomy
+      if (yr === 2) return 0.9; // full adoption of precision agronomy
       if (yr === 7) return 0.84; // solar pump inverter & drip emitter overhaul
-      if (yr <= 6) return 1.00;
-      return Math.min(1.18, 1.00 + (yr - 7) * 0.022); // biochar / organic fertility compounding
+      if (yr <= 6) return 1.0;
+      return Math.min(1.18, 1.0 + (yr - 7) * 0.022); // biochar / organic fertility compounding
     },
     getPhaseDescription: (yr) => {
       if (yr === 1) return 'Farmer Adoption, Land Prep & Smart Drip Setup';
@@ -172,7 +172,7 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
       // Annual nominal net cashflow shaped by crop gestation lifecycle
       const yrNominal = Math.round(peakAnnualNet * factor);
       // Discounted cashflow: PV = CF / (1 + 0.10)^yr
-      const yrDiscounted = Math.round(yrNominal / Math.pow(1.10, yr));
+      const yrDiscounted = Math.round(yrNominal / Math.pow(1.1, yr));
 
       cumNominal += yrNominal;
       cumDiscounted += yrDiscounted;
@@ -202,7 +202,7 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
       if (years[yr][targetKey] >= 0) {
         const prevCum = Math.abs(years[yr - 1][targetKey]);
         const currAnnual = years[yr][annualKey];
-        return Number(((yr - 1) + (prevCum / Math.max(1, currAnnual))).toFixed(1));
+        return Number((yr - 1 + prevCum / Math.max(1, currAnnual)).toFixed(1));
       }
     }
     return '>15';
@@ -212,7 +212,7 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
 
   // ── SVG Coordinate Mapping ──────────────────────────────────────────────────
   const activeSeries = useMemo(() => {
-    return years.map(y => viewMode === 'discounted_dcf' ? y.cumulativeDiscountedNpvNpr : y.cumulativeNominalNpr);
+    return years.map((y) => (viewMode === 'discounted_dcf' ? y.cumulativeDiscountedNpvNpr : y.cumulativeNominalNpr));
   }, [years, viewMode]);
 
   const minVal = Math.min(...activeSeries);
@@ -232,23 +232,25 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
   const zeroY = toSvgY(0);
 
   // Payback X coordinate
-  const paybackX = typeof paybackPeriodYears === 'number'
-    ? Math.round(60 + (paybackPeriodYears / 15) * 680)
-    : null;
+  const paybackX = typeof paybackPeriodYears === 'number' ? Math.round(60 + (paybackPeriodYears / 15) * 680) : null;
 
   // Build SVG path strings
-  const linePoints = years.map(y => {
-    const val = viewMode === 'discounted_dcf' ? y.cumulativeDiscountedNpvNpr : y.cumulativeNominalNpr;
-    return `${toSvgX(y.year)},${toSvgY(val)}`;
-  }).join(' L ');
+  const linePoints = years
+    .map((y) => {
+      const val = viewMode === 'discounted_dcf' ? y.cumulativeDiscountedNpvNpr : y.cumulativeNominalNpr;
+      return `${toSvgX(y.year)},${toSvgY(val)}`;
+    })
+    .join(' L ');
 
   const areaPath = `M ${linePoints} L ${toSvgX(15)},${zeroY} L ${toSvgX(0)},${zeroY} Z`;
 
   // Secondary comparative line (the other mode, rendered as dashed line)
-  const secondaryPoints = years.map(y => {
-    const val = viewMode === 'discounted_dcf' ? y.cumulativeNominalNpr : y.cumulativeDiscountedNpvNpr;
-    return `${toSvgX(y.year)},${toSvgY(val)}`;
-  }).join(' L ');
+  const secondaryPoints = years
+    .map((y) => {
+      const val = viewMode === 'discounted_dcf' ? y.cumulativeNominalNpr : y.cumulativeDiscountedNpvNpr;
+      return `${toSvgX(y.year)},${toSvgY(val)}`;
+    })
+    .join(' L ');
 
   const isFeasible = economicInternalRateOfReturnEIRR > 0;
   const primaryColor = isFeasible ? '#10b981' : '#f43f5e';
@@ -268,7 +270,8 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
             </span>
           </div>
           <p className="text-xs text-slate-400 font-sans">
-            {cropName} · {districtName} — Displays non-linear gestation S-curves, mid-life maintenance cycles, and discounted capital recovery.
+            {cropName} · {districtName} — Displays non-linear gestation S-curves, mid-life maintenance cycles, and
+            discounted capital recovery.
           </p>
         </div>
 
@@ -297,11 +300,13 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
             </button>
           </div>
 
-          <span className={`px-2.5 py-1 rounded-lg border text-xs font-mono ${
-            isFeasible
-              ? 'bg-emerald-950 text-emerald-300 border-emerald-800'
-              : 'bg-rose-950 text-rose-300 border-rose-800'
-          }`}>
+          <span
+            className={`px-2.5 py-1 rounded-lg border text-xs font-mono ${
+              isFeasible
+                ? 'bg-emerald-950 text-emerald-300 border-emerald-800'
+                : 'bg-rose-950 text-rose-300 border-rose-800'
+            }`}
+          >
             {isFeasible ? '⭐' : '⚠️'} EIRR: {economicInternalRateOfReturnEIRR}% · BCR: {benefitCostRatioBCR}x
           </span>
         </div>
@@ -317,13 +322,7 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
           </text>
 
           {/* Secondary Comparative Line (Dashed Slate) */}
-          <polyline
-            points={secondaryPoints}
-            fill="none"
-            stroke="#475569"
-            strokeWidth="1.5"
-            strokeDasharray="4 4"
-          />
+          <polyline points={secondaryPoints} fill="none" stroke="#475569" strokeWidth="1.5" strokeDasharray="4 4" />
 
           {/* Area fill */}
           <path d={areaPath} fill={areaColor} fillOpacity="0.15" />
@@ -341,21 +340,46 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
           {/* Payback Marker Line */}
           {paybackX !== null && typeof paybackPeriodYears === 'number' && (
             <>
-              <line x1={paybackX} y1="18" x2={paybackX} y2="195" stroke="#f59e0b" strokeWidth="2" strokeDasharray="4 4" />
+              <line
+                x1={paybackX}
+                y1="18"
+                x2={paybackX}
+                y2="195"
+                stroke="#f59e0b"
+                strokeWidth="2"
+                strokeDasharray="4 4"
+              />
               <text x={paybackX + 4} y="32" fill="#f59e0b" fontSize="9" fontWeight="bold" fontFamily="monospace">
-                Payback: {paybackPeriodYears} Yrs ({viewMode === 'discounted_dcf' ? 'NPV Breakeven' : 'Nominal Breakeven'})
+                Payback: {paybackPeriodYears} Yrs (
+                {viewMode === 'discounted_dcf' ? 'NPV Breakeven' : 'Nominal Breakeven'})
               </text>
             </>
           )}
 
           {paybackPeriodYears === '>15' && (
-            <text x="400" y="36" fill="#f43f5e" fontSize="10" fontWeight="bold" fontFamily="monospace" textAnchor="middle">
+            <text
+              x="400"
+              y="36"
+              fill="#f43f5e"
+              fontSize="10"
+              fontWeight="bold"
+              fontFamily="monospace"
+              textAnchor="middle"
+            >
               ⚠ Capital not recovered within 15-year DCF horizon
             </text>
           )}
 
           {paybackPeriodYears === 'N/A' && (
-            <text x="400" y="36" fill="#f43f5e" fontSize="10" fontWeight="bold" fontFamily="monospace" textAnchor="middle">
+            <text
+              x="400"
+              y="36"
+              fill="#f43f5e"
+              fontSize="10"
+              fontWeight="bold"
+              fontFamily="monospace"
+              textAnchor="middle"
+            >
               ⚠ Negative EIRR — non-viable investment
             </text>
           )}
@@ -407,23 +431,29 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
             <span>Year {activeData.year} Status:</span>
             <span className="text-emerald-400 font-mono">{(activeData.yieldFactor * 100).toFixed(0)}% Capacity</span>
           </div>
-          <div className="text-[11px] text-slate-300 font-sans mt-1 line-clamp-1 font-medium">
-            {activeData.phase}
-          </div>
+          <div className="text-[11px] text-slate-300 font-sans mt-1 line-clamp-1 font-medium">{activeData.phase}</div>
         </div>
 
         <div className="p-3 bg-slate-800/90 rounded-xl border border-slate-700">
           <span className="text-slate-400 font-sans text-[11px] block">
             Yr {activeData.year} Cumulative {viewMode === 'discounted_dcf' ? 'NPV' : 'Cash'}:
           </span>
-          <div className={`text-sm font-bold mt-0.5 ${
-            (viewMode === 'discounted_dcf' ? activeData.cumulativeDiscountedNpvNpr : activeData.cumulativeNominalNpr) >= 0
-              ? 'text-emerald-400'
-              : 'text-rose-400'
-          }`}>
-            NPR {(
-              (viewMode === 'discounted_dcf' ? activeData.cumulativeDiscountedNpvNpr : activeData.cumulativeNominalNpr) / 1000
-            ).toLocaleString(undefined, { maximumFractionDigits: 0 })}k
+          <div
+            className={`text-sm font-bold mt-0.5 ${
+              (viewMode === 'discounted_dcf'
+                ? activeData.cumulativeDiscountedNpvNpr
+                : activeData.cumulativeNominalNpr) >= 0
+                ? 'text-emerald-400'
+                : 'text-rose-400'
+            }`}
+          >
+            NPR{' '}
+            {(
+              (viewMode === 'discounted_dcf'
+                ? activeData.cumulativeDiscountedNpvNpr
+                : activeData.cumulativeNominalNpr) / 1000
+            ).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            k
           </div>
         </div>
 
@@ -432,9 +462,11 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
             Annual Net {viewMode === 'discounted_dcf' ? 'Discounted (PV)' : 'Nominal'}:
           </span>
           <div className="text-sm font-bold text-sky-400 mt-0.5">
-            NPR {(
+            NPR{' '}
+            {(
               (viewMode === 'discounted_dcf' ? activeData.annualDiscountedNpr : activeData.annualNominalCashNpr) / 1000
-            ).toLocaleString(undefined, { maximumFractionDigits: 0 })}k / yr
+            ).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            k / yr
           </div>
         </div>
 
@@ -442,9 +474,11 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
           <span className="text-slate-400 font-sans text-[11px] block">
             Break-even Payback ({viewMode === 'discounted_dcf' ? '10% Discounted' : 'Nominal'}):
           </span>
-          <div className={`text-sm font-bold mt-0.5 ${
-            typeof paybackPeriodYears === 'number' ? 'text-amber-400' : 'text-rose-400'
-          }`}>
+          <div
+            className={`text-sm font-bold mt-0.5 ${
+              typeof paybackPeriodYears === 'number' ? 'text-amber-400' : 'text-rose-400'
+            }`}
+          >
             {paybackPeriodYears} {typeof paybackPeriodYears === 'number' ? 'Years' : ''}
           </div>
         </div>
@@ -452,4 +486,3 @@ export const FinancialDcfChart: React.FC<FinancialDcfChartProps> = ({
     </div>
   );
 };
-

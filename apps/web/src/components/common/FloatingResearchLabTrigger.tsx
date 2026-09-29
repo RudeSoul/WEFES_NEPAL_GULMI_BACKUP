@@ -55,7 +55,9 @@ export const FloatingResearchLabTrigger: React.FC<FloatingResearchLabTriggerProp
         <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl bg-slate-950/95 text-white border border-purple-500/40 text-xs font-outfit shadow-2xl whitespace-nowrap animate-fade-in flex items-center gap-1.5 pointer-events-none backdrop-blur-md">
           <FlaskConical className="w-3.5 h-3.5 text-purple-400" />
           <span>{isInsideLab ? 'Exit Research Lab' : 'Research Sandbox'}</span>
-          <span className="text-[9px] font-mono bg-purple-500/30 text-purple-300 px-1 py-0.2 rounded border border-purple-400/30">v2.0</span>
+          <span className="text-[9px] font-mono bg-purple-500/30 text-purple-300 px-1 py-0.2 rounded border border-purple-400/30">
+            v2.0
+          </span>
         </div>
       )}
     </div>

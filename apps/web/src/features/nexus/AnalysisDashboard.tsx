@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
 import { WEFESOutput } from '@wefes/shared-types';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
-import { Droplets, Zap, Sprout, Trees, Coins, Users, ArrowRight, Activity, SlidersHorizontal, Scale, Info, ArrowLeft, ArrowUp, ArrowUpRight } from 'lucide-react';
+import {
+  Droplets,
+  Zap,
+  Sprout,
+  Trees,
+  Coins,
+  Users,
+  ArrowRight,
+  Activity,
+  SlidersHorizontal,
+  Scale,
+  Info,
+  ArrowLeft,
+  ArrowUp,
+  ArrowUpRight,
+} from 'lucide-react';
 import { FactorDetailModal } from './FactorDetailModal';
 import { NexusScientificModal } from './NexusScientificModal';
 
@@ -28,12 +43,17 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
     { pillar: 'Energy (Clean)', score: 100 - output.energy.fossilSharePercent },
     { pillar: 'Food (Security)', score: output.food.foodSecurityIndex },
     { pillar: 'Ecosystem (Health)', score: output.ecosystem.ecoHealthScore },
-    { pillar: 'Socioeconomics (Return)', score: Math.min(100, Math.round((output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100)) },
+    {
+      pillar: 'Socioeconomics (Return)',
+      score: Math.min(
+        100,
+        Math.round((output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100)
+      ),
+    },
   ];
 
   return (
     <div className="space-y-6 animate-fade-in-up">
-
       {/* Top Header Card */}
       <div className="glass-panel p-6 rounded-2xl border border-slate-200 shadow-sm bg-white/95 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
@@ -67,7 +87,11 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
             {output.cropName} in {output.districtName} District
           </h2>
           <p className="text-xs text-slate-500 mt-1">
-            Harvest Target: <strong className="text-slate-800">{output.inputQuantity.toLocaleString()} {output.inputUnit}</strong> ({output.baseQuantity.toLocaleString()} {output.baseUnit})
+            Harvest Target:{' '}
+            <strong className="text-slate-800">
+              {output.inputQuantity.toLocaleString()} {output.inputUnit}
+            </strong>{' '}
+            ({output.baseQuantity.toLocaleString()} {output.baseUnit})
           </p>
         </div>
 
@@ -98,47 +122,66 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
 
       {/* ── BIOPHYSICAL FEASIBILITY BANNER ─────────────────────────────────────── */}
       {output.agroSuitability.suitabilityFactor < 0.95 && (
-        <div className={`rounded-xl border px-4 py-3.5 flex flex-col sm:flex-row items-start sm:items-center gap-3 ${
-          !output.agroSuitability.isBiophysicallyFeasible
-            ? 'bg-red-50 border-red-300'
-            : output.agroSuitability.suitabilityScore < 65
-            ? 'bg-amber-50 border-amber-300'
-            : 'bg-yellow-50 border-yellow-200'
-        }`}>
+        <div
+          className={`rounded-xl border px-4 py-3.5 flex flex-col sm:flex-row items-start sm:items-center gap-3 ${
+            !output.agroSuitability.isBiophysicallyFeasible
+              ? 'bg-red-50 border-red-300'
+              : output.agroSuitability.suitabilityScore < 65
+                ? 'bg-amber-50 border-amber-300'
+                : 'bg-yellow-50 border-yellow-200'
+          }`}
+        >
           <div className={`text-2xl shrink-0 ${!output.agroSuitability.isBiophysicallyFeasible ? '' : ''}`}>
-            {!output.agroSuitability.isBiophysicallyFeasible ? '🚫' : output.agroSuitability.suitabilityScore < 65 ? '⚠️' : '📉'}
+            {!output.agroSuitability.isBiophysicallyFeasible
+              ? '🚫'
+              : output.agroSuitability.suitabilityScore < 65
+                ? '⚠️'
+                : '📉'}
           </div>
           <div className="flex-1 min-w-0">
-            <div className={`text-xs font-bold uppercase tracking-wide mb-0.5 ${
-              !output.agroSuitability.isBiophysicallyFeasible ? 'text-red-800' : 'text-amber-800'
-            }`}>
+            <div
+              className={`text-xs font-bold uppercase tracking-wide mb-0.5 ${
+                !output.agroSuitability.isBiophysicallyFeasible ? 'text-red-800' : 'text-amber-800'
+              }`}
+            >
               {!output.agroSuitability.isBiophysicallyFeasible
                 ? 'Biophysical Feasibility Failure — Crop Incompatible With This District'
                 : 'Suboptimal Agro-Ecological Conditions Detected'}
             </div>
-            <p className={`text-xs leading-relaxed ${
-              !output.agroSuitability.isBiophysicallyFeasible ? 'text-red-700' : 'text-amber-700'
-            }`}>
+            <p
+              className={`text-xs leading-relaxed ${
+                !output.agroSuitability.isBiophysicallyFeasible ? 'text-red-700' : 'text-amber-700'
+              }`}
+            >
               FAO suitability: <strong>{output.agroSuitability.faoClass}</strong>
               {' · '}Limiting factor: <strong>{output.agroSuitability.limitingFactor}</strong>
               {' · '}Suitability score: <strong>{output.agroSuitability.suitabilityScore}/100</strong>
             </p>
           </div>
           <div className="shrink-0 text-right bg-white/80 border border-current/20 rounded-lg px-3 py-2">
-            <div className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${
-              !output.agroSuitability.isBiophysicallyFeasible ? 'text-red-700' : 'text-amber-700'
-            }`}>Realized Yield</div>
-            <div className={`text-lg font-black font-mono ${
-              !output.agroSuitability.isBiophysicallyFeasible ? 'text-red-800' : 'text-amber-800'
-            }`}>
+            <div
+              className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${
+                !output.agroSuitability.isBiophysicallyFeasible ? 'text-red-700' : 'text-amber-700'
+              }`}
+            >
+              Realized Yield
+            </div>
+            <div
+              className={`text-lg font-black font-mono ${
+                !output.agroSuitability.isBiophysicallyFeasible ? 'text-red-800' : 'text-amber-800'
+              }`}
+            >
               {output.agroSuitability.realizedQuantity.toLocaleString()}
               <span className="text-xs font-normal ml-0.5">{output.baseUnit}</span>
             </div>
             <div className="text-[10px] text-slate-500 font-medium">
-              of {output.baseQuantity.toLocaleString()} target
-              {' '}(<span className={`font-bold ${!output.agroSuitability.isBiophysicallyFeasible ? 'text-red-600' : 'text-amber-600'}`}>
+              of {output.baseQuantity.toLocaleString()} target (
+              <span
+                className={`font-bold ${!output.agroSuitability.isBiophysicallyFeasible ? 'text-red-600' : 'text-amber-600'}`}
+              >
                 -{output.agroSuitability.unrealizedQuantityPct}% yield loss
-              </span>)
+              </span>
+              )
             </div>
           </div>
         </div>
@@ -152,10 +195,8 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
         </span>
       </div>
 
-
       {/* 6 Top Clickable KPI Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
-
         {/* Water KPI */}
         <div
           onClick={() => setSelectedFactorKey('water')}
@@ -174,7 +215,9 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
           <div className="text-lg font-extrabold text-sky-950 mt-1 font-mono">
             {output.water.waterStressIndex} <span className="text-xs font-normal text-slate-500">/ 100</span>
           </div>
-          <div className="text-[11px] text-slate-500 mt-1 font-mono">({output.water.consumptionLiters.toLocaleString()} L)</div>
+          <div className="text-[11px] text-slate-500 mt-1 font-mono">
+            ({output.water.consumptionLiters.toLocaleString()} L)
+          </div>
         </div>
 
         {/* Energy KPI */}
@@ -216,7 +259,9 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
           <div className="text-lg font-extrabold text-emerald-950 mt-1 font-mono">
             {output.food.yieldKg.toLocaleString()} <span className="text-xs font-normal text-slate-500">kg</span>
           </div>
-          <div className="text-[11px] text-slate-500 mt-1 font-mono">{output.food.nutritionalKcal.toLocaleString()} kcal</div>
+          <div className="text-[11px] text-slate-500 mt-1 font-mono">
+            {output.food.nutritionalKcal.toLocaleString()} kcal
+          </div>
         </div>
 
         {/* Ecosystem KPI */}
@@ -235,9 +280,12 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
             <Info className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-teal-600" />
           </div>
           <div className="text-lg font-extrabold text-teal-950 mt-1 font-mono">
-            {output.ecosystem.carbonOffsetKgCo2.toLocaleString()} <span className="text-xs font-normal text-slate-500">kg</span>
+            {output.ecosystem.carbonOffsetKgCo2.toLocaleString()}{' '}
+            <span className="text-xs font-normal text-slate-500">kg</span>
           </div>
-          <div className="text-[11px] text-slate-500 mt-1 font-mono">Erosion: {output.ecosystem.erosionMitigationIndex}</div>
+          <div className="text-[11px] text-slate-500 mt-1 font-mono">
+            Erosion: {output.ecosystem.erosionMitigationIndex}
+          </div>
         </div>
 
         {/* Net Revenue KPI */}
@@ -258,7 +306,9 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
           <div className="text-lg font-extrabold text-purple-950 mt-1 font-mono">
             NPR {output.socioeconomics.netRevenueNpr.toLocaleString()}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1 font-mono">Gross: NPR {output.socioeconomics.grossRevenueNpr.toLocaleString()}</div>
+          <div className="text-[11px] text-slate-500 mt-1 font-mono">
+            Gross: NPR {output.socioeconomics.grossRevenueNpr.toLocaleString()}
+          </div>
         </div>
 
         {/* Jobs Created KPI */}
@@ -277,16 +327,17 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
             <Info className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-indigo-600" />
           </div>
           <div className="text-lg font-extrabold text-indigo-950 mt-1 font-mono">
-            {output.socioeconomics.directJobsCreated} <span className="text-xs font-normal text-slate-500">Direct FTE</span>
+            {output.socioeconomics.directJobsCreated}{' '}
+            <span className="text-xs font-normal text-slate-500">Direct FTE</span>
           </div>
-          <div className="text-[11px] text-slate-500 mt-1 font-mono">+{output.socioeconomics.indirectJobsCreated} Indirect</div>
+          <div className="text-[11px] text-slate-500 mt-1 font-mono">
+            +{output.socioeconomics.indirectJobsCreated} Indirect
+          </div>
         </div>
-
       </div>
 
       {/* Main Visuals Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
         {/* Radar Chart (6 cols) */}
         <div className="lg:col-span-6 glass-panel p-6 rounded-2xl border border-slate-200 shadow-sm bg-white/95">
           <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 mb-1 font-outfit">
@@ -301,16 +352,27 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
                 <PolarGrid stroke="#cbd5e1" />
-                <PolarAngleAxis dataKey="pillar" stroke="#475569" tick={{ fill: '#334155', fontSize: 11, fontWeight: 600 }} />
-                <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#cbd5e1" tick={{ fill: '#64748b', fontSize: 9 }} />
-                <Radar
-                  name="Baseline Profile"
-                  dataKey="score"
-                  stroke="#10b981"
-                  fill="#10b981"
-                  fillOpacity={0.25}
+                <PolarAngleAxis
+                  dataKey="pillar"
+                  stroke="#475569"
+                  tick={{ fill: '#334155', fontSize: 11, fontWeight: 600 }}
                 />
-                <Tooltip contentStyle={{ backgroundColor: '#ffffff', borderColor: '#cbd5e1', borderRadius: '0.5rem', color: '#0f172a', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} />
+                <PolarRadiusAxis
+                  angle={30}
+                  domain={[0, 100]}
+                  stroke="#cbd5e1"
+                  tick={{ fill: '#64748b', fontSize: 9 }}
+                />
+                <Radar name="Baseline Profile" dataKey="score" stroke="#10b981" fill="#10b981" fillOpacity={0.25} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#ffffff',
+                    borderColor: '#cbd5e1',
+                    borderRadius: '0.5rem',
+                    color: '#0f172a',
+                    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+                  }}
+                />
               </RadarChart>
             </ResponsiveContainer>
           </div>
@@ -334,7 +396,6 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
 
             {/* 2-Column Inputs vs Outputs Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-4">
-
               {/* INPUTS / FOOTPRINT (What you spend) */}
               <div className="p-3.5 rounded-xl bg-slate-50/90 border border-slate-200/90 flex flex-col justify-between">
                 <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2.5">
@@ -353,7 +414,9 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
                         <span className="w-2 h-2 rounded-full bg-sky-500"></span>
                         Water Footprint
                       </span>
-                      <span className="font-mono font-bold text-sky-900">{output.water.consumptionM3.toLocaleString()} m³</span>
+                      <span className="font-mono font-bold text-sky-900">
+                        {output.water.consumptionM3.toLocaleString()} m³
+                      </span>
                     </div>
                     <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                       <div
@@ -374,7 +437,9 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
                         <span className="w-2 h-2 rounded-full bg-amber-500"></span>
                         Energy Demand
                       </span>
-                      <span className="font-mono font-bold text-amber-900">{output.energy.loadKwh.toLocaleString()} kWh</span>
+                      <span className="font-mono font-bold text-amber-900">
+                        {output.energy.loadKwh.toLocaleString()} kWh
+                      </span>
                     </div>
                     <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                       <div
@@ -416,14 +481,18 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
                       <div
                         className="bg-purple-500 h-1.5 rounded-full transition-all"
                         style={{
-                          width: `${Math.min(100, Math.max(10, Math.round((output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100)))}%`
+                          width: `${Math.min(100, Math.max(10, Math.round((output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100)))}%`,
                         }}
                       ></div>
                     </div>
                     <div className="flex items-center justify-between text-[10px] text-slate-500 mt-1">
                       <span>Gross: NPR {output.socioeconomics.grossRevenueNpr.toLocaleString()}</span>
                       <span className="font-medium text-purple-700">
-                        {Math.round((output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100)}% Margin
+                        {Math.round(
+                          (output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) *
+                            100
+                        )}
+                        % Margin
                       </span>
                     </div>
                   </div>
@@ -452,7 +521,6 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
 
@@ -466,27 +534,29 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
               <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
                 <div className="text-[10px] text-slate-500 font-medium">Water Productivity</div>
                 <div className="text-xs font-bold text-sky-950 font-mono mt-0.5">
-                  NPR {(output.socioeconomics.netRevenueNpr / Math.max(1, output.water.consumptionM3)).toFixed(1)} <span className="text-[10px] font-normal text-slate-400">/ m³</span>
+                  NPR {(output.socioeconomics.netRevenueNpr / Math.max(1, output.water.consumptionM3)).toFixed(1)}{' '}
+                  <span className="text-[10px] font-normal text-slate-400">/ m³</span>
                 </div>
               </div>
 
               <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs">
                 <div className="text-[10px] text-slate-500 font-medium">Energy Productivity</div>
                 <div className="text-xs font-bold text-amber-950 font-mono mt-0.5">
-                  NPR {(output.socioeconomics.netRevenueNpr / Math.max(1, output.energy.loadKwh)).toFixed(1)} <span className="text-[10px] font-normal text-slate-400">/ kWh</span>
+                  NPR {(output.socioeconomics.netRevenueNpr / Math.max(1, output.energy.loadKwh)).toFixed(1)}{' '}
+                  <span className="text-[10px] font-normal text-slate-400">/ kWh</span>
                 </div>
               </div>
 
               <div className="bg-white p-2 rounded-lg border border-slate-200 shadow-2xs col-span-2 sm:col-span-1">
                 <div className="text-[10px] text-slate-500 font-medium">Carbon per Energy</div>
                 <div className="text-xs font-bold text-teal-950 font-mono mt-0.5">
-                  {(output.ecosystem.carbonOffsetKgCo2 / Math.max(1, output.energy.loadKwh)).toFixed(2)} <span className="text-[10px] font-normal text-slate-400">kg CO₂/kWh</span>
+                  {(output.ecosystem.carbonOffsetKgCo2 / Math.max(1, output.energy.loadKwh)).toFixed(2)}{' '}
+                  <span className="text-[10px] font-normal text-slate-400">kg CO₂/kWh</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
 
       {/* CTA Card to Launch Scenario Simulator */}
@@ -497,7 +567,8 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
             <span>Simulate Climate, Market & Policy Scenarios</span>
           </h3>
           <p className="text-xs text-slate-500 mt-1 max-w-2xl">
-            Test 15+ environmental, energy, agronomic, and socioeconomic variables in real-time to observe trade-offs and 10-year projections.
+            Test 15+ environmental, energy, agronomic, and socioeconomic variables in real-time to observe trade-offs
+            and 10-year projections.
           </p>
         </div>
 
@@ -543,11 +614,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
 
       {/* Factor Detail Modal */}
       {selectedFactorKey && (
-        <FactorDetailModal
-          factorKey={selectedFactorKey}
-          output={output}
-          onClose={() => setSelectedFactorKey(null)}
-        />
+        <FactorDetailModal factorKey={selectedFactorKey} output={output} onClose={() => setSelectedFactorKey(null)} />
       )}
 
       {/* WEFES Deep Scientific & Mathematical Proof Modal */}
@@ -556,7 +623,6 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
         isOpen={isScientificModalOpen}
         onClose={() => setIsScientificModalOpen(false)}
       />
-
     </div>
   );
 };

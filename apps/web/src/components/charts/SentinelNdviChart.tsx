@@ -23,12 +23,24 @@ export const SentinelNdviChart: React.FC<SentinelNdviChartProps> = ({
 
   // 6-step Sentinel-2 time series across crop cycle
   const timeSteps = [
-    { stage: 'Sowing/Emergence', doy: 'Day 15', currentNdvi: 0.22, baselineNdvi: 0.20, esi: 0.12 },
+    { stage: 'Sowing/Emergence', doy: 'Day 15', currentNdvi: 0.22, baselineNdvi: 0.2, esi: 0.12 },
     { stage: 'Active Tillering', doy: 'Day 45', currentNdvi: 0.48, baselineNdvi: 0.44, esi: 0.28 },
     { stage: 'Panicle Initiation', doy: 'Day 75', currentNdvi: 0.72, baselineNdvi: 0.65, esi: 0.45 },
-    { stage: 'Peak Flowering', doy: 'Day 95', currentNdvi: meanNdvi, baselineNdvi: Math.max(0.3, meanNdvi - 0.08), esi: waterStressEsi },
-    { stage: 'Grain Filling', doy: 'Day 115', currentNdvi: Math.max(0.35, meanNdvi - 0.12), baselineNdvi: Math.max(0.3, meanNdvi - 0.18), esi: 0.38 },
-    { stage: 'Physiological Maturity', doy: 'Day 135', currentNdvi: 0.38, baselineNdvi: 0.35, esi: 0.20 },
+    {
+      stage: 'Peak Flowering',
+      doy: 'Day 95',
+      currentNdvi: meanNdvi,
+      baselineNdvi: Math.max(0.3, meanNdvi - 0.08),
+      esi: waterStressEsi,
+    },
+    {
+      stage: 'Grain Filling',
+      doy: 'Day 115',
+      currentNdvi: Math.max(0.35, meanNdvi - 0.12),
+      baselineNdvi: Math.max(0.3, meanNdvi - 0.18),
+      esi: 0.38,
+    },
+    { stage: 'Physiological Maturity', doy: 'Day 135', currentNdvi: 0.38, baselineNdvi: 0.35, esi: 0.2 },
   ];
 
   const activeStep = timeSteps[hoveredPoint] || timeSteps[3];
@@ -67,10 +79,18 @@ export const SentinelNdviChart: React.FC<SentinelNdviChartProps> = ({
           <line x1="50" y1="170" x2="740" y2="170" stroke="#475569" strokeWidth="1.5" />
 
           {/* Y Axis Labels */}
-          <text x="35" y="40" fill="#94a3b8" fontSize="9" fontFamily="monospace" textAnchor="end">1.0</text>
-          <text x="35" y="85" fill="#94a3b8" fontSize="9" fontFamily="monospace" textAnchor="end">0.7</text>
-          <text x="35" y="130" fill="#94a3b8" fontSize="9" fontFamily="monospace" textAnchor="end">0.4</text>
-          <text x="35" y="175" fill="#94a3b8" fontSize="9" fontFamily="monospace" textAnchor="end">0.1</text>
+          <text x="35" y="40" fill="#94a3b8" fontSize="9" fontFamily="monospace" textAnchor="end">
+            1.0
+          </text>
+          <text x="35" y="85" fill="#94a3b8" fontSize="9" fontFamily="monospace" textAnchor="end">
+            0.7
+          </text>
+          <text x="35" y="130" fill="#94a3b8" fontSize="9" fontFamily="monospace" textAnchor="end">
+            0.4
+          </text>
+          <text x="35" y="175" fill="#94a3b8" fontSize="9" fontFamily="monospace" textAnchor="end">
+            0.1
+          </text>
 
           {/* Baseline 5-Yr Mean Dotted Path */}
           <path
@@ -129,14 +149,7 @@ export const SentinelNdviChart: React.FC<SentinelNdviChartProps> = ({
                 >
                   {step.doy}
                 </text>
-                <text
-                  x={ptX}
-                  y="204"
-                  textAnchor="middle"
-                  fill="#64748b"
-                  fontSize="8"
-                  fontFamily="monospace"
-                >
+                <text x={ptX} y="204" textAnchor="middle" fill="#64748b" fontSize="8" fontFamily="monospace">
                   {step.stage.split(' ')[0]}
                 </text>
               </g>
@@ -158,7 +171,9 @@ export const SentinelNdviChart: React.FC<SentinelNdviChartProps> = ({
         <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700">
           <span className="text-slate-400 font-sans text-[11px] block">Vegetative Anomaly:</span>
           <div className="text-sm font-bold text-sky-400 mt-0.5">
-            {ndviAnomalyVsFiveYearMeanPct >= 0 ? `+${ndviAnomalyVsFiveYearMeanPct}%` : `${ndviAnomalyVsFiveYearMeanPct}%`}
+            {ndviAnomalyVsFiveYearMeanPct >= 0
+              ? `+${ndviAnomalyVsFiveYearMeanPct}%`
+              : `${ndviAnomalyVsFiveYearMeanPct}%`}
           </div>
         </div>
         <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700">

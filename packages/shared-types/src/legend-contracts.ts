@@ -17,12 +17,7 @@
  * Citations: Survey Department Nepal, Department of Hydrology and Meteorology (DHM), HydroSHEDS / HydroRIVERS / HydroBASINS (WWF/USGS)
  */
 
-
-export type LegendType =
-  | 'categorical'
-  | 'continuous_gradient'
-  | 'domain_thresholds'
-  | 'quantile_bins';
+export type LegendType = 'categorical' | 'continuous_gradient' | 'domain_thresholds' | 'quantile_bins';
 
 export interface LegendThresholdTier {
   minValue?: number;
@@ -83,8 +78,8 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
       midColor: '#38bdf8',
       maxColor: '#1e3a8a',
       minLabel: 'Subtropical Low Valleys (Lower mm)',
-      maxLabel: 'High Mountain Ridges (Higher mm Uplift)'
-    }
+      maxLabel: 'High Mountain Ridges (Higher mm Uplift)',
+    },
   },
 
   river_basins: {
@@ -96,48 +91,75 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/boundaries/gulmi-palikas.json',
     confidence: 'REAL',
     categories: [
-      { key: 'kaligandaki', color: '#0369a1', label: 'Kali Gandaki Corridor', description: 'Trans-Himalayan major river system & hydro corridor' },
-      { key: 'badigad', color: '#0ea5e9', label: 'Badigad Sub-Basin', description: 'Agricultural lifeline drainage for Musikot and Isma' },
-      { key: 'ridi', color: '#06b6d4', label: 'Ridi Khola Sub-Basin', description: 'Historic central drainage for Resunga, Gulmidarbar, and Ruru' },
-      { key: 'panaha', color: '#d97706', label: 'Panaha River Corridor', description: 'Tamghas valley & southern agro-ecological drainage' },
-      { key: 'hugdi', color: '#38bdf8', label: 'Hugdi Khola Sub-Basin', description: 'Eastern agricultural catchment in Chandrakot & Satyawati' },
-      { key: 'chhaldi', color: '#0891b2', label: 'Chhaldi Khola Sub-Basin', description: 'Western watershed connecting Dhurkot & Malika' }
-    ]
+      {
+        key: 'kaligandaki',
+        color: '#0369a1',
+        label: 'Kali Gandaki Corridor',
+        description: 'Trans-Himalayan major river system & hydro corridor',
+      },
+      {
+        key: 'badigad',
+        color: '#0ea5e9',
+        label: 'Badigad Sub-Basin',
+        description: 'Agricultural lifeline drainage for Musikot and Isma',
+      },
+      {
+        key: 'ridi',
+        color: '#06b6d4',
+        label: 'Ridi Khola Sub-Basin',
+        description: 'Historic central drainage for Resunga, Gulmidarbar, and Ruru',
+      },
+      {
+        key: 'panaha',
+        color: '#d97706',
+        label: 'Panaha River Corridor',
+        description: 'Tamghas valley & southern agro-ecological drainage',
+      },
+      {
+        key: 'hugdi',
+        color: '#38bdf8',
+        label: 'Hugdi Khola Sub-Basin',
+        description: 'Eastern agricultural catchment in Chandrakot & Satyawati',
+      },
+      {
+        key: 'chhaldi',
+        color: '#0891b2',
+        label: 'Chhaldi Khola Sub-Basin',
+        description: 'Western watershed connecting Dhurkot & Malika',
+      },
+    ],
   },
   catchments: {
-    id: "catchments",
-    pillar: "water",
-    title: "HydroBASINS Level 10 Topology",
-    subtitle: "Pfafstetter Sub-basin and Inter-basin Classification",
-    legendType: "categorical",
-    dataSourceCitation: "data/real/hydrology/catchments_l10.geojson",
-    confidence: "REAL",
+    id: 'catchments',
+    pillar: 'water',
+    title: 'HydroBASINS Level 10 Topology',
+    subtitle: 'Pfafstetter Sub-basin and Inter-basin Classification',
+    legendType: 'categorical',
+    dataSourceCitation: 'data/real/hydrology/catchments_l10.geojson',
+    confidence: 'REAL',
     categories: [
       {
-        key: "inter_basin",
-        color: "#bae6fd",
-        label: "Inter-basin",
-        description:
-          "Pfafstetter inter-basin unit represented by an odd Level 10 code.",
-        badge: "Odd L10 Code"
+        key: 'inter_basin',
+        color: '#bae6fd',
+        label: 'Inter-basin',
+        description: 'Pfafstetter inter-basin unit represented by an odd Level 10 code.',
+        badge: 'Odd L10 Code',
       },
       {
-        key: "sub_basin",
-        color: "#38bdf8",
-        label: "Sub-basin",
-        description:
-          "Pfafstetter sub-basin unit represented by an even Level 10 code.",
-        badge: "Even L10 Code"
+        key: 'sub_basin',
+        color: '#38bdf8',
+        label: 'Sub-basin',
+        description: 'Pfafstetter sub-basin unit represented by an even Level 10 code.',
+        badge: 'Even L10 Code',
       },
       {
-        key: "unknown",
-        color: "#94a3b8",
-        label: "Unclassified",
-        description:
-          "Feature with a missing, invalid, or incomplete Pfafstetter code.",
-        badge: "Invalid / Missing"
-      }
-    ]
+        key: 'unknown',
+        color: '#94a3b8',
+        label: 'Unclassified',
+        description: 'Feature with a missing, invalid, or incomplete Pfafstetter code.',
+        badge: 'Invalid / Missing',
+      },
+    ],
   },
 
   rivers_streams: {
@@ -150,11 +172,34 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/hydrology/rivers_streams.geojson',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 1, maxValue: 1, color: '#7dd3fc', label: '1st Order Stream (Headwater Torrents)', description: 'Initial upland springs and mountain rills (<0.5 m³/s)' },
-      { minValue: 2, maxValue: 2, color: '#38bdf8', label: '2nd Order Stream (Mid-Hill Kholas)', description: 'Confluence channels with seasonal discharge 0.5–2.5 m³/s' },
-      { minValue: 3, maxValue: 4, color: '#0284c7', label: '3rd/4th Order River (Sub-Basin Trunk)', description: 'Perennial kholas with agricultural irrigation command (>2.5 m³/s)' },
-      { minValue: 5, color: '#1e3a8a', label: '5th+ Order River (Kali Gandaki / Badigad)', description: 'Trans-Himalayan major river corridors (>10 m³/s)' }
-    ]
+      {
+        minValue: 1,
+        maxValue: 1,
+        color: '#7dd3fc',
+        label: '1st Order Stream (Headwater Torrents)',
+        description: 'Initial upland springs and mountain rills (<0.5 m³/s)',
+      },
+      {
+        minValue: 2,
+        maxValue: 2,
+        color: '#38bdf8',
+        label: '2nd Order Stream (Mid-Hill Kholas)',
+        description: 'Confluence channels with seasonal discharge 0.5–2.5 m³/s',
+      },
+      {
+        minValue: 3,
+        maxValue: 4,
+        color: '#0284c7',
+        label: '3rd/4th Order River (Sub-Basin Trunk)',
+        description: 'Perennial kholas with agricultural irrigation command (>2.5 m³/s)',
+      },
+      {
+        minValue: 5,
+        color: '#1e3a8a',
+        label: '5th+ Order River (Kali Gandaki / Badigad)',
+        description: 'Trans-Himalayan major river corridors (>10 m³/s)',
+      },
+    ],
   },
 
   flow_accumulation: {
@@ -167,13 +212,49 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/hydrology/flow_accumulation.tif',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 0, maxValue: 0, color: '#e0f2fe', label: 'Tier 0: Ridge Crests & Slopes', description: 'Upland slopes & groundwater recharge infiltration zones' },
-      { minValue: 1, maxValue: 1, color: '#7dd3fc', label: 'Tier 1: Ephemeral Swales', description: 'Hillside depressions and initial runoff convergence' },
-      { minValue: 2, maxValue: 2, color: '#38bdf8', label: 'Tier 2: Headwater Tributaries', description: 'Concentrated runoff channels and mountain gullies' },
-      { minValue: 3, maxValue: 3, color: '#0ea5e9', label: 'Tier 3: Stream Valleys', description: 'Secondary stream corridors and mid-hill ravines' },
-      { minValue: 4, maxValue: 4, color: '#0284c7', label: 'Tier 4: Valley Riverbeds', description: 'Lower agricultural valley floors and tributary junctions' },
-      { minValue: 5, maxValue: 6, color: '#1e3a8a', label: 'Tier 5–6: Main Trunk Corridors', description: 'Highest flow accumulation along Badigad & Kali Gandaki' }
-    ]
+      {
+        minValue: 0,
+        maxValue: 0,
+        color: '#e0f2fe',
+        label: 'Tier 0: Ridge Crests & Slopes',
+        description: 'Upland slopes & groundwater recharge infiltration zones',
+      },
+      {
+        minValue: 1,
+        maxValue: 1,
+        color: '#7dd3fc',
+        label: 'Tier 1: Ephemeral Swales',
+        description: 'Hillside depressions and initial runoff convergence',
+      },
+      {
+        minValue: 2,
+        maxValue: 2,
+        color: '#38bdf8',
+        label: 'Tier 2: Headwater Tributaries',
+        description: 'Concentrated runoff channels and mountain gullies',
+      },
+      {
+        minValue: 3,
+        maxValue: 3,
+        color: '#0ea5e9',
+        label: 'Tier 3: Stream Valleys',
+        description: 'Secondary stream corridors and mid-hill ravines',
+      },
+      {
+        minValue: 4,
+        maxValue: 4,
+        color: '#0284c7',
+        label: 'Tier 4: Valley Riverbeds',
+        description: 'Lower agricultural valley floors and tributary junctions',
+      },
+      {
+        minValue: 5,
+        maxValue: 6,
+        color: '#1e3a8a',
+        label: 'Tier 5–6: Main Trunk Corridors',
+        description: 'Highest flow accumulation along Badigad & Kali Gandaki',
+      },
+    ],
   },
 
   flow_direction: {
@@ -186,15 +267,55 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/hydrology/flow_direction.tif',
     confidence: 'REAL',
     categories: [
-      { key: 'N', color: '#a855f7', label: 'North (64 - 0°)', description: 'Drains toward northern ridges and Badigad valley' },
-      { key: 'NE', color: '#ec4899', label: 'North-East (128 - 45°)', description: 'Drains north-east toward Kali Gandaki gorge' },
-      { key: 'E', color: '#ef4444', label: 'East (1 - 90°)', description: 'Drains eastward toward Ridi / Hugdi basins' },
-      { key: 'SE', color: '#f97316', label: 'South-East (2 - 135°)', description: 'Drains south-east toward lower Ridi corridor' },
-      { key: 'S', color: '#eab308', label: 'South (4 - 180°)', description: 'Drains southward toward Panaha / southern valleys' },
-      { key: 'SW', color: '#22c55e', label: 'South-West (8 - 225°)', description: 'Drains south-west toward western district border' },
-      { key: 'W', color: '#06b6d4', label: 'West (16 - 270°)', description: 'Drains westward toward Pyuthan / Chhaldi basin' },
-      { key: 'NW', color: '#3b82f6', label: 'North-West (32 - 315°)', description: 'Drains north-west toward upper Badigad headwaters' }
-    ]
+      {
+        key: 'N',
+        color: '#a855f7',
+        label: 'North (64 - 0°)',
+        description: 'Drains toward northern ridges and Badigad valley',
+      },
+      {
+        key: 'NE',
+        color: '#ec4899',
+        label: 'North-East (128 - 45°)',
+        description: 'Drains north-east toward Kali Gandaki gorge',
+      },
+      {
+        key: 'E',
+        color: '#ef4444',
+        label: 'East (1 - 90°)',
+        description: 'Drains eastward toward Ridi / Hugdi basins',
+      },
+      {
+        key: 'SE',
+        color: '#f97316',
+        label: 'South-East (2 - 135°)',
+        description: 'Drains south-east toward lower Ridi corridor',
+      },
+      {
+        key: 'S',
+        color: '#eab308',
+        label: 'South (4 - 180°)',
+        description: 'Drains southward toward Panaha / southern valleys',
+      },
+      {
+        key: 'SW',
+        color: '#22c55e',
+        label: 'South-West (8 - 225°)',
+        description: 'Drains south-west toward western district border',
+      },
+      {
+        key: 'W',
+        color: '#06b6d4',
+        label: 'West (16 - 270°)',
+        description: 'Drains westward toward Pyuthan / Chhaldi basin',
+      },
+      {
+        key: 'NW',
+        color: '#3b82f6',
+        label: 'North-West (32 - 315°)',
+        description: 'Drains north-west toward upper Badigad headwaters',
+      },
+    ],
   },
 
   springshed_vulnerability: {
@@ -207,11 +328,33 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/proxy/environmental_proxies/default_eflow_parameters.json & ICIMOD springshed protocols',
     confidence: 'PROXY',
     thresholds: [
-      { maxValue: 25, color: '#059669', label: 'Low Vulnerability (<25%)', description: 'Stable perennial recharge zones (Dense forest slopes)' },
-      { minValue: 25, maxValue: 50, color: '#10b981', label: 'Moderate Vulnerability (25–50%)', description: 'Seasonal discharge variation observed' },
-      { minValue: 50, maxValue: 75, color: '#f59e0b', label: 'High Vulnerability (50–75%)', description: 'Springflow declines >40% pre-monsoon; recharge intervention needed' },
-      { minValue: 75, color: '#ef4444', label: 'Critical Vulnerability (>75%)', description: 'Severe pre-monsoon drying; high drought & drinking water risk' }
-    ]
+      {
+        maxValue: 25,
+        color: '#059669',
+        label: 'Low Vulnerability (<25%)',
+        description: 'Stable perennial recharge zones (Dense forest slopes)',
+      },
+      {
+        minValue: 25,
+        maxValue: 50,
+        color: '#10b981',
+        label: 'Moderate Vulnerability (25–50%)',
+        description: 'Seasonal discharge variation observed',
+      },
+      {
+        minValue: 50,
+        maxValue: 75,
+        color: '#f59e0b',
+        label: 'High Vulnerability (50–75%)',
+        description: 'Springflow declines >40% pre-monsoon; recharge intervention needed',
+      },
+      {
+        minValue: 75,
+        color: '#ef4444',
+        label: 'Critical Vulnerability (>75%)',
+        description: 'Severe pre-monsoon drying; high drought & drinking water risk',
+      },
+    ],
   },
 
   irrigation_potential: {
@@ -224,11 +367,33 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/agriculture/crops.json & DWRI master plan',
     confidence: 'CALCULATED',
     thresholds: [
-      { minValue: 80, color: '#047857', label: 'Prime Riverbed Gravity Kulo (≥80%)', description: 'Continuous perennial gravity irrigation (Kaligandaki/Badigad)' },
-      { minValue: 60, maxValue: 79, color: '#10b981', label: 'Mid-Hill Solar Lift Command (60–79%)', description: 'Viable 50–150m solar lift from perennial streams' },
-      { minValue: 40, maxValue: 59, color: '#f59e0b', label: 'Rainwater Harvest & Micro-Drip (40–59%)', description: 'Plastic ponds and drip irrigation for vegetable terraces' },
-      { maxValue: 39, color: '#ef4444', label: 'Rainfed Ridge Slopes (<40%)', description: 'Steep upland terrain relying purely on monsoon rainfall' }
-    ]
+      {
+        minValue: 80,
+        color: '#047857',
+        label: 'Prime Riverbed Gravity Kulo (≥80%)',
+        description: 'Continuous perennial gravity irrigation (Kaligandaki/Badigad)',
+      },
+      {
+        minValue: 60,
+        maxValue: 79,
+        color: '#10b981',
+        label: 'Mid-Hill Solar Lift Command (60–79%)',
+        description: 'Viable 50–150m solar lift from perennial streams',
+      },
+      {
+        minValue: 40,
+        maxValue: 59,
+        color: '#f59e0b',
+        label: 'Rainwater Harvest & Micro-Drip (40–59%)',
+        description: 'Plastic ponds and drip irrigation for vegetable terraces',
+      },
+      {
+        maxValue: 39,
+        color: '#ef4444',
+        label: 'Rainfed Ridge Slopes (<40%)',
+        description: 'Steep upland terrain relying purely on monsoon rainfall',
+      },
+    ],
   },
 
   dhm_station: {
@@ -241,10 +406,27 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/hydrology/gulmi_dhm_stations.geojson',
     confidence: 'REAL',
     categories: [
-      { key: 'precipitation', color: '#0284c7', label: 'DHM Precipitation Station', description: 'Symons standard daily rain gauge (Ridi 494m, Musikot 1353m, Agimir 1493m, Bharse 1626m, Daugha 960m)' },
-      { key: 'climatology', color: '#8b5cf6', label: 'DHM Climatological Station', description: 'Stevenson screen, max/min temp, humidity, rainfall & psychrometer (Tamghas 1547m, Anp Chour 738m)' },
-      { key: 'aws', color: '#10b981', label: 'Real-Time Telemetric AWS', description: 'Automated Weather Station with solar radiation pyranometer & GSM telemetry (Tamghas New)' }
-    ]
+      {
+        key: 'precipitation',
+        color: '#0284c7',
+        label: 'DHM Precipitation Station',
+        description:
+          'Symons standard daily rain gauge (Ridi 494m, Musikot 1353m, Agimir 1493m, Bharse 1626m, Daugha 960m)',
+      },
+      {
+        key: 'climatology',
+        color: '#8b5cf6',
+        label: 'DHM Climatological Station',
+        description:
+          'Stevenson screen, max/min temp, humidity, rainfall & psychrometer (Tamghas 1547m, Anp Chour 738m)',
+      },
+      {
+        key: 'aws',
+        color: '#10b981',
+        label: 'Real-Time Telemetric AWS',
+        description: 'Automated Weather Station with solar radiation pyranometer & GSM telemetry (Tamghas New)',
+      },
+    ],
   },
 
   // ============================================================================
@@ -260,11 +442,33 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/agriculture/crop_requirement.json & crops.json',
     confidence: 'CALCULATED',
     thresholds: [
-      { minValue: 80, color: '#10b981', label: 'Highly Suitable (≥ 80%)', description: 'Optimal thermal and moisture conditions' },
-      { minValue: 60, maxValue: 79, color: '#84cc16', label: 'Moderately Suitable (60 – 79%)', description: 'Good yield expected with standard inputs' },
-      { minValue: 40, maxValue: 59, color: '#f59e0b', label: 'Marginally Suitable (40 – 59%)', description: 'Significant climate or elevation constraints' },
-      { maxValue: 39, color: '#ef4444', label: 'Unsuitable (< 40%)', description: 'High frost or drought crop failure risk' }
-    ]
+      {
+        minValue: 80,
+        color: '#10b981',
+        label: 'Highly Suitable (≥ 80%)',
+        description: 'Optimal thermal and moisture conditions',
+      },
+      {
+        minValue: 60,
+        maxValue: 79,
+        color: '#84cc16',
+        label: 'Moderately Suitable (60 – 79%)',
+        description: 'Good yield expected with standard inputs',
+      },
+      {
+        minValue: 40,
+        maxValue: 59,
+        color: '#f59e0b',
+        label: 'Marginally Suitable (40 – 59%)',
+        description: 'Significant climate or elevation constraints',
+      },
+      {
+        maxValue: 39,
+        color: '#ef4444',
+        label: 'Unsuitable (< 40%)',
+        description: 'High frost or drought crop failure risk',
+      },
+    ],
   },
 
   crop_water_stress: {
@@ -277,11 +481,33 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/agriculture/crops.json & NASA POWER / DHM Climatology',
     confidence: 'CALCULATED',
     thresholds: [
-      { maxValue: 24, color: '#0284c7', label: 'Minimal Deficit (<25%)', description: 'Natural precipitation satisfies evapotranspiration' },
-      { minValue: 25, maxValue: 44, color: '#0d9488', label: 'Low Stress (25–44%)', description: 'Minor supplemental irrigation recommended during dry spells' },
-      { minValue: 45, maxValue: 64, color: '#f59e0b', label: 'Moderate Stress (45–64%)', description: 'Substantial moisture deficit during flowering/grain filling' },
-      { minValue: 65, color: '#dc2626', label: 'Severe Stress (≥65%)', description: 'Critical drought vulnerability; canal or lift irrigation essential' }
-    ]
+      {
+        maxValue: 24,
+        color: '#0284c7',
+        label: 'Minimal Deficit (<25%)',
+        description: 'Natural precipitation satisfies evapotranspiration',
+      },
+      {
+        minValue: 25,
+        maxValue: 44,
+        color: '#0d9488',
+        label: 'Low Stress (25–44%)',
+        description: 'Minor supplemental irrigation recommended during dry spells',
+      },
+      {
+        minValue: 45,
+        maxValue: 64,
+        color: '#f59e0b',
+        label: 'Moderate Stress (45–64%)',
+        description: 'Substantial moisture deficit during flowering/grain filling',
+      },
+      {
+        minValue: 65,
+        color: '#dc2626',
+        label: 'Severe Stress (≥65%)',
+        description: 'Critical drought vulnerability; canal or lift irrigation essential',
+      },
+    ],
   },
 
   land_typology: {
@@ -294,11 +520,33 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/agriculture/gulmi_agricultural_landholding.geojson',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 30, color: '#059669', label: 'Prime Irrigated Khet Valleys (≥30%)', description: 'Lowland bunded river terraces, prime for wetland paddy' },
-      { minValue: 20, maxValue: 29, color: '#10b981', label: 'Mixed Terraces (20–29%)', description: 'Balanced distribution of Khet and Bari terraces' },
-      { minValue: 10, maxValue: 19, color: '#f59e0b', label: 'Bari-Dominant Slopes (10–19%)', description: 'Sloping rainfed terraces suited for maize, millet, coffee' },
-      { maxValue: 9, color: '#d97706', label: 'High Ridge Steep Bari (<10%)', description: 'Predominantly rainfed upland slopes; high erosion sensitivity' }
-    ]
+      {
+        minValue: 30,
+        color: '#059669',
+        label: 'Prime Irrigated Khet Valleys (≥30%)',
+        description: 'Lowland bunded river terraces, prime for wetland paddy',
+      },
+      {
+        minValue: 20,
+        maxValue: 29,
+        color: '#10b981',
+        label: 'Mixed Terraces (20–29%)',
+        description: 'Balanced distribution of Khet and Bari terraces',
+      },
+      {
+        minValue: 10,
+        maxValue: 19,
+        color: '#f59e0b',
+        label: 'Bari-Dominant Slopes (10–19%)',
+        description: 'Sloping rainfed terraces suited for maize, millet, coffee',
+      },
+      {
+        maxValue: 9,
+        color: '#d97706',
+        label: 'High Ridge Steep Bari (<10%)',
+        description: 'Predominantly rainfed upland slopes; high erosion sensitivity',
+      },
+    ],
   },
 
   barkhe_summer: {
@@ -311,11 +559,33 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/agriculture/crops.json & MoALD agricultural statistics',
     confidence: 'CALCULATED',
     thresholds: [
-      { minValue: 85, color: '#047857', label: 'Prime Irrigated Valleys (≥85%)', description: 'Paddy, commercial ginger, and hybrid spring maize' },
-      { minValue: 70, maxValue: 84, color: '#10b981', label: 'Agroforestry Terraces (70–84%)', description: 'Arabica coffee, finger millet, and monsoon vegetables' },
-      { minValue: 50, maxValue: 69, color: '#f59e0b', label: 'Rainfed Mid-Slopes (50–69%)', description: 'Traditional millet, pulses, and forage crops' },
-      { maxValue: 49, color: '#ef4444', label: 'High Steep Ridges (<50%)', description: 'High runoff risk; best reserved for community conservation forestry' }
-    ]
+      {
+        minValue: 85,
+        color: '#047857',
+        label: 'Prime Irrigated Valleys (≥85%)',
+        description: 'Paddy, commercial ginger, and hybrid spring maize',
+      },
+      {
+        minValue: 70,
+        maxValue: 84,
+        color: '#10b981',
+        label: 'Agroforestry Terraces (70–84%)',
+        description: 'Arabica coffee, finger millet, and monsoon vegetables',
+      },
+      {
+        minValue: 50,
+        maxValue: 69,
+        color: '#f59e0b',
+        label: 'Rainfed Mid-Slopes (50–69%)',
+        description: 'Traditional millet, pulses, and forage crops',
+      },
+      {
+        maxValue: 49,
+        color: '#ef4444',
+        label: 'High Steep Ridges (<50%)',
+        description: 'High runoff risk; best reserved for community conservation forestry',
+      },
+    ],
   },
 
   hiunde_winter: {
@@ -328,11 +598,33 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/agriculture/crops.json & MoALD agricultural statistics',
     confidence: 'CALCULATED',
     thresholds: [
-      { minValue: 85, color: '#047857', label: 'Optimal Winter Niche (≥85%)', description: 'Winter wheat, yellow mustard, and irrigated cole crops' },
-      { minValue: 70, maxValue: 84, color: '#10b981', label: 'Cold-Hardy Highland Terraces (70–84%)', description: 'Seed potato and high-altitude winter cereals' },
-      { minValue: 50, maxValue: 69, color: '#f59e0b', label: 'Low-Moisture Slopes (50–69%)', description: 'Buckwheat and cover crops; limited by winter drought' },
-      { maxValue: 49, color: '#ef4444', label: 'Severe Frost Ridge Slopes (<50%)', description: 'Frequent winter sub-zero temperature exposure' }
-    ]
+      {
+        minValue: 85,
+        color: '#047857',
+        label: 'Optimal Winter Niche (≥85%)',
+        description: 'Winter wheat, yellow mustard, and irrigated cole crops',
+      },
+      {
+        minValue: 70,
+        maxValue: 84,
+        color: '#10b981',
+        label: 'Cold-Hardy Highland Terraces (70–84%)',
+        description: 'Seed potato and high-altitude winter cereals',
+      },
+      {
+        minValue: 50,
+        maxValue: 69,
+        color: '#f59e0b',
+        label: 'Low-Moisture Slopes (50–69%)',
+        description: 'Buckwheat and cover crops; limited by winter drought',
+      },
+      {
+        maxValue: 49,
+        color: '#ef4444',
+        label: 'Severe Frost Ridge Slopes (<50%)',
+        description: 'Frequent winter sub-zero temperature exposure',
+      },
+    ],
   },
 
   double_cropping: {
@@ -345,11 +637,33 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/agriculture/crops.json & CBS Agricultural Census',
     confidence: 'CALCULATED',
     thresholds: [
-      { minValue: 250, color: '#047857', label: 'Triple-Cropping (≥250%)', description: 'Paddy-Wheat-Maize year-round irrigation in Kaligandaki & Musikot' },
-      { minValue: 200, maxValue: 249, color: '#10b981', label: 'Standard Double-Cropping (200–249%)', description: 'Monsoon Paddy followed by Winter Wheat/Potato' },
-      { minValue: 140, maxValue: 199, color: '#f59e0b', label: 'Semi-Irrigated Rotation (140–199%)', description: 'Monsoon Maize + Winter Legumes/Mustard' },
-      { maxValue: 139, color: '#ef4444', label: 'Single-Cropping (<140%)', description: 'Rainfed subsistence single crop due to lack of winter water' }
-    ]
+      {
+        minValue: 250,
+        color: '#047857',
+        label: 'Triple-Cropping (≥250%)',
+        description: 'Paddy-Wheat-Maize year-round irrigation in Kaligandaki & Musikot',
+      },
+      {
+        minValue: 200,
+        maxValue: 249,
+        color: '#10b981',
+        label: 'Standard Double-Cropping (200–249%)',
+        description: 'Monsoon Paddy followed by Winter Wheat/Potato',
+      },
+      {
+        minValue: 140,
+        maxValue: 199,
+        color: '#f59e0b',
+        label: 'Semi-Irrigated Rotation (140–199%)',
+        description: 'Monsoon Maize + Winter Legumes/Mustard',
+      },
+      {
+        maxValue: 139,
+        color: '#ef4444',
+        label: 'Single-Cropping (<140%)',
+        description: 'Rainfed subsistence single crop due to lack of winter water',
+      },
+    ],
   },
 
   // ============================================================================
@@ -365,11 +679,33 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/land_and_soil/district-soil-summary.json',
     confidence: 'REAL',
     thresholds: [
-      { maxValue: 5.0, color: '#ef4444', label: 'Strongly Acidic (< 5.0)', description: 'Requires agricultural lime (CaCO3) application' },
-      { minValue: 5.0, maxValue: 5.9, color: '#f59e0b', label: 'Moderately Acidic (5.0 – 5.9)', description: 'Suitable for coffee and tea' },
-      { minValue: 6.0, maxValue: 7.2, color: '#10b981', label: 'Optimal / Neutral (6.0 – 7.2)', description: 'Ideal for major cereal and vegetable crops' },
-      { minValue: 7.3, color: '#3b82f6', label: 'Alkaline (> 7.2)', description: 'Rare in mid-hills; limestone outcrops' }
-    ]
+      {
+        maxValue: 5.0,
+        color: '#ef4444',
+        label: 'Strongly Acidic (< 5.0)',
+        description: 'Requires agricultural lime (CaCO3) application',
+      },
+      {
+        minValue: 5.0,
+        maxValue: 5.9,
+        color: '#f59e0b',
+        label: 'Moderately Acidic (5.0 – 5.9)',
+        description: 'Suitable for coffee and tea',
+      },
+      {
+        minValue: 6.0,
+        maxValue: 7.2,
+        color: '#10b981',
+        label: 'Optimal / Neutral (6.0 – 7.2)',
+        description: 'Ideal for major cereal and vegetable crops',
+      },
+      {
+        minValue: 7.3,
+        color: '#3b82f6',
+        label: 'Alkaline (> 7.2)',
+        description: 'Rare in mid-hills; limestone outcrops',
+      },
+    ],
   },
 
   elevation_zones: {
@@ -382,11 +718,33 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/rasters/gulmi_dem_30m.tif',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 1700, color: '#4c1d95', label: 'Alpine Ridges (>1,700m)', description: 'Madane Lekh (1740m), Resunga Peak; protected biodiversity & cloud forests' },
-      { minValue: 1450, maxValue: 1699, color: '#7c3aed', label: 'Cool Temperate Highlands (1,450–1,700m)', description: 'Malika, Chandrakot, Dhurkot; specialty Arabica coffee and temperate fruit belt' },
-      { minValue: 1100, maxValue: 1449, color: '#0ea5e9', label: 'Sub-Tropical Mid-Hills (1,100–1,450m)', description: 'Chatrakot, Gulmidarbar; intensive terrace farming and mixed agroforestry' },
-      { maxValue: 1099, color: '#10b981', label: 'Low Riverbed Valleys (<1,100m)', description: 'Ruru, Kaligandaki, Musikot (890–1100m); tropical crops and irrigated alluvial flats' }
-    ]
+      {
+        minValue: 1700,
+        color: '#4c1d95',
+        label: 'Alpine Ridges (>1,700m)',
+        description: 'Madane Lekh (1740m), Resunga Peak; protected biodiversity & cloud forests',
+      },
+      {
+        minValue: 1450,
+        maxValue: 1699,
+        color: '#7c3aed',
+        label: 'Cool Temperate Highlands (1,450–1,700m)',
+        description: 'Malika, Chandrakot, Dhurkot; specialty Arabica coffee and temperate fruit belt',
+      },
+      {
+        minValue: 1100,
+        maxValue: 1449,
+        color: '#0ea5e9',
+        label: 'Sub-Tropical Mid-Hills (1,100–1,450m)',
+        description: 'Chatrakot, Gulmidarbar; intensive terrace farming and mixed agroforestry',
+      },
+      {
+        maxValue: 1099,
+        color: '#10b981',
+        label: 'Low Riverbed Valleys (<1,100m)',
+        description: 'Ruru, Kaligandaki, Musikot (890–1100m); tropical crops and irrigated alluvial flats',
+      },
+    ],
   },
 
   agroforestry_belt: {
@@ -399,11 +757,33 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/land_and_soil/district-soil-summary.json & DFSC inventory',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 60, color: '#047857', label: 'Dense Forest Sanctuary (≥60%)', description: 'Protected religious and community forests (Resunga, Madane)' },
-      { minValue: 40, maxValue: 59, color: '#10b981', label: 'Integrated Coffee Agroforestry (40–59%)', description: 'Shade-grown coffee and fodder tree canopy' },
-      { minValue: 25, maxValue: 39, color: '#f59e0b', label: 'Terrace Farming Slopes (25–39%)', description: 'Intensive agricultural terraces with sparse boundary trees' },
-      { maxValue: 24, color: '#ef4444', label: 'Cultivated Lowlands (<25%)', description: 'Riverbed agricultural farmland and settlement corridors' }
-    ]
+      {
+        minValue: 60,
+        color: '#047857',
+        label: 'Dense Forest Sanctuary (≥60%)',
+        description: 'Protected religious and community forests (Resunga, Madane)',
+      },
+      {
+        minValue: 40,
+        maxValue: 59,
+        color: '#10b981',
+        label: 'Integrated Coffee Agroforestry (40–59%)',
+        description: 'Shade-grown coffee and fodder tree canopy',
+      },
+      {
+        minValue: 25,
+        maxValue: 39,
+        color: '#f59e0b',
+        label: 'Terrace Farming Slopes (25–39%)',
+        description: 'Intensive agricultural terraces with sparse boundary trees',
+      },
+      {
+        maxValue: 24,
+        color: '#ef4444',
+        label: 'Cultivated Lowlands (<25%)',
+        description: 'Riverbed agricultural farmland and settlement corridors',
+      },
+    ],
   },
 
   soil_nitrogen: {
@@ -416,10 +796,26 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 0.20, color: '#047857', label: 'High Nitrogen (≥0.20%)', description: 'Rich in organic matter (Kaligandaki, Satyawati, Ruru)' },
-      { minValue: 0.10, maxValue: 0.19, color: '#10b981', label: 'Medium Nitrogen (0.10–0.19%)', description: 'Adequate for cereal crops (Musikot, Chandrakot, Chatrakot)' },
-      { maxValue: 0.09, color: '#ef4444', label: 'Low / Deficient (<0.10%)', description: 'Requires leguminous intercropping or organic compost replenishment' }
-    ]
+      {
+        minValue: 0.2,
+        color: '#047857',
+        label: 'High Nitrogen (≥0.20%)',
+        description: 'Rich in organic matter (Kaligandaki, Satyawati, Ruru)',
+      },
+      {
+        minValue: 0.1,
+        maxValue: 0.19,
+        color: '#10b981',
+        label: 'Medium Nitrogen (0.10–0.19%)',
+        description: 'Adequate for cereal crops (Musikot, Chandrakot, Chatrakot)',
+      },
+      {
+        maxValue: 0.09,
+        color: '#ef4444',
+        label: 'Low / Deficient (<0.10%)',
+        description: 'Requires leguminous intercropping or organic compost replenishment',
+      },
+    ],
   },
 
   soil_phosphorus: {
@@ -432,10 +828,26 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 35, color: '#0284c7', label: 'High Available P (≥35 kg/ha)', description: 'Adequate root development for pulses and oilseeds' },
-      { minValue: 15, maxValue: 34, color: '#38bdf8', label: 'Medium Available P (15–34 kg/ha)', description: 'Standard agricultural maintenance application needed' },
-      { maxValue: 14, color: '#ef4444', label: 'Low / Deficient (<15 kg/ha)', description: 'Phosphorus fixation on acidic hillside soils' }
-    ]
+      {
+        minValue: 35,
+        color: '#0284c7',
+        label: 'High Available P (≥35 kg/ha)',
+        description: 'Adequate root development for pulses and oilseeds',
+      },
+      {
+        minValue: 15,
+        maxValue: 34,
+        color: '#38bdf8',
+        label: 'Medium Available P (15–34 kg/ha)',
+        description: 'Standard agricultural maintenance application needed',
+      },
+      {
+        maxValue: 14,
+        color: '#ef4444',
+        label: 'Low / Deficient (<15 kg/ha)',
+        description: 'Phosphorus fixation on acidic hillside soils',
+      },
+    ],
   },
 
   soil_potassium: {
@@ -448,10 +860,26 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 180, color: '#0284c7', label: 'High Available K (≥180 kg/ha)', description: 'High disease resistance and potato/coffee vigor' },
-      { minValue: 110, maxValue: 179, color: '#38bdf8', label: 'Medium Available K (110–179 kg/ha)', description: 'Optimal for maize and winter cereal rotations' },
-      { maxValue: 109, color: '#ef4444', label: 'Low / Leached (<110 kg/ha)', description: 'Leached soils on steep high-rainfall slopes' }
-    ]
+      {
+        minValue: 180,
+        color: '#0284c7',
+        label: 'High Available K (≥180 kg/ha)',
+        description: 'High disease resistance and potato/coffee vigor',
+      },
+      {
+        minValue: 110,
+        maxValue: 179,
+        color: '#38bdf8',
+        label: 'Medium Available K (110–179 kg/ha)',
+        description: 'Optimal for maize and winter cereal rotations',
+      },
+      {
+        maxValue: 109,
+        color: '#ef4444',
+        label: 'Low / Leached (<110 kg/ha)',
+        description: 'Leached soils on steep high-rainfall slopes',
+      },
+    ],
   },
 
   soil_sampling_grid: {
@@ -464,10 +892,26 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 75, color: '#047857', label: 'Prime Balanced Soil (≥75%)', description: 'Balanced NPK and neutral pH 6.2–6.8' },
-      { minValue: 50, maxValue: 74, color: '#10b981', label: 'Productive Farmland (50–74%)', description: 'Moderate fertility requiring standard farmyard manure' },
-      { maxValue: 49, color: '#ef4444', label: 'Constrained Soils (<50%)', description: 'High acidity or NPK deficiency requiring lime/fertilizer management' }
-    ]
+      {
+        minValue: 75,
+        color: '#047857',
+        label: 'Prime Balanced Soil (≥75%)',
+        description: 'Balanced NPK and neutral pH 6.2–6.8',
+      },
+      {
+        minValue: 50,
+        maxValue: 74,
+        color: '#10b981',
+        label: 'Productive Farmland (50–74%)',
+        description: 'Moderate fertility requiring standard farmyard manure',
+      },
+      {
+        maxValue: 49,
+        color: '#ef4444',
+        label: 'Constrained Soils (<50%)',
+        description: 'High acidity or NPK deficiency requiring lime/fertilizer management',
+      },
+    ],
   },
 
   // ============================================================================
@@ -483,10 +927,26 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/calculated/hydro_reaches/reaches_screened.csv',
     confidence: 'CALCULATED',
     thresholds: [
-      { minValue: 1000, color: '#4c1d95', label: 'Commercial RoR (>1 MW)', description: 'National grid feed-in cascade potential (Kaligandaki/Badigad)' },
-      { minValue: 100, maxValue: 999, color: '#7c3aed', label: 'Mini Hydro (100–999 kW)', description: 'Local industrial micro-grid & cold storage power' },
-      { maxValue: 99, color: '#10b981', label: 'Rural Micro-Hydro (<100 kW)', description: 'Off-grid community electrification and agricultural agro-processing mills' }
-    ]
+      {
+        minValue: 1000,
+        color: '#4c1d95',
+        label: 'Commercial RoR (>1 MW)',
+        description: 'National grid feed-in cascade potential (Kaligandaki/Badigad)',
+      },
+      {
+        minValue: 100,
+        maxValue: 999,
+        color: '#7c3aed',
+        label: 'Mini Hydro (100–999 kW)',
+        description: 'Local industrial micro-grid & cold storage power',
+      },
+      {
+        maxValue: 99,
+        color: '#10b981',
+        label: 'Rural Micro-Hydro (<100 kW)',
+        description: 'Off-grid community electrification and agricultural agro-processing mills',
+      },
+    ],
   },
 
   solar_irradiance: {
@@ -499,13 +959,47 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/climate/gulmi_solar_pvout_opta.geojson',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 4.35, color: '#fef08a', label: 'Peak Solar Yield (≥4.35 kWh/kWp/d)', description: 'Optimal unshaded generation capacity; ideal for solar lift pumping & mini-grids' },
-      { minValue: 4.20, maxValue: 4.34, color: '#fde047', label: 'High Solar Yield (4.20–4.34 kWh/kWp/d)', description: 'High daily energy generation for rooftop arrays and agricultural terraces' },
-      { minValue: 4.10, maxValue: 4.19, color: '#fbbf24', label: 'Moderate Solar Yield (4.10–4.19 kWh/kWp/d)', description: 'District baseline generation for domestic and institutional solar' },
-      { minValue: 3.90, maxValue: 4.09, color: '#f97316', label: 'Moderate-Low Solar Yield (3.90–4.09 kWh/kWp/d)', description: 'Slightly constrained generation due to local horizon obstruction' },
-      { minValue: 3.60, maxValue: 3.89, color: '#ea580c', label: 'Low Solar Yield (3.60–3.89 kWh/kWp/d)', description: 'Reduced insolation on steep shaded hillside aspects' },
-      { maxValue: 3.59, color: '#7c2d12', label: 'Very Low Solar Yield (<3.60 kWh/kWp/d)', description: 'Constrained generation in steep river ravine corridors' }
-    ]
+      {
+        minValue: 4.35,
+        color: '#fef08a',
+        label: 'Peak Solar Yield (≥4.35 kWh/kWp/d)',
+        description: 'Optimal unshaded generation capacity; ideal for solar lift pumping & mini-grids',
+      },
+      {
+        minValue: 4.2,
+        maxValue: 4.34,
+        color: '#fde047',
+        label: 'High Solar Yield (4.20–4.34 kWh/kWp/d)',
+        description: 'High daily energy generation for rooftop arrays and agricultural terraces',
+      },
+      {
+        minValue: 4.1,
+        maxValue: 4.19,
+        color: '#fbbf24',
+        label: 'Moderate Solar Yield (4.10–4.19 kWh/kWp/d)',
+        description: 'District baseline generation for domestic and institutional solar',
+      },
+      {
+        minValue: 3.9,
+        maxValue: 4.09,
+        color: '#f97316',
+        label: 'Moderate-Low Solar Yield (3.90–4.09 kWh/kWp/d)',
+        description: 'Slightly constrained generation due to local horizon obstruction',
+      },
+      {
+        minValue: 3.6,
+        maxValue: 3.89,
+        color: '#ea580c',
+        label: 'Low Solar Yield (3.60–3.89 kWh/kWp/d)',
+        description: 'Reduced insolation on steep shaded hillside aspects',
+      },
+      {
+        maxValue: 3.59,
+        color: '#7c2d12',
+        label: 'Very Low Solar Yield (<3.60 kWh/kWp/d)',
+        description: 'Constrained generation in steep river ravine corridors',
+      },
+    ],
   },
 
   clean_cooking: {
@@ -518,11 +1012,35 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/infrastructure/cooking_household.geojson',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 92, color: '#991b1b', label: 'Critical Firewood Dependency (≥92%)', description: 'Urgent priority for electric induction cooking & domestic biogas (Dhurkot, Isma, Madane, Malika, Gulmidarbar)' },
-      { minValue: 85, maxValue: 91.9, color: '#ef4444', label: 'High Firewood Dependency (85–91%)', description: 'High forest biomass pressure with secondary LPG access (Musikot, Satyawati, Chatrakot, Kaligandaki)' },
-      { minValue: 75, maxValue: 84.9, color: '#f59e0b', label: 'Partial Modern Transition (75–84%)', description: 'Highway access enabling emerging clean fuel adoption (Chandrakot, Ruru Kshetra)' },
-      { maxValue: 74.9, color: '#10b981', label: 'Advanced Clean Fuel Adoption (<75%)', description: 'District commercial core with high LPG cylinder penetration (Resunga Municipality at 58.1%)' }
-    ]
+      {
+        minValue: 92,
+        color: '#991b1b',
+        label: 'Critical Firewood Dependency (≥92%)',
+        description:
+          'Urgent priority for electric induction cooking & domestic biogas (Dhurkot, Isma, Madane, Malika, Gulmidarbar)',
+      },
+      {
+        minValue: 85,
+        maxValue: 91.9,
+        color: '#ef4444',
+        label: 'High Firewood Dependency (85–91%)',
+        description:
+          'High forest biomass pressure with secondary LPG access (Musikot, Satyawati, Chatrakot, Kaligandaki)',
+      },
+      {
+        minValue: 75,
+        maxValue: 84.9,
+        color: '#f59e0b',
+        label: 'Partial Modern Transition (75–84%)',
+        description: 'Highway access enabling emerging clean fuel adoption (Chandrakot, Ruru Kshetra)',
+      },
+      {
+        maxValue: 74.9,
+        color: '#10b981',
+        label: 'Advanced Clean Fuel Adoption (<75%)',
+        description: 'District commercial core with high LPG cylinder penetration (Resunga Municipality at 58.1%)',
+      },
+    ],
   },
 
   grid_reach: {
@@ -535,11 +1053,34 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/infrastructure/gulmi_nea_substations.geojson',
     confidence: 'REAL',
     categories: [
-      { key: 'hub_132kv', color: '#047857', label: '132 kV Central Primary Hub (Tamghas/Unaichaur)', description: '46 MVA capacity (30 MVA 132/33 kV + 16 MVA 33/11 kV); 200 MW transmission capability via Sandhikharka line (Resunga)' },
-      { key: 'trunk_132kv', color: '#0ea5e9', label: '132 kV Regional Backbone Hub (Paudi Amarai)', description: '30 MVA capacity; Tamghas-Burtibang high-voltage transmission extension (Musikot, Isma)' },
-      { key: 'rural_33kv', color: '#8b5cf6', label: '33/11 kV Dedicated Rural Substations (Kisantari & Birbas)', description: 'Kisantari (3 MVA, commissioned Sept 2025, Rs 105M) & Birbas (8 MVA with Unaichaur 33kV tie-line) (Malika, Madane, Dhurkot, Gulmidarbar, Chatrakot)' },
-      { key: 'hydro_33kv', color: '#f59e0b', label: '33/11 kV Hydro-Confluence Grid (Ridi Hub)', description: '10 MVA facility integrated with local 7.4 MW generation: Upper Hugdi (5 MW) & Ridi Khola (2.4 MW) (Ruru, Satyawati, Kaligandaki, Chandrakot)' }
-    ]
+      {
+        key: 'hub_132kv',
+        color: '#047857',
+        label: '132 kV Central Primary Hub (Tamghas/Unaichaur)',
+        description:
+          '46 MVA capacity (30 MVA 132/33 kV + 16 MVA 33/11 kV); 200 MW transmission capability via Sandhikharka line (Resunga)',
+      },
+      {
+        key: 'trunk_132kv',
+        color: '#0ea5e9',
+        label: '132 kV Regional Backbone Hub (Paudi Amarai)',
+        description: '30 MVA capacity; Tamghas-Burtibang high-voltage transmission extension (Musikot, Isma)',
+      },
+      {
+        key: 'rural_33kv',
+        color: '#8b5cf6',
+        label: '33/11 kV Dedicated Rural Substations (Kisantari & Birbas)',
+        description:
+          'Kisantari (3 MVA, commissioned Sept 2025, Rs 105M) & Birbas (8 MVA with Unaichaur 33kV tie-line) (Malika, Madane, Dhurkot, Gulmidarbar, Chatrakot)',
+      },
+      {
+        key: 'hydro_33kv',
+        color: '#f59e0b',
+        label: '33/11 kV Hydro-Confluence Grid (Ridi Hub)',
+        description:
+          '10 MVA facility integrated with local 7.4 MW generation: Upper Hugdi (5 MW) & Ridi Khola (2.4 MW) (Ruru, Satyawati, Kaligandaki, Chandrakot)',
+      },
+    ],
   },
 
   // ============================================================================
@@ -555,10 +1096,28 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/agriculture/gulmi_agricultural_landholding.geojson',
     confidence: 'REAL',
     thresholds: [
-      { minValue: 14.0, color: '#047857', label: 'Extensive Hill Holdings (≥14.0 Ropani)', description: 'Substantial terrace area supporting commercial horticulture and agroforestry (e.g. Chatrakot, Kaligandaki, Ruru)' },
-      { minValue: 11.0, maxValue: 13.99, color: '#10b981', label: 'Mid-Hill Typical Holdings (11.0–13.9 Ropani)', description: 'Average mid-hill mixed subsistence terrace holding (e.g. Dhurkot, Chandrakot, Gulmidarbar, Malika, Madane, Resunga)' },
-      { maxValue: 10.99, color: '#f59e0b', label: 'Fragmented / Dense (<11.0 Ropani)', description: 'Higher holding density or parcel fragmentation (e.g. Musikot, Satyawati, Isma)' }
-    ]
+      {
+        minValue: 14.0,
+        color: '#047857',
+        label: 'Extensive Hill Holdings (≥14.0 Ropani)',
+        description:
+          'Substantial terrace area supporting commercial horticulture and agroforestry (e.g. Chatrakot, Kaligandaki, Ruru)',
+      },
+      {
+        minValue: 11.0,
+        maxValue: 13.99,
+        color: '#10b981',
+        label: 'Mid-Hill Typical Holdings (11.0–13.9 Ropani)',
+        description:
+          'Average mid-hill mixed subsistence terrace holding (e.g. Dhurkot, Chandrakot, Gulmidarbar, Malika, Madane, Resunga)',
+      },
+      {
+        maxValue: 10.99,
+        color: '#f59e0b',
+        label: 'Fragmented / Dense (<11.0 Ropani)',
+        description: 'Higher holding density or parcel fragmentation (e.g. Musikot, Satyawati, Isma)',
+      },
+    ],
   },
 
   local_governance: {
@@ -570,14 +1129,44 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     dataSourceCitation: 'data/real/boundaries/gulmi-palikas.json',
     confidence: 'REAL',
     categories: [
-      { key: 'district_hq', color: '#3730a3', label: 'District Administrative Capital', description: 'Resunga Municipality (रेसुङ्गा नगरपालिका)' },
-      { key: 'commercial_hub', color: '#4f46e5', label: 'Western Commercial Hub', description: 'Musikot Municipality (मुसिकोट नगरपालिका)' },
-      { key: 'religious_trade', color: '#059669', label: 'Trade & Religious Corridors', description: 'Chatrakot & Ruru Rural Municipalities' },
-      { key: 'coffee_belt', color: '#10b981', label: 'Agroforestry & Coffee Belt', description: 'Dhurkot, Chandrakot, Gulmidarbar' },
-      { key: 'river_lowlands', color: '#0ea5e9', label: 'River Basin Lowlands', description: 'Kaligandaki & Satyawati Rural Municipalities' },
-      { key: 'highland_watershed', color: '#14b8a6', label: 'Highland Watershed Belt', description: 'Madane, Malika, Isma Rural Municipalities' }
-    ]
-  }
+      {
+        key: 'district_hq',
+        color: '#3730a3',
+        label: 'District Administrative Capital',
+        description: 'Resunga Municipality (रेसुङ्गा नगरपालिका)',
+      },
+      {
+        key: 'commercial_hub',
+        color: '#4f46e5',
+        label: 'Western Commercial Hub',
+        description: 'Musikot Municipality (मुसिकोट नगरपालिका)',
+      },
+      {
+        key: 'religious_trade',
+        color: '#059669',
+        label: 'Trade & Religious Corridors',
+        description: 'Chatrakot & Ruru Rural Municipalities',
+      },
+      {
+        key: 'coffee_belt',
+        color: '#10b981',
+        label: 'Agroforestry & Coffee Belt',
+        description: 'Dhurkot, Chandrakot, Gulmidarbar',
+      },
+      {
+        key: 'river_lowlands',
+        color: '#0ea5e9',
+        label: 'River Basin Lowlands',
+        description: 'Kaligandaki & Satyawati Rural Municipalities',
+      },
+      {
+        key: 'highland_watershed',
+        color: '#14b8a6',
+        label: 'Highland Watershed Belt',
+        description: 'Madane, Malika, Isma Rural Municipalities',
+      },
+    ],
+  },
 };
 
 // Aliases for subfilter keys used interchangeably in UI controllers

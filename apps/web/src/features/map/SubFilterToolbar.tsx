@@ -37,12 +37,16 @@ export const SubFilterToolbar: React.FC = () => {
               </optgroup>
               <optgroup label="🌊 HydroSHEDS Basin & Drainage Modeling">
                 <option value="catchments">🏔️ Catchments (HydroBASINS Level 10 Watershed Basins)</option>
-                <option value="rivers_streams">🌊 Rivers & Stream Drainage Network (HydroRIVERS Strahler Orders)</option>
+                <option value="rivers_streams">
+                  🌊 Rivers & Stream Drainage Network (HydroRIVERS Strahler Orders)
+                </option>
                 <option value="flow_accumulation">💧 Surface Flow Accumulation Grid (Upslope Drainage Tiers)</option>
                 <option value="flow_direction">🧭 D8 Flow Direction Raster (8-Direction Flow Paths)</option>
               </optgroup>
               <optgroup label="⛰️ Terrain Water Security">
-                <option value="spring_vulnerability">🏔️ Watershed Spring Depletion Vulnerability (मुहान सुक्ने जोखिम)</option>
+                <option value="spring_vulnerability">
+                  🏔️ Watershed Spring Depletion Vulnerability (मुहान सुक्ने जोखिम)
+                </option>
                 <option value="irrigation_potential">🌾 River Lift Irrigation Potential (Riverbed Flats)</option>
               </optgroup>
             </select>
@@ -57,24 +61,14 @@ export const SubFilterToolbar: React.FC = () => {
               <Sprout className="w-3.5 h-3.5 text-emerald-600" />
               <span>Food Analysis:</span>
             </div>
-            <select
-              name="foodMode"
-              className={selectClass}
-              value={foodMode}
-              onChange={handleChange}
-            >
+            <select name="foodMode" className={selectClass} value={foodMode} onChange={handleChange}>
               <option value="single_crop">🌱 Crop Suitability (Agro-Climatic Fit)</option>
               <option value="crop_water_stress">💧 Crop Water & Moisture Stress</option>
               <option value="land_typology">🌾 Land Typology & Terraces (Khet vs Bari)</option>
             </select>
 
             {(foodMode === 'single_crop' || foodMode === 'crop_water_stress') && (
-              <select
-                name="crop"
-                className={selectClass}
-                value={subFilters.crop || 'coffee'}
-                onChange={handleChange}
-              >
+              <select name="crop" className={selectClass} value={subFilters.crop || 'coffee'} onChange={handleChange}>
                 <optgroup label="☕ Cash & Horticultural Crops">
                   <option value="coffee">☕ Arabica Coffee (कफी)</option>
                   <option value="large_cardamom">🌿 Large Cardamom (अलैंची)</option>
@@ -163,7 +157,9 @@ export const SubFilterToolbar: React.FC = () => {
             >
               <option value="hydro_corridor">⚡ Run-of-River & Micro-Hydro Corridors (Kali Gandaki, Badigad)</option>
               <option value="solar_irradiance">☀️ Solar PV Potential & Tilt (PVOUT & OPTA • Global Solar Atlas)</option>
-              <option value="clean_cooking_biomass">🪵 Clean Cooking & Firewood Reliance (Census 2021 • NSO Nepal)</option>
+              <option value="clean_cooking_biomass">
+                🪵 Clean Cooking & Firewood Reliance (Census 2021 • NSO Nepal)
+              </option>
               <option value="grid_electrification">🔌 NEA Substation Grid Reach</option>
             </select>
           </>
@@ -182,7 +178,9 @@ export const SubFilterToolbar: React.FC = () => {
               value={subFilters.socioSubFilter || 'local_governance'}
               onChange={handleChange}
             >
-              <option value="local_governance">🏛️ Local Governance Classification (Municipalities & Rural Palikas)</option>
+              <option value="local_governance">
+                🏛️ Local Governance Classification (Municipalities & Rural Palikas)
+              </option>
               <option value="agri_landholding">🚜 Average Agricultural Landholding per Household</option>
             </select>
           </>

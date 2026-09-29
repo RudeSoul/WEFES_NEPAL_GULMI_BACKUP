@@ -15,13 +15,17 @@ export const ShadowSdgTab: React.FC<ShadowSdgTabProps> = ({ deep }) => {
         <div className="p-4 rounded-xl border border-slate-200 bg-white space-y-3 shadow-2xs">
           <div className="flex items-center justify-between border-b pb-2">
             <span className="font-bold text-xs text-slate-900 font-outfit">1. Conventional Financial Ledger</span>
-            <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono font-semibold">Standard Ledger</span>
+            <span className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono font-semibold">
+              Standard Ledger
+            </span>
           </div>
 
           <div className="space-y-2 text-xs font-mono">
             <div className="flex justify-between text-slate-700">
               <span className="font-sans">Gross Farmgate Revenue:</span>
-              <span className="font-bold text-emerald-700">+NPR {naturalCapital.grossFinancialRevenueNpr.toLocaleString()}</span>
+              <span className="font-bold text-emerald-700">
+                +NPR {naturalCapital.grossFinancialRevenueNpr.toLocaleString()}
+              </span>
             </div>
             <div className="flex justify-between text-slate-700">
               <span className="font-sans">(-) Direct Labor Wage:</span>
@@ -29,7 +33,9 @@ export const ShadowSdgTab: React.FC<ShadowSdgTabProps> = ({ deep }) => {
             </div>
             <div className="flex justify-between text-slate-700">
               <span className="font-sans">(-) Irrigation & Energy Cost:</span>
-              <span className="font-bold text-rose-700">-NPR {naturalCapital.energyDirectCostNpr.toLocaleString()}</span>
+              <span className="font-bold text-rose-700">
+                -NPR {naturalCapital.energyDirectCostNpr.toLocaleString()}
+              </span>
             </div>
             <div className="flex justify-between pt-2 border-t font-bold text-slate-900 text-sm">
               <span className="font-sans">Conventional Net Profit:</span>
@@ -41,7 +47,9 @@ export const ShadowSdgTab: React.FC<ShadowSdgTabProps> = ({ deep }) => {
         <div className="p-4 rounded-xl border border-purple-200 bg-purple-50/50 space-y-3 shadow-2xs">
           <div className="flex items-center justify-between border-b border-purple-200 pb-2">
             <span className="font-bold text-xs text-purple-950 font-outfit">2. True Ecological Nexus Valuation</span>
-            <span className="text-[10px] bg-purple-200 text-purple-950 px-2 py-0.5 rounded font-mono font-bold">Natural Capital</span>
+            <span className="text-[10px] bg-purple-200 text-purple-950 px-2 py-0.5 rounded font-mono font-bold">
+              Natural Capital
+            </span>
           </div>
 
           <div className="space-y-2 text-xs font-mono">
@@ -55,11 +63,15 @@ export const ShadowSdgTab: React.FC<ShadowSdgTabProps> = ({ deep }) => {
             </div>
             <div className="flex justify-between text-slate-700">
               <span className="font-sans">(-) Soil N-P-K Depletion:</span>
-              <span className="font-bold text-rose-700">-NPR {naturalCapital.soilNutrientDepletionCostNpr.toLocaleString()}</span>
+              <span className="font-bold text-rose-700">
+                -NPR {naturalCapital.soilNutrientDepletionCostNpr.toLocaleString()}
+              </span>
             </div>
             <div className="flex justify-between text-slate-700">
               <span className="font-sans">(+) Carbon Sequestration Credit:</span>
-              <span className="font-bold text-emerald-700">+NPR {naturalCapital.carbonCreditAssetNpr.toLocaleString()}</span>
+              <span className="font-bold text-emerald-700">
+                +NPR {naturalCapital.carbonCreditAssetNpr.toLocaleString()}
+              </span>
             </div>
             <div className="flex justify-between pt-2 border-t border-purple-200 font-bold text-purple-950 text-sm">
               <span className="font-sans">True Nexus Net Value:</span>

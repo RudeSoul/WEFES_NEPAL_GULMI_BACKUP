@@ -19,11 +19,7 @@ interface PresetItem {
   cropId?: string;
 }
 
-export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({
-  onApplyPreset,
-  activePillar,
-  lang
-}) => {
+export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({ onApplyPreset, activePillar, lang }) => {
   const presets: PresetItem[] = [
     {
       id: 'coffee_expansion',
@@ -33,7 +29,7 @@ export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({
       title: lang === 'np' ? '☕ कफी पकेट विस्तार' : '☕ Coffee Expansion Zone',
       desc: lang === 'np' ? 'रुरु, सत्यवती र छत्रकोटमा उपयुक्तता' : 'Target Ruru, Satyawati & Chatrakot',
       subFilters: { foodMode: 'single_crop', crop: 'coffee' },
-      cropId: 'coffee'
+      cropId: 'coffee',
     },
     {
       id: 'spring_scarcity',
@@ -42,7 +38,7 @@ export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({
       color: 'sky',
       title: lang === 'np' ? '💧 हिउँदे मुहान सुक्ने जोखिम' : '💧 Spring Drying Vulnerability',
       desc: lang === 'np' ? 'उच्च डाँडाका मुहान संरक्षण र रिचार्ज' : 'High ridge recharge & pond conservation',
-      subFilters: { waterSubFilter: 'spring_vulnerability' }
+      subFilters: { waterSubFilter: 'spring_vulnerability' },
     },
     {
       id: 'solar_lift',
@@ -51,7 +47,7 @@ export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({
       color: 'amber',
       title: lang === 'np' ? '⚡ सौर्य लिफ्ट सिँचाइ' : '⚡ Solar Lift Irrigation',
       desc: lang === 'np' ? 'नदी किनारबाट डाँडाको टारी खेतसम्म' : 'Pumping riverbeds to terrace farmland',
-      subFilters: { waterSubFilter: 'irrigation_potential' }
+      subFilters: { waterSubFilter: 'irrigation_potential' },
     },
     {
       id: 'soil_liming',
@@ -60,7 +56,7 @@ export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({
       color: 'teal',
       title: lang === 'np' ? '🧪 माटो अम्लीयता र चुन' : '🧪 Soil pH & Liming Need',
       desc: lang === 'np' ? 'मदाने, मालिका र रेसुङ्गा ढलानमा उपचार' : 'Liming priority in acidic forest slopes',
-      subFilters: { ecoSubFilter: 'soil_ph' }
+      subFilters: { ecoSubFilter: 'soil_ph' },
     },
     {
       id: 'agri_landholding',
@@ -69,8 +65,8 @@ export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({
       color: 'indigo',
       title: lang === 'np' ? '🚜 कृषियोग्य जग्गा र बस्ती' : '🚜 Landholding & Settlements',
       desc: lang === 'np' ? 'प्रति घरधुरी जग्गा र घनत्व तरङ्ग' : 'Land per HH & settlement density',
-      subFilters: { socioSubFilter: 'agri_landholding' }
-    }
+      subFilters: { socioSubFilter: 'agri_landholding' },
+    },
   ];
 
   return (
@@ -86,7 +82,7 @@ export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
-        {presets.map(p => {
+        {presets.map((p) => {
           const Icon = p.icon;
           return (
             <button
@@ -100,9 +96,7 @@ export const PolicyPresetSelector: React.FC<PolicyPresetSelectorProps> = ({
                   {p.title}
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 line-clamp-2 leading-tight">
-                {p.desc}
-              </p>
+              <p className="text-[10px] text-slate-500 line-clamp-2 leading-tight">{p.desc}</p>
             </button>
           );
         })}

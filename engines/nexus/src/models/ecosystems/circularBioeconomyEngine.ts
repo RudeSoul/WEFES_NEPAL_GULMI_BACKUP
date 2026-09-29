@@ -75,9 +75,7 @@ export interface CircularBioeconomyResult {
   calibrationProvenance: string;
 }
 
-export function computeCircularBioeconomy(
-  input: CircularBioeconomyInput
-): CircularBioeconomyResult {
+export function computeCircularBioeconomy(input: CircularBioeconomyInput): CircularBioeconomyResult {
   const {
     districtName,
     cropName,
@@ -98,7 +96,7 @@ export function computeCircularBioeconomy(
   const totalCropBiomassKg = Math.round(cropLandHa * baseCropYieldTonPerHa * 1000);
   const cropPricePerKg = isPaddy ? 38 : 45;
   const cropRevenue = totalCropBiomassKg * cropPricePerKg;
-  const cropStrawResidueTons = Number((totalCropBiomassKg * (isPaddy ? 1.15 : 0.85) / 1000).toFixed(1)); // straw:grain ratio
+  const cropStrawResidueTons = Number(((totalCropBiomassKg * (isPaddy ? 1.15 : 0.85)) / 1000).toFixed(1)); // straw:grain ratio
 
   // 2. Dairy calculations
   const milkYieldPerHead = isBuffalo ? 1650 : 2300;
@@ -106,7 +104,8 @@ export function computeCircularBioeconomy(
   const totalMilkLiters = dairyHerdSize * milkYieldPerHead;
   const milkRevenue = totalMilkLiters * milkPricePerLiter;
   const fodderNeededTons = Number((dairyHerdSize * 2.8).toFixed(1)); // 2.8 t DM/yr
-  const fodderMetPct = fodderNeededTons > 0 ? Math.min(100, Math.round((cropStrawResidueTons / fodderNeededTons) * 100)) : 100;
+  const fodderMetPct =
+    fodderNeededTons > 0 ? Math.min(100, Math.round((cropStrawResidueTons / fodderNeededTons) * 100)) : 100;
   const dailyDungTotalKg = dairyHerdSize * (isBuffalo ? 18 : 14);
   const annualDungKg = dailyDungTotalKg * 365;
 
@@ -121,7 +120,7 @@ export function computeCircularBioeconomy(
   const ureaBagsSaved = Number((annualSlurryTons * 0.58).toFixed(1));
   const dapBagsSaved = Number((annualSlurryTons * 0.28).toFixed(1));
   // MoALD March 2023 subsidized standard: Urea = NPR 1,250/bag, DAP = NPR 2,500/bag
-  const fertSavingsNpr = Math.round((ureaBagsSaved * 1250) + (dapBagsSaved * 2500));
+  const fertSavingsNpr = Math.round(ureaBagsSaved * 1250 + dapBagsSaved * 2500);
 
   // 4. Aquaculture calculations
   const fishYieldPerHa = isTerai ? 5.2 : 3.8;
@@ -133,7 +132,7 @@ export function computeCircularBioeconomy(
   // 5. Conjunctive Water Balance
   const cropWaterPerKg = isPaddy ? 1400 : 800;
   const cropWaterM3 = Math.round((totalCropBiomassKg * cropWaterPerKg) / 1000);
-  const dairyWaterM3 = Math.round(dairyHerdSize * 65 * 365 / 1000);
+  const dairyWaterM3 = Math.round((dairyHerdSize * 65 * 365) / 1000);
   const pondEvapM3 = Math.round(aquaculturePondHa * 13500);
   const grossWaterDemandM3 = cropWaterM3 + dairyWaterM3 + pondEvapM3;
 
@@ -143,12 +142,8 @@ export function computeCircularBioeconomy(
 
   // 6. Nutritional aggregation
   const cropCalories = 3400;
-  const caloricYield = Math.round(
-    (totalCropBiomassKg * cropCalories) + (totalMilkLiters * 680) + (totalFishKg * 1100)
-  );
-  const proteinYield = Math.round(
-    (totalCropBiomassKg * 0.08) + (totalMilkLiters * 0.035) + (totalFishKg * 0.18)
-  );
+  const caloricYield = Math.round(totalCropBiomassKg * cropCalories + totalMilkLiters * 680 + totalFishKg * 1100);
+  const proteinYield = Math.round(totalCropBiomassKg * 0.08 + totalMilkLiters * 0.035 + totalFishKg * 0.18);
 
   // 7. Economics & Financial OPEX
   const laborRate = 760;
@@ -169,7 +164,8 @@ export function computeCircularBioeconomy(
   const pondExcavationCapex = aquaculturePondHa * 280000;
   const biogasPlantsCapex = biogasDigestersCount * 45000;
   const rechargePondCapex = rechargePondEnabled ? 65000 : 0;
-  const totalInitialCapex = solarPumpCapex + dairyAnimalsCapex + pondExcavationCapex + biogasPlantsCapex + rechargePondCapex;
+  const totalInitialCapex =
+    solarPumpCapex + dairyAnimalsCapex + pondExcavationCapex + biogasPlantsCapex + rechargePondCapex;
 
   const cashFlowSchedule: YearCashFlow[] = [];
   let cumCashFlow = -totalInitialCapex;
@@ -188,12 +184,12 @@ export function computeCircularBioeconomy(
 
   for (let yr = 1; yr <= 15; yr++) {
     // Annual growth/degradation factor: +1.5% productivity with organic slurry maturation
-    const maturationMultiplier = Math.min(1.20, 1 + (yr * 0.015));
+    const maturationMultiplier = Math.min(1.2, 1 + yr * 0.015);
     const yrGross = Math.round(grossRevenue * maturationMultiplier);
-    const yrOpex = Math.round(totalOpex * (1 + (yr * 0.01)));
+    const yrOpex = Math.round(totalOpex * (1 + yr * 0.01));
     const yrNet = yrGross - yrOpex;
 
-    const disc10 = yrNet / Math.pow(1.10, yr);
+    const disc10 = yrNet / Math.pow(1.1, yr);
     const disc12 = yrNet / Math.pow(1.12, yr);
 
     npv10 += disc10;
@@ -217,7 +213,7 @@ export function computeCircularBioeconomy(
     if (cashFlowSchedule[yr].cumulativeCashFlowNpr >= 0) {
       const prevCum = Math.abs(cashFlowSchedule[yr - 1].cumulativeCashFlowNpr);
       const currNet = cashFlowSchedule[yr].netCashFlowNpr;
-      paybackYears = Number(((yr - 1) + (prevCum / currNet)).toFixed(1));
+      paybackYears = Number((yr - 1 + prevCum / currNet).toFixed(1));
       break;
     }
   }
@@ -229,10 +225,19 @@ export function computeCircularBioeconomy(
   const bcr = Number(((npv10 + totalInitialCapex) / Math.max(1, totalInitialCapex)).toFixed(2));
 
   // 9. Rebalanced 5-Pillar Scorecard
-  const waterScore = Math.min(96, Math.max(40, Math.round(75 + (rechargePondEnabled ? 15 : -10) + (aquaculturePondHa > 0 ? 5 : 0))));
+  const waterScore = Math.min(
+    96,
+    Math.max(40, Math.round(75 + (rechargePondEnabled ? 15 : -10) + (aquaculturePondHa > 0 ? 5 : 0)))
+  );
   const energyScore = Math.min(98, Math.max(45, Math.round(70 + (biogasDigestersCount > 0 ? 20 : 0))));
-  const foodScore = Math.min(99, Math.max(50, Math.round(72 + (dairyHerdSize > 0 ? 12 : 0) + (aquaculturePondHa > 0 ? 10 : 0))));
-  const ecoScore = Math.min(95, Math.max(40, Math.round(68 + (biogasDigestersCount > 0 ? 14 : 0) + (rechargePondEnabled ? 10 : -8))));
+  const foodScore = Math.min(
+    99,
+    Math.max(50, Math.round(72 + (dairyHerdSize > 0 ? 12 : 0) + (aquaculturePondHa > 0 ? 10 : 0)))
+  );
+  const ecoScore = Math.min(
+    95,
+    Math.max(40, Math.round(68 + (biogasDigestersCount > 0 ? 14 : 0) + (rechargePondEnabled ? 10 : -8)))
+  );
   const socioScore = Math.min(98, Math.max(45, Math.round(74 + (netAnnualProfit > 500000 ? 18 : 8))));
   const compositeScore = Math.round((waterScore + energyScore + foodScore + ecoScore + socioScore) / 5);
 
@@ -287,6 +292,7 @@ export function computeCircularBioeconomy(
       paybackPeriodYears: paybackYears,
       cashFlowSchedule,
     },
-    calibrationProvenance: 'Unified Circular Bioeconomy Equilibrium calibrated using FAO AquaCrop, AEPC Biogas Model, MoALD DLS Dairy, and World Bank REED DCF Framework.',
+    calibrationProvenance:
+      'Unified Circular Bioeconomy Equilibrium calibrated using FAO AquaCrop, AEPC Biogas Model, MoALD DLS Dairy, and World Bank REED DCF Framework.',
   };
 }

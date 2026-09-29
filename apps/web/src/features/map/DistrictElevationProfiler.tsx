@@ -1,9 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import { District, Crop } from '@wefes/shared-types';
 import {
-  Mountain, Thermometer, Wind, Sprout, CheckCircle2,
-  AlertCircle, XCircle, ArrowUpRight, ChevronRight, Layers,
-  Compass, Info, Sliders, TrendingUp
+  Mountain,
+  Thermometer,
+  Wind,
+  Sprout,
+  CheckCircle2,
+  AlertCircle,
+  XCircle,
+  ArrowUpRight,
+  ChevronRight,
+  Layers,
+  Compass,
+  Info,
+  Sliders,
+  TrendingUp,
 } from 'lucide-react';
 
 interface DistrictElevationProfilerProps {
@@ -26,7 +37,7 @@ function getEcologicalZone(meters: number): {
       subBelt: 'Terai, Bhabar & Inner Terai Valleys',
       color: '#059669',
       bgColor: 'bg-emerald-50 text-emerald-900 border-emerald-300',
-      description: 'Sal forests, fertile alluvial floodplains, warm all year with high summer monsoons.'
+      description: 'Sal forests, fertile alluvial floodplains, warm all year with high summer monsoons.',
     };
   } else if (meters < 1800) {
     return {
@@ -34,7 +45,7 @@ function getEcologicalZone(meters: number): {
       subBelt: 'Lower Mountain Slopes & River Gorges',
       color: '#0284c7',
       bgColor: 'bg-sky-50 text-sky-900 border-sky-300',
-      description: 'Chir pine, Schima-Castanopsis broadleaf forests; prime horticultural and coffee-growing belt.'
+      description: 'Chir pine, Schima-Castanopsis broadleaf forests; prime horticultural and coffee-growing belt.',
     };
   } else if (meters < 2400) {
     return {
@@ -42,7 +53,8 @@ function getEcologicalZone(meters: number): {
       subBelt: 'Mid-Elevation Montane Forests',
       color: '#7c3aed',
       bgColor: 'bg-purple-50 text-purple-900 border-purple-300',
-      description: 'Oak, rhododendron, and laurel forests; temperate fruit orchards, cardamom, and off-season vegetables.'
+      description:
+        'Oak, rhododendron, and laurel forests; temperate fruit orchards, cardamom, and off-season vegetables.',
     };
   } else if (meters < 3000) {
     return {
@@ -50,7 +62,8 @@ function getEcologicalZone(meters: number): {
       subBelt: 'High Montane Conifer Belt',
       color: '#4f46e5',
       bgColor: 'bg-indigo-50 text-indigo-900 border-indigo-300',
-      description: 'Hemlock, blue pine, and spruce forests; apple orchards, potato seed production, and livestock rangeland.'
+      description:
+        'Hemlock, blue pine, and spruce forests; apple orchards, potato seed production, and livestock rangeland.',
     };
   } else if (meters < 4000) {
     return {
@@ -58,7 +71,8 @@ function getEcologicalZone(meters: number): {
       subBelt: 'Tree-line Transition Zone',
       color: '#d97706',
       bgColor: 'bg-amber-50 text-amber-900 border-amber-300',
-      description: 'Silver fir, birch, and juniper scrub; alpine summer pastures, medicinal and aromatic plants (MAPs).'
+      description:
+        'Silver fir, birch, and juniper scrub; alpine summer pastures, medicinal and aromatic plants (MAPs).',
     };
   } else if (meters < 5000) {
     return {
@@ -66,7 +80,8 @@ function getEcologicalZone(meters: number): {
       subBelt: 'High Alpine Shrub & Tundra Grasslands',
       color: '#ea580c',
       bgColor: 'bg-orange-50 text-orange-900 border-orange-300',
-      description: 'Dwarf rhododendron, mosses, cushion plants, yak grazing pastures; extreme diurnal temperature swings.'
+      description:
+        'Dwarf rhododendron, mosses, cushion plants, yak grazing pastures; extreme diurnal temperature swings.',
     };
   } else {
     return {
@@ -74,7 +89,7 @@ function getEcologicalZone(meters: number): {
       subBelt: 'Permanent Snow, Glaciers & Himalayan Summits',
       color: '#dc2626',
       bgColor: 'bg-rose-50 text-rose-900 border-rose-300',
-      description: 'Permanent snowfields, moraines, hanging glaciers, and high-altitude glacial tarns.'
+      description: 'Permanent snowfields, moraines, hanging glaciers, and high-altitude glacial tarns.',
     };
   }
 }
@@ -92,16 +107,56 @@ const CROP_ELEVATION_PROFILES: {
   { name: 'Paddy (Rice)', emoji: '🌾', min: 60, max: 1800, optimalMin: 100, optimalMax: 1200, category: 'Cereal' },
   { name: 'Maize (Corn)', emoji: '🌽', min: 100, max: 2400, optimalMin: 400, optimalMax: 1800, category: 'Cereal' },
   { name: 'Wheat', emoji: '🌾', min: 100, max: 2800, optimalMin: 300, optimalMax: 2000, category: 'Cereal' },
-  { name: 'Millet (Finger Millet)', emoji: '🌾', min: 300, max: 2400, optimalMin: 600, optimalMax: 1800, category: 'Millet' },
-  { name: 'Buckwheat', emoji: '🌾', min: 1200, max: 3800, optimalMin: 1800, optimalMax: 3200, category: 'Mountain Grain' },
+  {
+    name: 'Millet (Finger Millet)',
+    emoji: '🌾',
+    min: 300,
+    max: 2400,
+    optimalMin: 600,
+    optimalMax: 1800,
+    category: 'Millet',
+  },
+  {
+    name: 'Buckwheat',
+    emoji: '🌾',
+    min: 1200,
+    max: 3800,
+    optimalMin: 1800,
+    optimalMax: 3200,
+    category: 'Mountain Grain',
+  },
   { name: 'Potato', emoji: '🥔', min: 300, max: 4000, optimalMin: 1400, optimalMax: 3200, category: 'Tuber' },
-  { name: 'Arabica Coffee', emoji: '☕', min: 800, max: 1800, optimalMin: 1000, optimalMax: 1600, category: 'Cash Crop' },
+  {
+    name: 'Arabica Coffee',
+    emoji: '☕',
+    min: 800,
+    max: 1800,
+    optimalMin: 1000,
+    optimalMax: 1600,
+    category: 'Cash Crop',
+  },
   { name: 'Large Cardamom', emoji: '🌿', min: 900, max: 2000, optimalMin: 1200, optimalMax: 1800, category: 'Spice' },
   { name: 'Orthodox Tea', emoji: '🍵', min: 800, max: 2200, optimalMin: 1200, optimalMax: 1900, category: 'Cash Crop' },
   { name: 'Mandarin Orange', emoji: '🍊', min: 600, max: 1600, optimalMin: 800, optimalMax: 1400, category: 'Fruit' },
-  { name: 'High-Altitude Apple', emoji: '🍎', min: 1800, max: 3400, optimalMin: 2200, optimalMax: 3000, category: 'Fruit' },
+  {
+    name: 'High-Altitude Apple',
+    emoji: '🍎',
+    min: 1800,
+    max: 3400,
+    optimalMin: 2200,
+    optimalMax: 3000,
+    category: 'Fruit',
+  },
   { name: 'Sugarcane', emoji: '🎋', min: 60, max: 900, optimalMin: 80, optimalMax: 500, category: 'Cash Crop' },
-  { name: 'Mustard (Oilseed)', emoji: '🌼', min: 80, max: 2000, optimalMin: 150, optimalMax: 1400, category: 'Oilseed' },
+  {
+    name: 'Mustard (Oilseed)',
+    emoji: '🌼',
+    min: 80,
+    max: 2000,
+    optimalMin: 150,
+    optimalMax: 1400,
+    category: 'Oilseed',
+  },
   { name: 'Lentils (Pulses)', emoji: '🫘', min: 80, max: 1600, optimalMin: 100, optimalMax: 1000, category: 'Pulse' },
   { name: 'Highland Ginger', emoji: '🫚', min: 400, max: 1800, optimalMin: 700, optimalMax: 1400, category: 'Spice' },
 ];
@@ -116,15 +171,25 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
     let min = 100;
     let max = 2500;
     if (district.elevationRange) {
-      const parts = district.elevationRange.replace(/m/gi, '').split('-').map(s => parseFloat(s.trim()));
+      const parts = district.elevationRange
+        .replace(/m/gi, '')
+        .split('-')
+        .map((s) => parseFloat(s.trim()));
       if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
         min = Math.floor(parts[0] / 5) * 5;
         max = Math.ceil(parts[1] / 5) * 5;
       }
     } else {
-      if (district.ecoZone === 'Terai') { min = 60; max = 400; }
-      else if (district.ecoZone === 'Mountain') { min = 1500; max = 6500; }
-      else { min = 600; max = 2800; }
+      if (district.ecoZone === 'Terai') {
+        min = 60;
+        max = 400;
+      } else if (district.ecoZone === 'Mountain') {
+        min = 1500;
+        max = 6500;
+      } else {
+        min = 600;
+        max = 2800;
+      }
     }
     return { minElev: min, maxElev: Math.max(min + 20, max) };
   }, [district]);
@@ -143,7 +208,8 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
 
   // Environmental Physics calculations at this active elevation
   const physics = useMemo(() => {
-    const baseTemp = (district as any).avgTempC ?? (district.ecoZone === 'Terai' ? 25 : district.ecoZone === 'Mountain' ? 10 : 18);
+    const baseTemp =
+      (district as any).avgTempC ?? (district.ecoZone === 'Terai' ? 25 : district.ecoZone === 'Mountain' ? 10 : 18);
     const baseAlt = minElev;
     const deltaH = activeElevation - baseAlt;
 
@@ -188,9 +254,9 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
     });
   }, [activeElevation]);
 
-  const optimalCrops = cropEvaluations.filter(c => c.status === 'optimal');
-  const moderateCrops = cropEvaluations.filter(c => c.status === 'moderate');
-  const unfeasibleCrops = cropEvaluations.filter(c => c.status === 'unfeasible');
+  const optimalCrops = cropEvaluations.filter((c) => c.status === 'optimal');
+  const moderateCrops = cropEvaluations.filter((c) => c.status === 'moderate');
+  const unfeasibleCrops = cropEvaluations.filter((c) => c.status === 'unfeasible');
 
   // Topographic cross-section points for SVG visualization
   const crossSectionPoints = useMemo(() => {
@@ -288,9 +354,7 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
               {activeZone.zone}
             </span>
           </div>
-          <span className="text-[11px] text-slate-300 font-sans italic">
-            {activeZone.subBelt}
-          </span>
+          <span className="text-[11px] text-slate-300 font-sans italic">{activeZone.subBelt}</span>
         </div>
       </div>
 
@@ -305,9 +369,7 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
           <div className={`text-lg font-extrabold mt-1 ${physics.tempC <= 0 ? 'text-blue-700' : 'text-slate-900'}`}>
             {physics.tempC}°C
           </div>
-          <div className="text-[9px] text-slate-500 font-sans mt-0.5">
-            -6.5°C per 1,000m lapse rate
-          </div>
+          <div className="text-[9px] text-slate-500 font-sans mt-0.5">-6.5°C per 1,000m lapse rate</div>
         </div>
 
         {/* Barometric Pressure */}
@@ -319,9 +381,7 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
           <div className="text-lg font-extrabold text-slate-900 mt-1">
             {physics.pressureKPa} <span className="text-xs font-normal text-slate-500">kPa</span>
           </div>
-          <div className="text-[9px] text-slate-500 font-sans mt-0.5">
-            Oxygen: {physics.oxygenPct}% of sea level
-          </div>
+          <div className="text-[9px] text-slate-500 font-sans mt-0.5">Oxygen: {physics.oxygenPct}% of sea level</div>
         </div>
 
         {/* District Land Area Below this Altitude */}
@@ -330,12 +390,8 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
             <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
             <span>Hypsography</span>
           </div>
-          <div className="text-lg font-extrabold text-emerald-800 mt-1">
-            ~{physics.hypsographicPct}%
-          </div>
-          <div className="text-[9px] text-slate-500 font-sans mt-0.5">
-            District land &le; {activeElevation}m
-          </div>
+          <div className="text-lg font-extrabold text-emerald-800 mt-1">~{physics.hypsographicPct}%</div>
+          <div className="text-[9px] text-slate-500 font-sans mt-0.5">District land &le; {activeElevation}m</div>
         </div>
 
         {/* Estimated Cumulative Hectares */}
@@ -347,9 +403,7 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
           <div className="text-lg font-extrabold text-purple-900 mt-1">
             {physics.estimatedHa.toLocaleString()} <span className="text-xs font-normal text-slate-500">ha</span>
           </div>
-          <div className="text-[9px] text-slate-500 font-sans mt-0.5">
-            Topographic footprint
-          </div>
+          <div className="text-[9px] text-slate-500 font-sans mt-0.5">Topographic footprint</div>
         </div>
       </div>
 
@@ -378,13 +432,13 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
 
             {/* Topographic fill polygon */}
             <path
-              d={`M 0 50 L ${crossSectionPoints.map(p => `${p.x} ${50 - ((p.y - minElev) / (maxElev - minElev)) * 42}`).join(' L ')} L 100 50 Z`}
+              d={`M 0 50 L ${crossSectionPoints.map((p) => `${p.x} ${50 - ((p.y - minElev) / (maxElev - minElev)) * 42}`).join(' L ')} L 100 50 Z`}
               fill="url(#topoGradient)"
             />
 
             {/* Topographic line */}
             <path
-              d={`M ${crossSectionPoints.map(p => `${p.x} ${50 - ((p.y - minElev) / (maxElev - minElev)) * 42}`).join(' L ')}`}
+              d={`M ${crossSectionPoints.map((p) => `${p.x} ${50 - ((p.y - minElev) / (maxElev - minElev)) * 42}`).join(' L ')}`}
               fill="none"
               stroke="#0f172a"
               strokeWidth="1"
@@ -438,13 +492,17 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
           <div className="p-3 bg-rose-50 rounded-xl border border-rose-200 text-xs text-rose-800 flex items-center gap-2">
             <XCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>
-              At <strong>{activeElevation}m</strong>, thermal limitations and sub-zero frost prohibit commercial crop cultivation. Suitable primarily for alpine rangeland, medicinal plants, and cryospheric storage.
+              At <strong>{activeElevation}m</strong>, thermal limitations and sub-zero frost prohibit commercial crop
+              cultivation. Suitable primarily for alpine rangeland, medicinal plants, and cryospheric storage.
             </span>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-xs">
             {optimalCrops.map((c) => (
-              <div key={c.name} className="p-2 rounded-lg bg-emerald-50/70 border border-emerald-200 flex items-start justify-between gap-1">
+              <div
+                key={c.name}
+                className="p-2 rounded-lg bg-emerald-50/70 border border-emerald-200 flex items-start justify-between gap-1"
+              >
                 <div>
                   <div className="font-bold text-emerald-950 flex items-center gap-1">
                     <span>{c.emoji}</span>
@@ -459,7 +517,10 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
             ))}
 
             {moderateCrops.map((c) => (
-              <div key={c.name} className="p-2 rounded-lg bg-amber-50/70 border border-amber-200 flex items-start justify-between gap-1">
+              <div
+                key={c.name}
+                className="p-2 rounded-lg bg-amber-50/70 border border-amber-200 flex items-start justify-between gap-1"
+              >
                 <div>
                   <div className="font-bold text-amber-950 flex items-center gap-1">
                     <span>{c.emoji}</span>

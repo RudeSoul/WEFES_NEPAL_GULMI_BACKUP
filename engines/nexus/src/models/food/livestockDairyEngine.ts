@@ -54,7 +54,7 @@ export const NEPAL_LIVESTOCK_DATABASE: Record<LivestockSpeciesType, LivestockSpe
     manureN_pct: 0.42,
     manureP_pct: 0.22,
     manureK_pct: 0.51,
-    biogasYieldM3PerKgDung: 0.040,
+    biogasYieldM3PerKgDung: 0.04,
     dailyDrinkingWaterLiters: 70,
     fodderWaterM3PerHeadYr: 310,
     entericMethaneKgPerHeadYr: 55.0, // 55 kg CH4 = 1,485 kg CO2e
@@ -83,7 +83,7 @@ export const NEPAL_LIVESTOCK_DATABASE: Record<LivestockSpeciesType, LivestockSpe
     nationalPop: '7.4 Million heads (MoALD 2024)',
     nationalContribution: '29% of Nepal National Milk Supply (0.8M MT/yr)',
     dailyDungKgPerHead: 13.5,
-    manureN_pct: 0.50,
+    manureN_pct: 0.5,
     manureP_pct: 0.25,
     manureK_pct: 0.48,
     biogasYieldM3PerKgDung: 0.035,
@@ -111,13 +111,18 @@ export const NEPAL_LIVESTOCK_DATABASE: Record<LivestockSpeciesType, LivestockSpe
     id: 'goat',
     name: 'Goats & Chevon (Bakhra / Khasi)',
     nameNep: 'बाख्रा (Khari / Jamunapari / Boer / Chyangra)',
-    breeds: ['Khari (Prolific Hill indigenous - 1.8 twinning)', 'Jamunapari Cross (Terai)', 'Boer Cross (Meat)', 'Chyangra (Himalayan Pashmina)'],
+    breeds: [
+      'Khari (Prolific Hill indigenous - 1.8 twinning)',
+      'Jamunapari Cross (Terai)',
+      'Boer Cross (Meat)',
+      'Chyangra (Himalayan Pashmina)',
+    ],
     nationalPop: '14.2 Million heads (MoALD 2024)',
     nationalContribution: '#1 Red Meat Sector (55% of all national meat, 78,000 MT chevon)',
     dailyDungKgPerHead: 2.0,
-    manureN_pct: 1.40,
-    manureP_pct: 0.50,
-    manureK_pct: 1.20,
+    manureN_pct: 1.4,
+    manureP_pct: 0.5,
+    manureK_pct: 1.2,
     biogasYieldM3PerKgDung: 0.055,
     dailyDrinkingWaterLiters: 6.5,
     fodderWaterM3PerHeadYr: 35,
@@ -143,14 +148,19 @@ export const NEPAL_LIVESTOCK_DATABASE: Record<LivestockSpeciesType, LivestockSpe
     id: 'poultry',
     name: 'Commercial & Backyard Poultry (Kukhura)',
     nameNep: 'कुखुरा (Broiler / Layer / Sakini / Giriraja)',
-    breeds: ['Cobb 500 Broiler (Commercial)', 'Hy-Line Layer (Egg)', 'Sakini (Indigenous free-range)', 'Giriraja (Dual-purpose)'],
+    breeds: [
+      'Cobb 500 Broiler (Commercial)',
+      'Hy-Line Layer (Egg)',
+      'Sakini (Indigenous free-range)',
+      'Giriraja (Dual-purpose)',
+    ],
     nationalPop: '110+ Million birds (Self-Sufficient Industry)',
     nationalContribution: '100% National Meat & Egg Security (240k MT meat, 1.6B eggs)',
     dailyDungKgPerHead: 0.12,
-    manureN_pct: 3.00,
-    manureP_pct: 2.50,
-    manureK_pct: 1.50,
-    biogasYieldM3PerKgDung: 0.070,
+    manureN_pct: 3.0,
+    manureP_pct: 2.5,
+    manureK_pct: 1.5,
+    biogasYieldM3PerKgDung: 0.07,
     dailyDrinkingWaterLiters: 0.35,
     fodderWaterM3PerHeadYr: 4.5,
     entericMethaneKgPerHeadYr: 0.0, // Monogastric (0 enteric, ~0.02 kg manure CH4)
@@ -175,14 +185,19 @@ export const NEPAL_LIVESTOCK_DATABASE: Record<LivestockSpeciesType, LivestockSpe
     id: 'swine',
     name: 'Swine & Pigs (Sungur / Bandel)',
     nameNep: 'सुँगुर (Pakhribas Black / Dharane / Hurrah)',
-    breeds: ['Pakhribas Black (NARC released)', 'Dharane Black', 'Hurrah (Terai Indigenous)', 'Wild Boar Hybrid (Bandel)'],
+    breeds: [
+      'Pakhribas Black (NARC released)',
+      'Dharane Black',
+      'Hurrah (Terai Indigenous)',
+      'Wild Boar Hybrid (Bandel)',
+    ],
     nationalPop: '1.6 Million heads (Eastern Hills & Terai)',
     nationalContribution: 'High Protein Conversion of Agro-Waste & Janajati Livelihood Anchor',
     dailyDungKgPerHead: 4.2,
-    manureN_pct: 0.70,
-    manureP_pct: 0.50,
-    manureK_pct: 0.40,
-    biogasYieldM3PerKgDung: 0.050,
+    manureN_pct: 0.7,
+    manureP_pct: 0.5,
+    manureK_pct: 0.4,
+    biogasYieldM3PerKgDung: 0.05,
     dailyDrinkingWaterLiters: 18.0,
     fodderWaterM3PerHeadYr: 45,
     entericMethaneKgPerHeadYr: 1.5,
@@ -217,7 +232,7 @@ export interface MultiSpeciesLivestockBioeconomyResult {
   districtName: string;
   herdConfig: MultiSpeciesHerdConfig;
   totalLivestockUnitsLSU: number;
-  
+
   // 1. Manure & AEPC Biogas Balance
   dailyDungTotalKg: number;
   annualDungTotalTonnes: number;
@@ -225,8 +240,9 @@ export interface MultiSpeciesLivestockBioeconomyResult {
   annualBiogasM3: number;
   annualLpgCylindersDisplaced: number;
   annualLpgSavingsNpr: number;
-  aepcRecommendedDigesterSize: '2 m³ Small Digester' | '4 m³ Standard Digester' | '6 m³ Community/Farm Digester' | '8-10 m³ Institutional Plant';
-  
+  aepcRecommendedDigesterSize:
+    '2 m³ Small Digester' | '4 m³ Standard Digester' | '6 m³ Community/Farm Digester' | '8-10 m³ Institutional Plant';
+
   // 2. Soil NPK Organic Return & Chemical Fertilizer Offset
   annualOrganicNitrogenKg: number;
   annualOrganicPhosphorusKg: number;
@@ -235,26 +251,26 @@ export interface MultiSpeciesLivestockBioeconomyResult {
   chemicalDap50kgBagsSubstituted: number;
   chemicalMop50kgBagsSubstituted: number;
   annualFertilizerCostSavingsNpr: number;
-  
+
   // 3. Water Footprint
   dailyDrinkingWaterLiters: number;
   annualDirectDrinkingWaterM3: number;
   annualFeedFodderWaterM3: number;
   totalAnnualLivestockWaterDemandM3: number;
-  
+
   // 4. Climate & Carbon Balance (IPCC AR6 / GWP100 CH4=27)
   grossEntericMethaneKgYr: number;
   grossEntericCo2eTonnesYr: number;
   avoidedBiogasEmissionsCo2eTonnesYr: number;
   netLivestockGhGEmissionsCo2eTonnesYr: number;
-  
+
   // 5. Economic & GESI Household Balance
   annualGrossLivestockRevenueNpr: number;
   femaleControlledRevenueNpr: number;
   femaleControlledIncomeSharePct: number;
   householdMonthlyLivestockCashflowNpr: number;
   dscrDebtServiceContribution: number;
-  
+
   // 6. NARC Fodder Resilience Package
   narcStrawTreatmentRecipe: {
     strawKg: number;
@@ -279,13 +295,9 @@ export function computeMultiSpeciesLivestockBioeconomy(
   const { buffaloHeads, cattleHeads, goatHeads, poultryHeads, swineHeads } = herdConfig;
 
   // Livestock Standard Units (LSU): Buffalo=1.0, Cattle=0.8, Swine=0.25, Goat=0.1, Poultry=0.01
-  const lsu = Number((
-    buffaloHeads * 1.0 +
-    cattleHeads * 0.8 +
-    swineHeads * 0.25 +
-    goatHeads * 0.10 +
-    poultryHeads * 0.01
-  ).toFixed(2));
+  const lsu = Number(
+    (buffaloHeads * 1.0 + cattleHeads * 0.8 + swineHeads * 0.25 + goatHeads * 0.1 + poultryHeads * 0.01).toFixed(2)
+  );
 
   // 1. Manure & Biogas
   const buf = NEPAL_LIVESTOCK_DATABASE.buffalo;
@@ -294,23 +306,28 @@ export function computeMultiSpeciesLivestockBioeconomy(
   const pou = NEPAL_LIVESTOCK_DATABASE.poultry;
   const swi = NEPAL_LIVESTOCK_DATABASE.swine;
 
-  const dailyDungKg = Number((
-    buffaloHeads * buf.dailyDungKgPerHead +
-    cattleHeads * cat.dailyDungKgPerHead +
-    goatHeads * goa.dailyDungKgPerHead +
-    poultryHeads * pou.dailyDungKgPerHead +
-    swineHeads * swi.dailyDungKgPerHead
-  ).toFixed(1));
+  const dailyDungKg = Number(
+    (
+      buffaloHeads * buf.dailyDungKgPerHead +
+      cattleHeads * cat.dailyDungKgPerHead +
+      goatHeads * goa.dailyDungKgPerHead +
+      poultryHeads * pou.dailyDungKgPerHead +
+      swineHeads * swi.dailyDungKgPerHead
+    ).toFixed(1)
+  );
 
   const annualDungTonnes = Number(((dailyDungKg * 365) / 1000).toFixed(2));
 
   // Biogas: Substrates feeding household digester (Buffalo, Cattle, Swine, Poultry)
-  const dailyBiogasM3 = Number((
-    buffaloHeads * buf.dailyDungKgPerHead * buf.biogasYieldM3PerKgDung +
-    cattleHeads * cat.dailyDungKgPerHead * cat.biogasYieldM3PerKgDung +
-    swineHeads * swi.dailyDungKgPerHead * swi.biogasYieldM3PerKgDung +
-    (poultryHeads * pou.dailyDungKgPerHead * pou.biogasYieldM3PerKgDung * 0.5) // 50% poultry manure co-digested
-  ).toFixed(2));
+  const dailyBiogasM3 = Number(
+    (
+      buffaloHeads * buf.dailyDungKgPerHead * buf.biogasYieldM3PerKgDung +
+      cattleHeads * cat.dailyDungKgPerHead * cat.biogasYieldM3PerKgDung +
+      swineHeads * swi.dailyDungKgPerHead * swi.biogasYieldM3PerKgDung +
+      poultryHeads * pou.dailyDungKgPerHead * pou.biogasYieldM3PerKgDung * 0.5
+    ) // 50% poultry manure co-digested
+      .toFixed(2)
+  );
 
   const annualBiogasM3 = Number((dailyBiogasM3 * 365).toFixed(1));
   // 1 m³ biogas = 0.45 kg LPG; 1 LPG cylinder = 14.2 kg (NPR 1,900)
@@ -329,29 +346,35 @@ export function computeMultiSpeciesLivestockBioeconomy(
   const annualDungPou = poultryHeads * pou.dailyDungKgPerHead * 365;
   const annualDungSwi = swineHeads * swi.dailyDungKgPerHead * 365;
 
-  const orgN = Number((
-    annualDungBuf * (buf.manureN_pct / 100) +
-    annualDungCat * (cat.manureN_pct / 100) +
-    annualDungGoa * (goa.manureN_pct / 100) +
-    annualDungPou * (pou.manureN_pct / 100) +
-    annualDungSwi * (swi.manureN_pct / 100)
-  ).toFixed(1));
+  const orgN = Number(
+    (
+      annualDungBuf * (buf.manureN_pct / 100) +
+      annualDungCat * (cat.manureN_pct / 100) +
+      annualDungGoa * (goa.manureN_pct / 100) +
+      annualDungPou * (pou.manureN_pct / 100) +
+      annualDungSwi * (swi.manureN_pct / 100)
+    ).toFixed(1)
+  );
 
-  const orgP = Number((
-    annualDungBuf * (buf.manureP_pct / 100) +
-    annualDungCat * (cat.manureP_pct / 100) +
-    annualDungGoa * (goa.manureP_pct / 100) +
-    annualDungPou * (pou.manureP_pct / 100) +
-    annualDungSwi * (swi.manureP_pct / 100)
-  ).toFixed(1));
+  const orgP = Number(
+    (
+      annualDungBuf * (buf.manureP_pct / 100) +
+      annualDungCat * (cat.manureP_pct / 100) +
+      annualDungGoa * (goa.manureP_pct / 100) +
+      annualDungPou * (pou.manureP_pct / 100) +
+      annualDungSwi * (swi.manureP_pct / 100)
+    ).toFixed(1)
+  );
 
-  const orgK = Number((
-    annualDungBuf * (buf.manureK_pct / 100) +
-    annualDungCat * (cat.manureK_pct / 100) +
-    annualDungGoa * (goa.manureK_pct / 100) +
-    annualDungPou * (pou.manureK_pct / 100) +
-    annualDungSwi * (swi.manureK_pct / 100)
-  ).toFixed(1));
+  const orgK = Number(
+    (
+      annualDungBuf * (buf.manureK_pct / 100) +
+      annualDungCat * (cat.manureK_pct / 100) +
+      annualDungGoa * (goa.manureK_pct / 100) +
+      annualDungPou * (pou.manureK_pct / 100) +
+      annualDungSwi * (swi.manureK_pct / 100)
+    ).toFixed(1)
+  );
 
   // Chemical replacement: 1 bag Urea (50kg) = 23 kg N (NPR 1,050 subsidized); 1 bag DAP (50kg) = 23 kg P2O5 + 9 kg N (NPR 2,450); 1 bag MOP = 30 kg K2O (NPR 1,800)
   const ureaBags = Number((orgN / 23).toFixed(1));
@@ -360,36 +383,42 @@ export function computeMultiSpeciesLivestockBioeconomy(
   const fertSavingsNpr = Math.round(ureaBags * 1050 + dapBags * 2450 + mopBags * 1800);
 
   // 3. Water Demand
-  const dailyDrinking = Number((
-    buffaloHeads * buf.dailyDrinkingWaterLiters +
-    cattleHeads * cat.dailyDrinkingWaterLiters +
-    goatHeads * goa.dailyDrinkingWaterLiters +
-    poultryHeads * pou.dailyDrinkingWaterLiters +
-    swineHeads * swi.dailyDrinkingWaterLiters
-  ).toFixed(1));
+  const dailyDrinking = Number(
+    (
+      buffaloHeads * buf.dailyDrinkingWaterLiters +
+      cattleHeads * cat.dailyDrinkingWaterLiters +
+      goatHeads * goa.dailyDrinkingWaterLiters +
+      poultryHeads * pou.dailyDrinkingWaterLiters +
+      swineHeads * swi.dailyDrinkingWaterLiters
+    ).toFixed(1)
+  );
 
   const annualDirectWater = Number(((dailyDrinking * 365) / 1000).toFixed(2));
-  const annualFodderWater = Number((
-    buffaloHeads * buf.fodderWaterM3PerHeadYr +
-    cattleHeads * cat.fodderWaterM3PerHeadYr +
-    goatHeads * goa.fodderWaterM3PerHeadYr +
-    poultryHeads * pou.fodderWaterM3PerHeadYr +
-    swineHeads * swi.fodderWaterM3PerHeadYr
-  ).toFixed(1));
+  const annualFodderWater = Number(
+    (
+      buffaloHeads * buf.fodderWaterM3PerHeadYr +
+      cattleHeads * cat.fodderWaterM3PerHeadYr +
+      goatHeads * goa.fodderWaterM3PerHeadYr +
+      poultryHeads * pou.fodderWaterM3PerHeadYr +
+      swineHeads * swi.fodderWaterM3PerHeadYr
+    ).toFixed(1)
+  );
   const totalWaterM3 = Number((annualDirectWater + annualFodderWater).toFixed(1));
 
   // 4. Climate & Carbon (IPCC AR6: CH4 GWP = 27)
-  const entericMethaneKg = Number((
-    buffaloHeads * buf.entericMethaneKgPerHeadYr +
-    cattleHeads * cat.entericMethaneKgPerHeadYr +
-    goatHeads * goa.entericMethaneKgPerHeadYr +
-    poultryHeads * pou.entericMethaneKgPerHeadYr +
-    swineHeads * swi.entericMethaneKgPerHeadYr
-  ).toFixed(1));
+  const entericMethaneKg = Number(
+    (
+      buffaloHeads * buf.entericMethaneKgPerHeadYr +
+      cattleHeads * cat.entericMethaneKgPerHeadYr +
+      goatHeads * goa.entericMethaneKgPerHeadYr +
+      poultryHeads * pou.entericMethaneKgPerHeadYr +
+      swineHeads * swi.entericMethaneKgPerHeadYr
+    ).toFixed(1)
+  );
 
   const grossCo2eTonnes = Number(((entericMethaneKg * 27) / 1000).toFixed(2));
   // Avoided emissions from biogas (displacing firewood 1.5t/yr = 2.4 t CO2e + LPG 0.45 kg/m³ = 0.6 t CO2e)
-  const avoidedCo2eTonnes = Number(((annualBiogasM3 * 0.0028) + (lpgCylindersDisplaced * 0.042)).toFixed(2));
+  const avoidedCo2eTonnes = Number((annualBiogasM3 * 0.0028 + lpgCylindersDisplaced * 0.042).toFixed(2));
   const netCo2eTonnes = Number((grossCo2eTonnes - avoidedCo2eTonnes).toFixed(2));
 
   // 5. Economic & GESI
@@ -404,10 +433,10 @@ export function computeMultiSpeciesLivestockBioeconomy(
   // Female-controlled revenue by species ownership share
   const femaleRev = Math.round(
     bufRev * (buf.gesiProfile.womenOwnershipPct / 100) +
-    catRev * (cat.gesiProfile.womenOwnershipPct / 100) +
-    goaRev * (goa.gesiProfile.womenOwnershipPct / 100) +
-    pouRev * (pou.gesiProfile.womenOwnershipPct / 100) +
-    swiRev * (swi.gesiProfile.womenOwnershipPct / 100)
+      catRev * (cat.gesiProfile.womenOwnershipPct / 100) +
+      goaRev * (goa.gesiProfile.womenOwnershipPct / 100) +
+      pouRev * (pou.gesiProfile.womenOwnershipPct / 100) +
+      swiRev * (swi.gesiProfile.womenOwnershipPct / 100)
   );
 
   const femaleSharePct = totalGrossRev > 0 ? Number(((femaleRev / totalGrossRev) * 100).toFixed(1)) : 0;

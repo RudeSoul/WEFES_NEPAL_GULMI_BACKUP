@@ -7,18 +7,14 @@ interface PhenologyTimelineChartProps {
   calendar: CropCalendarMonth[];
 }
 
-export const PhenologyTimelineChart: React.FC<PhenologyTimelineChartProps> = ({
-  districtName,
-  cropName,
-  calendar,
-}) => {
+export const PhenologyTimelineChart: React.FC<PhenologyTimelineChartProps> = ({ districtName, cropName, calendar }) => {
   const [activeMonthIdx, setActiveMonthIdx] = useState<number>(0);
 
   const activeMonth = calendar[activeMonthIdx] || calendar[0];
 
   // Max scale values for SVG graph
-  const maxRain = Math.max(...calendar.map(c => c.rainfallMm), 350);
-  const maxReq = Math.max(...calendar.map(c => c.cropWaterReqMm), 180);
+  const maxRain = Math.max(...calendar.map((c) => c.rainfallMm), 350);
+  const maxReq = Math.max(...calendar.map((c) => c.cropWaterReqMm), 180);
 
   return (
     <div className="p-5 sm:p-6 bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-md space-y-4">
@@ -33,7 +29,8 @@ export const PhenologyTimelineChart: React.FC<PhenologyTimelineChartProps> = ({
             </span>
           </div>
           <p className="text-xs text-slate-400 font-sans">
-            Click or hover on any month to inspect monsoon rainfall vs crop water demand, irrigation deficits, and agronomic stages.
+            Click or hover on any month to inspect monsoon rainfall vs crop water demand, irrigation deficits, and
+            agronomic stages.
           </p>
         </div>
 
@@ -118,14 +115,7 @@ export const PhenologyTimelineChart: React.FC<PhenologyTimelineChartProps> = ({
                 >
                   {c.bsMonth.slice(0, 4)}
                 </text>
-                <text
-                  x={colX}
-                  y="220"
-                  textAnchor="middle"
-                  fill="#64748b"
-                  fontSize="7.5"
-                  fontFamily="monospace"
-                >
+                <text x={colX} y="220" textAnchor="middle" fill="#64748b" fontSize="7.5" fontFamily="monospace">
                   {c.adMonth.slice(0, 3)}
                 </text>
               </g>
@@ -157,7 +147,9 @@ export const PhenologyTimelineChart: React.FC<PhenologyTimelineChartProps> = ({
             <span className="text-slate-400 font-sans text-[11px] block">💧 Irrigation Balance:</span>
             <div className="font-bold text-white mt-0.5">
               {activeMonth.irrigationDeficitMm > 0 ? (
-                <span className="text-amber-400">⚠️ {activeMonth.irrigationDeficitMm} mm Deficit (Supplemental Irrigation Required)</span>
+                <span className="text-amber-400">
+                  ⚠️ {activeMonth.irrigationDeficitMm} mm Deficit (Supplemental Irrigation Required)
+                </span>
               ) : (
                 <span className="text-emerald-400">✅ Monsoon Rainfall Surplus (Zero Irrigation Required)</span>
               )}

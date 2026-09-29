@@ -8,7 +8,20 @@ import rawVarieties from '../../../../../data/real/agriculture/narc_crop_varieti
 export interface NARCSeedVariety {
   id: string;
   name: string;
-  commodity: 'Rice' | 'Maize' | 'Wheat' | 'Cardamom' | 'Potato' | 'Ginger' | 'Tea' | 'Coffee' | 'Apple' | 'Mustard' | 'Lentil' | 'Tomato' | 'Citrus';
+  commodity:
+    | 'Rice'
+    | 'Maize'
+    | 'Wheat'
+    | 'Cardamom'
+    | 'Potato'
+    | 'Ginger'
+    | 'Tea'
+    | 'Coffee'
+    | 'Apple'
+    | 'Mustard'
+    | 'Lentil'
+    | 'Tomato'
+    | 'Citrus';
   releaseYear: number;
   pedigreeLineage: string;
   maturityDays: number;
@@ -36,9 +49,8 @@ export const NARC_VARIETAL_DATABASE: NARCSeedVariety[] = rawVarieties as NARCSee
 
 export function getVarietiesByCrop(commodityName: string): NARCSeedVariety[] {
   const norm = commodityName.toLowerCase();
-  return NARC_VARIETAL_DATABASE.filter(v => {
+  return NARC_VARIETAL_DATABASE.filter((v) => {
     const c = v.commodity.toLowerCase();
     return norm.includes(c) || c.includes(norm) || (norm.includes('paddy') && c === 'rice');
   });
 }
-

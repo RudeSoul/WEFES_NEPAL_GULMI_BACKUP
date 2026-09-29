@@ -4,11 +4,7 @@
 // Citations: MoFAGA Nepal Local Levels Catalog, CBS 2021 Census
 
 import { describe, it, expect } from 'vitest';
-import {
-  normalizePalikaName,
-  computeGradientColor,
-  CHOROPLETH_RAMPS,
-} from '../hooks/choroplethUtils';
+import { normalizePalikaName, computeGradientColor, CHOROPLETH_RAMPS } from '../hooks/choroplethUtils';
 import { DISTRICT_PALIKAS } from '../data/districtPalikaAssets';
 
 describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
@@ -236,4 +232,3 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
     });
   });
 });
-

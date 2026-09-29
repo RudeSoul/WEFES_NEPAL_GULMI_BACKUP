@@ -56,8 +56,8 @@ export function computeAquaCropSimulation(
     ccMax = 80;
   }
 
-  const et0 = Math.max(350, Math.min(650, 520 - (annualRainfallMm * 0.05)));
-  const ks = Math.max(0.35, Math.min(1.0, 1.0 - (waterStressIndex * 0.0075)));
+  const et0 = Math.max(350, Math.min(650, 520 - annualRainfallMm * 0.05));
+  const ks = Math.max(0.35, Math.min(1.0, 1.0 - waterStressIndex * 0.0075));
 
   const tr = Number((et0 * (ccMax / 100) * 0.85 * ks).toFixed(1));
   const eLoss = Number((et0 * (1 - ccMax / 100) * 0.65).toFixed(1));
@@ -92,6 +92,7 @@ export function computeAquaCropSimulation(
         ? 'Apply emergency supplementary deficit irrigation (40 mm) at heading stage + straw mulch to halt canopy senescence.'
         : 'Canopy transpiration rates optimal; maintain standard wetting and drying cycles.',
     },
-    calibrationProvenance: 'Calibrated using FAO AquaCrop-RS parameters from NARC-CGIAR trials in Nepal Terai and Mid-Hills (2022–2026).',
+    calibrationProvenance:
+      'Calibrated using FAO AquaCrop-RS parameters from NARC-CGIAR trials in Nepal Terai and Mid-Hills (2022–2026).',
   };
 }

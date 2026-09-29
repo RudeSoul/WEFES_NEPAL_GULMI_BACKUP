@@ -30,7 +30,7 @@ export const PalikaQuickMatrix: React.FC<PalikaQuickMatrixProps> = ({
 
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const filteredPalikas = palikas.filter(p => {
+  const filteredPalikas = palikas.filter((p) => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
     const np = GULMI_PALIKA_NEPALI[p.name] || '';
@@ -45,10 +45,14 @@ export const PalikaQuickMatrix: React.FC<PalikaQuickMatrixProps> = ({
           <div>
             <h3 className="text-xs font-bold text-slate-900 font-outfit flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>{lang === 'np' ? '१२ स्थानीय तह म्याट्रिक्स (साइड डक)' : '12 Palikas Spatial Matrix (Side Dock)'}</span>
+              <span>
+                {lang === 'np' ? '१२ स्थानीय तह म्याट्रिक्स (साइड डक)' : '12 Palikas Spatial Matrix (Side Dock)'}
+              </span>
             </h3>
             <p className="text-[10px] text-slate-500">
-              {lang === 'np' ? 'होभर गर्दा नक्सामा हेर्नुहोस् (नक्सा नछोपी)' : 'Hover row to highlight on map • 100% visible map'}
+              {lang === 'np'
+                ? 'होभर गर्दा नक्सामा हेर्नुहोस् (नक्सा नछोपी)'
+                : 'Hover row to highlight on map • 100% visible map'}
             </p>
           </div>
           {onClose && (
@@ -75,13 +79,14 @@ export const PalikaQuickMatrix: React.FC<PalikaQuickMatrixProps> = ({
 
         {/* Scrollable list */}
         <div className="flex-1 overflow-y-auto pr-1 space-y-1.5 custom-scrollbar">
-          {filteredPalikas.map(p => {
+          {filteredPalikas.map((p) => {
             const isHovered = hoveredPalikaName?.toLowerCase() === p.name.toLowerCase();
             const topCrop = p.feasibleCrops?.[0];
             const cropMatch = selectedCropId
-              ? p.feasibleCrops?.find(c => c.cropId.toLowerCase() === selectedCropId.toLowerCase())
+              ? p.feasibleCrops?.find((c) => c.cropId.toLowerCase() === selectedCropId.toLowerCase())
               : topCrop;
-            const isMuni = p.unitType?.toLowerCase().includes('nagarpalika') || p.unitType?.toLowerCase().includes('municipality');
+            const isMuni =
+              p.unitType?.toLowerCase().includes('nagarpalika') || p.unitType?.toLowerCase().includes('municipality');
 
             return (
               <div
@@ -122,7 +127,9 @@ export const PalikaQuickMatrix: React.FC<PalikaQuickMatrixProps> = ({
                     {cropMatch && (
                       <>
                         <span>•</span>
-                        <span className="truncate">{cropMatch.emoji} {cropMatch.cropName.split('(')[0]}</span>
+                        <span className="truncate">
+                          {cropMatch.emoji} {cropMatch.cropName.split('(')[0]}
+                        </span>
                       </>
                     )}
                   </div>
@@ -134,8 +141,8 @@ export const PalikaQuickMatrix: React.FC<PalikaQuickMatrixProps> = ({
                       cropMatch.score >= 80
                         ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                         : cropMatch.score >= 60
-                        ? 'bg-green-100 text-green-800 border border-green-300'
-                        : 'bg-amber-100 text-amber-800 border border-amber-300'
+                          ? 'bg-green-100 text-green-800 border border-green-300'
+                          : 'bg-amber-100 text-amber-800 border border-amber-300'
                     }`}
                   >
                     {cropMatch.score}%
@@ -175,14 +182,15 @@ export const PalikaQuickMatrix: React.FC<PalikaQuickMatrixProps> = ({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2.5">
-        {palikas.map(p => {
+        {palikas.map((p) => {
           const isHovered = hoveredPalikaName?.toLowerCase() === p.name.toLowerCase();
           const topCrop = p.feasibleCrops?.[0];
           const cropMatch = selectedCropId
-            ? p.feasibleCrops?.find(c => c.cropId.toLowerCase() === selectedCropId.toLowerCase())
+            ? p.feasibleCrops?.find((c) => c.cropId.toLowerCase() === selectedCropId.toLowerCase())
             : topCrop;
 
-          const isMuni = p.unitType?.toLowerCase().includes('nagarpalika') || p.unitType?.toLowerCase().includes('municipality');
+          const isMuni =
+            p.unitType?.toLowerCase().includes('nagarpalika') || p.unitType?.toLowerCase().includes('municipality');
 
           return (
             <div
@@ -207,12 +215,10 @@ export const PalikaQuickMatrix: React.FC<PalikaQuickMatrixProps> = ({
                       isMuni ? 'bg-indigo-100 text-indigo-800 border border-indigo-200' : 'bg-slate-200 text-slate-700'
                     }`}
                   >
-                    {isMuni ? (lang === 'np' ? 'नगर' : 'Muni') : (lang === 'np' ? 'गाउँ' : 'Rural')}
+                    {isMuni ? (lang === 'np' ? 'नगर' : 'Muni') : lang === 'np' ? 'गाउँ' : 'Rural'}
                   </span>
                 </div>
-                <div className="text-[10px] text-slate-500 font-sans">
-                  {GULMI_PALIKA_NEPALI[p.name] || p.name}
-                </div>
+                <div className="text-[10px] text-slate-500 font-sans">{GULMI_PALIKA_NEPALI[p.name] || p.name}</div>
               </div>
 
               {/* Middle Row: Elevation & Rain */}
@@ -243,8 +249,8 @@ export const PalikaQuickMatrix: React.FC<PalikaQuickMatrixProps> = ({
                       cropMatch.score >= 80
                         ? 'bg-emerald-100 text-emerald-800'
                         : cropMatch.score >= 60
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-amber-100 text-amber-800'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-amber-100 text-amber-800'
                     }`}
                   >
                     {cropMatch.score}%
