@@ -12,6 +12,7 @@ import {
   SUBFILTER_LEGENDS,
 } from '@wefes/shared-types';
 import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../data/districtPalikaAssets';
+import { DHM_PALIKA_STATIONS_MAP } from '../data/districtHydrologyAssets';
 import {
   PALIKA_GHI_DATA as palikaGhiData,
   PALIKA_COOKING_DATA as palikaCookingData,
@@ -516,25 +517,10 @@ export function computePalikaChoropleth({
           colorRamp: CHOROPLETH_RAMPS.blues,
         };
 
-        const DHM_PALIKA_MAP: Record<string, { station: string; type: string; elev: number; color: string }> = {
-          'resunga': { station: 'Tamghas (#725 Climatology & AWS)', type: 'Climatology / AWS', elev: 1547, color: '#10b981' },
-          'musikot': { station: 'Musikot (#722 Precipitation)', type: 'Precipitation', elev: 1353, color: '#0284c7' },
-          'ruru': { station: 'Ridi Bazar (#701 Precipitation)', type: 'Precipitation', elev: 494, color: '#0284c7' },
-          'chandrakot': { station: 'Anp Chour (#732 Climatology)', type: 'Climatology', elev: 738, color: '#8b5cf6' },
-          'satyawati': { station: 'Bharse (#733 Precipitation)', type: 'Precipitation', elev: 1626, color: '#0284c7' },
-          'chatrakot': { station: 'Daugha (#734 Precipitation)', type: 'Precipitation', elev: 960, color: '#0284c7' },
-          'malika': { station: 'Agimir (#731 Precipitation)', type: 'Precipitation', elev: 1493, color: '#0284c7' },
-          'madane': { station: 'Agimir Catchment (#731)', type: 'Precipitation', elev: 1493, color: '#0284c7' },
-          'dhurkot': { station: 'Tamghas-Agimir Corridor (#725/#731)', type: 'Climatology/Rain', elev: 1520, color: '#8b5cf6' },
-          'isma': { station: 'Musikot-Tamghas Basin (#722)', type: 'Precipitation', elev: 1353, color: '#0284c7' },
-          'gulmidarbar': { station: 'Tamghas-Daugha Perimeter (#725/#734)', type: 'Climatology/Rain', elev: 1250, color: '#8b5cf6' },
-          'kaligandaki': { station: 'Ridi-Anp Chour Confluence (#701/#732)', type: 'River Gauging', elev: 616, color: '#0284c7' }
-        };
-
         for (const feat of features) {
           const props = feat.properties || {};
           const pKey = normalizePalikaName(props.name || '');
-          const info = DHM_PALIKA_MAP[pKey] || {
+          const info = DHM_PALIKA_STATIONS_MAP[pKey] || {
             station: 'Unmapped Station',
             type: 'N/A',
             elev: 0,
