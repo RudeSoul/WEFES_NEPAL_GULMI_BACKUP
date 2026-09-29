@@ -27,8 +27,9 @@ nexusRouter.post('/analyze', (req, res) => {
 
     const result = calculateHarvestImpact(district, crop, quantity, unit);
     res.json({ success: true, data: result });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    res.status(500).json({ success: false, error: message });
   }
 });
 
@@ -56,7 +57,8 @@ nexusRouter.post('/simulate', (req, res) => {
     const simulatedResult = simulateScenario(baseline, parameters as unknown as ScenarioParameters);
 
     res.json({ success: true, data: simulatedResult });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    res.status(500).json({ success: false, error: message });
   }
 });

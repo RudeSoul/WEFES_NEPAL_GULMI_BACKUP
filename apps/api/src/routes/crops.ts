@@ -8,8 +8,9 @@ cropRouter.get('/', (req, res) => {
   try {
     const crops = db.getAllCrops();
     res.json({ success: true, count: crops.length, data: crops });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    res.status(500).json({ success: false, error: message });
   }
 });
 
@@ -21,7 +22,8 @@ cropRouter.get('/:id', (req, res) => {
       return res.status(404).json({ success: false, error: `Crop '${req.params.id}' not found` });
     }
     res.json({ success: true, data: crop });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    res.status(500).json({ success: false, error: message });
   }
 });

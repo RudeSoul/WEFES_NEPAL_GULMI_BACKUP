@@ -48,8 +48,8 @@ app.use(errorHandler);
 
 if (process.env.NODE_ENV !== 'test') {
   app.listen(config.port, () => {
-    console.log(`🚀 ${config.serviceName} running at http://localhost:${config.port}${config.apiPrefix}`);
-    console.log(`📡 Health check active at http://localhost:${config.port}/health`);
+    console.info(`🚀 ${config.serviceName} running at http://localhost:${config.port}${config.apiPrefix}`);
+    console.info(`📡 Health check active at http://localhost:${config.port}/health`);
   });
 }
 
