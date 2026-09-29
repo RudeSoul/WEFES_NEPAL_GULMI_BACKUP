@@ -408,7 +408,7 @@ export interface JoinedPalikaData {
   color: string;
   tooltipHtml: string;
   // Raw attributes joined from empirical & calculated datasets
-  raw?: Record<string, any>;
+  raw?: Record<string, unknown>;
 }
 
 export interface PalikaChoroplethResult {
@@ -454,4 +454,16 @@ export interface GulmiContourCollection {
     intervalMeters: number;
   };
   features: GulmiContourFeature[];
+}
+
+export interface MonthlyClimatePoint {
+  prectot?: number;
+  t2m?: number;
+  [key: string]: unknown;
+}
+
+export interface ClimateDataset {
+  climatologyMap?: Record<string, Record<number, MonthlyClimatePoint>>;
+  climateMap?: Record<string, Record<number, Record<number, MonthlyClimatePoint>>>;
+  [key: string]: unknown;
 }
