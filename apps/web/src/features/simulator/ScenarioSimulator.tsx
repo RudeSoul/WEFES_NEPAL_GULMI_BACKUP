@@ -157,7 +157,7 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as 'climate' | 'energy' | 'agronomic' | 'socio')}
                 className={`py-2 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-all text-[11px] cursor-pointer ${
                   activeTab === tab.id
                     ? 'bg-white text-slate-900 shadow-sm border border-slate-200/90 font-bold'

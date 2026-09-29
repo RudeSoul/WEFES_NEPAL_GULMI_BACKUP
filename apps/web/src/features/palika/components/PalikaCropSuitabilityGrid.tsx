@@ -3,22 +3,34 @@ import React, { useState } from 'react';
 import { ChevronRight, GitCompare, Sprout } from 'lucide-react';
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts';
 
-import { Crop, District } from '@wefes/shared-types';
+import { Crop, CropSuitability, District } from '@wefes/shared-types';
 
 import { CropComparativeAnalysis } from '../CropComparativeAnalysis';
 import { FeasibilityMatrix } from '../FeasibilityMatrix';
 
+export interface DistrictCropItem {
+  crop: Crop;
+  suitability: CropSuitability;
+}
+
+export interface RadarCropMetric {
+  pillar: string;
+  score: number;
+  fullMark: number;
+  [key: string]: unknown;
+}
+
 interface PalikaCropSuitabilityGridProps {
   district: District;
-  displayedDistrictCrops: any[];
-  verifiedDistrictCrops: any[];
-  allDistrictCrops: any[];
+  displayedDistrictCrops: DistrictCropItem[];
+  verifiedDistrictCrops: DistrictCropItem[];
+  allDistrictCrops: DistrictCropItem[];
   cropSpectrumMode: 'verified' | 'all';
   setCropSpectrumMode: (mode: 'verified' | 'all') => void;
   activeHoverCrop: Crop | null;
   setActiveHoverCrop: (crop: Crop) => void;
-  activeSuitability: any;
-  radarData: any[];
+  activeSuitability?: CropSuitability | null;
+  radarData: RadarCropMetric[];
   onSelectCrop: (crop: Crop) => void;
 }
 
@@ -99,7 +111,7 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
 
           {/* Scrollable Single-Column Crop Cards Feed */}
           <div className="max-h-[640px] overflow-y-auto pr-1 space-y-3 custom-scrollbar">
-            {displayedDistrictCrops.map(({ crop, suitability }: any) => {
+            {displayedDistrictCrops.map(({ crop, suitability }: DistrictCropItem) => {
               const isSelected = activeHoverCrop?.id === crop.id;
               const score = suitability.suitabilityScore;
 

@@ -16,7 +16,7 @@ import {
   YAxis,
 } from 'recharts';
 
-import { District } from '@wefes/shared-types';
+import { ClimateDataset, District, MonthlyClimatePoint } from '@wefes/shared-types';
 import { ARIMAResult } from '@wefes/wefes-engine';
 
 import { DistrictPalika } from '../../../data/districtPalikaAssets';
@@ -27,8 +27,8 @@ export interface IndicatorModalProps {
   modalKey: ModalKey;
   district: District;
   activePalika: DistrictPalika;
-  distClimatology: any;
-  climateDataset: any;
+  distClimatology?: Record<number, MonthlyClimatePoint>;
+  climateDataset: ClimateDataset | null;
   rainfallSeries: number[];
   rainfallARIMA: ARIMAResult | null;
   rfStartYear: number;
@@ -88,7 +88,17 @@ export const IndicatorModal: React.FC<IndicatorModalProps> = ({
       2025: Math.round(1530 * rainRatio),
     };
 
-    const chartData: any[] = [];
+    interface AnnualRainChartPoint {
+      year: number;
+      historical?: number;
+      observedReanalysis?: number;
+      presentAnchor?: number;
+      forecast?: number;
+      upper?: number;
+      lower?: number;
+      deltaPercent?: string;
+    }
+    const chartData: AnnualRainChartPoint[] = [];
     if (annualSeries.length > 0) {
       annualSeries.forEach((val, i) => {
         const yr = startYear + i;
@@ -285,13 +295,14 @@ export const IndicatorModal: React.FC<IndicatorModalProps> = ({
                     fontSize: 11,
                     boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
                   }}
-                  formatter={(v: any, name: string) => {
+                  formatter={(v: unknown, name: string) => {
+                    const num = typeof v === 'number' ? v : Number(v) || 0;
                     if (name === 'lower' || name === 'upper') return null;
-                    if (name === 'historical') return [`${Math.round(v)} mm/yr`, 'Historical MERRA-2'];
-                    if (name === 'observedReanalysis') return [`${Math.round(v)} mm/yr`, 'Observed ERA5 Reanalysis'];
-                    if (name === 'presentAnchor') return [`${Math.round(v)} mm/yr`, '2026 Present Benchmark'];
-                    if (name === 'forecast') return [`${Math.round(v)} mm/yr`, 'ARIMA(2,1,1) Projection'];
-                    return [v, name];
+                    if (name === 'historical') return [`${Math.round(num)} mm/yr`, 'Historical MERRA-2'];
+                    if (name === 'observedReanalysis') return [`${Math.round(num)} mm/yr`, 'Observed ERA5 Reanalysis'];
+                    if (name === 'presentAnchor') return [`${Math.round(num)} mm/yr`, '2026 Present Benchmark'];
+                    if (name === 'forecast') return [`${Math.round(num)} mm/yr`, 'ARIMA(2,1,1) Projection'];
+                    return [String(v ?? ''), name];
                   }}
                 />
                 <Area dataKey="upper" stroke="none" fill="#bae6fd" isAnimationActive={false} />
@@ -374,12 +385,16 @@ export const IndicatorModal: React.FC<IndicatorModalProps> = ({
                     fontSize: 11,
                     boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
                   }}
-                  formatter={(v: any, name: string, item: any) => {
+                  formatter={(v: unknown, name: string, item: { payload?: { season?: string } }) => {
+                    const num = typeof v === 'number' ? v : Number(v) || 0;
                     if (name === 'lower' || name === 'upper') return null;
                     if (name === 'palikaRain')
-                      return [`${Math.round(v)} mm (${item.payload.season})`, `${activePalika?.name} Local Inflow`];
-                    if (name === 'forecast') return [`${Math.round(v)} mm`, 'Seasonal Forecast'];
-                    return [v, name];
+                      return [
+                        `${Math.round(num)} mm (${item.payload?.season || ''})`,
+                        `${activePalika?.name} Local Inflow`,
+                      ];
+                    if (name === 'forecast') return [`${Math.round(num)} mm`, 'Seasonal Forecast'];
+                    return [String(v ?? ''), name];
                   }}
                 />
                 <Area dataKey="upper" stroke="none" fill="#bae6fd" isAnimationActive={false} />

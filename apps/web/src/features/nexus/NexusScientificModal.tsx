@@ -161,7 +161,7 @@ export const NexusScientificModal: React.FC<NexusScientificModalProps> = ({ outp
           ].map(({ id, label }) => (
             <button
               key={id}
-              onClick={() => setActiveTab(id as any)}
+              onClick={() => setActiveTab(id as TabType)}
               className={`px-3.5 py-2 border-b-2 font-outfit transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === id
                   ? 'border-emerald-600 text-emerald-900 font-bold bg-white rounded-t-xl border-t border-x border-slate-200 shadow-2xs'

@@ -28,7 +28,7 @@ export const PalikaBenchmarkComparator: React.FC<PalikaBenchmarkComparatorProps>
   const micro2 = getPalikaMicroClimate(p2.name, 318, 19.5, 7, p2.elevation);
 
   // Compute 5-Pillar Score estimates (0-100)
-  const getPillarScores = (p: DistrictPalika, micro: any) => {
+  const getPillarScores = (p: DistrictPalika, micro: ReturnType<typeof getPalikaMicroClimate>) => {
     const foodScore = Math.round(
       (p.feasibleCrops?.reduce((acc, c) => acc + c.score, 0) || 600) / (p.feasibleCrops?.length || 8)
     );

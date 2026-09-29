@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Coins, Compass, Droplets, Sparkles, Sprout, Zap } from 'lucide-react';
+import { Coins, Compass, Droplets, LucideIcon, Sparkles, Sprout, Zap } from 'lucide-react';
 
 import { WEFESPillar } from '@wefes/shared-types';
 
@@ -13,7 +13,7 @@ interface PolicyPresetSelectorProps {
 interface PresetItem {
   id: string;
   pillar: WEFESPillar;
-  icon: any;
+  icon: LucideIcon;
   color: string;
   title: string;
   desc: string;

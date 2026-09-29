@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ArrowLeft, ArrowUp, CloudRain, Mountain, Sparkles, Thermometer } from 'lucide-react';
 
 import { db } from '@wefes/database';
-import { Crop, District } from '@wefes/shared-types';
+import { ClimateDataset, Crop, District } from '@wefes/shared-types';
 import { arimaForecast, extractAnnualRainfallSeries } from '@wefes/wefes-engine';
 
 import { DISTRICT_PALIKAS, DistrictPalika, PALIKA_GEO_CENTROIDS } from '../../data/districtPalikaAssets';
@@ -24,7 +24,7 @@ export interface DistrictDetailProps {
   onSelectPalika?: (palikaName: string) => void;
   onSelectCrop: (crop: Crop) => void;
   onBackToMap: () => void;
-  climateDataset?: any;
+  climateDataset?: ClimateDataset | null;
 }
 
 export const DistrictDetail: React.FC<DistrictDetailProps> = ({
@@ -42,16 +42,19 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   const displayedDistrictCrops = cropSpectrumMode === 'verified' ? verifiedDistrictCrops : allDistrictCrops;
 
   const [activeHoverCrop, setActiveHoverCrop] = useState<Crop | null>(displayedDistrictCrops[0]?.crop || null);
-  const [climateDataset, setClimateDataset] = useState<any>(initialClimateDataset || null);
+  const [climateDataset, setClimateDataset] = useState<ClimateDataset | null>(initialClimateDataset || null);
   const [openModal, setOpenModal] = useState<ModalKey>(null);
   const [activePalikaName, setActivePalikaNameState] = useState<string>(initialPalikaName || 'Resunga');
   const [palikaWeather, setPalikaWeather] = useState<PalikaLiveWeather | null>(null);
   const [weatherTelemetryMode, setWeatherTelemetryMode] = useState<'live' | 'archive'>('archive');
 
-  const setActivePalikaName = (pName: string) => {
-    setActivePalikaNameState(pName);
-    if (onSelectPalika) onSelectPalika(pName);
-  };
+  const setActivePalikaName = useCallback(
+    (pName: string) => {
+      setActivePalikaNameState(pName);
+      if (onSelectPalika) onSelectPalika(pName);
+    },
+    [onSelectPalika]
+  );
 
   useEffect(() => {
     if (initialClimateDataset) {
@@ -68,13 +71,13 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
     if (displayedDistrictCrops && displayedDistrictCrops.length > 0) {
       setActiveHoverCrop(displayedDistrictCrops[0].crop);
     }
-  }, [district.id, cropSpectrumMode]);
+  }, [displayedDistrictCrops]);
 
   useEffect(() => {
     if (initialPalikaName) {
       setActivePalikaName(initialPalikaName);
     }
-  }, [initialPalikaName]);
+  }, [initialPalikaName, setActivePalikaName]);
 
   const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
   const activePalika: DistrictPalika =
@@ -83,7 +86,7 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
     ({} as DistrictPalika);
 
   const activeSuitability =
-    displayedDistrictCrops.find((c: any) => c.crop.id === activeHoverCrop?.id)?.suitability ||
+    displayedDistrictCrops.find((c) => c.crop.id === activeHoverCrop?.id)?.suitability ||
     displayedDistrictCrops[0]?.suitability;
 
   const radarData = activeSuitability

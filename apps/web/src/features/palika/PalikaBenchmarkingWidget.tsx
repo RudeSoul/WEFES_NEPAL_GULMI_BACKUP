@@ -123,7 +123,23 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
 
     Promise.all([fetch(buildUrl(coordA)).then((r) => r.json()), fetch(buildUrl(coordB)).then((r) => r.json())])
       .then(([dataA, dataB]) => {
-        const parseWeather = (data: any): LiveWeatherTelemetry | null => {
+        interface OpenMeteoLiveResponse {
+          current?: {
+            soil_moisture_0_to_7cm?: number;
+            soil_moisture_7_to_28cm?: number;
+            vapour_pressure_deficit?: number;
+            relative_humidity_2m: number;
+            temperature_2m: number;
+            wind_speed_10m: number;
+            direct_radiation?: number;
+            precipitation?: number;
+            apparent_temperature?: number;
+            cloud_cover?: number;
+            et0_fao_evapotranspiration?: number;
+            [key: string]: unknown;
+          };
+        }
+        const parseWeather = (data: OpenMeteoLiveResponse | null): LiveWeatherTelemetry | null => {
           if (!data?.current) return null;
           const c = data.current;
           const topsoil = c.soil_moisture_0_to_7cm ?? 0.35;
@@ -146,14 +162,15 @@ export const PalikaBenchmarkingWidget: React.FC<PalikaBenchmarkingWidgetProps> =
                 : topsoil < 0.32
                   ? 'Moderate'
                   : 'Low';
+          const precip = c.precipitation ?? 0;
           const landslideAlert: 'Low' | 'Moderate' | 'Alert' =
-            c.precipitation > 15 && soilSat > 82 ? 'Alert' : c.precipitation > 5 || soilSat > 75 ? 'Moderate' : 'Low';
+            precip > 15 && soilSat > 82 ? 'Alert' : precip > 5 || soilSat > 75 ? 'Moderate' : 'Low';
 
           return {
             temperature: temp,
-            apparentTemp: Number(c.apparent_temperature.toFixed(1)),
+            apparentTemp: Number((c.apparent_temperature ?? temp).toFixed(1)),
             humidity: rh,
-            precipitation: Number(c.precipitation.toFixed(1)),
+            precipitation: Number(precip.toFixed(1)),
             windSpeed: wind,
             solarRadiation: solar,
             cloudCover: Math.round(c.cloud_cover || 0),

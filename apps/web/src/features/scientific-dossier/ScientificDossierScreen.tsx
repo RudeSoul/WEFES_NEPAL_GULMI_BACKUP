@@ -821,7 +821,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
               />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {selectedVarieties.map((v: any) => (
+                {selectedVarieties.map((v) => (
                   <div key={v.id} className="p-5 rounded-2xl border border-slate-200 bg-white shadow-2xs space-y-3">
                     <div className="flex items-start justify-between border-b pb-2.5">
                       <div>
@@ -868,7 +868,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
                         Disease & Pest Vector Resistance:
                       </div>
                       <div className="space-y-1">
-                        {v.diseasePestResistance.map((d: any, idx: number) => (
+                        {v.diseasePestResistance.map((d, idx: number) => (
                           <div key={idx} className="flex justify-between items-center text-[11px] font-mono">
                             <span className="text-slate-600">{d.vector}</span>
                             <span
@@ -1829,7 +1829,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
 
               {studyViewMode !== 'visual_only' && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                  {cropCalendar.map((m: any) => (
+                  {cropCalendar.map((m) => (
                     <div
                       key={m.bsMonth}
                       className={`p-4 rounded-2xl border transition-all space-y-2 shadow-2xs ${
@@ -2764,7 +2764,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
                   <span>GCF Sovereign Investment Scorecard (Scale: 1–10)</span>
                 </h5>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
-                  {gcfInvestment.gcfScorecard?.map((item: any, idx: number) => (
+                  {gcfInvestment.gcfScorecard?.map((item, idx: number) => (
                     <div key={idx} className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-slate-800 font-sans">{item.criterion}</span>

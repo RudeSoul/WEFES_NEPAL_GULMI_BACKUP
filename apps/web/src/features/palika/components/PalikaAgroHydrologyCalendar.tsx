@@ -18,11 +18,13 @@ import {
   YAxis,
 } from 'recharts';
 
+import { ClimateDataset } from '@wefes/shared-types';
+
 import { DistrictPalika } from '../../../data/districtPalikaAssets';
 
 interface SeasonalAgroHydrologyProps {
   activePalika: DistrictPalika;
-  climateDataset: any;
+  climateDataset: ClimateDataset | null;
 }
 
 interface MonthHydrologyRecord {
@@ -71,8 +73,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
     const palikaRainScalar = (activePalika.rainfallMm || 1900) / 1900;
 
     return MONTH_NAMES.map((m, idx) => {
-      const monthKey = String(idx + 1);
-      const raw = climatology[monthKey];
+      const monthNum = idx + 1;
+      const raw = climatology[monthNum];
 
       if (!raw) {
         return {
@@ -96,9 +98,10 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
       const rainfallMm = Number((rainBase * palikaRainScalar).toFixed(1));
 
       // 2. Temperature adjusted by elevation lapse rate
-      const meanTempC = Number((raw.t2m + tempLapse).toFixed(1));
-      const tMax = raw.t2mMax ? raw.t2mMax + tempLapse : meanTempC + 6;
-      const tMin = raw.t2mMin ? raw.t2mMin + tempLapse : meanTempC - 6;
+      const rawT2m = typeof raw.t2m === 'number' ? raw.t2m : 19.5;
+      const meanTempC = Number((rawT2m + tempLapse).toFixed(1));
+      const tMax = typeof raw.t2mMax === 'number' ? raw.t2mMax + tempLapse : meanTempC + 6;
+      const tMin = typeof raw.t2mMin === 'number' ? raw.t2mMin + tempLapse : meanTempC - 6;
 
       // 3. FAO-56 Hargreaves ET0 estimation (mm/day -> mm/month)
       // ET0 = 0.0023 * (Tmean + 17.8) * (Tmax - Tmin)^0.5 * Ra

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom';
 
-import { Crop, District } from '@wefes/shared-types';
+import { ClimateDataset, Crop, District } from '@wefes/shared-types';
 
 import { Header, InputModal } from './components/common';
 import { DistrictMap } from './features/map';
@@ -26,7 +26,7 @@ function PalikaRouteWrapper({
   onSelectPalika: (pName: string) => void;
   onSelectCrop: (crop: Crop) => void;
   onBackToMap: () => void;
-  climateDataset: any;
+  climateDataset: ClimateDataset | null;
 }) {
   const { palikaName } = useParams<{ palikaName?: string }>();
   const effectivePalikaName = palikaName ? decodeURIComponent(palikaName) : selectedPalikaName || 'Resunga';
