@@ -102,16 +102,22 @@ Hooks are stored in the tracked repository directory `.githooks/`.
 
 ### Pre-Commit Hook (`.githooks/pre-commit`)
 
-Fires automatically whenever you run `git commit`. It executes three critical checks:
+Fires automatically whenever you run `git commit`. It executes the following automated checks and hygiene steps:
 
 1. **Branch Protection:**
    Rejects commits if the active branch is `main` or `master`.
-2. **6-Tier Data Integrity Gatekeeper:**
+2. **Automated Linting with Auto-Fix:**
+   Executes `pnpm lint:fix` across packages, blocking commits if unfixable lint errors exist.
+3. **Automated Code Formatting:**
+   Runs `pnpm format` (Prettier) to maintain clean repository-wide style consistency.
+4. **Automatic Re-Staging:**
+   Re-stages any files modified by auto-fix or Prettier formatting (`git update-index --again`).
+5. **6-Tier Data Integrity Gatekeeper:**
    Executes `python3 scripts/verify_data_integrity.py`:
    - Checks that all cited data files physically exist on disk.
    - Ensures no synthetic data has been added to `data/real/`.
    - Enforces engine isolation (code under `engines/` never imports from `apps/` or `packages/`).
-3. **Binary File Size Limit:**
+6. **Binary File Size Limit:**
    Rejects any staged file exceeding **40 MB**. Large raw raster grids (GeoTIFFs) must be tracked via dataset manifests or external storage rather than git tracking.
 
 ### Commit-Message Hook (`.githooks/commit-msg`)

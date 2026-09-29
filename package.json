@@ -1,6 +1,7 @@
 {
   "name": "wefes-nexus-nepal-root",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "pnpm sync:data && pnpm exec turbo run build",
     "dev": "pnpm sync:data && pnpm exec turbo run dev --parallel",

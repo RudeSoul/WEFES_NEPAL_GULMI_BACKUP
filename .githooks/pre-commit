@@ -1,9 +1,23 @@
 #!/usr/bin/env bash
 # .githooks/pre-commit
 # Enforces:
-# 1. Branch Protection (no direct commits to main/master)
-# 2. 6-Tier Data Integrity & Governance Gatekeeper
-# 3. Check Binary File Size Limit (Max 40 MB per file to prevent committing raw rasters)
+# 0. Branch Protection (no direct commits to main/master)
+# 1. Lint with Auto-Fix (pnpm lint:fix)
+# 2. Prettier Formatting (pnpm format)
+# 3. Re-staging Auto-Fixed/Formatted Files
+# 4. 6-Tier Data Integrity & Governance Gatekeeper
+# 5. Check Binary File Size Limit (Max 40 MB per file)
+
+# Resolve package manager and python commands for cross-platform compatibility
+PNPM_CMD="pnpm"
+if command -v pnpm.cmd &> /dev/null; then
+    PNPM_CMD="pnpm.cmd"
+fi
+
+PYTHON_CMD="python3"
+if ! command -v python3 &> /dev/null && command -v python &> /dev/null; then
+    PYTHON_CMD="python"
+fi
 
 # 0. Branch Protection (Never commit directly to main or master)
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -15,13 +29,34 @@ if [ "$CURRENT_BRANCH" = "main" ] || [ "$CURRENT_BRANCH" = "master" ]; then
     exit 1
 fi
 
-# 1. Verify 6-Tier Data Integrity & Governance Gatekeeper
+# 1. Run Lint with Auto-Fix (pnpm lint:fix)
+echo "--> [Pre-Commit] Running lint with auto-fix ($PNPM_CMD lint:fix)..."
+$PNPM_CMD lint:fix || {
+    echo "=================================================================="
+    echo " ❌ COMMIT REJECTED: Linting failed! Fix errors before committing."
+    echo "=================================================================="
+    exit 1
+}
+
+# 2. Run Prettier Formatting (pnpm format)
+echo "--> [Pre-Commit] Running code formatter ($PNPM_CMD format)..."
+$PNPM_CMD format || {
+    echo "=================================================================="
+    echo " ❌ COMMIT REJECTED: Formatting failed!"
+    echo "=================================================================="
+    exit 1
+}
+
+# 3. Re-stage any files modified/formatted during lint:fix and format
+git update-index --again
+
+# 4. Verify 6-Tier Data Integrity & Governance Gatekeeper
 if [ -f "scripts/verify_data_integrity.py" ]; then
     echo "--> [Pre-Commit] Verifying 6-tier data integrity & platform rules..."
-    python3 scripts/verify_data_integrity.py || exit 1
+    $PYTHON_CMD scripts/verify_data_integrity.py || exit 1
 fi
 
-# 2. Check Binary File Size Limit (Max 40 MB per file)
+# 5. Check Binary File Size Limit (Max 40 MB per file)
 MAX_FILE_BYTES=$((40 * 1024 * 1024))
 while IFS= read -r file; do
     if [ -f "$file" ]; then
