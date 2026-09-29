@@ -1,5 +1,7 @@
 import React from 'react';
-import { Droplets, Zap, Sprout, Trees, Coins } from 'lucide-react';
+
+import { Coins, Droplets, Sprout, Trees, Zap } from 'lucide-react';
+
 import { WEFESPillar } from '@wefes/shared-types';
 
 interface PillarFilterProps {

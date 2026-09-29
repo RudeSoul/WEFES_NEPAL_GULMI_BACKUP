@@ -1,23 +1,8 @@
 import React, { useState } from 'react';
-import {
-  Printer,
-  Download,
-  X,
-  ShieldCheck,
-  Sprout,
-  Droplets,
-  Zap,
-  Trees,
-  Building2,
-  CheckCircle2,
-  Award,
-  Calendar,
-  Mountain,
-  Thermometer,
-  CloudRain,
-  Sparkles,
-} from 'lucide-react';
-import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
+
+import { Award, Building2, CheckCircle2, Droplets, Printer, Sparkles, Sprout, X, Zap } from 'lucide-react';
+
+import { DISTRICT_PALIKAS } from '../../data/districtPalikaAssets';
 import { getPalikaMicroClimate } from '../../utils/climateDownscaling';
 
 interface PalikaDossierExportProps {

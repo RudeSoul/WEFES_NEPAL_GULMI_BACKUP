@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+
+import { Award, Printer, Scale, X } from 'lucide-react';
+
 import { WEFESOutput } from '@wefes/shared-types';
 import { computeDeepNexusAnalysis, simulateSensitivity } from '@wefes/wefes-engine';
-import { X, Scale, Printer, Award, ArrowUpRight } from 'lucide-react';
-import { MathTab } from './components/scientific-modal/MathTab';
-import { SensitivityTab } from './components/scientific-modal/SensitivityTab';
-import { RusleSpringsTab } from './components/scientific-modal/RusleSpringsTab';
+
 import { GesiTab } from './components/scientific-modal/GesiTab';
-import { PhenologyImportTab } from './components/scientific-modal/PhenologyImportTab';
-import { ShadowSdgTab } from './components/scientific-modal/ShadowSdgTab';
 import { InterventionsTab } from './components/scientific-modal/InterventionsTab';
+import { MathTab } from './components/scientific-modal/MathTab';
+import { PhenologyImportTab } from './components/scientific-modal/PhenologyImportTab';
+import { RusleSpringsTab } from './components/scientific-modal/RusleSpringsTab';
+import { SensitivityTab } from './components/scientific-modal/SensitivityTab';
+import { ShadowSdgTab } from './components/scientific-modal/ShadowSdgTab';
 
 interface NexusScientificModalProps {
   output: WEFESOutput;

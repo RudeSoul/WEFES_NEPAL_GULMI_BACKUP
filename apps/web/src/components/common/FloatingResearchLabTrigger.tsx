@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { FlaskConical, ArrowRight, ArrowLeft, X, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+
+import { ArrowLeft, FlaskConical } from 'lucide-react';
 
 interface FloatingResearchLabTriggerProps {
   activeScreen: number;

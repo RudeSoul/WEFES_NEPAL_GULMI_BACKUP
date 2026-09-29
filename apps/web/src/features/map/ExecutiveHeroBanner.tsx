@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Mountain, Users, Layers, Sprout, Search, Info, ChevronDown, ChevronUp, Globe, Sparkles } from 'lucide-react';
+
+import { ChevronDown, ChevronUp, Globe, Info, Layers, Mountain, Search, Sparkles, Sprout, Users } from 'lucide-react';
+
 import { DISTRICT_PALIKAS, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 
 interface ExecutiveHeroBannerProps {

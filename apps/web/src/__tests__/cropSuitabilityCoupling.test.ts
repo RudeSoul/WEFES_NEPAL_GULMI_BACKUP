@@ -3,10 +3,10 @@
 // Classification: UNIT TEST (Biophysical Microclimate Downscaling & Crop Suitability Coupling)
 // Citations: MoALD, MoFAGA Nepal, DHM Nepal, Survey Department
 
-import { describe, it, expect } from 'vitest';
-import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../utils/climateDownscaling';
-import rawPalikaData from '../../../../data/real/municipal/palika_profiles.json';
+import { describe, expect, it } from 'vitest';
+
 import { DISTRICT_PALIKAS } from '../data/districtPalikaAssets';
+import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../utils/climateDownscaling';
 
 describe('Track E: Biophysical Climate Lapse & Crop Suitability Coupling', () => {
   describe('Environmental Lapse Rate & Orographic Precipitation', () => {

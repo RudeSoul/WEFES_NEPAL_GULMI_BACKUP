@@ -5,9 +5,11 @@
 // Consumed By: apps/web/src/features/map/DistrictMap.tsx
 
 import React, { useMemo } from 'react';
+
 import { ImageOverlay } from 'react-leaflet';
-import { GULMI_PALIKA_CLIMATE_PROFILES, getPalikaMicroClimate } from '../../utils/climateDownscaling';
+
 import { PALIKA_CENTROIDS } from '../../data/districtPalikaAssets';
+import { getPalikaMicroClimate } from '../../utils/climateDownscaling';
 
 // Scientific multi-stop gradient color ramp for precipitation (mm/month)
 // Deep subtropical gorge (#fed7aa) -> Mid-hills moderate (#38bdf8 -> #0284c7) -> High orographic ridge (#1e3a8a)

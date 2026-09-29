@@ -1,4 +1,4 @@
-import { apiClient, ApiResponse } from './apiClient';
+import { apiClient } from './apiClient';
 
 export const gisClimateService = {
   getGulmiBoundary: async (): Promise<any> => {

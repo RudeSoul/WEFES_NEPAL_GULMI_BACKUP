@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Play, Pause, SkipForward, Calendar, Clock, RotateCcw } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+
+import { Calendar, Clock, Pause, Play } from 'lucide-react';
 
 interface ClimateTimeControllerProps {
   year: number;

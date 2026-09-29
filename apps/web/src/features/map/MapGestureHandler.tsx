@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
 import { useMap } from 'react-leaflet';
 
 export const MapGestureHandler: React.FC = () => {

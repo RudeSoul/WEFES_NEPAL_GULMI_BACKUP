@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
-import {
-  Zap,
-  Sun,
-  Droplets,
-  Flame,
-  Sparkles,
-  TrendingUp,
-  Calculator,
-  ShieldCheck,
-  BatteryCharging,
-  Leaf,
-} from 'lucide-react';
+
+import { Droplets, Flame, Sun, Zap } from 'lucide-react';
+
 import { DISTRICT_PALIKAS } from '../../data/districtPalikaAssets';
 
 interface RenewableEnergySizerProps {

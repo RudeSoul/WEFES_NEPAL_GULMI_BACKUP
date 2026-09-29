@@ -5,8 +5,9 @@
 // Consumed By: apps/web/src/features/map/DistrictMap.tsx
 
 import React, { useEffect, useState } from 'react';
-import { ImageOverlay } from 'react-leaflet';
+
 import { fromArrayBuffer } from 'geotiff';
+import { ImageOverlay } from 'react-leaflet';
 
 interface SpatialFlowDirectionOverlayProps {
   opacity?: number;

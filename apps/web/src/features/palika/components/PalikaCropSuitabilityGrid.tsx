@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { District, Crop } from '@wefes/shared-types';
-import { Sprout, ChevronRight, GitCompare } from 'lucide-react';
-import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip } from 'recharts';
-import { FeasibilityMatrix } from '../FeasibilityMatrix';
+
+import { ChevronRight, GitCompare, Sprout } from 'lucide-react';
+import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts';
+
+import { Crop, District } from '@wefes/shared-types';
+
 import { CropComparativeAnalysis } from '../CropComparativeAnalysis';
+import { FeasibilityMatrix } from '../FeasibilityMatrix';
 
 interface PalikaCropSuitabilityGridProps {
   district: District;

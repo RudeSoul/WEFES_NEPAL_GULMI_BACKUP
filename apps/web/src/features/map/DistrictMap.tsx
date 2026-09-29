@@ -10,8 +10,8 @@
 // - data/real/hydrology/flow_direction.tif
 // Classification: OBSERVED REAL & CALCULATED BASELINES
 // Citations: Ministry of Federal Affairs and General Administration (MoFAGA), DHM Nepal, Survey Department of Nepal, HydroSHEDS / HydroRIVERS / HydroBASINS (WWF/USGS)
-import { db } from '@wefes/database';
-import { District, SUBFILTER_LEGENDS, WEFESPillar } from '@wefes/shared-types';
+import React, { useEffect, useState } from 'react';
+
 import L from 'leaflet';
 import {
   Building2,
@@ -39,15 +39,20 @@ import {
   Wind,
   Zap,
 } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
 import { CircleMarker, GeoJSON, MapContainer, Marker, TileLayer, Tooltip, useMap } from 'react-leaflet';
+
+import { db } from '@wefes/database';
+import { District, SUBFILTER_LEGENDS, WEFESPillar } from '@wefes/shared-types';
+
 import { DynamicLegend } from '../../components/legend/DynamicLegend';
 import { VALIDATED_CROPS } from '../../data/cropSuitabilityAssets';
 import { resolveCalculationMethodology } from '../../data/districtCalculationAssets';
 import { PALIKA_GRID_DATA as palikaGridData } from '../../data/districtIndicatorAssets';
 import { DISTRICT_PALIKAS, PALIKA_CENTROIDS } from '../../data/districtPalikaAssets';
 import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
+import { useNexusStore } from '../../store';
 import { PalikaHoverCard } from '../palika/PalikaHoverCard';
+
 import { CatchmentsGeoJsonLayer } from './CatchmentsGeoJsonLayer';
 import { MapGestureHandler } from './MapGestureHandler';
 import { RiversStreamsGeoJsonLayer } from './RiversStreamsGeoJsonLayer';
@@ -57,7 +62,6 @@ import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
 import { SpatialSettlementDensityOverlay } from './SpatialSettlementDensityOverlay';
 import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
 import { SubFilterToolbar } from './SubFilterToolbar';
-import { useNexusStore } from '../../store';
 
 // Fix Leaflet default marker icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;

@@ -1,26 +1,27 @@
 import React from 'react';
-import { District, WEFESPillar, Crop, CropSuitability } from '@wefes/shared-types';
-import { db, isCropFeasibleInDistrict } from '@wefes/database';
-import { computeCropSuitability } from '@wefes/wefes-engine';
+
 import {
-  Calendar,
-  CloudRain,
-  Thermometer,
-  Wind,
-  Gauge,
-  Sparkles,
-  Zap,
-  Sun,
-  Sprout,
-  Leaf,
-  Cherry,
-  Wheat as WheatIcon,
-  MapPin,
-  CheckCircle,
   AlertTriangle,
   Award,
+  Calendar,
+  CheckCircle,
+  Cherry,
+  CloudRain,
+  Gauge,
+  Leaf,
+  Sparkles,
+  Sprout,
+  Sun,
+  Thermometer,
   TrendingUp,
+  Wheat as WheatIcon,
+  Wind,
+  Zap,
 } from 'lucide-react';
+
+import { db, isCropFeasibleInDistrict } from '@wefes/database';
+import { District, WEFESPillar } from '@wefes/shared-types';
+import { computeCropSuitability } from '@wefes/wefes-engine';
 
 interface DistrictHoverCardProps {
   district: District | null;

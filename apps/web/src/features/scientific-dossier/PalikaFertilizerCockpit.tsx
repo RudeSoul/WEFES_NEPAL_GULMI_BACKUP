@@ -1,28 +1,12 @@
-import React, { useState, useMemo } from 'react';
-import { WEFESOutput, FertilizerImpactProfile, District, Crop } from '@wefes/shared-types';
-import { DISTRICTS_SEED_DATA, CROPS_SEED_DATA } from '@wefes/database';
-import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
+import React, { useMemo, useState } from 'react';
+
+import { DollarSign, Droplets, FlaskConical, Leaf, MapPin, Scale, Sliders, TrendingDown } from 'lucide-react';
+
+import { CROPS_SEED_DATA, DISTRICTS_SEED_DATA } from '@wefes/database';
+import { Crop, District, FertilizerImpactProfile, WEFESOutput } from '@wefes/shared-types';
 import { calculateFertilizerNexusImpact } from '@wefes/wefes-engine';
-import {
-  Truck,
-  FlaskConical,
-  DollarSign,
-  TrendingDown,
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle2,
-  ShieldAlert,
-  Leaf,
-  Droplets,
-  Fuel,
-  MapPin,
-  Sliders,
-  Sparkles,
-  ArrowRight,
-  BarChart3,
-  Layers,
-  Scale,
-} from 'lucide-react';
+
+import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
 
 interface PalikaFertilizerCockpitProps {
   output: WEFESOutput;

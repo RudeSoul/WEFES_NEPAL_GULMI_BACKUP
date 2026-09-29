@@ -4,30 +4,33 @@
 // Citations: MoALD Nepal, MoFAGA Nepal, DHM Nepal, CBS/NSO 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas 2.0, Nepal Electricity Authority (NEA), NARC Soil Science Division, OpenStreetMap Contributors
 
 import { useMemo } from 'react';
+
 import {
-  WEFESPillar,
-  PalikaChoroplethResult,
   JoinedPalikaData,
   PalikaChoroplethMetricConfig,
+  PalikaChoroplethResult,
   SUBFILTER_LEGENDS,
+  WEFESPillar,
 } from '@wefes/shared-types';
-import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../data/districtPalikaAssets';
+
+import {
+  evaluateCropSuitability,
+  evaluateCropWaterStress,
+  getCropGrowingSeasonTemp,
+  VALIDATED_CROPS,
+  WaterStressSeason,
+} from '../data/cropSuitabilityAssets';
 import { DHM_PALIKA_STATIONS_MAP } from '../data/districtHydrologyAssets';
 import {
-  PALIKA_GHI_DATA as palikaGhiData,
   PALIKA_COOKING_DATA as palikaCookingData,
+  PALIKA_GHI_DATA as palikaGhiData,
   PALIKA_GRID_DATA as palikaGridData,
   PALIKA_LANDHOLDING_DATA as palikaLandholdingData,
   PALIKA_SOIL_DATA as palikaSoilData,
 } from '../data/districtIndicatorAssets';
-import {
-  VALIDATED_CROPS,
-  WaterStressSeason,
-  getCropGrowingSeasonTemp,
-  evaluateCropSuitability,
-  evaluateCropWaterStress,
-} from '../data/cropSuitabilityAssets';
+import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../data/districtPalikaAssets';
 import { getPalikaMicroClimate } from '../utils/climateDownscaling';
+
 import { CHOROPLETH_RAMPS, computeGradientColor, normalizePalikaName } from './choroplethUtils';
 
 export interface UsePalikaChoroplethParams {

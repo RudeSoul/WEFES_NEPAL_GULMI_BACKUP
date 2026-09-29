@@ -1,7 +1,9 @@
 import React from 'react';
+
+import { AlertTriangle, CheckCircle2, Cpu, Layers, Sparkles } from 'lucide-react';
+
 import { WEFESOutput } from '@wefes/shared-types';
 import { DeepNexusAnalysis } from '@wefes/wefes-engine';
-import { Cpu, CheckCircle2, Sparkles, AlertTriangle, Layers } from 'lucide-react';
 
 interface MathTabProps {
   output: WEFESOutput;

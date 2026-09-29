@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
-import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
-import { District, Crop } from '@wefes/shared-types';
+import { Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom';
+
+import { Crop, District } from '@wefes/shared-types';
+
 import { Header, InputModal } from './components/common';
 import { DistrictMap } from './features/map';
-import { DistrictDetail } from './features/palika';
 import { AnalysisDashboard } from './features/nexus';
-import { ScenarioSimulator } from './features/simulator';
-import { ScientificDossierScreen } from './features/scientific-dossier';
+import { DistrictDetail } from './features/palika';
 import { ResearchSandboxScreen } from './features/research-sandbox';
+import { ScientificDossierScreen } from './features/scientific-dossier';
+import { ScenarioSimulator } from './features/simulator';
 import { ROUTES } from './routes/paths';
 import { useNexusStore } from './store';
 

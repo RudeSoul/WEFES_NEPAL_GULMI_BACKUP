@@ -1,16 +1,18 @@
 import React from 'react';
-import { District, Crop, CropSuitability } from '@wefes/shared-types';
+
+import { Sparkles } from 'lucide-react';
 import {
-  RadarChart,
-  PolarGrid,
+  Legend,
   PolarAngleAxis,
+  PolarGrid,
   PolarRadiusAxis,
   Radar,
-  Tooltip,
+  RadarChart,
   ResponsiveContainer,
-  Legend,
+  Tooltip,
 } from 'recharts';
-import { Sparkles } from 'lucide-react';
+
+import { Crop, CropSuitability, District } from '@wefes/shared-types';
 
 interface CropComparativeAnalysisProps {
   district: District;

@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
-import { WEFESOutput } from '@wefes/shared-types';
-import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
+
 import {
-  Droplets,
-  Zap,
-  Sprout,
-  Trees,
-  Coins,
-  Users,
-  ArrowRight,
   Activity,
-  SlidersHorizontal,
-  Scale,
-  Info,
   ArrowLeft,
+  ArrowRight,
   ArrowUp,
   ArrowUpRight,
+  Coins,
+  Droplets,
+  Info,
+  Scale,
+  SlidersHorizontal,
+  Sprout,
+  Trees,
+  Users,
+  Zap,
 } from 'lucide-react';
+import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts';
+
+import { WEFESOutput } from '@wefes/shared-types';
+
 import { FactorDetailModal } from './FactorDetailModal';
 import { NexusScientificModal } from './NexusScientificModal';
 

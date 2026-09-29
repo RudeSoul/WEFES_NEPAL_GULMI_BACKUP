@@ -1,27 +1,20 @@
 import React, { useState } from 'react';
-import { WEFESOutput, ScenarioParameters } from '@wefes/shared-types';
-import { simulateScenario } from '@wefes/wefes-engine';
+
 import {
-  SlidersHorizontal,
-  CloudRain,
-  Zap,
-  TrendingUp,
-  Sprout,
-  ArrowUpRight,
   ArrowDownRight,
-  RefreshCw,
-  Layers,
-  ShieldCheck,
-  DollarSign,
-  Trees,
-  Droplets,
-  Sun,
-  ChevronDown,
-  ChevronUp,
-  Coins,
   ArrowLeft,
   ArrowUp,
+  ArrowUpRight,
+  Coins,
+  Droplets,
+  RefreshCw,
+  SlidersHorizontal,
+  Sprout,
+  Zap,
 } from 'lucide-react';
+
+import { ScenarioParameters, WEFESOutput } from '@wefes/shared-types';
+import { simulateScenario } from '@wefes/wefes-engine';
 
 interface ScenarioSimulatorProps {
   baselineOutput: WEFESOutput;

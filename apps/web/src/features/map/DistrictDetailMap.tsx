@@ -2,8 +2,8 @@
 // Data Source: apps/web/public/geojson/gulmi-contours.json, data/real/boundaries/gulmi-district.json
 // Classification: OBSERVED REAL & INTERPOLATED RELIEF
 // Citations: Survey Department / Topographical Survey of Nepal, MoFAGA, DHM Nepal
-import { db } from '@wefes/database';
-import { Crop, CropSuitability, District, GulmiContourCollection } from '@wefes/shared-types';
+import React, { useEffect, useMemo, useState } from 'react';
+
 import L from 'leaflet';
 import {
   Activity,
@@ -19,7 +19,6 @@ import {
   Sprout,
   Zap,
 } from 'lucide-react';
-import React, { useEffect, useMemo, useState } from 'react';
 import {
   CircleMarker,
   GeoJSON,
@@ -31,9 +30,14 @@ import {
   Tooltip,
   useMap,
 } from 'react-leaflet';
+
+import { db } from '@wefes/database';
+import { Crop, CropSuitability, District, GulmiContourCollection } from '@wefes/shared-types';
+
 import { DHM_RIVER_STATIONS_BY_DISTRICT, DHMRiverStation } from '../../data/districtHydrologyAssets';
 import { GULMI_SOIL_POINTS as gulmiSoilPoints } from '../../data/districtIndicatorAssets';
 import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
+import { GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 import {
   DISTRICT_LANDMARKS,
   DistrictLandmarks,
@@ -42,9 +46,9 @@ import {
   RealHydropowerAsset,
 } from '../../data/districtRealAssets';
 import { ContourLine, generateDistrictContours } from '../../utils/contourGenerator';
+
 import { DistrictElevationProfiler } from './DistrictElevationProfiler';
 import { MapGestureHandler } from './MapGestureHandler';
-import { GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 
 interface DistrictDetailMapProps {
   district: District;

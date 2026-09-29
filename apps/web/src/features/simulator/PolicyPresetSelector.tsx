@@ -1,5 +1,7 @@
 import React from 'react';
-import { Sprout, Droplets, Zap, Sparkles, Coins, Compass } from 'lucide-react';
+
+import { Coins, Compass, Droplets, Sparkles, Sprout, Zap } from 'lucide-react';
+
 import { WEFESPillar } from '@wefes/shared-types';
 
 interface PolicyPresetSelectorProps {

@@ -1,5 +1,7 @@
 import React from 'react';
-import { Droplets, Zap, Sprout, Trees, CloudRain, Building2 } from 'lucide-react';
+
+import { Building2, CloudRain, Droplets, Sprout, Trees, Zap } from 'lucide-react';
+
 import { useNexusStore } from '../../store';
 
 export const SubFilterToolbar: React.FC = () => {

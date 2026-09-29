@@ -3,21 +3,22 @@
 // Classification: 39-YEAR REANALYSIS & CLIMATOLOGY (NASA MERRA-2, DHM Normals, FAO-56 Penman-Monteith)
 // Citations: NASA POWER / MERRA-2 (1981–2019); Department of Hydrology & Meteorology (DHM), Nepal; FAO-56 Irrigation & Drainage
 import React, { useMemo } from 'react';
-import { DistrictPalika } from '../../../data/districtPalikaAssets';
-import { Droplets, Sun, AlertTriangle, ShieldCheck } from 'lucide-react';
+
+import { AlertTriangle, Droplets, ShieldCheck, Sun } from 'lucide-react';
 import {
-  BarChart,
+  Area,
   Bar,
+  CartesianGrid,
+  ComposedChart,
+  Legend,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-  ReferenceLine,
-  Legend,
-  Area,
-  ComposedChart,
 } from 'recharts';
+
+import { DistrictPalika } from '../../../data/districtPalikaAssets';
 
 interface SeasonalAgroHydrologyProps {
   activePalika: DistrictPalika;

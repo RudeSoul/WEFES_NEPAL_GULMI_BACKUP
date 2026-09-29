@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
+
+import { CloudRain, Coins, Mountain, Scale, Sparkles, Sprout } from 'lucide-react';
+
 import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
-import {
-  Scale,
-  Sparkles,
-  Mountain,
-  Thermometer,
-  CloudRain,
-  Zap,
-  Sprout,
-  Coins,
-  Droplets,
-  ArrowRight,
-} from 'lucide-react';
 import { getPalikaMicroClimate } from '../../utils/climateDownscaling';
 
 interface PalikaBenchmarkComparatorProps {

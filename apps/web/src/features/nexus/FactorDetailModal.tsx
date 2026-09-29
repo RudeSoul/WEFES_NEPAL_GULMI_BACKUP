@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { WEFESOutput } from '@wefes/shared-types';
+
+import { Info, SlidersHorizontal, TrendingDown, TrendingUp, X } from 'lucide-react';
 import {
-  LineChart,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-  ReferenceLine,
 } from 'recharts';
-import { X, TrendingUp, TrendingDown, Info, SlidersHorizontal } from 'lucide-react';
+
+import { WEFESOutput } from '@wefes/shared-types';
 
 interface FactorDetailModalProps {
   factorKey: string;

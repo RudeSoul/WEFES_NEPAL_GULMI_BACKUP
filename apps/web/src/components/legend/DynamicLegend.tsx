@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { SubFilterLegendConfig } from '@wefes/shared-types';
 
 interface DynamicLegendProps {

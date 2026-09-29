@@ -3,13 +3,13 @@
 // Classification: CALCULATED EMPIRICAL INDICATORS (Census 2021, NEA, NARC, Global Solar Atlas)
 // Citations: National Statistics Office (NSO), Nepal Electricity Authority (NEA), NARC Soil Science Division, Global Solar Atlas
 
+import ghiGridRaw from '../../../../data/calculated/indicators/gulmi_ghi_grid.json';
 import palikaCookingRaw from '../../../../data/calculated/indicators/gulmi_palika_cooking.json';
 import palikaGhiRaw from '../../../../data/calculated/indicators/gulmi_palika_ghi.json';
 import palikaGridRaw from '../../../../data/calculated/indicators/gulmi_palika_grid.json';
 import palikaLandholdingRaw from '../../../../data/calculated/indicators/gulmi_palika_landholding.json';
 import palikaSoilRaw from '../../../../data/calculated/indicators/gulmi_palika_soil.json';
 import palikaTransitRaw from '../../../../data/calculated/indicators/gulmi_palika_transit.json';
-import ghiGridRaw from '../../../../data/calculated/indicators/gulmi_ghi_grid.json';
 import soilPointsRaw from '../../../../data/real/land_and_soil/gulmi_soil_points_81.json';
 
 export interface PalikaCookingProfile {

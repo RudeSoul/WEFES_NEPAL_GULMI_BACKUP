@@ -3,19 +3,11 @@
 // Classification: OBSERVED REAL & OROGRAPHIC DOWNSCALED
 // Citations: MoALD, MoFAGA Nepal, DHM Nepal, Survey Department
 import React from 'react';
-import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
-import {
-  Mountain,
-  Thermometer,
-  CloudRain,
-  Sparkles,
-  Sprout,
-  ArrowRight,
-  Layers,
-  Compass,
-  AlertTriangle,
-} from 'lucide-react';
-import { getPalikaMicroClimate, GULMI_PALIKA_CLIMATE_PROFILES } from '../../utils/climateDownscaling';
+
+import { ArrowRight, CloudRain, Compass, Mountain, Sparkles, Sprout, Thermometer } from 'lucide-react';
+
+import { DISTRICT_PALIKAS, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
+import { getPalikaMicroClimate } from '../../utils/climateDownscaling';
 
 interface PalikaHoverCardProps {
   palikaProp: {

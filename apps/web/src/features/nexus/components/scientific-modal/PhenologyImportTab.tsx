@@ -1,6 +1,8 @@
 import React from 'react';
+
+import { ShieldCheck, ThermometerSnowflake } from 'lucide-react';
+
 import { DeepNexusAnalysis } from '@wefes/wefes-engine';
-import { ThermometerSnowflake, ShieldCheck } from 'lucide-react';
 
 interface PhenologyImportTabProps {
   deep: DeepNexusAnalysis;

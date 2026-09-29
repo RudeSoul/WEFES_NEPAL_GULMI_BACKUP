@@ -1,18 +1,22 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { District, Crop } from '@wefes/shared-types';
+import React, { useEffect, useMemo, useState } from 'react';
+
+import { ArrowLeft, ArrowUp, CloudRain, Mountain, Sparkles, Thermometer } from 'lucide-react';
+
 import { db } from '@wefes/database';
-import { DISTRICT_PALIKAS, PALIKA_GEO_CENTROIDS, DistrictPalika } from '../../data/districtPalikaAssets';
-import { extractAnnualRainfallSeries, arimaForecast } from '@wefes/wefes-engine';
-import { CloudRain, Mountain, Sparkles, Thermometer, ArrowLeft, ArrowUp } from 'lucide-react';
-import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
+import { Crop, District } from '@wefes/shared-types';
+import { arimaForecast, extractAnnualRainfallSeries } from '@wefes/wefes-engine';
+
+import { DISTRICT_PALIKAS, DistrictPalika, PALIKA_GEO_CENTROIDS } from '../../data/districtPalikaAssets';
 import { DistrictDetailMap } from '../map/DistrictDetailMap';
+
 import { IndicatorModal, ModalKey } from './components/IndicatorModal';
-import { PalikaLiveWeather, PalikaWeatherConsole } from './components/PalikaWeatherConsole';
 import { PalikaAgroHydrologyCalendar } from './components/PalikaAgroHydrologyCalendar';
+import { PalikaCropSuitabilityGrid } from './components/PalikaCropSuitabilityGrid';
 import { PalikaHeroHeader } from './components/PalikaHeroHeader';
 import { PalikaIndicatorsGrid } from './components/PalikaIndicatorsGrid';
 import { PalikaSeasonalRotationsCard } from './components/PalikaSeasonalRotationsCard';
-import { PalikaCropSuitabilityGrid } from './components/PalikaCropSuitabilityGrid';
+import { PalikaLiveWeather, PalikaWeatherConsole } from './components/PalikaWeatherConsole';
+import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
 
 export interface DistrictDetailProps {
   district: District;

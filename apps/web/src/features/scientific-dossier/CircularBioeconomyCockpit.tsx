@@ -1,29 +1,8 @@
-import React, { useState, useMemo } from 'react';
-import { computeCircularBioeconomy, CircularBioeconomyInput, CircularBioeconomyResult } from '@wefes/wefes-engine';
-import {
-  RefreshCw,
-  Sprout,
-  Milk,
-  Fish,
-  Flame,
-  Waves,
-  TrendingUp,
-  DollarSign,
-  CheckCircle2,
-  AlertTriangle,
-  ShieldCheck,
-  ArrowRight,
-  Download,
-  Layers,
-  Sliders,
-  ChevronDown,
-  ChevronUp,
-  PieChart,
-  Landmark,
-  Activity,
-  Zap,
-  Sparkles,
-} from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+
+import { ChevronDown, ChevronUp, Download, Fish, Flame, Landmark, Milk, RefreshCw, Sprout, Waves } from 'lucide-react';
+
+import { CircularBioeconomyInput, CircularBioeconomyResult, computeCircularBioeconomy } from '@wefes/wefes-engine';
 
 interface CircularBioeconomyCockpitProps {
   districtName: string;

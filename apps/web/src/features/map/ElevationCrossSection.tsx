@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Mountain, Sprout, Droplets, Sun, ChevronRight } from 'lucide-react';
+
+import { ChevronRight, Mountain } from 'lucide-react';
 
 interface ElevationCrossSectionProps {
   lang: 'en' | 'np';

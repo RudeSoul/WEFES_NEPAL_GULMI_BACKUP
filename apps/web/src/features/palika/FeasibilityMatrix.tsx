@@ -1,17 +1,9 @@
 import React, { useMemo } from 'react';
-import { District, Crop } from '@wefes/shared-types';
+
+import { Award, DollarSign, Droplets, Layers, Mountain, Sparkles, Thermometer } from 'lucide-react';
+
+import { Crop, District } from '@wefes/shared-types';
 import { evaluateCropFeasibilityMatrix } from '@wefes/wefes-engine';
-import {
-  Layers,
-  Sparkles,
-  Droplets,
-  Thermometer,
-  Mountain,
-  DollarSign,
-  Award,
-  ShieldAlert,
-  CheckCircle2,
-} from 'lucide-react';
 
 interface FeasibilityMatrixProps {
   district: District;

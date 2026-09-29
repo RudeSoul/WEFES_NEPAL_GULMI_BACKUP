@@ -3,7 +3,8 @@
 // Classification: UNIT TEST (Topographic Contours & Agro-Ecological Life Zones)
 // Citations: Survey Department / Topographical Survey of Nepal, MoALD Agro-Ecological Catalog
 
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
+
 import contoursData from '../../public/geojson/gulmi-contours.json';
 
 describe('Track C: Raster Vectorization (Topographic Contours & Life Zones)', () => {

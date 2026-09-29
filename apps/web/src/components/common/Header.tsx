@@ -1,6 +1,8 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+
 import { Layers, MapPin, Mountain } from 'lucide-react';
+
 import { ROUTES } from '../../routes/paths';
 import { useNexusStore } from '../../store';
 

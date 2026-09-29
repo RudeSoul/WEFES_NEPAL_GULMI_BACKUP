@@ -3,9 +3,10 @@
 // Classification: UNIT TEST (Dynamic Palika Choropleth Joining & Normalization)
 // Citations: MoFAGA Nepal Local Levels Catalog, CBS 2021 Census
 
-import { describe, it, expect } from 'vitest';
-import { normalizePalikaName, computeGradientColor, CHOROPLETH_RAMPS } from '../hooks/choroplethUtils';
+import { describe, expect, it } from 'vitest';
+
 import { DISTRICT_PALIKAS } from '../data/districtPalikaAssets';
+import { CHOROPLETH_RAMPS, computeGradientColor, normalizePalikaName } from '../hooks/choroplethUtils';
 
 describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
   describe('normalizePalikaName', () => {

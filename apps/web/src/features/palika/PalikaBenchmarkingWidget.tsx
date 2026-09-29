@@ -1,50 +1,37 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+
 import {
-  DistrictPalika,
-  DISTRICT_PALIKAS,
-  PalikaFeasibleCrop,
-  GULMI_PALIKA_NEPALI,
-  PALIKA_GEO_CENTROIDS,
-} from '../../data/districtPalikaAssets';
-import {
-  Scale,
-  Mountain,
-  CloudRain,
-  Thermometer,
-  Sparkles,
-  TrendingUp,
-  Sprout,
-  Zap,
-  Trees,
-  Building2,
-  Sun,
-  Droplets,
-  Wind,
-  Cloud,
-  CheckCircle2,
-  ArrowRight,
-  ShieldCheck,
-  Layers,
   Calendar,
-  BarChart3,
+  Cloud,
+  CloudRain,
+  Droplets,
+  Layers,
   Radio,
+  Scale,
+  Sprout,
+  Sun,
+  Thermometer,
+  TrendingUp,
+  Wind,
 } from 'lucide-react';
 import {
-  ResponsiveContainer,
-  RadarChart,
-  PolarGrid,
+  Legend,
   PolarAngleAxis,
+  PolarGrid,
   PolarRadiusAxis,
   Radar,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
+  RadarChart,
+  ResponsiveContainer,
   Tooltip,
-  Legend,
-  CartesianGrid,
-  Cell,
 } from 'recharts';
+
+import {
+  DISTRICT_PALIKAS,
+  DistrictPalika,
+  GULMI_PALIKA_NEPALI,
+  PALIKA_GEO_CENTROIDS,
+  PalikaFeasibleCrop,
+} from '../../data/districtPalikaAssets';
 
 interface PalikaBenchmarkingWidgetProps {
   currentPalika: DistrictPalika;

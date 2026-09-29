@@ -1,21 +1,8 @@
-import React, { useState, useMemo } from 'react';
-import { District, Crop } from '@wefes/shared-types';
-import {
-  Mountain,
-  Thermometer,
-  Wind,
-  Sprout,
-  CheckCircle2,
-  AlertCircle,
-  XCircle,
-  ArrowUpRight,
-  ChevronRight,
-  Layers,
-  Compass,
-  Info,
-  Sliders,
-  TrendingUp,
-} from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+
+import { Compass, Layers, Mountain, Sliders, Sprout, Thermometer, TrendingUp, Wind, XCircle } from 'lucide-react';
+
+import { Crop, District } from '@wefes/shared-types';
 
 interface DistrictElevationProfilerProps {
   district: District;

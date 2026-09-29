@@ -1,28 +1,19 @@
 import React, { useState } from 'react';
+
 import {
-  FlaskConical,
-  Sliders,
-  UploadCloud,
-  Terminal,
-  Database,
   ArrowLeft,
   ArrowUp,
-  Sparkles,
+  BookOpen,
+  Check,
   CheckCircle2,
   Copy,
-  Check,
-  BookOpen,
-  FileCode,
   Cpu,
-  Layers,
-  GitBranch,
-  Download,
-  ExternalLink,
-  Share2,
-  Compass,
-  AlertCircle,
-  Play,
+  FlaskConical,
+  Sliders,
+  Terminal,
+  UploadCloud,
 } from 'lucide-react';
+
 import { WEFESOutput } from '@wefes/shared-types';
 
 interface ResearchSandboxScreenProps {

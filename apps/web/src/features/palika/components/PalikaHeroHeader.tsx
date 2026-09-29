@@ -1,8 +1,12 @@
 import React from 'react';
+
+import { ArrowLeft, Cloud, CloudRain, Droplets, Sun, Thermometer, Wind } from 'lucide-react';
+
 import { District } from '@wefes/shared-types';
+
 import { DistrictPalika, GULMI_PALIKA_NEPALI } from '../../../data/districtPalikaAssets';
+
 import { PalikaLiveWeather } from './PalikaWeatherConsole';
-import { ArrowLeft, CloudRain, Thermometer, Droplets, Wind, Sun, Cloud } from 'lucide-react';
 
 interface PalikaHeroHeaderProps {
   district: District;

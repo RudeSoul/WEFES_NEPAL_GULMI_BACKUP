@@ -5,7 +5,9 @@
 // Consumed By: apps/web/src/features/map/DistrictMap.tsx
 
 import React, { useMemo } from 'react';
+
 import { ImageOverlay } from 'react-leaflet';
+
 import { GULMI_GHI_GRID as ghiGridData } from '../../data/districtIndicatorAssets';
 
 // Rich, multi-stop QGIS-matched solar radiation thermal palette (GHI in kWh/m2/day):

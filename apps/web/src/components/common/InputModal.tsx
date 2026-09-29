@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { CropUnit, WEFESOutput } from '@wefes/shared-types';
+
+import { ArrowRight, Calculator, Scale, Sparkles, Sprout, X } from 'lucide-react';
+
+import { CropUnit } from '@wefes/shared-types';
 import { UNIT_CONVERSIONS } from '@wefes/wefes-engine';
 import { calculateHarvestImpact } from '@wefes/wefes-engine';
-import { X, Sprout, Sparkles, ArrowRight, Scale, Calculator } from 'lucide-react';
+
 import { useNexusStore } from '../../store';
 
 interface InputModalProps {

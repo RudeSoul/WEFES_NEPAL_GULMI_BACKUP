@@ -1,7 +1,9 @@
 import React from 'react';
+
+import { FileText, Lightbulb } from 'lucide-react';
+
 import { WEFESOutput } from '@wefes/shared-types';
 import { DeepNexusAnalysis } from '@wefes/wefes-engine';
-import { Lightbulb, FileText } from 'lucide-react';
 
 interface InterventionsTabProps {
   output: WEFESOutput;

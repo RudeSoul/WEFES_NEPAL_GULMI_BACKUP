@@ -1,6 +1,8 @@
 import React from 'react';
-import { DeepNexusAnalysis } from '@wefes/wefes-engine';
+
 import { Mountain, Waves } from 'lucide-react';
+
+import { DeepNexusAnalysis } from '@wefes/wefes-engine';
 
 interface RusleSpringsTabProps {
   deep: DeepNexusAnalysis;

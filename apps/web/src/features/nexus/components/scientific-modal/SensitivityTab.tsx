@@ -1,6 +1,8 @@
 import React from 'react';
+
+import { Activity, Coins, Droplets, RefreshCw, SlidersHorizontal, Sparkles, Zap } from 'lucide-react';
+
 import { SensitivitySimulationResult } from '@wefes/wefes-engine';
-import { SlidersHorizontal, RefreshCw, Droplets, Coins, Zap, Sparkles, Activity } from 'lucide-react';
 
 interface SensitivityTabProps {
   rainfallShift: number;

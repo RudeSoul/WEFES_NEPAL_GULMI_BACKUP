@@ -1,5 +1,6 @@
+import { CropUnit, ScenarioParameters, WEFESOutput } from '@wefes/shared-types';
+
 import { apiClient, ApiResponse } from './apiClient';
-import { WEFESOutput, ScenarioParameters, CropUnit } from '@wefes/shared-types';
 
 export interface CalculateHarvestPayload {
   districtId: string;

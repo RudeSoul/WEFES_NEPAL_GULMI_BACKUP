@@ -1,5 +1,4 @@
 import { District } from '@wefes/shared-types';
-import { DISTRICT_LANDMARKS } from '../data/districtRealAssets';
 
 export interface ContourLine {
   elevation: number;

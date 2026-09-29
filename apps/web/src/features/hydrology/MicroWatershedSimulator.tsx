@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
-import {
-  CloudRain,
-  Droplets,
-  Waves,
-  Mountain,
-  AlertTriangle,
-  ShieldCheck,
-  Gauge,
-  TrendingUp,
-  Info,
-} from 'lucide-react';
+
+import { AlertTriangle, CloudRain, Droplets, Gauge, Mountain, ShieldCheck, TrendingUp, Waves } from 'lucide-react';
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 interface MicroWatershedSimulatorProps {

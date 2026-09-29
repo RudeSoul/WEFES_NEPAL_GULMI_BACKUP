@@ -1,6 +1,8 @@
 import React from 'react';
+
+import { Coins, Droplets, ShieldCheck, Sparkles, Sprout, Zap } from 'lucide-react';
+
 import { WEFESPillar } from '@wefes/shared-types';
-import { Droplets, Sprout, Zap, Sparkles, Coins, ShieldCheck } from 'lucide-react';
 
 interface NexusRadarWidgetProps {
   activePillar: WEFESPillar;

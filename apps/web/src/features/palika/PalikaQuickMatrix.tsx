@@ -1,7 +1,10 @@
 import React from 'react';
-import { DISTRICT_PALIKAS, DistrictPalika, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
-import { Mountain, CloudRain, Sprout, ArrowUpRight, CheckCircle2 } from 'lucide-react';
+
+import { CloudRain, Mountain } from 'lucide-react';
+
 import { WEFESPillar } from '@wefes/shared-types';
+
+import { DISTRICT_PALIKAS, DistrictPalika, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 
 interface PalikaQuickMatrixProps {
   onSelectPalika: (palikaName: string) => void;

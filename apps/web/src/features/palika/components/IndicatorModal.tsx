@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { District } from '@wefes/shared-types';
-import { DistrictPalika } from '../../../data/districtPalikaAssets';
-import { ARIMAResult } from '@wefes/wefes-engine';
+
+import { CloudRain, Mountain, Sparkles, Thermometer, X } from 'lucide-react';
 import {
-  ComposedChart,
   Area,
   Bar,
-  Line,
-  XAxis,
-  YAxis,
   CartesianGrid,
-  Tooltip,
+  Cell,
+  ComposedChart,
+  Line,
   ReferenceLine,
   ResponsiveContainer,
-  Cell,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from 'recharts';
-import { CloudRain, Mountain, Sparkles, Thermometer, X, Info } from 'lucide-react';
+
+import { District } from '@wefes/shared-types';
+import { ARIMAResult } from '@wefes/wefes-engine';
+
+import { DistrictPalika } from '../../../data/districtPalikaAssets';
 
 export type ModalKey = 'rainfall' | 'elevation' | 'soil' | 'temp' | 'solar' | 'labor' | null;
 

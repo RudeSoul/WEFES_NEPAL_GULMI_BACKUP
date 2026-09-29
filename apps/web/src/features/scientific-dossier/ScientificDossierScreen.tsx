@@ -1,28 +1,44 @@
-import React, { useState, useMemo } from 'react';
-import { WEFESOutput } from '@wefes/shared-types';
+import React, { useMemo, useState } from 'react';
+
 import {
-  computeDeepNexusAnalysis,
-  simulateSensitivity,
-  computePortfolioMix,
-  DistrictBenchmarkItem,
-  CropCalendarMonth,
-} from '@wefes/wefes-engine';
+  Activity,
+  AlertTriangle,
+  ArrowLeft,
+  ArrowUp,
+  Award,
+  CheckCircle2,
+  Compass,
+  ExternalLink,
+  FileText,
+  Flame,
+  FlaskConical,
+  Landmark,
+  Printer,
+  RefreshCw,
+  Scale,
+  ShieldCheck,
+  Sprout,
+  Waves,
+} from 'lucide-react';
+
+import { WEFESOutput } from '@wefes/shared-types';
+import { computeDeepNexusAnalysis, computePortfolioMix, simulateSensitivity } from '@wefes/wefes-engine';
 import { getVarietiesByCrop, NARC_VARIETAL_DATABASE } from '@wefes/wefes-engine';
 import { computeSiteSpecificFertilizer } from '@wefes/wefes-engine';
-import { computePostHarvestLoss, NEPAL_COLD_STORAGE_REGISTRY } from '@wefes/wefes-engine';
+import { computePostHarvestLoss } from '@wefes/wefes-engine';
 import { computeNexusReadiness } from '@wefes/wefes-engine';
 import { computeSentinelCropHealth } from '@wefes/wefes-engine';
 import { computePestSurveillance } from '@wefes/wefes-engine';
-import { getBenchmarkByCrop, NEPAL_FINANCIAL_BENCHMARKS } from '@wefes/wefes-engine';
+import { getBenchmarkByCrop } from '@wefes/wefes-engine';
 import { computeGenderAndMunicipalBudget } from '@wefes/wefes-engine';
 import { computeNDCTracker } from '@wefes/wefes-engine';
 import { DATA_INTEGRITY_MATRIX } from '@wefes/wefes-engine';
 import { computeAquaCropSimulation } from '@wefes/wefes-engine';
 import {
   computeMultiSpeciesLivestockBioeconomy,
-  NEPAL_LIVESTOCK_DATABASE,
   LivestockSpeciesType,
   MultiSpeciesHerdConfig,
+  NEPAL_LIVESTOCK_DATABASE,
 } from '@wefes/wefes-engine';
 import { computeAquacultureModel } from '@wefes/wefes-engine';
 import { computeGroundwaterConjunctiveModel } from '@wefes/wefes-engine';
@@ -31,79 +47,19 @@ import { computeBioenergyModel } from '@wefes/wefes-engine';
 import { computeExportTraceability } from '@wefes/wefes-engine';
 import { computeDevelopmentPartnerAlignment } from '@wefes/wefes-engine';
 import { computeAgronomicStandards } from '@wefes/wefes-engine';
-import { CircularBioeconomyCockpit } from './CircularBioeconomyCockpit';
+
+import { AquacultureMetricsChart } from '../../components/charts/AquacultureMetricsChart';
 import { CircularSankeyFlow } from '../../components/charts/CircularSankeyFlow';
 import { DonorNetworkGraph } from '../../components/charts/DonorNetworkGraph';
-import { SunburstWaterCarbon } from '../../components/charts/SunburstWaterCarbon';
-import { PhenologyTimelineChart } from '../../components/charts/PhenologyTimelineChart';
 import { FinancialDcfChart } from '../../components/charts/FinancialDcfChart';
 import { NexusRadarSpider } from '../../components/charts/NexusRadarSpider';
+import { PhenologyTimelineChart } from '../../components/charts/PhenologyTimelineChart';
 import { QueftsNutrientGauge } from '../../components/charts/QueftsNutrientGauge';
-import { PalikaFertilizerCockpit } from './PalikaFertilizerCockpit';
-import { AquacultureMetricsChart } from '../../components/charts/AquacultureMetricsChart';
 import { SentinelNdviChart } from '../../components/charts/SentinelNdviChart';
-import { HeatStressThermalChart } from '../../components/charts/HeatStressThermalChart';
-import {
-  Scale,
-  Sparkles,
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle2,
-  Info,
-  Cpu,
-  Trees,
-  Zap,
-  Sprout,
-  Droplets,
-  Coins,
-  Users,
-  Mountain,
-  ArrowUpRight,
-  Layers,
-  HelpCircle,
-  ShieldAlert,
-  SlidersHorizontal,
-  Lightbulb,
-  Compass,
-  Award,
-  FlaskConical,
-  ArrowRight,
-  RefreshCw,
-  Printer,
-  FileText,
-  Target,
-  ShieldCheck,
-  Activity,
-  BarChart3,
-  Waves,
-  Globe2,
-  ChevronRight,
-  HeartHandshake,
-  ThermometerSnowflake,
-  Shield,
-  DollarSign,
-  ArrowLeft,
-  ArrowUp,
-  Calendar,
-  PieChart,
-  Building2,
-  Landmark,
-  Check,
-  Satellite,
-  Banknote,
-  LineChart,
-  Truck,
-  Bug,
-  Sparkle,
-  ExternalLink,
-  ShieldQuestion,
-  HelpCircle as HelpIcon,
-  Flame,
-  Fish,
-  Milk,
-  MapPin,
-  Gauge,
-} from 'lucide-react';
+import { SunburstWaterCarbon } from '../../components/charts/SunburstWaterCarbon';
+
+import { CircularBioeconomyCockpit } from './CircularBioeconomyCockpit';
+import { PalikaFertilizerCockpit } from './PalikaFertilizerCockpit';
 
 interface ScientificDossierScreenProps {
   output: WEFESOutput;

@@ -1,6 +1,9 @@
 import React from 'react';
-import { DistrictPalika } from '../../../data/districtPalikaAssets';
+
 import { ArrowUpRight } from 'lucide-react';
+
+import { DistrictPalika } from '../../../data/districtPalikaAssets';
+
 import { ModalKey } from './IndicatorModal';
 
 interface IndicatorCard {

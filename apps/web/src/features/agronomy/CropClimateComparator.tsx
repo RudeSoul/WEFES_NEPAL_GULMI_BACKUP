@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
-import {
-  Sprout,
-  TrendingUp,
-  Thermometer,
-  ArrowRight,
-  Sparkles,
-  Scale,
-  Info,
-  CheckCircle2,
-  AlertCircle,
-} from 'lucide-react';
+
+import { Scale, Thermometer } from 'lucide-react';
+
 import { DISTRICT_PALIKAS } from '../../data/districtPalikaAssets';
 
 interface CropClimateComparatorProps {
