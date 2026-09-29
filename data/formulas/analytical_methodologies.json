@@ -5,30 +5,157 @@
     "merra_rainfall": {
       "shortTitle": { "en": "Precipitation Model", "np": "वर्षा वितरण मोडल" },
       "pillarName": { "en": "Water", "np": "जल" },
-      "model": { "en": "NASA MERRA-2 Topographic Orographic Downscaling", "np": "नासा मेर्रा-२ टोपोग्राफिक डाउनस्केलिङ" },
-      "formula": "P(z) = P_base · [1 + α · (z - z_base)]",
-      "parameter": { "en": "Lapse Rate: α = -6.5°C / 1,000m orographic gradient", "np": "ल्याप्स दर: α = -६.५°C / १००० मिटर" },
+      "model": { "en": "Topographic Orographic Enhancement & Hydro-Climatic Downscaling", "np": "टोपोग्राफिक वर्षा अभिवृद्धि तथा हाइड्रो-जलवायु डाउनस्केलिङ" },
+      "formula": "P(z) = P_base · [1 + β · (z - z_base)]",
+      "parameter": { "en": "Orographic Coefficient: β = +0.03% to +0.08% / 100m elevation gain (up to 2,200m crest)", "np": "टोपोग्राफिक वर्षा अभिवृद्धि गुणक: β = +०.०३% देखि +०.०८% प्रति १०० मिटर" },
       "variables": [
         { "symbol": "P(z)", "definition": { "en": "Downscaled monthly precipitation at elevation z (mm/month)", "np": "उचाइ z मा डाउनस्केल गरिएको मासिक वर्षा (मिमी/महिना)" } },
-        { "symbol": "P_base", "definition": { "en": "Baseline precipitation at valley reference station (mm)", "np": "आधार उपत्यका जलमापन केन्द्रको मासिक वर्षा (मिमी)" } },
+        { "symbol": "P_base", "definition": { "en": "Baseline monthly precipitation at reference station (Tamghas #725, 1,450m)", "np": "आधार केन्द्रको मासिक वर्षा (तम्घास #७२५, १,४५० मिटर)" } },
         { "symbol": "z", "definition": { "en": "Target terrain surface elevation from 30m SRTM DEM (m)", "np": "३० मिटर SRTM DEM बाट प्राप्त भू-सतहको उचाइ (मिटर)" } },
-        { "symbol": "z_base", "definition": { "en": "Valley reference station base elevation (450m)", "np": "आधार जलमापन केन्द्रको उचाइ (४५० मिटर)" } },
-        { "symbol": "α", "definition": { "en": "Orographic lapse rate coefficient (-6.5°C/km gradient)", "np": "पहाडी टोपोग्राफिक वर्षा अवरोध तथा ल्याप्स दर गुणक" } }
+        { "symbol": "z_base", "definition": { "en": "Reference station elevation (Tamghas: 1,450m)", "np": "आधार जलमापन केन्द्रको उचाइ (तम्घास: १,४५० मिटर)" } },
+        { "symbol": "β", "definition": { "en": "Dimensionless orographic precipitation gradient coefficient (m⁻¹)", "np": "टोपोग्राफिक उचाइगत वर्षा अभिवृद्धि दर गुणक (m⁻¹)" } }
       ],
       "description": {
-        "en": "Downscales 39-year NASA MERRA-2 monthly climatology across Gulmi's 450m–2,690m elevation span using atmospheric lapse rate (-6.5°C/km) and orographic ridge uplift.",
-        "np": "गुल्मीको ४५० देखि २,६९० मिटर उचाइको विविधता अनुसार नासा मेर्रा-२ ३९-वर्षे अभिलेखलाई टोपोग्राफिक ल्याप्स-रेट र हावाहुरीको वर्षा अवरोध अनुसार डाउनस्केल गरिएको छ।"
+        "en": "Downscales monthly climatology across Gulmi's 450m–2,690m elevation span by applying orographic enhancement factors (0.82 in deep valleys to 1.24 along high mountain ridges) benchmarked against DHM station network.",
+        "np": "गुल्मीको ४५० देखि २,६९० मिटर उचाइ अनुसार खोला उपत्यका (०.८२) देखि उच्च लेकाली डाँडा (१.२४) सम्मको टोपोग्राफिक वर्षा अभिवृद्धि दर प्रयोग गरी डाउनस्केल गरिएको छ।"
       },
       "confidence": "CALCULATED",
       "inputs": [
-        "NASA MERRA-2 39-Yr Climatology (1981–2019)",
+        "NASA MERRA-2 Monthly Climatology / CHIRPS v2.0",
         "SRTM 30m Digital Elevation Model",
         "DHM Tamghas Gauge #725 Baseline"
       ],
-      "citation": "Department of Hydrology and Meteorology (DHM) Nepal & NASA POWER Reanalysis",
+      "citation": "Putkonen, J. (2004). Continuous snow and rain data at 500 to 4400 m altitude in the Nepal Himalayas; DHM Nepal Climate Records.",
       "provenancePath": "data/real/climate/nasa_power_10_years_full.csv",
       "unit": "mm/month",
       "currentStat": "{month}: Area Mean {rainMm} mm ({rainMin}–{rainMax} mm across Palikas)"
+    },
+    "annual_precipitation": {
+      "shortTitle": {
+        "en": "Observed Annual Precipitation (CHIRPS)",
+        "np": "वार्षिक वर्षा तथ्याङ्क (CHIRPS)"
+      },
+      "pillarName": {
+        "en": "Water",
+        "np": "जल"
+      },
+      "model": {
+        "en": "CHIRPS v2.0 0.05° Gridded Rainfall Reanalysis",
+        "np": "CHIRPS v2.0 ०.०५° ग्रिड वर्षा पुनःविश्लेषण"
+      },
+      "formula": "P_annual = \\sum_{m=1}^{12} P_monthly(x, y)",
+      "parameter": {
+        "en": "Long-term mean annual precipitation (mm/year)",
+        "np": "दीर्घकालीन औसत वार्षिक वर्षा (मिमी/वर्ष)"
+      },
+      "variables": [
+        {
+          "symbol": "P_annual",
+          "definition": {
+            "en": "Mean cumulative annual precipitation across Gulmi terrain derived from CHIRPS v2.0 (mm/year)",
+            "np": "CHIRPS v2.0 बाट प्राप्त गुल्मी जिल्लाको भू-भागमा औसत कुल वार्षिक वर्षा (मिमी/वर्ष)"
+          }
+        },
+        {
+          "symbol": "P_monthly",
+          "definition": {
+            "en": "Long-term monthly rainfall depths from high-resolution satellite infrared and rain-gauge blending (mm/month)",
+            "np": "उपग्रह इन्फ्रारेड र वर्षा मापन केन्द्रहरूको संयोजनबाट प्राप्त मासिक वर्षा (मिमी/महिना)"
+          }
+        }
+      ],
+      "description": {
+        "en": "High-resolution (0.05° / ~5 km) gridded satellite precipitation dataset incorporating station data to monitor spatial variations in rainfall across Gulmi's mid-hills and river valleys.",
+        "np": "गुल्मीका पहाडी र उपत्यका क्षेत्रहरूमा वर्षाको स्थानिक भिन्नता मापन गर्न उपग्रह र वर्षा मापन केन्द्रको तथ्याङ्क संयोजन गरिएको ०.०५° रिजोल्युसनको ग्रिड डाटा।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "CHIRPS v2.0 Monthly Global Precipitation"
+      ],
+      "citation": "Funk, C. et al. (2015). The climate hazards group infrared precipitation with stations - a new environmental record for monitoring extremes. Scientific Data, 2:150066.",
+      "provenancePath": "data/real/hydrology/average_annual_precipitation.tif",
+      "unit": "mm/year",
+      "currentStat": "Mean: 1,585 mm/yr (Range: 1,272–2,026 mm/yr across Gulmi)"
+    },
+    "monsoon_precipitation": {
+      "shortTitle": {
+        "en": "Monsoon Precipitation (CHIRPS)",
+        "np": "मनसुन यामको वर्षा (CHIRPS)"
+      },
+      "pillarName": {
+        "en": "Water",
+        "np": "जल"
+      },
+      "model": {
+        "en": "CHIRPS v2.0 Monsoon Season Cumulative (JJAS)",
+        "np": "CHIRPS v2.0 मनसुन यामको कुल वर्षा (असार–असोज)"
+      },
+      "formula": "P_monsoon = P_jun + P_jul + P_aug + P_sep",
+      "parameter": {
+        "en": "Summer monsoon cumulative rainfall (mm)",
+        "np": "ग्रीष्मकालीन मनसुन यामको कुल वर्षा (मिमी)"
+      },
+      "variables": [
+        {
+          "symbol": "P_monsoon",
+          "definition": {
+            "en": "Total precipitation received during the four monsoon months (June through September)",
+            "np": "मनसुनका चार महिना (असारदेखि असोजसम्म) मा प्राप्त हुने कुल वर्षा"
+          }
+        }
+      ],
+      "description": {
+        "en": "Monsoon rainfall accounts for 75–80% of total annual water influx in Gulmi District, driving river discharge, terraced rice irrigation, and landslide/flood risks.",
+        "np": "गुल्मी जिल्लामा वार्षिक वर्षाको ७५-८०% पानी मनसुन याममा पर्दछ, जसले नदीको बहाव, धान खेती र बाढी-पहिरोको जोखिम निर्धारण गर्दछ।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "CHIRPS v2.0 Monsoon Gridded Rasters"
+      ],
+      "citation": "Funk, C. et al. (2015). Scientific Data, 2:150066.",
+      "provenancePath": "data/real/hydrology/average_monsoon_precipitation.tif",
+      "unit": "mm/monsoon",
+      "currentStat": "Mean: 1,262 mm (Range: 1,012–1,578 mm across Gulmi)"
+    },
+    "dry_season_precipitation": {
+      "shortTitle": {
+        "en": "Dry Season Precipitation (CHIRPS)",
+        "np": "सुक्खा यामको वर्षा (CHIRPS)"
+      },
+      "pillarName": {
+        "en": "Water",
+        "np": "जल"
+      },
+      "model": {
+        "en": "CHIRPS v2.0 Non-Monsoon Cumulative (Oct–May)",
+        "np": "CHIRPS v2.0 गैर-मनसुनी सुक्खा यामको कुल वर्षा (कार्तिक–जेठ)"
+      },
+      "formula": "P_dry = P_annual - P_monsoon",
+      "parameter": {
+        "en": "Non-monsoon dry season cumulative rainfall (mm)",
+        "np": "मनसुन बाहेकको सुक्खा यामको कुल वर्षा (मिमी)"
+      },
+      "variables": [
+        {
+          "symbol": "P_dry",
+          "definition": {
+            "en": "Total precipitation received during the eight non-monsoon dry season months (October through May)",
+            "np": "मनसुन बाहेकका आठ महिना (कार्तिकदेखि जेठसम्म) मा प्राप्त हुने कुल वर्षा"
+          }
+        }
+      ],
+      "description": {
+        "en": "Dry season rainfall defines the critical water deficit period in Gulmi, impacting springshed discharge, winter crops, and drinking water availability.",
+        "np": "सुक्खा यामको वर्षाले गुल्मीमा पानीको अभाव, हिउँदे बाली र खानेपानी मुहानको उपलब्धता निर्धारण गर्दछ।"
+      },
+      "confidence": "OBSERVED REAL",
+      "inputs": [
+        "CHIRPS v2.0 Dry Season Gridded Rasters"
+      ],
+      "citation": "Funk, C. et al. (2015). Scientific Data, 2:150066.",
+      "provenancePath": "data/real/hydrology/average_dry_season_precipitation.tif",
+      "unit": "mm/dry season",
+      "currentStat": "Mean: 135 mm (Range: 114–181 mm across Gulmi)"
     },
     "river_basins": {
       "shortTitle": { "en": "Kali Gandaki Basin Topology", "np": "कालीगण्डकी नदी सञ्जाल" },

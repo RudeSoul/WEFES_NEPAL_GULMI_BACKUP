@@ -18,9 +18,17 @@ import shutil
 import json
 from pathlib import Path
 
+# Ensure UTF-8 output encoding across Windows/Linux/macOS
+if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PUBLIC_DATA_DIR = REPO_ROOT / "apps" / "web" / "public" / "data"
 PUBLIC_GEOJSON_DIR = REPO_ROOT / "apps" / "web" / "public" / "geojson"
+PUBLIC_TILES_DIR = REPO_ROOT / "apps" / "web" / "public" / "tiles"
 
 # Canonical source mappings: (source_path_relative_to_repo, target_dir, target_filename)
 SYNC_MAPPINGS = [
@@ -31,6 +39,7 @@ SYNC_MAPPINGS = [
     ("data/calculated/indicators/gulmi_palika_landholding.json", PUBLIC_DATA_DIR, "gulmi_palika_landholding.json"),
     ("data/calculated/indicators/gulmi_palika_soil.json", PUBLIC_DATA_DIR, "gulmi_palika_soil.json"),
     ("data/calculated/indicators/gulmi_palika_transit.json", PUBLIC_DATA_DIR, "gulmi_palika_transit.json"),
+    ("data/calculated/indicators/gulmi_palika_chirps_precipitation.json", PUBLIC_DATA_DIR, "gulmi_palika_chirps_precipitation.json"),
     ("data/real/boundaries/palika_centroids.json", PUBLIC_DATA_DIR, "palika_centroids.json"),
     ("data/calculated/hydro_reaches/hydro_palika_summary.json", PUBLIC_DATA_DIR, "hydro_palika_summary.json"),
     ("data/real/municipal/palika_profiles.json", PUBLIC_DATA_DIR, "palika_profiles.json"),
@@ -38,6 +47,13 @@ SYNC_MAPPINGS = [
     # Spatial GeoJSON layers
     ("data/real/boundaries/gulmi-palikas.json", PUBLIC_GEOJSON_DIR, "gulmi-palikas.json"),
     ("data/real/hydrology/gulmi_hydrology_assets.json", PUBLIC_GEOJSON_DIR, "gulmi-hydrology-assets.json"),
+
+    # Hydrological Rasters (CHIRPS & HydroSHEDS GeoTIFFs)
+    ("data/real/hydrology/average_annual_precipitation.tif", PUBLIC_TILES_DIR, "average_annual_precipitation.tif"),
+    ("data/real/hydrology/average_monsoon_precipitation.tif", PUBLIC_TILES_DIR, "average_monsoon_precipitation.tif"),
+    ("data/real/hydrology/average_dry_season_precipitation.tif", PUBLIC_TILES_DIR, "average_dry_season_precipitation.tif"),
+    ("data/real/hydrology/flow_accumulation.tif", PUBLIC_TILES_DIR, "flow_accumulation.tif"),
+    ("data/real/hydrology/flow_direction.tif", PUBLIC_TILES_DIR, "flow_direction.tif"),
 ]
 
 
@@ -62,11 +78,13 @@ def sync_assets():
             continue
 
         try:
-            # Verify valid JSON
-            with open(src_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
+            # Verify valid JSON if file is JSON
+            if src_path.suffix.lower() == ".json":
+                with open(src_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
 
             # Copy to destination
+            target_dir.mkdir(parents=True, exist_ok=True)
             shutil.copy2(src_path, target_path)
             size_kb = target_path.stat().st_size / 1024.0
             print(f"✅ Synced: {src_rel} -> {target_path.relative_to(REPO_ROOT)} ({size_kb:.1f} KB)")

@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "source": "data/real/hydrology/average_annual_precipitation.tif, data/real/hydrology/average_monsoon_precipitation.tif, data/real/hydrology/average_dry_season_precipitation.tif",
+    "dataset": "CHIRPS v2.0 0.05° Gridded Spatial Zonal Mean Baseline",
+    "classification": "CALCULATED EMPIRICAL INDICATORS",
+    "unit": "mm"
+  },
+  "baseline": {
+    "chandrakot": { "annual": 1614, "monsoon": 1285, "dry": 132 },
+    "chatrakot": { "annual": 1532, "monsoon": 1234, "dry": 126 },
+    "dhurkot": { "annual": 1782, "monsoon": 1402, "dry": 157 },
+    "gulmidarbar": { "annual": 1656, "monsoon": 1333, "dry": 138 },
+    "isma": { "annual": 1925, "monsoon": 1486, "dry": 174 },
+    "kaligandaki": { "annual": 1696, "monsoon": 1340, "dry": 132 },
+    "madane": { "annual": 1458, "monsoon": 1149, "dry": 137 },
+    "malika": { "annual": 1599, "monsoon": 1250, "dry": 148 },
+    "musikot": { "annual": 1641, "monsoon": 1285, "dry": 146 },
+    "resunga": { "annual": 1814, "monsoon": 1443, "dry": 158 },
+    "ruru": { "annual": 1622, "monsoon": 1313, "dry": 128 },
+    "satyawati": { "annual": 1628, "monsoon": 1301, "dry": 129 }
+  }
+}
