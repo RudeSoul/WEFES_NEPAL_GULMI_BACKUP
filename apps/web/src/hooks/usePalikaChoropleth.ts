@@ -74,7 +74,7 @@ export function computePalikaChoropleth({
 
   const getProfile = (props: any) => {
     const norm = normalizePalikaName(props?.name || '');
-    let match = profileLookup.get(norm);
+    const match = profileLookup.get(norm);
     if (!match) {
       for (const [k, v] of profileLookup.entries()) {
         if (norm.includes(k) || k.includes(norm)) return v;
@@ -85,7 +85,7 @@ export function computePalikaChoropleth({
 
   const getHydro = (props: any) => {
     const norm = normalizePalikaName(props?.name || '');
-    let match = hydroLookup.get(norm);
+    const match = hydroLookup.get(norm);
     if (!match) {
       for (const [k, v] of hydroLookup.entries()) {
         if (norm.includes(k) || k.includes(norm)) return v;

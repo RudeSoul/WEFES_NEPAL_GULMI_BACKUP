@@ -88,6 +88,19 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
   selectedPillar,
   selectedCropId,
 }) => {
+  // 2. If NO specific crop is selected, find the #1 Top Optimal Crop for this district:
+  const allRankedCrops = React.useMemo(() => {
+    if (!district) return [];
+    return db
+      .getAllCrops()
+      .map((crop) => {
+        const suit = computeCropSuitability(district, crop);
+        const isFeas = isCropFeasibleInDistrict(crop, district);
+        return { crop, suit, isFeas };
+      })
+      .sort((a, b) => b.suit.suitabilityScore - a.suit.suitabilityScore);
+  }, [district]);
+
   if (!district) return null;
 
   const hasSoilData =
@@ -107,18 +120,6 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
   const activeCrop = selectedCropId ? db.getCropById(selectedCropId) : null;
   const cropSuitability = activeCrop ? computeCropSuitability(district, activeCrop) : null;
   const isSelectedCropFeasible = activeCrop ? isCropFeasibleInDistrict(activeCrop, district) : true;
-
-  // 2. If NO specific crop is selected, find the #1 Top Optimal Crop for this district:
-  const allRankedCrops = React.useMemo(() => {
-    return db
-      .getAllCrops()
-      .map((crop) => {
-        const suit = computeCropSuitability(district, crop);
-        const isFeas = isCropFeasibleInDistrict(crop, district);
-        return { crop, suit, isFeas };
-      })
-      .sort((a, b) => b.suit.suitabilityScore - a.suit.suitabilityScore);
-  }, [district]);
 
   const topOptimal = allRankedCrops.length > 0 ? allRankedCrops[0] : null;
 
