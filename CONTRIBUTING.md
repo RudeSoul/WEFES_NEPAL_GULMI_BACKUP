@@ -17,7 +17,7 @@ Welcome to the WEFES Nexus Nepal platform repository. Because this project infor
 4. **Zero Hardcoded Domain Constants (Rule 2)**:
    - All domain constants, coordinates, and thresholds must be loaded from `data/`.
 5. **Atomic Commits (Rule 7)**:
-   - Commits are strictly capped at 400 net functional code lines.
+   - Commits should be logically coherent units of change. Group related files (schema, components, tests) together in a single commit so the build and tests pass at every step.
 
 ---
 
@@ -30,9 +30,9 @@ pnpm install
 This automatically configures our pre-commit hooks via `git config core.hooksPath .githooks`.
 
 On every `git commit`, the pre-commit hook automatically:
-1. Runs `python3 scripts/verify_data_integrity.py` to verify that all data paths exist and engine isolation is maintained.
-2. Refreshes `AI_INDEX.md` dynamically.
-3. Enforces the 400-line atomic commit limit.
+1. Blocks direct commits to `main` branch.
+2. Runs `python3 scripts/verify_data_integrity.py` to verify that all data paths exist, empirical data has not been synthesized, and engine isolation is maintained.
+3. Checks that large binary files (> 40MB) are not committed to git tracking.
 
 To manually test your branch:
 ```bash

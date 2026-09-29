@@ -20,5 +20,5 @@ This repository hosts a decision support system for Gulmi District, Nepal. Becau
    - Coordinates, scientific constants, crop coefficients, tariffs, and indicator thresholds must be loaded from `data/`, never hardcoded into components.
 
 5. **Atomic Commit & Verification**:
-   - Commits are limited to 400 net functional code lines.
+   - Commits should be logically coherent units of change with all related files committed together.
    - Always run `python3 scripts/verify_data_integrity.py` before committing.

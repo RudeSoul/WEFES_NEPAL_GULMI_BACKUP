@@ -29,6 +29,6 @@ Because regional policy, agriculture, and water resource allocations depend on t
 - All domain parameters must be loaded from canonical files in `data/`.
 
 ## 5. GIT HYGIENE & ATOMIC COMMITS
-- Net functional code changes per commit must NOT exceed 400 lines.
+- Commits must be cohesive atomic units of change (related schema, components, and tests committed together so the build passes at each commit).
 - Never push directly to `main`. Always work on dedicated feature branches.
 - Always ensure `python3 scripts/verify_data_integrity.py` passes.

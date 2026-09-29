@@ -16,4 +16,4 @@
    - Domain constants, coordinates, and thresholds must be loaded from data/.
 
 5. ATOMIC COMMITS:
-   - Maximum 400 net functional lines per commit. Run `python3 scripts/verify_data_integrity.py`.
+   - Commits should be logically coherent units of change with all related files committed together. Run `python3 scripts/verify_data_integrity.py`.

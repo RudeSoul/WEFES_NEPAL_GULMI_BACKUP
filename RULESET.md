@@ -76,20 +76,10 @@ All project data must reside in one of three strictly governed tiers:
 
 ---
 
-## Rule 7: 1-File-Per-Commit & Build-Flow Dependency Sequencing
-- **1-File-Per-Commit Enforcement**: Every commit must modify exactly **1 functional file** (enforced by `.githooks/pre-commit`), guaranteeing granular bisectability and exact rollbacks.
-- **Architectural Build-Flow Order**: When committing changes across multiple files, commits MUST flow strictly in dependency sequence:
-  1. **Tier 1: Contracts & Types** (`packages/shared-types`, `data/schemas`)
-  2. **Tier 2: Computational Engines** (`engines/nexus`, `engines/water/hydro`)
-  3. **Tier 3: Database & Models** (`packages/database`)
-  4. **Tier 4: Backend API Services** (`apps/api`)
-  5. **Tier 5: Frontend UI & GIS** (`apps/web`)
-  6. **Tier 6: Automated Test Suites** (`*__tests__*`, `*.test.ts`)
-  7. **Tier 7: Tooling & Governance** (`.githooks`, `scripts`, documentation, root configs)
-- **Conventional Commits Hook**: Commit messages must conform to `<type>(<scope>): <subject>` (enforced by `.githooks/commit-msg`).
-- **Atomic Size Limit**: Net functional code changes per commit must **NOT exceed 400 lines**.
-- **Automated Workflow**: Run `pnpm commit:flow` or `make commit-flow` to automatically sort and commit pending files in build-flow sequence.
-- *(Emergency bypass for large scaffolding or multi-file renames: `ALLOW_MULTI_FILE_COMMIT=1 git commit -m "..."`)*.
+## Rule 7: Cohesive Atomic Commits & Conventional Commits
+- **Logical Coherence**: Commits should be atomic and represent a single logical change (e.g., updating a schema and its consuming components together so the build passes at every commit).
+- **Conventional Commits**: Commit messages must conform to `<type>(<scope>): <subject>` (e.g., `feat(web): update climate overlay`).
+- **No Artificial File-Count Restrictions**: Multi-file commits are allowed and encouraged when files belong to the same cohesive change.
 
 ---
 
@@ -100,13 +90,11 @@ All project data must reside in one of three strictly governed tiers:
   1. All tests pass (`make test` $\to$ pytest + pnpm test).
   2. TypeScript and Pyright check with zero errors (`tsc --noEmit`).
   3. All newly created directories contain `README.md` and `RULES.md`.
-  4. `AI_INDEX.md` is synchronized and up-to-date.
 
 ---
 
-## Rule 9: Dynamic AI Index (`AI_INDEX.md`)
-- A single, compact, token-optimized file (`AI_INDEX.md`) at root acts as the AI context anchor (~1,500 tokens).
-- `scripts/generate_ai_index.py` automatically refreshes this file during pre-commit hooks, ensuring AI agents never burn tokens parsing unneeded files.
+## Rule 9: AI Context Documentation
+- Standard project documentation (`README.md`, `RULESET.md`, `CODING_STANDARDS.md`) provides context for developers and AI agents.
 
 ---
 

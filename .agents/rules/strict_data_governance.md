@@ -50,5 +50,5 @@ Data must strictly reside in its proper tier:
 ---
 
 ## 6. GIT HYGIENE & ATOMIC COMMITS
-- Max 400 net functional lines per commit.
+- Commits should be logically coherent units of change with all related files committed together.
 - Never push directly to `main`. Always work on dedicated feature branches.

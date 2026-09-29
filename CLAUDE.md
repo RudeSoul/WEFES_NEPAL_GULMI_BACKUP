@@ -20,5 +20,5 @@ This repository hosts a scientific Water-Energy-Food-Ecosystem-Society (WEFES) d
    - Never hardcode scientific constants, coordinates, crops, or tariff metrics into `.ts`, `.tsx`, or `.py` source files. Load them from `data/`.
 
 5. **Atomic Commits & Verification**:
-   - Keep commits under 400 net functional lines.
+   - Commits should be logically coherent units of change with all related files committed together.
    - Run `python3 scripts/verify_data_integrity.py` and `pnpm test` before committing.

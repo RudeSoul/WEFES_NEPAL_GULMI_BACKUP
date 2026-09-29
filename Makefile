@@ -28,10 +28,6 @@ test-api:
 test-hydro:
 	python3 -m py_compile engines/water/hydro/cli.py engines/water/hydro/src/*.py
 
-# Step through and commit changes 1-by-1 in architectural build-flow sequence
-commit-flow:
-	python3 scripts/flow_commit.py
-
 # Execute the autonomous Python Hydropower & Topographic Engine
 run-hydro:
 	python3 engines/water/hydro/cli.py --district Gulmi --output-dir data/calculated/hydro_reaches
@@ -39,10 +35,6 @@ run-hydro:
 # Download and verify heavy binary rasters from data/manifest.json
 sync-data:
 	python3 scripts/sync_data.py
-
-# Refresh the dynamic AI context anchor
-update-ai-index:
-	python3 scripts/generate_ai_index.py
 
 # Clean build artifacts and caches
 clean:
