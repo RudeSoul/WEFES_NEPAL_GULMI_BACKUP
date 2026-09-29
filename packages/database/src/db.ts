@@ -56,10 +56,25 @@ export function isCropFeasibleInDistrict(cropOrId: Crop | string, district: Dist
   return keywords.some((kw) => allFeasible.includes(kw.toLowerCase()));
 }
 
+export interface DistrictGeoJSONFeature {
+  type: 'Feature';
+  id: string;
+  properties: Record<string, unknown>;
+  geometry: {
+    type: 'Polygon';
+    coordinates: number[][][];
+  };
+}
+
+export interface DistrictGeoJSONCollection {
+  type: 'FeatureCollection';
+  features: DistrictGeoJSONFeature[];
+}
+
 export class WEFESDatabase {
   private districts: District[] = DISTRICTS_SEED_DATA;
   private crops: Crop[] = CROPS_SEED_DATA;
-  private cachedGeoJSON: any = null;
+  private cachedGeoJSON: DistrictGeoJSONCollection | null = null;
 
   public getAllDistricts(): District[] {
     return this.districts;
@@ -107,7 +122,7 @@ export class WEFESDatabase {
     }));
   }
 
-  public getGeoJSON(): any {
+  public getGeoJSON(): DistrictGeoJSONCollection {
     if (this.cachedGeoJSON) {
       return this.cachedGeoJSON;
     }
@@ -131,7 +146,7 @@ export class WEFESDatabase {
       ];
 
       return {
-        type: 'Feature',
+        type: 'Feature' as const,
         id: district.id,
         properties: {
           id: district.id,
@@ -184,18 +199,19 @@ export class WEFESDatabase {
           agriLaborEcoBelt: district.agriLaborEcoBelt,
         },
         geometry: {
-          type: 'Polygon',
+          type: 'Polygon' as const,
           coordinates: polygon,
         },
       };
     });
 
-    this.cachedGeoJSON = {
+    const geoJson: DistrictGeoJSONCollection = {
       type: 'FeatureCollection',
       features,
     };
+    this.cachedGeoJSON = geoJson;
 
-    return this.cachedGeoJSON;
+    return geoJson;
   }
 }
 
