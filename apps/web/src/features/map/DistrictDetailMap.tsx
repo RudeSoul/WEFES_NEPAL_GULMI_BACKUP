@@ -4,6 +4,7 @@
 // Citations: Survey Department / Topographical Survey of Nepal, MoFAGA, DHM Nepal
 import React, { useEffect, useMemo, useState } from 'react';
 
+import type { Feature, FeatureCollection, GeoJsonObject } from 'geojson';
 import L from 'leaflet';
 import {
   Activity,
@@ -48,8 +49,8 @@ interface DistrictDetailMapProps {
   district: District;
   selectedPalikaName?: string;
   onSelectPalika?: (palikaName: string) => void;
-  distClimatology?: any;
-  rainfallARIMA?: any;
+  distClimatology?: unknown;
+  rainfallARIMA?: unknown;
   onSelectCrop?: (crop: Crop) => void;
 }
 
@@ -86,8 +87,8 @@ function PalikaBoundsUpdater({
   activePalikaFeature,
   districtFeature,
 }: {
-  activePalikaFeature: any;
-  districtFeature: any;
+  activePalikaFeature?: GeoJsonObject | null;
+  districtFeature?: GeoJsonObject | null;
 }) {
   const map = useMap();
 
@@ -281,8 +282,8 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   onSelectPalika,
   onSelectCrop,
 }) => {
-  const [districtGeoData, setDistrictGeoData] = useState<any>(null);
-  const [palikasGeoData, setPalikasGeoData] = useState<any>(null);
+  const [districtGeoData, setDistrictGeoData] = useState<Feature | null>(null);
+  const [palikasGeoData, setPalikasGeoData] = useState<FeatureCollection | null>(null);
   const [contoursGeoData, setContoursGeoData] = useState<GulmiContourCollection | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -292,7 +293,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   const [showContours, setShowContours] = useState<boolean>(true);
 
   // Roads state
-  const [districtRoadsData, setDistrictRoadsData] = useState<any>(null);
+  const [districtRoadsData, setDistrictRoadsData] = useState<FeatureCollection | null>(null);
   const [roadFilter, setRoadFilter] = useState<{
     highways: boolean;
     feeders: boolean;
@@ -306,7 +307,9 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   });
 
   // Selected soil point for detailed drawer inspection
-  const [inspectedSoilPoint, setInspectedSoilPoint] = useState<any>(null);
+  const [inspectedSoilPoint, setInspectedSoilPoint] = useState<
+    ((typeof gulmiSoilPoints)[number] & { id?: number }) | null
+  >(null);
 
   // Load Gulmi 12 Palikas GeoJSON, District Boundary, and Precompiled Contours
   useEffect(() => {
@@ -335,11 +338,11 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
       }
 
       if (districtData && districtData.features) {
-        const matched = districtData.features.find((f: any) => {
-          const fid = f.properties.id || f.properties.DISTRICT || f.properties.name;
+        const matched = districtData.features.find((f: Feature) => {
+          const fid = f.properties?.id || f.properties?.DISTRICT || f.properties?.name;
           return (
             fid?.toLowerCase() === district.id.toLowerCase() ||
-            f.properties.name?.toLowerCase() === district.name.toLowerCase()
+            f.properties?.name?.toLowerCase() === district.name.toLowerCase()
           );
         });
         setDistrictGeoData(matched || districtData.features[0]);
@@ -404,8 +407,8 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   // Active Palika GeoJSON polygon feature
   const activePalikaFeature = useMemo(() => {
     if (!palikasGeoData || !palikasGeoData.features) return null;
-    return palikasGeoData.features.find((f: any) => {
-      const name = f.properties.name || f.properties.fullName || '';
+    return palikasGeoData.features.find((f: Feature) => {
+      const name = f.properties?.name || f.properties?.fullName || '';
       return name.toLowerCase().includes(activePalika.name.toLowerCase());
     });
   }, [palikasGeoData, activePalika.name]);
@@ -498,7 +501,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   // Filtered Roads
   const filteredRoadsData = useMemo(() => {
     if (!districtRoadsData || !districtRoadsData.features) return null;
-    const activeFeatures = districtRoadsData.features.filter((f: any) => {
+    const activeFeatures = districtRoadsData.features.filter((f: Feature) => {
       const hwy = f?.properties?.highway?.toLowerCase();
       if (hwy === 'trunk' || hwy === 'primary') return roadFilter.highways;
       if (hwy === 'secondary') return roadFilter.feeders;
@@ -526,7 +529,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
       feeders = 0,
       municipal = 0,
       rural = 0;
-    districtRoadsData.features.forEach((f: any) => {
+    districtRoadsData.features.forEach((f: Feature) => {
       const hwy = f?.properties?.highway?.toLowerCase();
       if (hwy === 'trunk' || hwy === 'primary') highways++;
       else if (hwy === 'secondary') feeders++;
@@ -550,7 +553,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   }, [districtRoadsData]);
 
   // Styling for Palika GeoJSON Polygons
-  const getPalikaPolygonStyle = (feature: any) => {
+  const getPalikaPolygonStyle = (feature?: Feature) => {
     const palikaName = feature?.properties?.name || feature?.properties?.fullName || '';
     const isSelected = palikaName.toLowerCase().includes(activePalika.name.toLowerCase());
 
@@ -573,7 +576,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
     };
   };
 
-  const onEachPalikaFeature = (feature: any, layer: L.Layer) => {
+  const onEachPalikaFeature = (feature: Feature, layer: L.Layer) => {
     const props = feature.properties;
     if (!props) return;
 
@@ -611,7 +614,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
   };
 
   // Distinct Road Category Styles
-  const getRoadVectorStyle = (feature: any) => {
+  const getRoadVectorStyle = (feature?: Feature) => {
     const hwy = feature?.properties?.highway?.toLowerCase();
     if (hwy === 'trunk' || hwy === 'primary') {
       return {
@@ -641,7 +644,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
     };
   };
 
-  const onEachRoad = (feature: any, layer: L.Layer) => {
+  const onEachRoad = (feature: Feature, layer: L.Layer) => {
     const props = feature.properties;
     if (!props) return;
     const hwy = props.highway?.toLowerCase();
@@ -915,7 +918,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
 
             {/* 81 Verified NARC Ground Soil Testing Sampling Points */}
             {(layerMode === 'soil' || layerMode === 'overview') &&
-              gulmiSoilPoints.map((pt: any, idx: number) => {
+              gulmiSoilPoints.map((pt, idx: number) => {
                 const nColor = pt.nitrogen >= 0.18 ? '#059669' : pt.nitrogen >= 0.14 ? '#10b981' : '#f59e0b';
                 return (
                   <CircleMarker

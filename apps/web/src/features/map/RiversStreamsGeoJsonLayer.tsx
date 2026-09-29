@@ -1,16 +1,19 @@
+import type { Feature, GeoJsonObject } from 'geojson';
+import L from 'leaflet';
 import { GeoJSON } from 'react-leaflet';
 
 interface RiversStreamsGeoJsonLayerProps {
-  data: any;
+  data: GeoJsonObject | null;
 }
 
 export function RiversStreamsGeoJsonLayer({ data }: RiversStreamsGeoJsonLayerProps) {
+  if (!data) return null;
   return (
     <GeoJSON
       key="gulmi-rivers-streams-hydrorivers-layer"
       data={data}
       pane="riversPane"
-      style={(feature: any) => {
+      style={(feature?: Feature) => {
         const order = feature?.properties?.ORD_STRA || 1;
         const is1 = order === 1;
         const is2 = order === 2;
@@ -22,7 +25,7 @@ export function RiversStreamsGeoJsonLayer({ data }: RiversStreamsGeoJsonLayerPro
           opacity: is1 ? 0.85 : 0.98,
         };
       }}
-      onEachFeature={(feature: any, layer: any) => {
+      onEachFeature={(feature: Feature, layer: L.Layer) => {
         const p = feature?.properties || {};
 
         layer.bindTooltip(

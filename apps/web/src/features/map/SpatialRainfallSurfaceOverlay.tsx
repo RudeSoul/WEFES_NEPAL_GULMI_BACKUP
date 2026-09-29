@@ -58,11 +58,13 @@ function isPointInPolygon(point: [number, number], vs: number[][][]): boolean {
   return inside;
 }
 
+import type { GeoJsonObject } from 'geojson';
+
 interface SpatialRainfallSurfaceOverlayProps {
   currentRainMm: number;
   currentTempC: number;
   climateMonth: number;
-  geoData: any; // Gulmi district FeatureCollection
+  geoData: GeoJsonObject | null; // Gulmi district FeatureCollection
   bounds: [[number, number], [number, number]];
   opacity?: number;
 }
@@ -99,12 +101,14 @@ export const SpatialRainfallSurfaceOverlay: React.FC<SpatialRainfallSurfaceOverl
 
     // 2. Extract polygon rings for clipping
     const rings: number[][][] = [];
-    if (geoData?.features) {
-      for (const feat of geoData.features) {
-        if (feat.geometry?.type === 'Polygon') {
-          rings.push(...feat.geometry.coordinates);
-        } else if (feat.geometry?.type === 'MultiPolygon') {
-          for (const poly of feat.geometry.coordinates) {
+    const fc = geoData as
+      (GeoJsonObject & { features?: Array<{ geometry?: { type: string; coordinates: unknown } }> }) | null;
+    if (fc?.features && Array.isArray(fc.features)) {
+      for (const feat of fc.features) {
+        if (feat.geometry?.type === 'Polygon' && Array.isArray(feat.geometry.coordinates)) {
+          rings.push(...(feat.geometry.coordinates as number[][][]));
+        } else if (feat.geometry?.type === 'MultiPolygon' && Array.isArray(feat.geometry.coordinates)) {
+          for (const poly of feat.geometry.coordinates as number[][][][]) {
             rings.push(...poly);
           }
         }

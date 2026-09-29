@@ -14,8 +14,10 @@ const SETTLEMENT_DENSITY_BOUNDS: [[number, number], [number, number]] = [
   [28.26996646, 83.6044254],
 ];
 
+import type { GeoJsonObject } from 'geojson';
+
 interface SpatialSettlementDensityOverlayProps {
-  geoData?: any;
+  geoData?: GeoJsonObject | null;
   bounds?: [[number, number], [number, number]];
   opacity?: number;
 }

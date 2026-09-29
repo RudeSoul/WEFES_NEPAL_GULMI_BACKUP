@@ -193,8 +193,9 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
 
   // Environmental Physics calculations at this active elevation
   const physics = useMemo(() => {
+    const districtMeta = district as unknown as { avgTempC?: number; areaSqKm?: number };
     const baseTemp =
-      (district as any).avgTempC ?? (district.ecoZone === 'Terai' ? 25 : district.ecoZone === 'Mountain' ? 10 : 18);
+      districtMeta.avgTempC ?? (district.ecoZone === 'Terai' ? 25 : district.ecoZone === 'Mountain' ? 10 : 18);
     const baseAlt = minElev;
     const deltaH = activeElevation - baseAlt;
 
@@ -208,7 +209,7 @@ export const DistrictElevationProfiler: React.FC<DistrictElevationProfilerProps>
     // Estimated Hypsographic percentage of district land below this elevation (logistic sigmoid)
     const normalizedH = (activeElevation - minElev) / (maxElev - minElev);
     const hypsographicPct = +(100 / (1 + Math.exp(-6 * (normalizedH - 0.45)))).toFixed(1);
-    const estimatedHa = Math.round(((district as any).areaSqKm || 1500) * 100 * (hypsographicPct / 100));
+    const estimatedHa = Math.round((districtMeta.areaSqKm || 1500) * 100 * (hypsographicPct / 100));
 
     return {
       tempC: estimatedTemp,

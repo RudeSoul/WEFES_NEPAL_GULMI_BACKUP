@@ -6,19 +6,20 @@
 
 import React, { useEffect, useState } from 'react';
 
+import type { GeoJsonObject, Geometry } from 'geojson';
 import { fromArrayBuffer } from 'geotiff';
 import { ImageOverlay } from 'react-leaflet';
 
 interface SpatialFlowAccumulationOverlayProps {
   opacity?: number;
   pane?: string;
-  geoData?: any;
+  geoData?: GeoJsonObject | null;
 }
 
 // Module-level in-memory cache for instant switching
 let cachedAccumulationUrl: string | null = null;
 let cachedBounds: [[number, number], [number, number]] | null = null;
-let cachedGeoDataRef: any = null;
+let cachedGeoDataRef: GeoJsonObject | null = null;
 
 export const SpatialFlowAccumulationOverlay: React.FC<SpatialFlowAccumulationOverlayProps> = ({
   opacity = 0.88,
@@ -165,14 +166,15 @@ export const SpatialFlowAccumulationOverlay: React.FC<SpatialFlowAccumulationOve
             ctx.closePath();
           };
 
-          const processGeometry = (geom: any) => {
-            if (!geom) return;
-            if (geom.type === 'Polygon' && Array.isArray(geom.coordinates)) {
-              for (const ring of geom.coordinates) {
+          const processGeometry = (geom?: Geometry | GeoJsonObject | null) => {
+            if (!geom || !('type' in geom)) return;
+            const typedGeom = geom as Geometry;
+            if (typedGeom.type === 'Polygon' && Array.isArray(typedGeom.coordinates)) {
+              for (const ring of typedGeom.coordinates) {
                 drawRing(ring);
               }
-            } else if (geom.type === 'MultiPolygon' && Array.isArray(geom.coordinates)) {
-              for (const poly of geom.coordinates) {
+            } else if (typedGeom.type === 'MultiPolygon' && Array.isArray(typedGeom.coordinates)) {
+              for (const poly of typedGeom.coordinates) {
                 for (const ring of poly) {
                   drawRing(ring);
                 }
@@ -180,14 +182,18 @@ export const SpatialFlowAccumulationOverlay: React.FC<SpatialFlowAccumulationOve
             }
           };
 
-          if (geoData.features && Array.isArray(geoData.features)) {
-            for (const feat of geoData.features) {
+          const anyGeo = geoData as GeoJsonObject & {
+            features?: Array<{ geometry: Geometry }>;
+            geometry?: Geometry;
+          };
+          if (anyGeo.features && Array.isArray(anyGeo.features)) {
+            for (const feat of anyGeo.features) {
               processGeometry(feat.geometry);
             }
-          } else if (geoData.geometry) {
-            processGeometry(geoData.geometry);
+          } else if (anyGeo.geometry) {
+            processGeometry(anyGeo.geometry);
           } else if (geoData.type === 'Polygon' || geoData.type === 'MultiPolygon') {
-            processGeometry(geoData);
+            processGeometry(geoData as Geometry);
           }
 
           ctx.clip('evenodd');
@@ -201,7 +207,7 @@ export const SpatialFlowAccumulationOverlay: React.FC<SpatialFlowAccumulationOve
 
         cachedAccumulationUrl = generatedUrl;
         cachedBounds = leafletBounds;
-        cachedGeoDataRef = geoData;
+        cachedGeoDataRef = geoData ?? null;
 
         if (isMounted) {
           setDataUrl(generatedUrl);

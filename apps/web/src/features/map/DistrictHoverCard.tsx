@@ -20,12 +20,12 @@ import {
 } from 'lucide-react';
 
 import { db, isCropFeasibleInDistrict } from '@wefes/database';
-import { District, WEFESPillar } from '@wefes/shared-types';
+import { ClimateDataset, District, MonthlyClimatePoint, WEFESPillar } from '@wefes/shared-types';
 import { computeCropSuitability } from '@wefes/wefes-engine';
 
 interface DistrictHoverCardProps {
   district: District | null;
-  climateDataset?: any;
+  climateDataset?: ClimateDataset | null;
   climateYear?: number;
   climateMonth?: number;
   climateMode?: 'monthly' | 'annual' | 'climatology';
@@ -113,11 +113,11 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
     (district.feasibleSpicesCashCrops?.length || 0);
 
   // Extract real monthly climate metrics for hovered district
-  let climateData: any = null;
+  let climateData: (MonthlyClimatePoint & { ws50m?: number; rh2m?: number }) | null = null;
   if (climateDataset) {
     const targetYear = climateYear > 2019 ? 2019 : climateYear;
     if (climateMode === 'climatology') {
-      climateData = climateDataset.climatologyMap?.[district.id]?.[climateMonth];
+      climateData = climateDataset.climatologyMap?.[district.id]?.[climateMonth] || null;
     } else if (climateMode === 'annual') {
       const yrMap = climateDataset.climateMap?.[district.id]?.[targetYear];
       if (yrMap) {
@@ -127,11 +127,12 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
           sumRh = 0,
           count = 0;
         for (let m = 1; m <= 12; m++) {
-          if (yrMap[m]) {
-            sumRain += yrMap[m].prectot || 0;
-            sumT += yrMap[m].t2m || 0;
-            sumWs += yrMap[m].ws50m || 0;
-            sumRh += yrMap[m].rh2m || 0;
+          const mPoint = yrMap[m];
+          if (mPoint) {
+            sumRain += mPoint.prectot || 0;
+            sumT += mPoint.t2m || 0;
+            sumWs += (mPoint.ws50m as number) || 0;
+            sumRh += (mPoint.rh2m as number) || 0;
             count++;
           }
         }
@@ -147,7 +148,8 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
     } else {
       climateData =
         climateDataset.climateMap?.[district.id]?.[targetYear]?.[climateMonth] ||
-        climateDataset.climatologyMap?.[district.id]?.[climateMonth];
+        climateDataset.climatologyMap?.[district.id]?.[climateMonth] ||
+        null;
     }
   }
 

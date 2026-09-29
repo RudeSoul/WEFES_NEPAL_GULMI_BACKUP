@@ -63,8 +63,10 @@ function isPointInPolygon(point: [number, number], vs: number[][][]): boolean {
   return inside;
 }
 
+import type { GeoJsonObject } from 'geojson';
+
 interface SpatialSolarSurfaceOverlayProps {
-  geoData: any;
+  geoData: GeoJsonObject | null;
   opacity?: number;
 }
 
@@ -90,8 +92,10 @@ export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProp
     let polyMinLon = Infinity;
     let polyMaxLon = -Infinity;
 
-    if (geoData?.features) {
-      for (const feat of geoData.features) {
+    const fc = geoData as
+      (GeoJsonObject & { features?: Array<{ geometry?: { type: string; coordinates: unknown } }> }) | null;
+    if (fc?.features && Array.isArray(fc.features)) {
+      for (const feat of fc.features) {
         const processRing = (ring: number[][]) => {
           rings.push(ring);
           for (const pt of ring) {
@@ -104,10 +108,10 @@ export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProp
           }
         };
 
-        if (feat.geometry?.type === 'Polygon') {
-          for (const r of feat.geometry.coordinates) processRing(r);
-        } else if (feat.geometry?.type === 'MultiPolygon') {
-          for (const poly of feat.geometry.coordinates) {
+        if (feat.geometry?.type === 'Polygon' && Array.isArray(feat.geometry.coordinates)) {
+          for (const r of feat.geometry.coordinates as number[][][]) processRing(r);
+        } else if (feat.geometry?.type === 'MultiPolygon' && Array.isArray(feat.geometry.coordinates)) {
+          for (const poly of feat.geometry.coordinates as number[][][][]) {
             for (const r of poly) processRing(r);
           }
         }

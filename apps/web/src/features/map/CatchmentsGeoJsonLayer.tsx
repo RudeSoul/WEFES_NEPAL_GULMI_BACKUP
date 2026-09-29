@@ -1,7 +1,9 @@
+import type { Feature, GeoJsonObject } from 'geojson';
+import L from 'leaflet';
 import { GeoJSON } from 'react-leaflet';
 
 interface CatchmentsGeoJsonLayerProps {
-  data: any;
+  data: GeoJsonObject | null;
 }
 
 /**
@@ -19,7 +21,7 @@ interface CatchmentsGeoJsonLayerProps {
  * drainage/network attribute.
  */
 const getTopologicalColor = (
-  properties: any
+  properties?: Record<string, unknown> | null
 ): {
   color: string;
   label: string;
@@ -78,12 +80,13 @@ const getTopologicalColor = (
 };
 
 export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
+  if (!data) return null;
   return (
     <GeoJSON
       key="hydrobasins-l10-layer"
       data={data}
       pane="palikasPane"
-      style={(feature: any) => {
+      style={(feature?: Feature) => {
         const { color: fillColor } = getTopologicalColor(feature?.properties);
 
         return {
@@ -94,7 +97,7 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
           opacity: 0.9,
         };
       }}
-      onEachFeature={(feature: any, layer: any) => {
+      onEachFeature={(feature: Feature, layer: L.Layer) => {
         const p = feature?.properties ?? {};
 
         const { color: fillColor, label: topologicalLabel, level10Digit } = getTopologicalColor(p);
@@ -243,7 +246,7 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
         );
 
         layer.on({
-          mouseover: (event: any) => {
+          mouseover: (event: L.LeafletMouseEvent) => {
             event.target.setStyle({
               fillOpacity: 0.85,
               weight: 2.5,
@@ -253,7 +256,7 @@ export function CatchmentsGeoJsonLayer({ data }: CatchmentsGeoJsonLayerProps) {
             event.target.bringToFront();
           },
 
-          mouseout: (event: any) => {
+          mouseout: (event: L.LeafletMouseEvent) => {
             event.target.setStyle({
               fillColor,
               fillOpacity: 0.65,

@@ -12,6 +12,7 @@
 // Citations: Ministry of Federal Affairs and General Administration (MoFAGA), DHM Nepal, Survey Department of Nepal, HydroSHEDS / HydroRIVERS / HydroBASINS (WWF/USGS)
 import React, { useEffect, useState } from 'react';
 
+import type { Feature, GeoJsonObject, Point } from 'geojson';
 import L from 'leaflet';
 import {
   Building2,
@@ -47,7 +48,7 @@ import { District, SUBFILTER_LEGENDS, WEFESPillar } from '@wefes/shared-types';
 import { DynamicLegend } from '../../components/legend/DynamicLegend';
 import { VALIDATED_CROPS } from '../../data/cropSuitabilityAssets';
 import { resolveCalculationMethodology } from '../../data/districtCalculationAssets';
-import { PALIKA_GRID_DATA as palikaGridData } from '../../data/districtIndicatorAssets';
+import { PALIKA_GRID_DATA as palikaGridData, SubstationInfo } from '../../data/districtIndicatorAssets';
 import { DISTRICT_PALIKAS, PALIKA_CENTROIDS } from '../../data/districtPalikaAssets';
 import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
 import { useNexusStore } from '../../store';
@@ -64,7 +65,7 @@ import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
 import { SubFilterToolbar } from './SubFilterToolbar';
 
 // Fix Leaflet default marker icon
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -314,6 +315,36 @@ const MONTH_NAMES = [
   'December',
 ];
 
+interface DhmStationProperties {
+  stationType?: string;
+  stationNo?: string;
+  indexNo?: string;
+  stationName?: string;
+  siteName?: string;
+  elevation_m?: number | string;
+  elevation?: number | string;
+  palika?: string;
+  district?: string;
+  riverBasin?: string;
+  river?: string;
+  lat?: number;
+  lng?: number;
+  instruments?: string;
+  monitoringParameters?: string[];
+  status?: string;
+  [key: string]: unknown;
+}
+
+interface PalikaHoverData {
+  name: string;
+  nepaliName?: string;
+  type?: string;
+  elevation?: number;
+  soilPh?: number;
+  areaSqKm?: number;
+  [key: string]: unknown;
+}
+
 interface DistrictMapProps {
   onSelectDistrict: (district: District, palikaName?: string) => void;
 }
@@ -327,22 +358,22 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
   const selectedMapCropId = useNexusStore((s) => s.selectedMapCropId);
   const subFilters = useNexusStore((s) => s.subFilters);
 
-  const [geoData, setGeoData] = useState<any>(null);
+  const [geoData, setGeoData] = useState<GeoJsonObject | null>(null);
   const [geoLoading, setGeoLoading] = useState(true);
 
   const CLI_YEAR = 2024;
   const CLI_MONTH = 12;
   const CLI_MODE: 'monthly' | 'annual' | 'climatology' = 'monthly';
 
-  const [hydrologyStations, setHydrologyStations] = useState<any[]>([]);
-  const [nationalRoads, setNationalRoads] = useState<any>(null);
-  const [gulmiRivers, setGulmiRivers] = useState<any>(null);
-  const [catchmentsData, setCatchmentsData] = useState<any>(null);
-  const [riversStreamsData, setRiversStreamsData] = useState<any>(null);
-  const [contoursData, setContoursData] = useState<any>(null);
+  const [hydrologyStations, setHydrologyStations] = useState<Feature<Point, DhmStationProperties>[]>([]);
+  const [nationalRoads, setNationalRoads] = useState<GeoJsonObject | null>(null);
+  const [gulmiRivers, setGulmiRivers] = useState<GeoJsonObject | null>(null);
+  const [catchmentsData, setCatchmentsData] = useState<GeoJsonObject | null>(null);
+  const [riversStreamsData, setRiversStreamsData] = useState<GeoJsonObject | null>(null);
+  const [contoursData, setContoursData] = useState<GeoJsonObject | null>(null);
 
-  const [palikasData, setPalikasData] = useState<any>(null);
-  const [hoveredPalika, setHoveredPalika] = useState<any>(null);
+  const [palikasData, setPalikasData] = useState<GeoJsonObject | null>(null);
+  const [hoveredPalika, setHoveredPalika] = useState<PalikaHoverData | null>(null);
   const [resetTrigger, setResetTrigger] = useState<number>(0);
 
   // Landing Page Suite State & User Map Preferences (Synced with Zustand)
@@ -551,7 +582,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
     isGridSubstationActive ||
     isHydroCorridorActive;
 
-  const getPalikaStyle = (feature: any) => {
+  const getPalikaStyle = (feature?: Feature) => {
     const props = feature?.properties;
     const isHovered = hoveredPalika?.name === props?.name;
     const fillColor = choropleth.getColor(props?.name || '');
@@ -593,7 +624,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
     };
   };
 
-  const onEachPalika = (feature: any, layer: L.Layer) => {
+  const onEachPalika = (feature: Feature, layer: L.Layer) => {
     const props = feature.properties;
     if (!props) return;
 
@@ -615,17 +646,17 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
         const gulmiDistrict = db.getDistrictById('gulmi');
         if (gulmiDistrict) onSelectDistrict(gulmiDistrict, props.name);
       },
-      mouseover: (e: any) => {
+      mouseover: (e: L.LeafletMouseEvent) => {
         e.target.setStyle({
           fillOpacity: 0.92,
           weight: 2.8,
           color: '#10b981',
         });
         e.target.bringToFront();
-        setHoveredPalika(props);
+        if (props.name) setHoveredPalika(props as PalikaHoverData);
         handleHoverPalikaFromMatrix(props.name || '');
       },
-      mouseout: (e: any) => {
+      mouseout: (e: L.LeafletMouseEvent) => {
         e.target.setStyle(getPalikaStyle(feature));
         setHoveredPalika(null);
         handleHoverPalikaFromMatrix(null);
@@ -1341,7 +1372,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 key={`gulmi-palikas-${selectedPillar}-${selectedMapCropId}-${subFilters.crop || ''}-${subFilters.foodMode || ''}-${subFilters.foodOverlayType || ''}-${subFilters.waterSubFilter || ''}-${subFilters.ecoSubFilter || ''}-${subFilters.energySubFilter || ''}-${subFilters.socioSubFilter || ''}-${CLI_MONTH}-${CLI_YEAR}-${CLI_MODE}-${currentRainMm}-${hoveredPalika?.name || ''}`}
                 data={palikasData}
                 pane="palikasPane"
-                style={(feature: any) => {
+                style={(feature?: Feature) => {
                   const pName = (feature?.properties?.name || '').toLowerCase();
                   const isHovered =
                     hoveredPalika?.name &&
@@ -1400,7 +1431,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 key="gulmi-contours-layer"
                 data={contoursData}
                 pane="contoursPane"
-                style={(feature: any) => {
+                style={(feature?: Feature) => {
                   const p = feature?.properties || {};
                   return {
                     color: p.color || '#0284c7',
@@ -1408,7 +1439,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                     opacity: p.opacity || 0.8,
                   };
                 }}
-                onEachFeature={(feature: any, layer: any) => {
+                onEachFeature={(feature: Feature, layer: L.Layer) => {
                   const p = feature?.properties || {};
                   layer.bindTooltip(
                     `
@@ -1465,7 +1496,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 <GeoJSON
                   key={`national-roads-${subFilters.highwayFilter || 'corridor'}`}
                   data={nationalRoads}
-                  style={(feature: any) => {
+                  style={(feature?: Feature) => {
                     const hwyType = (feature?.properties?.highway || '').toLowerCase();
                     const isPrimary = hwyType === 'trunk' || hwyType === 'primary';
                     return {
@@ -1487,7 +1518,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                     key={`hydro-corridor-streams-${selectedPillar}`}
                     data={riversStreamsData}
                     pane="riversPane"
-                    style={(feature: any) => {
+                    style={(feature?: Feature) => {
                       const order = feature?.properties?.ORD_STRA || 1;
                       // Tier 1: Commercial RoR (>1 MW) - Strahler Order 5+ (Kali Gandaki / Lower Badigad)
                       if (order >= 5) {
@@ -1512,7 +1543,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                         opacity: 0.88,
                       };
                     }}
-                    onEachFeature={(feature: any, layer: any) => {
+                    onEachFeature={(feature: Feature, layer: L.Layer) => {
                       const p = feature?.properties || {};
                       const order = p.ORD_STRA || 1;
                       const tierTitle =
@@ -1550,7 +1581,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                     key={`hydro-corridor-named-rivers-${selectedPillar}`}
                     data={gulmiRivers}
                     pane="riversPane"
-                    style={(feature: any) => {
+                    style={(feature?: Feature) => {
                       const name = feature?.properties?.name || '';
                       const isCommercial = name.includes('Kali Gandaki') || name.includes('Badigad');
                       const isMini = name.includes('Ridi') || name.includes('Panaha');
@@ -1562,7 +1593,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                         opacity: 1,
                       };
                     }}
-                    onEachFeature={(feature: any, layer: any) => {
+                    onEachFeature={(feature: Feature, layer: L.Layer) => {
                       const p = feature?.properties || {};
                       const isCommercial = p.name?.includes('Kali Gandaki') || p.name?.includes('Badigad');
                       const isMini = p.name?.includes('Ridi') || p.name?.includes('Panaha');
@@ -1600,7 +1631,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 subFilters.energySubFilter === 'grid_reach') && (
                 <>
                   {/* 5 Physical Substations Overlay with Glowing Rings */}
-                  {Object.entries((palikaGridData as any).substations || {}).map(([sKey, sData]: [string, any]) => {
+                  {Object.entries(palikaGridData.substations || {}).map(([sKey, sData]: [string, SubstationInfo]) => {
                     const coords = sData.coordinates || [28.0645, 83.2685];
                     const is132 = sData.voltage.includes('132');
                     const markerColor =
@@ -1708,7 +1739,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                   key={`gulmi-rivers-vector-${subFilters.waterSubFilter}`}
                   data={gulmiRivers}
                   pane="riversPane"
-                  style={(feature: any) => {
+                  style={(feature?: Feature) => {
                     const p = feature?.properties || {};
                     const isMain = p.order === 1;
                     const isMajor = p.order === 2;
@@ -1719,7 +1750,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                       dashArray: '',
                     };
                   }}
-                  onEachFeature={(feature: any, layer: any) => {
+                  onEachFeature={(feature: Feature, layer: L.Layer) => {
                     const p = feature?.properties || {};
                     layer.bindTooltip(
                       `
@@ -1744,9 +1775,12 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
               (subFilters.waterSubFilter === 'dhm_station' ||
                 subFilters.waterSubFilter === 'river_basins' ||
                 subFilters.waterClimateMetric === 'dhm_stations') &&
-              hydrologyStations.map((st: any, idx: number) => {
-                const props = st.properties || st;
-                const coords = [st.lat ?? st.geometry?.coordinates[1], st.lng ?? st.geometry?.coordinates[0]];
+              hydrologyStations.map((st: Feature<Point, DhmStationProperties>, idx: number) => {
+                const props = st.properties || {};
+                const coords = [
+                  (props.lat ?? st.geometry?.coordinates?.[1]) as number,
+                  (props.lng ?? st.geometry?.coordinates?.[0]) as number,
+                ];
                 if (!coords[0] || !coords[1]) return null;
 
                 const stType = (props.stationType || '').toLowerCase();
