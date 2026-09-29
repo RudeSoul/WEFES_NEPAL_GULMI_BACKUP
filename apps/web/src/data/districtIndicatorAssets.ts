@@ -1,9 +1,10 @@
 // [DATA PROVENANCE]
-// Data Source: data/calculated/indicators/gulmi_palika_cooking.json, data/calculated/indicators/gulmi_palika_ghi.json, data/calculated/indicators/gulmi_palika_grid.json, data/calculated/indicators/gulmi_palika_landholding.json, data/calculated/indicators/gulmi_palika_soil.json, data/calculated/indicators/gulmi_palika_transit.json, data/calculated/indicators/gulmi_ghi_grid.json, data/real/land_and_soil/gulmi_soil_points_81.json
-// Classification: CALCULATED EMPIRICAL INDICATORS (Census 2021, NEA, NARC, Global Solar Atlas)
-// Citations: National Statistics Office (NSO), Nepal Electricity Authority (NEA), NARC Soil Science Division, Global Solar Atlas
+// Data Source: data/calculated/indicators/gulmi_palika_cooking.json, data/calculated/indicators/gulmi_palika_ghi.json, data/calculated/indicators/gulmi_palika_grid.json, data/calculated/indicators/gulmi_palika_landholding.json, data/calculated/indicators/gulmi_palika_soil.json, data/calculated/indicators/gulmi_palika_transit.json, data/calculated/indicators/gulmi_ghi_grid.json, data/real/land_and_soil/gulmi_soil_points_81.json, data/calculated/indicators/gulmi_palika_chirps_precipitation.json
+// Classification: CALCULATED EMPIRICAL INDICATORS (Census 2021, NEA, NARC, Global Solar Atlas, CHIRPS v2.0)
+// Citations: National Statistics Office (NSO), Nepal Electricity Authority (NEA), NARC Soil Science Division, Global Solar Atlas, Funk et al. (2015)
 
 import ghiGridRaw from '../../../../data/calculated/indicators/gulmi_ghi_grid.json';
+import chirpsPrecipRaw from '../../../../data/calculated/indicators/gulmi_palika_chirps_precipitation.json';
 import palikaCookingRaw from '../../../../data/calculated/indicators/gulmi_palika_cooking.json';
 import palikaGhiRaw from '../../../../data/calculated/indicators/gulmi_palika_ghi.json';
 import palikaGridRaw from '../../../../data/calculated/indicators/gulmi_palika_grid.json';
@@ -163,3 +164,13 @@ export const GULMI_SOIL_POINTS = soilPointsRaw as unknown as Array<{
   ph: number;
   soilType: string;
 }>;
+
+export interface PalikaChirpsPrecipitationBaseline {
+  annual: number;
+  monsoon: number;
+  dry: number;
+}
+
+export const PALIKA_CHIRPS_PRECIPITATION_DATA: Record<string, PalikaChirpsPrecipitationBaseline> =
+  (chirpsPrecipRaw as { baseline: Record<string, PalikaChirpsPrecipitationBaseline> }).baseline;
+

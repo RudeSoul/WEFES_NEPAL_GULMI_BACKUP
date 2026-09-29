@@ -13,8 +13,14 @@
  * - data/real/hydrology/rivers_streams.geojson
  * - data/real/hydrology/flow_accumulation.tif
  * - data/real/hydrology/flow_direction.tif
+ * - data/real/hydrology/average_annual_precipitation.tif
+ * - data/real/hydrology/average_monsoon_precipitation.tif
+ * - data/real/hydrology/average_dry_season_precipitation.tif
  * Classification: OBSERVED REAL & CALCULATED BASELINES
- * Citations: Survey Department Nepal, Department of Hydrology and Meteorology (DHM), HydroSHEDS / HydroRIVERS / HydroBASINS (WWF/USGS)
+ * Citations:
+ * - Survey Department Nepal, Department of Hydrology and Meteorology (DHM)
+ * - HydroSHEDS (WWF/USGS)
+ * - CHIRPS v2.0 (UCSB Climate Hazards Group)
  */
 
 export type LegendType = 'categorical' | 'continuous_gradient' | 'domain_thresholds' | 'quantile_bins';
@@ -64,6 +70,126 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
   // ============================================================================
   // 1. WATER PILLAR
   // ============================================================================
+  annual_precipitation: {
+    id: 'annual_precipitation',
+    pillar: 'water',
+    title: 'Observed Annual Precipitation (CHIRPS)',
+    subtitle: 'High-Resolution Gridded Satellite-Gauge Reanalysis (mm/year)',
+    unit: 'mm/yr',
+    legendType: 'domain_thresholds',
+    dataSourceCitation: 'data/real/hydrology/average_annual_precipitation.tif',
+    confidence: 'REAL',
+    thresholds: [
+      {
+        minValue: 1200,
+        maxValue: 1550,
+        color: '#0284c7',
+        label: '1,200–1,550 mm (Sheltered Valleys)',
+        description: 'Subtropical river corridors with lower cumulative rainfall (e.g. Madane, Chatrakot)',
+      },
+      {
+        minValue: 1550,
+        maxValue: 1700,
+        color: '#0369a1',
+        label: '1,550–1,700 mm (Mid-Hills Standard)',
+        description: 'District-average precipitation across central agrarian hills',
+      },
+      {
+        minValue: 1700,
+        maxValue: 1850,
+        color: '#1d4ed8',
+        label: '1,700–1,850 mm (Elevated Slopes)',
+        description: 'Humid mid-altitude slopes and upper agrarian ridges (e.g. Dhurkot)',
+      },
+      {
+        minValue: 1850,
+        color: '#1e3a8a',
+        label: '>1,850 mm (Orographic Crests)',
+        description: 'High mountain ridges with maximum annual influx (e.g. Isma, Resunga)',
+      },
+    ],
+  },
+
+  monsoon_precipitation: {
+    id: 'monsoon_precipitation',
+    pillar: 'water',
+    title: 'Observed Monsoon Precipitation (CHIRPS)',
+    subtitle: 'June–September (JJAS) Seasonal Runoff Total',
+    unit: 'mm/monsoon',
+    legendType: 'domain_thresholds',
+    dataSourceCitation: 'data/real/hydrology/average_monsoon_precipitation.tif',
+    confidence: 'REAL',
+    thresholds: [
+      {
+        minValue: 1000,
+        maxValue: 1200,
+        color: '#7dd3fc',
+        label: '1,000–1,200 mm (Sheltered Valleys)',
+        description: 'Moderate monsoon concentration (e.g. Madane)',
+      },
+      {
+        minValue: 1200,
+        maxValue: 1350,
+        color: '#38bdf8',
+        label: '1,200–1,350 mm (Mid-Hill Terraces)',
+        description: 'Intensive terraced paddy cultivation belt (e.g. Ruru, Chatrakot, Malika)',
+      },
+      {
+        minValue: 1350,
+        maxValue: 1450,
+        color: '#0284c7',
+        label: '1,350–1,450 mm (Upper Slopes)',
+        description: 'Heavy monsoon recharge & flash-flood zone (e.g. Dhurkot, Gulmidarbar)',
+      },
+      {
+        minValue: 1450,
+        color: '#0369a1',
+        label: '>1,450 mm (Peak Orographic Ridge)',
+        description: 'Maximum cloud interception deluge (e.g. Isma, Resunga)',
+      },
+    ],
+  },
+
+  dry_season_precipitation: {
+    id: 'dry_season_precipitation',
+    pillar: 'water',
+    title: 'Observed Dry Season Precipitation (CHIRPS)',
+    subtitle: 'October–May (Non-Monsoon Low-Flow & Winter Total)',
+    unit: 'mm/dry season',
+    legendType: 'domain_thresholds',
+    dataSourceCitation: 'data/real/hydrology/average_dry_season_precipitation.tif',
+    confidence: 'REAL',
+    thresholds: [
+      {
+        minValue: 100,
+        maxValue: 125,
+        color: '#fef08a',
+        label: '100–125 mm (Severe Deficit Valleys)',
+        description: 'Winter low-flow corridors requiring lift irrigation (e.g. Chatrakot, Ruru)',
+      },
+      {
+        minValue: 125,
+        maxValue: 145,
+        color: '#fed7aa',
+        label: '125–145 mm (Mid-Hills Standard)',
+        description: 'Standard dry season winter crop zone (e.g. Chandrakot, Satyawati)',
+      },
+      {
+        minValue: 145,
+        maxValue: 165,
+        color: '#fdba74',
+        label: '145–165 mm (Higher Hillslopes)',
+        description: 'Western disturbance frontal reception (e.g. Dhurkot, Musikot)',
+      },
+      {
+        minValue: 165,
+        color: '#fb923c',
+        label: '>165 mm (Montane Ridge Crests)',
+        description: 'Upper ridge cold cloud condensation (e.g. Isma, Resunga)',
+      },
+    ],
+  },
+
   merra_rainfall: {
     id: 'merra_rainfall',
     pillar: 'water',
