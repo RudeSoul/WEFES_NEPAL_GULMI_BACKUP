@@ -1,43 +1,23 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  Droplets, Zap, Sprout, Trees, Coins, MapPin, Mountain,
-  Layers, Landmark, ArrowRight, CheckCircle2, Globe2, FlaskConical
-} from 'lucide-react';
-import { WEFESPillar } from '@wefes/shared-types';
+import { Layers, MapPin, Mountain } from 'lucide-react';
 import { ROUTES } from '../../routes/paths';
+import { useNexusStore } from '../../store';
 
-interface HeaderProps {
-  activeScreen?: number;
-  setActiveScreen?: (screen: number) => void;
-  selectedPillar?: WEFESPillar;
-  setSelectedPillar?: (pillar: WEFESPillar) => void;
-  selectedDistrictName?: string;
-  selectedCropName?: string;
-  selectedPalikaName?: string | null;
-}
-
-export const Header: React.FC<HeaderProps> = ({
-  activeScreen,
-  setActiveScreen,
-  selectedPillar,
-  setSelectedPillar,
-  selectedDistrictName = 'Gulmi',
-  selectedCropName,
-  selectedPalikaName,
-}) => {
+export const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isMapActive = location.pathname === ROUTES.HOME || location.pathname === ROUTES.MAP || activeScreen === 1;
-  const isPalikaActive = location.pathname.startsWith('/palikas') || activeScreen === 2;
-  const isAnalysisActive = location.pathname === ROUTES.ANALYSIS || activeScreen === 4;
-  const isSimulatorActive = location.pathname === ROUTES.SIMULATOR || activeScreen === 5;
+  const storeCrop = useNexusStore((s) => s.selectedCrop);
+  const selectedPalikaName = useNexusStore((s) => s.selectedPalikaName);
 
-  const handleNav = (screen: number, path: string) => {
-    if (setActiveScreen) {
-      setActiveScreen(screen);
-    }
+  const selectedCropName = storeCrop?.name;
+  const isMapActive = location.pathname === ROUTES.HOME || location.pathname === ROUTES.MAP;
+  const isPalikaActive = location.pathname.startsWith('/palikas');
+  const isAnalysisActive = location.pathname === ROUTES.ANALYSIS;
+  const isSimulatorActive = location.pathname === ROUTES.SIMULATOR;
+
+  const handleNav = (path: string) => {
     navigate(path);
   };
 
@@ -46,10 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
 
         {/* Logo & Platform Title */}
-        <div
-          className="flex items-center space-x-3 cursor-pointer group"
-          onClick={() => handleNav(1, ROUTES.MAP)}
-        >
+        <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => handleNav(ROUTES.MAP)}>
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-800 border border-emerald-500/40 flex items-center justify-center shadow-xs group-hover:scale-105 transition-all">
             <Mountain className="w-5 h-5 text-white" />
           </div>
@@ -75,8 +52,9 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200 text-xs overflow-x-auto max-w-full">
           {/* Step 1: Map */}
           <button
-            onClick={() => handleNav(1, ROUTES.MAP)}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${isMapActive
+            onClick={() => handleNav(ROUTES.MAP)}
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+              isMapActive
               ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
               : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
@@ -89,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => {
               const palikaPath = selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS;
-              handleNav(2, palikaPath);
+              handleNav(palikaPath);
             }}
             disabled={!selectedPalikaName}
             className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${isPalikaActive
@@ -105,7 +83,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Step 3: Analysis */}
           <button
-            onClick={() => handleNav(4, ROUTES.ANALYSIS)}
+            onClick={() => handleNav(ROUTES.ANALYSIS)}
             disabled={!selectedCropName}
             className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${isAnalysisActive
               ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
@@ -120,7 +98,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Step 4: Simulator */}
           <button
-            onClick={() => handleNav(5, ROUTES.SIMULATOR)}
+            onClick={() => handleNav(ROUTES.SIMULATOR)}
             disabled={!selectedCropName}
             className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${isSimulatorActive
               ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'

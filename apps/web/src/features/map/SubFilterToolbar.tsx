@@ -1,21 +1,15 @@
 import React from 'react';
-import { WEFESPillar } from '@wefes/shared-types';
-import { Droplets, Zap, Sprout, Trees, Coins, Layers, CloudRain, Mountain, ShieldAlert, Sparkles, Building2, Compass, Waves } from 'lucide-react';
+import { Droplets, Zap, Sprout, Trees, CloudRain, Building2 } from 'lucide-react';
+import { useNexusStore } from '../../store';
 
-interface SubFilterToolbarProps {
-  selectedPillar: WEFESPillar;
-  onChange: (filters: Record<string, string>) => void;
-  subFilters?: Record<string, string>;
-}
+export const SubFilterToolbar: React.FC = () => {
+  const selectedPillar = useNexusStore((s) => s.selectedPillar);
+  const subFilters = useNexusStore((s) => s.subFilters);
+  const setSubFilters = useNexusStore((s) => s.setSubFilters);
 
-export const SubFilterToolbar: React.FC<SubFilterToolbarProps> = ({
-  selectedPillar,
-  onChange,
-  subFilters = {}
-}) => {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    onChange({ [name]: value });
+    setSubFilters({ [name]: value });
   };
 
   const selectClass =

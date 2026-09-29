@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
-import { District, Crop, WEFESOutput, WEFESPillar } from '@wefes/shared-types';
-import { db } from '@wefes/database';
+import { District, Crop } from '@wefes/shared-types';
 import { Header, InputModal } from './components/common';
 import { DistrictMap } from './features/map';
 import { DistrictDetail } from './features/palika';
@@ -10,6 +9,7 @@ import { ScenarioSimulator } from './features/simulator';
 import { ScientificDossierScreen } from './features/scientific-dossier';
 import { ResearchSandboxScreen } from './features/research-sandbox';
 import { ROUTES } from './routes/paths';
+import { useNexusStore } from './store';
 
 function PalikaRouteWrapper({
   district,
@@ -49,25 +49,23 @@ function PalikaRouteWrapper({
 
 export function App() {
   const navigate = useNavigate();
-  const [selectedPillar, setSelectedPillar] = useState<WEFESPillar>('water');
-  const [selectedDistrict, setSelectedDistrict] = useState<District | null>(() => {
-    return db.getDistrictById('gulmi') || null;
-  });
-  const [selectedCrop, setSelectedCrop] = useState<Crop | null>(null);
-  const [selectedMapCropId, setSelectedMapCropId] = useState<string | null>(null);
-  const [subFilters, setSubFilters] = useState<Record<string, string>>({});
-  const [isInputModalOpen, setIsInputModalOpen] = useState<boolean>(false);
-  const [analysisOutput, setAnalysisOutput] = useState<WEFESOutput | null>(null);
-  const [climateDataset, setClimateDataset] = useState<any>(null);
-  const [selectedPalikaName, setSelectedPalikaName] = useState<string | null>(null);
 
-  // Pre-fetch the 39-year MERRA-2 gridded monthly climate dataset once at root level
+  // Zustand Store Selectors
+  const selectedDistrict = useNexusStore((s) => s.selectedDistrict);
+  const setSelectedDistrict = useNexusStore((s) => s.setSelectedDistrict);
+  const selectedCrop = useNexusStore((s) => s.selectedCrop);
+  const setSelectedCrop = useNexusStore((s) => s.setSelectedCrop);
+  const setIsInputModalOpen = useNexusStore((s) => s.setIsInputModalOpen);
+  const analysisOutput = useNexusStore((s) => s.analysisOutput);
+  const climateDataset = useNexusStore((s) => s.climateDataset);
+  const fetchClimateDataset = useNexusStore((s) => s.fetchClimateDataset);
+  const selectedPalikaName = useNexusStore((s) => s.selectedPalikaName);
+  const setSelectedPalikaName = useNexusStore((s) => s.setSelectedPalikaName);
+
+  // Pre-fetch the 39-year MERRA-2 gridded monthly climate dataset via store action
   useEffect(() => {
-    fetch('/geojson/gulmi-climate-monthly.json')
-      .then(res => res.json())
-      .then(data => setClimateDataset(data))
-      .catch(err => console.warn('Gulmi MERRA-2 Climatology pre-fetch warning:', err));
-  }, []);
+    fetchClimateDataset();
+  }, [fetchClimateDataset]);
 
   const handleSelectDistrictFromMap = (district: District, palikaName?: string) => {
     setSelectedDistrict(district);
@@ -81,69 +79,18 @@ export function App() {
     setIsInputModalOpen(true);
   };
 
-  const handleRunAnalysis = (output: WEFESOutput) => {
-    setAnalysisOutput(output);
-    setIsInputModalOpen(false);
+  const handleRunAnalysis = () => {
     navigate(ROUTES.ANALYSIS);
-  };
-
-  const handleSubFilterChange = (filters: Record<string, string>) => {
-    setSubFilters(prev => ({ ...prev, ...filters }));
-    if (filters.crop !== undefined) {
-      setSelectedMapCropId(filters.crop || null);
-    }
-    if (filters.foodOverlayType !== undefined && filters.foodOverlayType !== 'crop_suitability') {
-      setSelectedMapCropId(null);
-    }
-  };
-
-  const handlePillarChange = (p: WEFESPillar) => {
-    setSelectedPillar(p);
-    if (p !== 'food') setSelectedMapCropId(null);
   };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans antialiased selection:bg-emerald-100 selection:text-emerald-900">
-      <Header
-        selectedPillar={selectedPillar}
-        setSelectedPillar={handlePillarChange}
-        selectedDistrictName={selectedDistrict?.name}
-        selectedCropName={selectedCrop?.name}
-        selectedPalikaName={selectedPalikaName}
-      />
+      <Header />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
         <Routes>
-          <Route
-            path={ROUTES.HOME}
-            element={
-              <DistrictMap
-                onSelectDistrict={handleSelectDistrictFromMap}
-                selectedDistrict={selectedDistrict}
-                selectedPillar={selectedPillar}
-                setSelectedPillar={handlePillarChange}
-                selectedMapCropId={selectedMapCropId}
-                subFilters={subFilters}
-                onSubFilterChange={handleSubFilterChange}
-                climateDataset={climateDataset}
-              />
-            }
-          />
-          <Route
-            path={ROUTES.MAP}
-            element={
-              <DistrictMap
-                onSelectDistrict={handleSelectDistrictFromMap}
-                selectedDistrict={selectedDistrict}
-                selectedPillar={selectedPillar}
-                setSelectedPillar={handlePillarChange}
-                selectedMapCropId={selectedMapCropId}
-                subFilters={subFilters}
-                onSubFilterChange={handleSubFilterChange}
-                climateDataset={climateDataset}
-              />
-            }
-          />
+          <Route path={ROUTES.HOME} element={<DistrictMap onSelectDistrict={handleSelectDistrictFromMap} />} />
+          <Route path={ROUTES.MAP} element={<DistrictMap onSelectDistrict={handleSelectDistrictFromMap} />} />
 
           <Route
             path={ROUTES.PALIKAS}
@@ -265,15 +212,7 @@ export function App() {
         </Routes>
       </main>
 
-      {selectedDistrict && selectedCrop && (
-        <InputModal
-          district={selectedDistrict}
-          crop={selectedCrop}
-          isOpen={isInputModalOpen}
-          onClose={() => setIsInputModalOpen(false)}
-          onRunAnalysis={handleRunAnalysis}
-        />
-      )}
+      {selectedDistrict && selectedCrop && <InputModal onRunAnalysis={handleRunAnalysis} />}
 
       <footer className="border-t border-slate-200 bg-white py-4 px-4 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
@@ -288,4 +227,3 @@ export function App() {
 }
 
 export default App;
-

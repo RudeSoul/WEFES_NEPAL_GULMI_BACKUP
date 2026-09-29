@@ -32,8 +32,7 @@ import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
 import { SpatialSettlementDensityOverlay } from './SpatialSettlementDensityOverlay';
 import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
 import { SubFilterToolbar } from './SubFilterToolbar';
-
-
+import { useNexusStore } from '../../store';
 
 // Fix Leaflet default marker icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -258,35 +257,23 @@ const MONTH_NAMES = [
 
 interface DistrictMapProps {
   onSelectDistrict: (district: District, palikaName?: string) => void;
-  selectedDistrict: District | null;
-  selectedPillar: WEFESPillar;
-  setSelectedPillar: (pillar: WEFESPillar) => void;
-  selectedMapCropId: string | null;
-  subFilters?: Record<string, string>;
-  onSubFilterChange: (filters: Record<string, string>) => void;
-  climateDataset?: any;
 }
 
+export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) => {
+  const climateDataset = useNexusStore((s) => s.climateDataset);
+  const storeFetchClimate = useNexusStore((s) => s.fetchClimateDataset);
+  const selectedDistrict = useNexusStore((s) => s.selectedDistrict);
+  const selectedPillar = useNexusStore((s) => s.selectedPillar);
+  const setSelectedPillar = useNexusStore((s) => s.setSelectedPillar);
+  const selectedMapCropId = useNexusStore((s) => s.selectedMapCropId);
+  const subFilters = useNexusStore((s) => s.subFilters);
 
-export const DistrictMap: React.FC<DistrictMapProps> = ({
-  onSelectDistrict,
-  selectedDistrict,
-  selectedPillar,
-  setSelectedPillar,
-  selectedMapCropId,
-  subFilters = {},
-  onSubFilterChange,
-  climateDataset: initialClimateDataset,
-}) => {
   const [geoData, setGeoData] = useState<any>(null);
-  const [climateDataset, setClimateDataset] = useState<any>(initialClimateDataset || null);
   const [geoLoading, setGeoLoading] = useState(true);
 
-  // Time-Series Animation State (Defaults to latest year 2024)
   const CLI_YEAR = 2024;
   const CLI_MONTH = 12;
   const CLI_MODE: 'monthly' | 'annual' | 'climatology' = 'monthly';
-
 
   const [hydrologyStations, setHydrologyStations] = useState<any[]>([]);
   const [nationalRoads, setNationalRoads] = useState<any>(null);
@@ -294,20 +281,25 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   const [catchmentsData, setCatchmentsData] = useState<any>(null);
   const [riversStreamsData, setRiversStreamsData] = useState<any>(null);
   const [contoursData, setContoursData] = useState<any>(null);
-  const [showContours, setShowContours] = useState<boolean>(false);
 
   const [palikasData, setPalikasData] = useState<any>(null);
   const [hoveredPalika, setHoveredPalika] = useState<any>(null);
   const [resetTrigger, setResetTrigger] = useState<number>(0);
 
-  // Landing Page Suite State
-  const [lang, setLang] = useState<'en' | 'np'>('en');
-  const [basemap, setBasemap] = useState<'voyager' | 'satellite' | 'terrain'>('voyager');
-  const [showPalikaLabels, setShowPalikaLabels] = useState<boolean>(true);
+  // Landing Page Suite State & User Map Preferences (Synced with Zustand)
+  const lang = useNexusStore((s) => s.lang);
+  const basemap = useNexusStore((s) => s.basemap);
+  const setBasemap = useNexusStore((s) => s.setBasemap);
+  const showPalikaLabels = useNexusStore((s) => s.showPalikaLabels);
+  const setShowPalikaLabels = useNexusStore((s) => s.setShowPalikaLabels);
+  const showContours = useNexusStore((s) => s.showContours);
+  const setShowContours = useNexusStore((s) => s.setShowContours);
 
-  // Search autocomplete handler
-
-  // 1-Click Policy Preset Handler
+  useEffect(() => {
+    if (!climateDataset) {
+      storeFetchClimate();
+    }
+  }, [climateDataset, storeFetchClimate]);
 
   const [liveWeather, setLiveWeather] = useState<LiveGulmiWeather | null>(null);
   const [liveWeatherLoading, setLiveWeatherLoading] = useState<boolean>(true);
@@ -377,26 +369,35 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
   };
 
   useEffect(() => {
-    if (initialClimateDataset) {
-      setClimateDataset(initialClimateDataset);
-    }
-  }, [initialClimateDataset]);
-
-  useEffect(() => {
     Promise.all([
-      fetch('/geojson/gulmi-district.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/gulmi-palikas.json').then(r => r.json()).catch(() => null),
-      initialClimateDataset ? Promise.resolve(initialClimateDataset) : fetch('/geojson/gulmi-climate-monthly.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/roads/gulmi.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/gulmi-dhm-stations.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/gulmi-rivers.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/gulmi-contours.json').then(r => r.json()).catch(() => null),
-      fetch('/geojson/catchments_l10.geojson').then(r => r.json()).catch(() => null),
-      fetch('/geojson/rivers_streams.geojson').then(r => r.json()).catch(() => null),
-    ]).then(([geo, palikas, climate, roads, hydroAssets, rivers, contours, catchments, riversStreams]) => {
+      fetch('/geojson/gulmi-district.json')
+        .then((r) => r.json())
+        .catch(() => null),
+      fetch('/geojson/gulmi-palikas.json')
+        .then((r) => r.json())
+        .catch(() => null),
+      fetch('/geojson/roads/gulmi.json')
+        .then((r) => r.json())
+        .catch(() => null),
+      fetch('/geojson/gulmi-dhm-stations.json')
+        .then((r) => r.json())
+        .catch(() => null),
+      fetch('/geojson/gulmi-rivers.json')
+        .then((r) => r.json())
+        .catch(() => null),
+      fetch('/geojson/gulmi-contours.json')
+        .then((r) => r.json())
+        .catch(() => null),
+      fetch('/geojson/catchments_l10.geojson')
+        .then((r) => r.json())
+        .catch(() => null),
+      fetch('/geojson/rivers_streams.geojson')
+        .then((r) => r.json())
+        .catch(() => null),
+    ])
+      .then(([geo, palikas, roads, hydroAssets, rivers, contours, catchments, riversStreams]) => {
       if (geo) setGeoData(geo);
       if (palikas) setPalikasData(palikas);
-      if (climate) setClimateDataset(climate);
       if (roads) setNationalRoads(roads);
       if (rivers) setGulmiRivers(rivers);
       if (contours) setContoursData(contours);
@@ -406,30 +407,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
         setHydrologyStations(hydroAssets.features);
       }
       setGeoLoading(false);
-    }).catch(() => setGeoLoading(false));
-  }, [initialClimateDataset]);
-
-  const getActiveClimateMetricKey = (): string | null => {
-    if (selectedPillar === 'water') return subFilters.waterClimateMetric || 'prectot';
-    if (selectedPillar === 'energy') {
-      const eMetric = subFilters.energyClimateMetric || 'totalHydroCapacityMW';
-      if (eMetric === 'ws50m' || eMetric === 'ws50mMax' || eMetric === 'ts') return eMetric;
-      return null;
-    }
-    if (selectedPillar === 'ecosystem') {
-      const ecoSub = subFilters.ecoSubFilter || 'soil_nitrogen';
-      if (!ecoSub.startsWith('soil_')) {
-        if (ecoSub === 'prectot_max') return 'prectot';
-        if (ecoSub === 't2m_max') return 't2mMax';
-        if (ecoSub === 't2m_min') return 't2mMin';
-        if (ecoSub === 't2m_range') return 't2mRange';
-        if (ecoSub === 'ws10m_max') return 'ws10mMax';
-        if (ecoSub === 'ws50m_max') return 'ws50mMax';
-        return ecoSub;
-      }
-    }
-    return null;
-  };
+      })
+      .catch(() => setGeoLoading(false));
+  }, []);
 
   // Live Climate Telemetry for Gulmi District (MERRA-2 & NASA POWER)
   const currentRainMm = climateDataset ? Math.round(
@@ -984,11 +964,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({
       </div>
 
       {/* 4. Sub-filter toolbar */}
-      <SubFilterToolbar
-        selectedPillar={selectedPillar}
-        onChange={onSubFilterChange}
-        subFilters={subFilters}
-      />
+      <SubFilterToolbar />
 
       {/* Dynamic Heatmap Legend */}
       {renderLegend()}
