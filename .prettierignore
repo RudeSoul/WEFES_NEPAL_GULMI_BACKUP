@@ -1,0 +1,15 @@
+dist
+build
+node_modules
+.turbo
+coverage
+public
+*.min.js
+*.min.css
+data/
+*.tif
+*.nc
+*.geojson
+*.csv
+.githooks/
+pnpm-lock.yaml

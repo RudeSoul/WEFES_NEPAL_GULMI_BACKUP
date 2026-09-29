@@ -8,6 +8,12 @@
     "lint": {
       "outputs": []
     },
+    "lint:fix": {
+      "cache": false
+    },
+    "format:check": {
+      "outputs": []
+    },
     "test": {
       "dependsOn": ["^build"],
       "outputs": []
