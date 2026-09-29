@@ -33,6 +33,9 @@ export const SubFilterToolbar: React.FC = () => {
               onChange={handleChange}
             >
               <optgroup label="🌧️ Precipitation & Watersheds">
+                <option value="annual_precipitation">🌧️ Observed Annual Precipitation (CHIRPS Gridded High-Res)</option>
+                <option value="monsoon_precipitation">⛈️ Monsoon Season Rainfall (June–September Total)</option>
+                <option value="dry_season_precipitation">❄️ Dry Season Rainfall (October–May Total)</option>
                 <option value="merra_rainfall">🌧️ Dynamic Monthly Rainfall (MERRA-2 Topographic Downscaling)</option>
                 <option value="river_basins">🌊 Gandaki Basin Drainage Corridors (Kali Gandaki, Badigad, Ridi)</option>
                 <option value="dhm_station">💧 DHM Hydro-Meteorological Stations</option>

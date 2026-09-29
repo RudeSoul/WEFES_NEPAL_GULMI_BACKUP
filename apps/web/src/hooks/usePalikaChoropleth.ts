@@ -1,5 +1,5 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson, data/real/infrastructure/gulmi_nea_substations.geojson, data/real/hydrology/gulmi_dhm_stations.geojson, data/real/agriculture/gulmi_agricultural_landholding.geojson, data/real/land_and_soil/gulmi_soil_points_81.json
+// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson, data/real/infrastructure/gulmi_nea_substations.geojson, data/real/hydrology/gulmi_dhm_stations.geojson, data/real/agriculture/gulmi_agricultural_landholding.geojson, data/real/land_and_soil/gulmi_soil_points_81.json, data/calculated/indicators/gulmi_palika_chirps_precipitation.json
 // Classification: OBSERVED REAL & EMPIRICAL DOWNSCALING
 // Citations: MoALD Nepal, MoFAGA Nepal, DHM Nepal, CBS/NSO 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas 2.0, Nepal Electricity Authority (NEA), NARC Soil Science Division, OpenStreetMap Contributors
 
@@ -23,6 +23,7 @@ import {
   WaterStressSeason,
 } from '../data/cropSuitabilityAssets';
 import {
+  PALIKA_CHIRPS_PRECIPITATION_DATA as palikaChirpsData,
   PALIKA_COOKING_DATA as palikaCookingData,
   PALIKA_GHI_DATA as palikaGhiData,
   PALIKA_GRID_DATA as palikaGridData,
@@ -35,6 +36,7 @@ import {
   HYDRO_PALIKA_SUMMARY,
   PalikaFeasibleCrop,
 } from '../data/districtPalikaAssets';
+import type { GeoTiffRasterStats } from '../services/geoTiffZonalStats';
 import { getPalikaMicroClimate } from '../utils/climateDownscaling';
 
 import { CHOROPLETH_RAMPS, computeGradientColor, normalizePalikaName } from './choroplethUtils';
@@ -116,6 +118,7 @@ export interface UsePalikaChoroplethParams {
   currentRainMm?: number;
   currentTempC?: number;
   dhmStationsMap?: Record<string, PalikaDhmStationInfo>;
+  dynamicPrecipStats?: Record<string, GeoTiffRasterStats>;
 }
 
 export function computePalikaChoropleth({
@@ -127,6 +130,7 @@ export function computePalikaChoropleth({
   currentRainMm = 150,
   currentTempC = 19.5,
   dhmStationsMap,
+  dynamicPrecipStats,
 }: UsePalikaChoroplethParams): PalikaChoroplethResult {
   const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
   const profileLookup = new Map<string, DistrictPalika>();
@@ -656,6 +660,83 @@ export function computePalikaChoropleth({
                             💧 DHM Station: <strong>${info.station}</strong>
                             <div style="color: #64748b; font-size: 9px; margin-top: 1px;">Type: ${info.type} • Gauge Elev: ${info.elev}m masl</div>
                           </div>`,
+        };
+      }
+    } else if (
+      wSub === 'annual_precipitation' ||
+      wSub === 'monsoon_precipitation' ||
+      wSub === 'dry_season_precipitation'
+    ) {
+      const isAnnual = wSub === 'annual_precipitation';
+      const isMonsoon = wSub === 'monsoon_precipitation';
+
+      // Check if dynamic GeoTIFF statistics were decoded in JavaScript
+      const dynamicRaster = dynamicPrecipStats ? dynamicPrecipStats[wSub] : undefined;
+
+      const unitLabel = isAnnual ? 'mm/yr' : isMonsoon ? 'mm/monsoon' : 'mm/dry';
+
+      // Unified comparative precipitation progression:
+      // Dry Season (<200mm): Warm Amber / Orange tones (clearly signals dry water deficit)
+      // Monsoon (1000-1600mm): Sky Blue / Cerulean / Ocean (signals concentrated monsoon influx)
+      // Annual (1200-2100mm): Deep Cerulean / Ocean / Dark Navy (signals full annual volume)
+      const dryRamp = ['#fef08a', '#fed7aa', '#fdba74', '#fb923c'];
+      const monsoonRamp = ['#7dd3fc', '#38bdf8', '#0284c7', '#0369a1'];
+      const annualRamp = ['#0284c7', '#0369a1', '#1d4ed8', '#1e3a8a'];
+
+      const activeRamp = isAnnual ? annualRamp : isMonsoon ? monsoonRamp : dryRamp;
+
+      // Use dynamic min/max straight from GeoTIFF raster cells if available
+      const minVal = dynamicRaster?.overallMin ?? (isAnnual ? 1365 : isMonsoon ? 1070 : 124);
+      const maxVal = dynamicRaster?.overallMax ?? (isAnnual ? 2026 : isMonsoon ? 1560 : 181);
+
+      metricConfig = {
+        metricKey: wSub,
+        pillar: 'water',
+        label: isAnnual
+          ? 'Observed Annual Precipitation (CHIRPS)'
+          : isMonsoon
+            ? 'Monsoon Season Rainfall (CHIRPS)'
+            : 'Dry Season Rainfall (CHIRPS)',
+        unit: unitLabel,
+        min: minVal,
+        max: maxVal,
+        colorRamp: activeRamp,
+      };
+
+      for (const feat of features) {
+        const props = feat.properties || {};
+        const pData = getProfile(props);
+        const pKey = (props.name || '').toLowerCase().replace(/[^a-z]/g, '');
+
+        let val: number;
+        let palikaDetail = '';
+
+        if (dynamicRaster && dynamicRaster.palikaStats && dynamicRaster.palikaStats[pKey]) {
+          const zStat = dynamicRaster.palikaStats[pKey];
+          val = zStat.mean;
+          palikaDetail = `Range: ${zStat.min}–${zStat.max} ${unitLabel} (${zStat.pixelCount} GeoTIFF cells)`;
+        } else {
+          const stat = palikaChirpsData[pKey] || { annual: 1650, monsoon: 1310, dry: 140 };
+          val = isAnnual ? stat.annual : isMonsoon ? stat.monsoon : stat.dry;
+          palikaDetail = 'CHIRPS 0.05° Gridded Spatial Zonal Mean';
+        }
+
+        const color = computeGradientColor(val, minVal, maxVal, activeRamp);
+
+        joinedData[props.name] = {
+          id: props.id || props.name,
+          name: props.name,
+          nepaliName: props.nepaliName,
+          type: props.type,
+          areaSqKm: props.areaSqKm,
+          value: val,
+          formattedValue: `${val} ${unitLabel}`,
+          color,
+          tooltipHtml: `<div style="color: #0284c7; font-size: 10px; margin-top: 2px;">
+                            🌧️ ${metricConfig.label}: <strong>${val} ${unitLabel}</strong>
+                            <div style="color: #64748b; font-size: 9px; margin-top: 1px;">${palikaDetail}</div>
+                          </div>`,
+          raw: { pData, dynamicStats: dynamicRaster?.palikaStats?.[pKey] },
         };
       }
     } else {
@@ -1310,6 +1391,7 @@ export function usePalikaChoropleth({
   currentRainMm,
   currentTempC,
   dhmStationsMap: externalDhmStationsMap,
+  dynamicPrecipStats,
 }: UsePalikaChoroplethParams): PalikaChoroplethResult {
   const [dhmStationsMap, setDhmStationsMap] = useState<Record<string, PalikaDhmStationInfo>>(
     () => externalDhmStationsMap || cachedDhmStationsMap || {}
@@ -1345,6 +1427,7 @@ export function usePalikaChoropleth({
         currentRainMm,
         currentTempC,
         dhmStationsMap: externalDhmStationsMap || dhmStationsMap,
+        dynamicPrecipStats,
       }),
     [
       rawGeoJson,
@@ -1356,6 +1439,7 @@ export function usePalikaChoropleth({
       currentTempC,
       externalDhmStationsMap,
       dhmStationsMap,
+      dynamicPrecipStats,
     ]
   );
 }

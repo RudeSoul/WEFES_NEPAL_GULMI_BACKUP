@@ -51,6 +51,7 @@ import { resolveCalculationMethodology } from '../../data/districtCalculationAss
 import { PALIKA_GRID_DATA as palikaGridData, SubstationInfo } from '../../data/districtIndicatorAssets';
 import { DISTRICT_PALIKAS, PALIKA_CENTROIDS } from '../../data/districtPalikaAssets';
 import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
+import { type GeoTiffRasterStats, getGeoTiffZonalStats } from '../../services/geoTiffZonalStats';
 import { useNexusStore } from '../../store';
 import { PalikaHoverCard } from '../palika/PalikaHoverCard';
 
@@ -59,6 +60,7 @@ import { MapGestureHandler } from './MapGestureHandler';
 import { RiversStreamsGeoJsonLayer } from './RiversStreamsGeoJsonLayer';
 import { SpatialFlowAccumulationOverlay } from './SpatialFlowAccumulationOverlay';
 import { SpatialFlowDirectionOverlay } from './SpatialFlowDirectionOverlay';
+import { SpatialPrecipitationOverlay } from './SpatialPrecipitationOverlay';
 import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
 import { SpatialSettlementDensityOverlay } from './SpatialSettlementDensityOverlay';
 import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
@@ -373,6 +375,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
   const [contoursData, setContoursData] = useState<GeoJsonObject | null>(null);
 
   const [palikasData, setPalikasData] = useState<GeoJsonObject | null>(null);
+  const [dynamicPrecipStats, setDynamicPrecipStats] = useState<Record<string, GeoTiffRasterStats>>({});
   const [hoveredPalika, setHoveredPalika] = useState<PalikaHoverData | null>(null);
   const [resetTrigger, setResetTrigger] = useState<number>(0);
 
@@ -526,6 +529,25 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
       .catch(() => setGeoLoading(false));
   }, []);
 
+  // Decode CHIRPS GeoTIFF rasters in background to extract dynamic zonal statistics directly from TIF
+  useEffect(() => {
+    if (!palikasData) return;
+    const tiffConfigs = [
+      { key: 'annual_precipitation', url: '/tiles/average_annual_precipitation.tif' },
+      { key: 'monsoon_precipitation', url: '/tiles/average_monsoon_precipitation.tif' },
+      { key: 'dry_season_precipitation', url: '/tiles/average_dry_season_precipitation.tif' },
+    ];
+    tiffConfigs.forEach(({ key, url }) => {
+      getGeoTiffZonalStats(url, palikasData)
+        .then((stats) => {
+          setDynamicPrecipStats((prev) => ({ ...prev, [key]: stats }));
+        })
+        .catch((err) => {
+          console.warn(`Dynamic GeoTIFF decoding for ${key} skipped:`, err);
+        });
+    });
+  }, [palikasData]);
+
   // Live Climate Telemetry for Gulmi District (MERRA-2 & NASA POWER)
   const currentRainMm = climateDataset
     ? Math.round(
@@ -554,10 +576,19 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
     climateMonth: CLI_MONTH,
     currentRainMm,
     currentTempC,
+    dynamicPrecipStats,
   });
 
   const isMerraRainfallActive =
     selectedPillar === 'water' && (subFilters.waterSubFilter || 'merra_rainfall') === 'merra_rainfall';
+  const isAnnualPrecipitationActive =
+    selectedPillar === 'water' && subFilters.waterSubFilter === 'annual_precipitation';
+  const isMonsoonPrecipitationActive =
+    selectedPillar === 'water' && subFilters.waterSubFilter === 'monsoon_precipitation';
+  const isDrySeasonPrecipitationActive =
+    selectedPillar === 'water' && subFilters.waterSubFilter === 'dry_season_precipitation';
+  const isChirpsPrecipitationActive =
+    isAnnualPrecipitationActive || isMonsoonPrecipitationActive || isDrySeasonPrecipitationActive;
   const isCatchmentsActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'catchments';
   const isRiversStreamsActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'rivers_streams';
   const isFlowAccumulationActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'flow_accumulation';
@@ -574,6 +605,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
   const isOverlayModeActive =
     isMerraRainfallActive ||
+    isChirpsPrecipitationActive ||
     isSolarGhiActive ||
     isFlowAccumulationActive ||
     isFlowDirectionActive ||
@@ -1362,6 +1394,16 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
             {/* HydroBASINS Level 10 Sub-Basin Watershed Boundaries */}
             {isCatchmentsActive && catchmentsData && <CatchmentsGeoJsonLayer data={catchmentsData} />}
+
+            {isAnnualPrecipitationActive && geoData && (
+              <SpatialPrecipitationOverlay opacity={0.85} type="annual" geoData={geoData} />
+            )}
+            {isDrySeasonPrecipitationActive && geoData && (
+              <SpatialPrecipitationOverlay opacity={0.85} type="dry_season" geoData={geoData} />
+            )}
+            {isMonsoonPrecipitationActive && geoData && (
+              <SpatialPrecipitationOverlay opacity={0.85} type="monsoon" geoData={geoData} />
+            )}
 
             {/* HydroRIVERS Multi-Tier Stream Network with Strahler Orders */}
             {isRiversStreamsActive && riversStreamsData && <RiversStreamsGeoJsonLayer data={riversStreamsData} />}
