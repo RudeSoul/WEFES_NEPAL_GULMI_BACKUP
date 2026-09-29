@@ -232,5 +232,60 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
       expect(resLandType.joinedData['Chandrakot']?.value).toBe(19.9);
       expect(resLandType.joinedData['Chandrakot']?.tooltipHtml).toContain('Khet (Irrigated)');
     });
+
+    it('updates metric config and palika station data when water subfilter is dhm_station', async () => {
+      const mockDhmStations = {
+        resunga: {
+          station: 'Tamghas Gauge (#705 Climatology)',
+          type: 'Climatology',
+          elev: 1530,
+          color: '#8b5cf6',
+        },
+      };
+
+      const res = await evaluateChoropleth({
+        rawGeoJson: mockGeoJson,
+        selectedPillar: 'water',
+        subFilters: { waterSubFilter: 'dhm_station' },
+        dhmStationsMap: mockDhmStations,
+      });
+
+      expect(res.metricConfig.metricKey).toBe('dhm_station');
+      expect(res.metricConfig.label).toContain('DHM');
+      expect(res.joinedData['Resunga']?.value).toBe(1530);
+      expect(res.joinedData['Resunga']?.formattedValue).toBe('Tamghas Gauge (#705 Climatology)');
+      expect(res.joinedData['Resunga']?.color).toBe('#8b5cf6');
+      expect(res.joinedData['Kaligandaki']?.formattedValue).toBe('Unmapped Station');
+    });
+
+    it('correctly parses raw DHM station GeoJSON features into palika station mapping', async () => {
+      const { parseDhmStationsMap } = await import('../hooks/usePalikaChoropleth');
+      const features = [
+        {
+          properties: {
+            palika: 'Ruru Kshetra',
+            stationName: 'Ridi Bazar',
+            indexNo: '701',
+            stationType: 'Precipitation',
+            elevation_m: 494,
+          },
+        },
+        {
+          properties: {
+            palika: 'Resunga',
+            stationName: 'Tamghas',
+            indexNo: '725',
+            stationType: 'AWS',
+            elevation_m: 1530,
+            monitoringParameters: ['Solar Radiation'],
+          },
+        },
+      ];
+      const parsed = parseDhmStationsMap(features);
+      expect(parsed['rurukshetra']).toBeDefined();
+      expect(parsed['rurukshetra'].station).toBe('Ridi Bazar (#701 Precipitation)');
+      expect(parsed['rurukshetra'].elev).toBe(494);
+      expect(parsed['resunga'].color).toBe('#10b981');
+    });
   });
 });

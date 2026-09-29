@@ -46,6 +46,7 @@ export interface DistrictPalika {
   feasibleCrops: PalikaFeasibleCrop[];
   seasonalRotations?: PalikaSeasonalRotations;
   topCrops: PalikaFeasibleCrop[];
+  [key: string]: unknown;
 }
 
 export const PALIKA_GEO_CENTROIDS: Record<string, { lat: number; lng: number }> =

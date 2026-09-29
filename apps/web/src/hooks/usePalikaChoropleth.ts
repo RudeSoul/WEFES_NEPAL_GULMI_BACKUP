@@ -3,7 +3,7 @@
 // Classification: OBSERVED REAL & EMPIRICAL DOWNSCALING
 // Citations: MoALD Nepal, MoFAGA Nepal, DHM Nepal, CBS/NSO 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas 2.0, Nepal Electricity Authority (NEA), NARC Soil Science Division, OpenStreetMap Contributors
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import type { FeatureCollection, GeoJsonObject } from 'geojson';
 
@@ -22,7 +22,6 @@ import {
   VALIDATED_CROPS,
   WaterStressSeason,
 } from '../data/cropSuitabilityAssets';
-import { DHM_PALIKA_STATIONS_MAP } from '../data/districtHydrologyAssets';
 import {
   PALIKA_COOKING_DATA as palikaCookingData,
   PALIKA_GHI_DATA as palikaGhiData,
@@ -40,6 +39,74 @@ import { getPalikaMicroClimate } from '../utils/climateDownscaling';
 
 import { CHOROPLETH_RAMPS, computeGradientColor, normalizePalikaName } from './choroplethUtils';
 
+export interface PalikaDhmStationInfo {
+  station: string;
+  type: string;
+  elev: number;
+  color: string;
+}
+
+export interface DhmStationFeature {
+  properties?: {
+    palika?: string;
+    stationType?: string;
+    monitoringParameters?: string[];
+    stationName?: string;
+    indexNo?: string;
+    elevation_m?: number;
+    [key: string]: unknown;
+  };
+}
+
+export function parseDhmStationsMap(features: DhmStationFeature[]): Record<string, PalikaDhmStationInfo> {
+  return features.reduce((acc: Record<string, PalikaDhmStationInfo>, f: DhmStationFeature) => {
+    const p = f.properties || {};
+    const palikaKey = (p.palika || '').toLowerCase().replace(/[^a-z]/g, '');
+    if (palikaKey) {
+      const isAws = p.stationType === 'AWS' || (p.monitoringParameters || []).includes('Solar Radiation');
+      const isClim = p.stationType === 'Climatology' || p.stationType === 'Climatology/Rain';
+      acc[palikaKey] = {
+        station: `${p.stationName || ''} (#${p.indexNo || ''} ${p.stationType || ''})`.trim(),
+        type: p.stationType || 'Station',
+        elev: p.elevation_m || 0,
+        color: isAws ? '#10b981' : isClim ? '#8b5cf6' : '#0284c7',
+      };
+    }
+    return acc;
+  }, {});
+}
+
+let cachedDhmStationsMap: Record<string, PalikaDhmStationInfo> | null = null;
+let dhmStationsPromise: Promise<Record<string, PalikaDhmStationInfo>> | null = null;
+
+export async function fetchDhmStationsMap(): Promise<Record<string, PalikaDhmStationInfo>> {
+  if (cachedDhmStationsMap) {
+    return cachedDhmStationsMap;
+  }
+  if (!dhmStationsPromise) {
+    dhmStationsPromise = (async () => {
+      try {
+        const response = await fetch('/geojson/gulmi-dhm-stations.json');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch DHM stations: ${response.status} ${response.statusText}`);
+        }
+        const data = (await response.json()) as { features?: DhmStationFeature[] };
+        cachedDhmStationsMap = parseDhmStationsMap(data.features || []);
+        return cachedDhmStationsMap;
+      } catch (err) {
+        console.warn('Could not fetch DHM stations geojson:', err);
+        return {};
+      }
+    })();
+  }
+  return dhmStationsPromise;
+}
+
+export function setCachedDhmStationsMap(map: Record<string, PalikaDhmStationInfo> | null): void {
+  cachedDhmStationsMap = map;
+  dhmStationsPromise = null;
+}
+
 export interface UsePalikaChoroplethParams {
   rawGeoJson: GeoJsonObject | FeatureCollection | null | unknown;
   selectedPillar: WEFESPillar;
@@ -48,6 +115,7 @@ export interface UsePalikaChoroplethParams {
   climateMonth?: number;
   currentRainMm?: number;
   currentTempC?: number;
+  dhmStationsMap?: Record<string, PalikaDhmStationInfo>;
 }
 
 export function computePalikaChoropleth({
@@ -58,6 +126,7 @@ export function computePalikaChoropleth({
   climateMonth = 7,
   currentRainMm = 150,
   currentTempC = 19.5,
+  dhmStationsMap,
 }: UsePalikaChoroplethParams): PalikaChoroplethResult {
   const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
   const profileLookup = new Map<string, DistrictPalika>();
@@ -562,10 +631,12 @@ export function computePalikaChoropleth({
         colorRamp: CHOROPLETH_RAMPS.blues,
       };
 
+      const stations = dhmStationsMap || cachedDhmStationsMap || {};
+
       for (const feat of features) {
         const props = feat.properties || {};
         const pKey = normalizePalikaName(props.name || '');
-        const info = DHM_PALIKA_STATIONS_MAP[pKey] || {
+        const info = stations[pKey] || {
           station: 'Unmapped Station',
           type: 'N/A',
           elev: 0,
@@ -1238,7 +1309,31 @@ export function usePalikaChoropleth({
   climateMonth,
   currentRainMm,
   currentTempC,
+  dhmStationsMap: externalDhmStationsMap,
 }: UsePalikaChoroplethParams): PalikaChoroplethResult {
+  const [dhmStationsMap, setDhmStationsMap] = useState<Record<string, PalikaDhmStationInfo>>(
+    () => externalDhmStationsMap || cachedDhmStationsMap || {}
+  );
+
+  useEffect(() => {
+    if (externalDhmStationsMap) {
+      setDhmStationsMap(externalDhmStationsMap);
+      return;
+    }
+
+    let isMounted = true;
+    if (!cachedDhmStationsMap) {
+      fetchDhmStationsMap().then((data) => {
+        if (isMounted) {
+          setDhmStationsMap(data);
+        }
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [externalDhmStationsMap]);
+
   return useMemo(
     () =>
       computePalikaChoropleth({
@@ -1249,7 +1344,18 @@ export function usePalikaChoropleth({
         climateMonth,
         currentRainMm,
         currentTempC,
+        dhmStationsMap: externalDhmStationsMap || dhmStationsMap,
       }),
-    [rawGeoJson, selectedPillar, subFilters, selectedCropId, climateMonth, currentRainMm, currentTempC]
+    [
+      rawGeoJson,
+      selectedPillar,
+      subFilters,
+      selectedCropId,
+      climateMonth,
+      currentRainMm,
+      currentTempC,
+      externalDhmStationsMap,
+      dhmStationsMap,
+    ]
   );
 }
