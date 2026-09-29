@@ -1,105 +1,101 @@
-# WEFE Hydropower Assessment Pipeline (Python & QGIS)
+# WEFE Hydropower Assessment Pipeline (SAGA GIS Algorithms)
 
-Modular geospatial and hydrologic modeling engine for district-scale run-of-river and micro-hydropower potential assessment, tailored for Nepal's mountainous topography and Department of Electricity Development (DOED) regulatory standards.
+Modular, district-agnostic geospatial and hydrological modeling engine for river reach delineation and hydropower potential assessment. Built with exact algorithmic lineages from **SAGA GIS (System for Automated Geoscientific Analyses)** and international hydropower standards (BHA / IHA).
 
 ---
 
 ## Directory Architecture
 
 ```
-engines/hydro/
-├── cli.py                   # Master CLI entry point
-├── README.md                # Documentation & QGIS replication guide
-├── RULES.md                 # Engineering & mathematical rules
-├── pyproject.toml           # Python package configuration
-└── src/                     # Modular calculation engine
-    ├── __init__.py          # Clean public interface
-    ├── step1_topography.py   # Barnes et al. Priority-Flood, D8 flow, and 500m reach tracing
-    ├── step2_hydrology.py    # WECS/NEA empirical model & DHM Station 430 gauge scaling
-    ├── step3_constraints.py  # DOED 10% statutory E-flow & design flow allocation
-    ├── step4_energy.py       # Hydraulic net head, installed capacity (kW), and 12-month energy (MWh)
-    ├── step5_screening.py    # Palika boundary clipping, 50% border river sharing, slope filter
-    └── step6_verification.py # AEPC / DOED ground-truth benchmarking & GeoJSON export
+engines/water/hydro/
+├── cli.py                         # Master CLI entrypoint (--input-dem, --threshold, --output, --district)
+├── README.md                      # Documentation, scientific citations & multi-district guide
+├── RULES.md                       # Compliance & architectural boundaries
+├── pyproject.toml                 # Package dependencies (rasterio, pysheds, scipy, geopandas)
+└── src/                           # Modular SAGA calculation pipeline
+    ├── __init__.py                # Clean public interface & run_hydro_pipeline
+    ├── step1_dem_io.py            # [STEP 2 & 3] Load DEM (rasterio/pysheds) & NoData void filling
+    ├── step2_depression_filling.py# [STEP 4] Wang & Liu (2006) Sink & Depression Filling
+    ├── step3_flow_routing.py      # [STEP 5 & 6] O'Callaghan D8 Flow Direction & Tarboton Flow Accumulation
+    ├── step4_stream_network.py    # [STEP 7 & 8] Jenson Stream Extraction & Reach Head/Tail Vectorization
+    ├── step5_power_calculation.py # [STEP 9] BHA/IHA Hydropower Potential Formulation
+    └── step6_export.py            # [STEP 10] 3D Vector GeoJSON & Summary CSV Exporter
 ```
 
 ---
 
-## Quick Start
+## The 10 Pipeline Steps & Scientific Citations
 
-Run the engine from the project root:
+| Step   | Operation                       | Source Algorithm / SAGA Lineage                 | Scientific Citation                                                                                                                                                                     |
+| ------ | ------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1**  | **Component Integration**       | SAGA Parameter System (`saga_cmd`)              | Standard CLI parser with robust error handling and step logging                                                                                                                         |
+| **2**  | **Load DEM**                    | `CSG_Grid` via `rasterio` & `pysheds.grid.Grid` | Automatic metric resolution calibration ($dx, dy$ in meters)                                                                                                                            |
+| **3**  | **Handle NoData**               | SAGA `CGrid_Gaps`                               | Soap-bubble / Dirichlet Laplacian boundary relaxation                                                                                                                                   |
+| **4**  | **Fill Sinks & Depressions**    | SAGA `CFillSinks_WL`                            | **Wang, L., and Liu, H. (2006)**. _"An efficient method for identifying and filling depressions in digital elevation models."_ Int. J. of Geographical Information Science.             |
+| **5**  | **Flow Direction**              | SAGA `CD8_Flow_Analysis::Get_Direction`         | **O'Callaghan, J. F., and Mark, D. M. (1984)**. _"The extraction of drainage networks from digital elevation models."_ Computer Vision, Graphics, and Image Processing.                 |
+| **6**  | **Flow Accumulation**           | SAGA `CFlow_Parallel` (Top-down sort)           | **Tarboton, D. G., et al. (1991)**. _"On the extraction of channel networks from digital elevation data."_ Hydrological Processes.                                                      |
+| **7**  | **Extract Streams**             | SAGA `CChannelNetwork` (Pass 2)                 | **Jenson, S. K., and Dominique, J. O. (1988)**. _"Extracting topographic structure from digital elevation model data for geographic information system analysis."_ PE&RS.               |
+| **8**  | **Segment Reaches & Head/Tail** | SAGA `CD8_Flow_Analysis::Get_Segments`          | Continuous topologic reach tracing; extracts Intake $(X_h, Y_h, Z_h)$ & Powerhouse $(X_t, Y_t, Z_t)$                                                                                    |
+| **9**  | **Calculate Power Output**      | BHA / IHA Hydropower Standard                   | **British Hydropower Association (BHA) / International Hydropower Association (IHA)** guidelines: $P (\text{kW}) = g \cdot Q \cdot H \cdot \eta$ ($g = 9.81\text{ m/s}^2, \eta = 0.70$) |
+| **10** | **Output Generation**           | SAGA `CSG_Shapes` Vector Export                 | GeoJSON `LineString` format with 3D elevations, hydraulic attributes, and CSV summary                                                                                                   |
+
+---
+
+## How to Run for Any Other District (100% Reusable)
+
+This engine is completely terrain, coordinate, and district agnostic. It can be run on any district in Nepal or worldwide without altering source code.
+
+### 1. Default Run (Gulmi District)
 
 ```bash
-python3 engines/hydro/cli.py --district Gulmi --output-dir data/calculated/hydro_reaches
+python3 engines/water/hydro/cli.py --district Gulmi --threshold 500
 ```
 
-Or run standalone help:
+### 2. Baglung District (Steep Mountain Heads)
 
 ```bash
-python3 engines/hydro/cli.py --help
+python3 engines/water/hydro/cli.py \
+    --input-dem /path/to/baglung_dem_30m.tif \
+    --district Baglung \
+    --threshold 300 \
+    --runoff-factor 0.038 \
+    --output data/calculated/hydro_reaches/baglung_hydro_reaches.geojson
+```
+
+### 3. Mustang District (Arid Trans-Himalayan Region)
+
+```bash
+python3 engines/water/hydro/cli.py \
+    --input-dem /path/to/mustang_dem_30m.tif \
+    --district Mustang \
+    --threshold 600 \
+    --runoff-factor 0.015 \
+    --output data/calculated/hydro_reaches/mustang_hydro_reaches.geojson
+```
+
+### 4. Jhapa District (Lowland Terai River Stems)
+
+```bash
+python3 engines/water/hydro/cli.py \
+    --input-dem /path/to/jhapa_dem_30m.tif \
+    --district Jhapa \
+    --threshold 2000 \
+    --runoff-factor 0.028 \
+    --output data/calculated/hydro_reaches/jhapa_hydro_reaches.geojson
 ```
 
 ---
 
-## Pipeline Workflow & Mathematical Foundations
+## Key CLI Options
 
-### Step 1: Topographic Modeling (`src/step1_topography.py`)
-
-- **Conditioning**: Priority-Flood algorithm (Barnes et al., 2014) to fill spurious sinks while preserving real valleys.
-- **Routing**: Deterministic 8-neighbor (D8) steepest-slope direction coding.
-- **Catchment Area**: Topological sort (Kahn's in-degree algorithm) calculating upstream accumulation in km².
-- **Reach Extraction**: Continuously traces downstream reaches at target 500m intervals, sampling upstream elevation ($Z_u$), downstream elevation ($Z_d$), gross head ($H_{\text{gross}} = Z_u - Z_d$), and bed slope.
-
-### Step 2: Hydrology & Flow Duration (`src/step2_hydrology.py`)
-
-- **Method A (Tributaries $< 200\text{ km}^2$)**: WECS/NEA (1997) & MIP Regional Hydrology Method:
-  $$Q_{\text{mean}} = 0.024 \cdot A^{0.98} \cdot \left(\frac{\text{MWI}}{1000}\right)^{1.10}$$
-  $$Q_{40} = 0.0165 \cdot A^{0.99} \cdot \left(\frac{\text{MWI}}{1000}\right)^{1.05}$$
-  $$Q_{65} = 0.0088 \cdot A^{1.01} \cdot \left(\frac{\text{MWI}}{1000}\right)^{0.95}$$
-  With Gulmi Monsoon Wetness Index $\text{MWI} = 1,600\text{ mm}$.
-- **Method B (Major Stems $\ge 200\text{ km}^2$)**: Gauge-transfer scaling from DHM Station 430 (Badigad at Rudrabeni, $A = 2,140\text{ km}^2$, $Q_{\text{mean}} = 68.5\text{ m}^3/\text{s}$):
-  $$Q_{\text{reach}} = Q_{\text{gauge}} \cdot \left(\frac{A_{\text{reach}}}{A_{\text{gauge}}}\right)^{0.85}$$
-
-### Step 3: Environmental Constraints (`src/step3_constraints.py`)
-
-- **Statutory E-flow ($Q\_{\text{env}}$)**: By Nepal DOED policy, at least 10% of the minimum lean monthly dry-season flow must remain in the natural riverbed:
-  $$Q_{\text{env}} = 0.10 \times \min(Q_{\text{jan}} \dots Q_{\text{dec}})$$
-  $$Q_{\text{net}} = \max(0, Q_{\text{design}} - Q_{\text{env}})$$
-- **Scale Exceedance ($Q\_{\text{design}}$)**:
-  - Commercial RoR ($\ge 10\text{ km}^2$): $Q_{40}$ (wet-season peak grid export, $\eta = 0.82$).
-  - Rural Micro-Hydro ($< 10\text{ km}^2$): $Q_{65}$ (reliable dry-season base load, $\eta = 0.65$).
-
-### Step 4: Power & Energy Yield (`src/step4_energy.py`)
-
-- **Net Head**: Accounts for 10% hydraulic losses: $H_{\text{net}} = 0.90 \times H_{\text{gross}}$.
-- **Installed Capacity**:
-  $$P_{\text{inst}} (\text{kW}) = 9.81 \cdot \eta \cdot Q_{\text{net}} \cdot H_{\text{net}}$$
-- **12-Month Energy Simulation**: Simulates monthly power output and integrates operating hours for dry season (Dec–May) and wet season (Jun–Nov).
-
-### Step 5: Spatial Screening & Apportionment (`src/step5_screening.py`)
-
-- Clips reaches to Gulmi's 12 local municipal boundaries (Palikas).
-- Apportions border rivers (Kaligandaki, Badigad) with a 50% capacity factor.
-- Enforces strict viability criteria ($P \ge 5\text{ kW}$, slope $\ge 2\%$, head $\ge 5\text{ m}$).
-- Applies a 1.5 km cultural exclusion buffer around sacred pilgrimage sites (Ridi Dham confluence).
-
-### Step 6: Ground-Truth Verification (`src/step6_verification.py`)
-
-- Cross-references results against registered AEPC installations (Chhaldi Khola, Panaha Khola, Huldi Khola, Darling Khola) and DOED commercial licenses (Upper Hugdi 5 MW, Badigad cascade).
-- Exports:
-  - `reaches_screened.csv`: Tabular dataset of all viable reaches with full hydrologic, head, and energy attributes.
-  - `hydro_palika_summary.json`: Local-level summary for the 12 Palikas.
-  - `hydro_reaches.geojson`: LineString features ready for Web GIS or QGIS visualization.
-
----
-
-## Desktop QGIS Replication Reference
-
-| Pipeline Step                     | Desktop QGIS Tool / Menu                                                                             |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| **Fill Depressions**              | Processing Toolbox $\to$ Whitebox Tools $\to$ _Fill Depressions_ (or SAGA _Fill Sinks (Wang & Liu)_) |
-| **Flow Direction & Accumulation** | Processing Toolbox $\to$ Whitebox Tools $\to$ _D8 Flow Accumulation_                                 |
-| **Stream Raster Extraction**      | Raster Calculator $\to$ `("accumulation@1" >= 555)`                                                  |
-| **Reach Vectorization**           | Processing Toolbox $\to$ _Stream To Feature_ $\to$ _Split lines by maximum length_ (500 m)           |
-| **Elevation Sampling**            | Processing Toolbox $\to$ _Sample raster values_ (sample DEM at start and end vertices)               |
-| **Attribute Calculations**        | Layer Attribute Table $\to$ Field Calculator (`Ctrl + E` / `Cmd + E`) applying formulas above        |
-| **Spatial Clipping & Joins**      | Vector $\to$ Geoprocessing Tools $\to$ _Clip_ / _Join Attributes by Location_                        |
+| Argument          | Type    | Default       | Description                                                        |
+| ----------------- | ------- | ------------- | ------------------------------------------------------------------ |
+| `--input-dem`     | String  | Auto-resolved | Path to input DEM GeoTIFF                                          |
+| `--threshold`     | Integer | `500`         | Stream initiation flow accumulation threshold in cells             |
+| `--output`        | String  | Auto-resolved | Target GeoJSON destination file path                               |
+| `--output-csv`    | String  | Auto-resolved | Target CSV summary destination file path                           |
+| `--district`      | String  | `"Gulmi"`     | Target district name for metadata attribution                      |
+| `--runoff-factor` | Float   | `0.032`       | Localized runoff factor in $\text{m}^3/(\text{s}\cdot\text{km}^2)$ |
+| `--efficiency`    | Float   | `0.70`        | Total electromechanical efficiency $\eta$ (BHA/IHA Standard)       |
+| `--reach-len`     | Float   | `500.0`       | Target reach segmentation interval in meters                       |
+| `--min-slope`     | Float   | `0.01`        | Minimum downward slope in degrees preserved during sink filling    |

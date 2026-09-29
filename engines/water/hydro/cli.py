@@ -1,25 +1,65 @@
 #!/usr/bin/env python3
+# [DATA PROVENANCE]
+# Data Source: User-provided Digital Elevation Model (GeoTIFF)
+# Classification: AUTONOMOUS HYDRO-TOPOGRAPHIC DECISION SUPPORT ENGINE
+# Citations: SAGA GIS (Conrad et al., 2015); Wang & Liu (2006); O'Callaghan & Mark (1984);
+#            Tarboton et al. (1991); Jenson & Dominique (1988); British Hydropower Association (BHA)
+
 """
-engines/hydro/cli.py
-====================
-CLI entry point for the Autonomous WEFES Hydropower & Topographic Engine.
+engines/water/hydro/cli.py
+==========================
+STEP 1. COMPONENT INTEGRATION:
+Standard CLI entry point for the Autonomous WEFES Hydropower & Topographic Engine.
 Complies with Rule 1 of RULESET.md (Zero Inward Code Imports) and Rule 2 (Data Provenance).
 
-[DATA PROVENANCE]
-Data Source: data/calculated/hydro_reaches, data/real/hydrology/gulmi_hydrology_assets.json
-Classification: CALCULATED BASELINES & OBSERVED REAL
-Citations: Department of Hydrology and Meteorology (DHM), Copernicus DEM 30m
+================================================================================
+HOW TO USE THIS ENGINE FOR ANY OTHER DISTRICT (100% REUSABLE)
+================================================================================
+This engine is completely terrain, coordinate, and district agnostic. To run the
+assessment for any new district in Nepal (or globally):
 
-Usage:
-  python3 engines/hydro/cli.py --district Gulmi --output-dir data/calculated/hydro_reaches
+1. PREPARE YOUR DEM:
+   Place any 30m, 12.5m (ALOS PALSAR), or 10m DEM GeoTIFF of your target district
+   in `data/real/rasters/` or pass any absolute path.
 
-Options:
-  --dem-path        Path to input Copernicus 30m DEM GeoTIFF
-  --palika-geojson  Path to municipal boundaries GeoJSON
-  --output-dir      Directory where output tables, GeoJSON, and summaries will be written
-  --district        Target district name (default: Gulmi)
-  --reach-len       Target river reach segmentation length in meters (default: 500.0)
-  --api-key         OpenTopography API key (used if DEM needs to be downloaded)
+2. RUN VIA CLI:
+   Pass the path to your DEM, your desired accumulation threshold, and output path:
+
+   # Example 1: Baglung District (Steep High-Head Torrents)
+   python3 engines/water/hydro/cli.py \\
+       --input-dem /path/to/baglung_dem_30m.tif \\
+       --district Baglung \\
+       --threshold 300 \\
+       --runoff-factor 0.038 \\
+       --output data/calculated/hydro_reaches/baglung_hydro_reaches.geojson
+
+   # Example 2: Mustang District (Arid Trans-Himalayan Region)
+   python3 engines/water/hydro/cli.py \\
+       --input-dem /path/to/mustang_dem_30m.tif \\
+       --district Mustang \\
+       --threshold 600 \\
+       --runoff-factor 0.015 \\
+       --output data/calculated/hydro_reaches/mustang_hydro_reaches.geojson
+
+   # Example 3: Jhapa District (Lowland River Basins)
+   python3 engines/water/hydro/cli.py \\
+       --input-dem /path/to/jhapa_dem_30m.tif \\
+       --district Jhapa \\
+       --threshold 2000 \\
+       --runoff-factor 0.028 \\
+       --output data/calculated/hydro_reaches/jhapa_hydro_reaches.geojson
+
+   # Example 4: Gulmi District (Default)
+   python3 engines/water/hydro/cli.py \\
+       --district Gulmi \\
+       --threshold 500
+
+3. AUTOMATIC COORDINATE SYSTEM & PROJECTION HANDLING:
+   - If your DEM is in UTM meters (e.g. EPSG:32644 / Zone 44N or EPSG:32645 / Zone 45N),
+     it directly uses the metric pixel grid.
+   - If your DEM is in geographic degrees (EPSG:4326), it automatically calibrates
+     planar metric spacing (dx, dy in meters) at the district's centroid latitude.
+================================================================================
 """
 
 from __future__ import annotations
@@ -27,180 +67,172 @@ from __future__ import annotations
 import argparse
 import os
 import sys
-import tarfile
-import urllib.request
+import time
 from pathlib import Path
 
-# Add current directory to path so `src` resolves cleanly both standalone and in monorepo
+# Add engine directory to path so `src` resolves cleanly
 ENGINE_DIR = Path(__file__).resolve().parent
-# Determine monorepo root or fallback to local directory if run standalone
+if str(ENGINE_DIR) not in sys.path:
+    sys.path.insert(0, str(ENGINE_DIR))
+
+# Determine monorepo root or fallback to local directory
 if len(ENGINE_DIR.parents) >= 3 and (ENGINE_DIR.parents[2] / "data").exists():
     PROJECT_ROOT = ENGINE_DIR.parents[2]
 elif len(ENGINE_DIR.parents) >= 2 and (ENGINE_DIR.parents[1] / "data").exists():
     PROJECT_ROOT = ENGINE_DIR.parents[1]
 else:
     PROJECT_ROOT = ENGINE_DIR
-if str(ENGINE_DIR) not in sys.path:
-    sys.path.insert(0, str(ENGINE_DIR))
 
-from src import (
-    run_topographic_analysis,
-    run_hydrological_estimation,
-    apply_environmental_flows,
-    simulate_energy_yield,
-    apply_spatial_screening,
-    verify_and_export
-)
+try:
+    from engines.water.hydro.src import run_hydro_pipeline
+except ImportError:
+    from src import run_hydro_pipeline
 
 
-def ensure_dem(dem_path: str, output_dir: str, api_key: str):
-    """Verifies local DEM exists or downloads Copernicus 30m from OpenTopography."""
-    if os.path.exists(dem_path):
-        print(f"--> [Input DEM Verified]: {os.path.basename(dem_path)}")
-        return
-
-    print(f"--> DEM not found at {dem_path}. Fetching Copernicus 30m via OpenTopography API...")
-    os.makedirs(os.path.dirname(os.path.abspath(dem_path)), exist_ok=True)
-    south, north, west, east = 27.80, 28.50, 82.85, 83.75
-    url = (
-        f"https://portal.opentopography.org/API/globaldem?"
-        f"demtype=COP30&south={south}&north={north}&west={west}&east={east}"
-        f"&outputFormat=GTiff&API_Key={api_key}"
-    )
-    temp_file = os.path.join(output_dir, "temp_dem_download")
-    urllib.request.urlretrieve(url, temp_file)
-
-    if tarfile.is_tarfile(temp_file):
-        with tarfile.open(temp_file, "r:*") as tar:
-            tar.extractall(path=output_dir)
-        os.remove(temp_file)
-        tifs = [f for f in os.listdir(output_dir) if f.endswith(".tif") and "output" in f.lower()]
-        if tifs:
-            os.rename(os.path.join(output_dir, tifs[0]), dem_path)
-        else:
-            all_tifs = [f for f in os.listdir(output_dir) if f.endswith(".tif")]
-            if all_tifs:
-                os.rename(os.path.join(output_dir, all_tifs[0]), dem_path)
-    else:
-        os.rename(temp_file, dem_path)
-    print(f"    Saved DEM -> {dem_path}")
+def resolve_default_dem_path(district: str) -> str:
+    """Finds available DEM file in the repository or returns standard default."""
+    candidates = [
+        PROJECT_ROOT / "data" / "real" / "rasters" / f"{district.lower()}_dem_30m.tif",
+        PROJECT_ROOT / "data" / "real" / "rasters" / "gulmi_dem_30m.tif",
+        PROJECT_ROOT / "data" / "Gulmi_OpenTopography_data_Hillside_and_slope" / "gulmi_dem_30m.tif",
+    ]
+    for p in candidates:
+        if p.exists():
+            return str(p)
+    return str(candidates[0])
 
 
 def main():
-    parser = argparse.ArgumentParser(description="WEFES Hydropower & Topographic Assessment Engine")
-    parser.add_argument("--dem-path", type=str, default=None, help="Path to input DEM GeoTIFF")
-    parser.add_argument("--palika-geojson", type=str, default=None, help="Path to Palika boundary GeoJSON")
-    parser.add_argument("--input-dir", type=str, default=None, help="Base data/real directory")
-    parser.add_argument("--output-dir", type=str, default=None, help="Output destination folder")
-    parser.add_argument("--district", type=str, default="Gulmi", help="Target district name")
-    parser.add_argument("--reach-len", type=float, default=500.0, help="Target reach length in meters")
-    parser.add_argument("--api-key", type=str, default="8660814057d43340b72f513fbbb97983", help="OpenTopography API Key")
+    parser = argparse.ArgumentParser(
+        description="Autonomous WEFES Hydropower & Topographic Assessment Engine (SAGA GIS Algorithms)",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    
+    # Required / Primary CLI Arguments (Step 1)
+    parser.add_argument(
+        "--input-dem",
+        type=str,
+        default=None,
+        help="Path to input digital elevation model (DEM GeoTIFF)"
+    )
+    parser.add_argument(
+        "--threshold",
+        type=int,
+        default=500,
+        help="Stream initiation flow accumulation threshold in pixels"
+    )
+    parser.add_argument(
+        "--output",
+        type=str,
+        default=None,
+        help="Target output vector file path (GeoJSON format)"
+    )
+    parser.add_argument(
+        "--output-csv",
+        type=str,
+        default=None,
+        help="Optional target path for summary tabular CSV file"
+    )
+    
+    # District & Hydrological Parameters
+    parser.add_argument(
+        "--district",
+        type=str,
+        default="Gulmi",
+        help="Target district name (e.g. Gulmi, Baglung, Mustang, Jhapa)"
+    )
+    parser.add_argument(
+        "--runoff-factor",
+        type=float,
+        default=0.032,
+        help="Localized runoff factor in m³/(s·km²) to convert catchment area to design discharge Q"
+    )
+    parser.add_argument(
+        "--efficiency",
+        type=float,
+        default=0.70,
+        help="Total electromechanical efficiency η (enforced standard: 0.70 per BHA/IHA guidelines)"
+    )
+    parser.add_argument(
+        "--reach-len",
+        type=float,
+        default=500.0,
+        help="Target reach segmentation interval in meters"
+    )
+    parser.add_argument(
+        "--min-slope",
+        type=float,
+        default=0.01,
+        help="Minimum downward slope gradient in degrees preserved during sink filling (Wang & Liu, 2006)"
+    )
 
     args = parser.parse_args()
 
-    # Determine default paths relative to PROJECT_ROOT
-    input_base = Path(args.input_dir) if args.input_dir else (PROJECT_ROOT / "data" / "real")
-    output_dir = Path(args.output_dir) if args.output_dir else (PROJECT_ROOT / "data" / "calculated" / "hydro_reaches")
-    output_dir.mkdir(parents=True, exist_ok=True)
+    # 1. Resolve input DEM path
+    dem_path = args.input_dem if args.input_dem else resolve_default_dem_path(args.district)
+    if not os.path.exists(dem_path):
+        print(f"\n[FATAL ERROR] Input DEM raster does not exist on physical disk:\n  -> {dem_path}")
+        print("Please provide a valid DEM via: --input-dem /path/to/raster.tif\n")
+        sys.exit(1)
 
-    # Resolve DEM path
-    if args.dem_path:
-        dem_path = args.dem_path
+    # 2. Resolve output paths
+    if args.output:
+        output_vector = args.output
     else:
-        # Check standard locations (data/real/rasters or legacy data folder)
-        primary_dem = input_base / "rasters" / "gulmi_dem_30m.tif"
-        fallback_dem = PROJECT_ROOT / "data" / "Gulmi_OpenTopography_data_Hillside_and_slope" / "gulmi_dem_30m.tif"
-        if primary_dem.exists():
-            dem_path = str(primary_dem)
-        elif fallback_dem.exists():
-            dem_path = str(fallback_dem)
-        else:
-            dem_path = str(primary_dem)
+        out_folder = PROJECT_ROOT / "data" / "calculated" / "hydro_reaches"
+        output_vector = str(out_folder / f"{args.district.lower()}_hydro_reaches.geojson")
+        
+    output_csv = args.output_csv
 
-    # Resolve GeoJSON path
-    if args.palika_geojson:
-        geojson_path = args.palika_geojson
-    else:
-        primary_geo = input_base / "boundaries" / "gulmi-palikas.json"
-        legacy_geo = PROJECT_ROOT / "data" / "geojson" / "gulmi-palikas.json"
-        if primary_geo.exists():
-            geojson_path = str(primary_geo)
-        elif legacy_geo.exists():
-            geojson_path = str(legacy_geo)
-        else:
-            geojson_path = str(legacy_geo)
-
+    # Terminal Header
     print("==================================================================")
-    print(f" WEFES HYDRO ENGINE: Assessment for {args.district} District")
+    print("  WEFES AUTONOMOUS HYDRO ENGINE: SAGA GIS SCIENTIFIC PIPELINE     ")
     print("==================================================================")
-    print(f"   • DEM Input:        {dem_path}")
-    print(f"   • Palika GeoJSON:   {geojson_path}")
-    print(f"   • Output Directory: {output_dir}")
+    print(f"  • District Target:      {args.district}")
+    print(f"  • Input DEM Path:       {dem_path}")
+    print(f"  • Stream Threshold:     {args.threshold:,} cells")
+    print(f"  • Runoff Factor:        {args.runoff_factor:.4f} m³/(s·km²)")
+    print(f"  • System Efficiency:    {args.efficiency:.2f} (BHA/IHA Guidelines)")
+    print(f"  • Target Reach Step:    {args.reach_len:.1f} m")
+    print(f"  • Target Output Vector: {output_vector}")
     print("==================================================================")
 
-    # 0. Ensure DEM is ready
-    ensure_dem(dem_path, str(output_dir), args.api_key)
+    start_time = time.time()
 
-    # 1. Step 1: Topographic Analysis
-    reaches_step1 = run_topographic_analysis(
-        dem_path=dem_path,
-        output_dir=str(output_dir),
-        target_reach_len_m=args.reach_len,
-        micro_threshold_km2=0.5,
-        ror_threshold_km2=10.0,
-        save_rasters=True
-    )
+    try:
+        # Execute the 10-step pipeline
+        report = run_hydro_pipeline(
+            dem_path=dem_path,
+            output_vector_path=output_vector,
+            output_csv_path=output_csv,
+            threshold=args.threshold,
+            district=args.district,
+            runoff_factor=args.runoff_factor,
+            efficiency=args.efficiency,
+            target_reach_len_m=args.reach_len,
+            min_slope_deg=args.min_slope
+        )
 
-    # 2. Step 2: Hydrological Estimation (WECS/NEA + DHM Station 430)
-    reaches_step2 = run_hydrological_estimation(
-        reaches_df=reaches_step1,
-        mwi=1600.0,
-        gauge_area_km2=2140.0,
-        gauge_qmean=68.5,
-        gauge_transfer_threshold_km2=200.0
-    )
+        elapsed = time.time() - start_time
+        print("\n==================================================================")
+        print(" [SUCCESS] Hydropower Assessment Complete!")
+        print("==================================================================")
+        print(f"  • Total Stream Reaches:      {report['total_reaches']:,}")
+        print(f"  • Total Capacity Potential:  {report['total_potential_mw']:.3f} MW")
+        print(f"  • Estimated Annual Energy:   {report['total_annual_generation_gwh']:.2f} GWh/yr")
+        print(f"  • Mean Gross Head:           {report['mean_gross_head_m']:.1f} m")
+        print(f"  • Mean Design Discharge:     {report['mean_discharge_m3s']:.4f} m³/s")
+        print(f"  • Max Single Reach Output:   {report['max_reach_power_kw']:.1f} kW")
+        print(f"  • Exported GeoJSON:          {report['vector_file']}")
+        print(f"  • Exported Summary CSV:      {report['csv_file']}")
+        print(f"  • Total Execution Time:      {elapsed:.2f} seconds")
+        print("==================================================================\n")
 
-    # 3. Step 3: Environmental Flow Allocation (DOED 10% Statutory E-Flow)
-    reaches_step3 = apply_environmental_flows(
-        reaches_df=reaches_step2,
-        env_flow_ratio=0.10,
-        ror_efficiency=0.82,
-        micro_efficiency=0.65
-    )
-
-    # 4. Step 4: Power and Monthly Energy Simulation
-    reaches_step4 = simulate_energy_yield(
-        reaches_df=reaches_step3,
-        head_loss_factor=0.90
-    )
-
-    # 5. Step 5: Spatial Screening & Apportionment
-    screened_reaches, palika_summary = apply_spatial_screening(
-        reaches_df=reaches_step4,
-        palika_geojson_path=geojson_path,
-        border_apportion_factor=0.50,
-        min_slope_pct=2.0,
-        min_head_m=5.0,
-        cultural_buffer_km=1.5
-    )
-
-    # 6. Step 6: Ground-Truth Verification & Export
-    report = verify_and_export(
-        screened_df=screened_reaches,
-        palika_summary=palika_summary,
-        output_dir=str(output_dir),
-        district_name=args.district
-    )
-
-    print("==================================================================")
-    print(" Execution Complete! Summary Results:")
-    print(f"   • Viable Screened Reaches: {report['total_screened_viable_reaches']:,}")
-    print(f"   • Total Viable Capacity:   {report['total_viable_potential_MW']} MW")
-    print(f"   • Commercial RoR (>1 MW):  {report['commercial_ror_potential_MW']} MW")
-    print(f"   • Rural Micro-Hydro:       {report['rural_micro_potential_MW']} MW")
-    print(f"   • Annual Clean Energy:     {report['annual_energy_generation_GWh']} GWh/yr")
-    print(f"   • Saved In:                {output_dir}")
-    print("==================================================================")
+    except Exception as err:
+        print(f"\n[FATAL ERROR] Engine execution failed: {err}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
 
 
 if __name__ == "__main__":
