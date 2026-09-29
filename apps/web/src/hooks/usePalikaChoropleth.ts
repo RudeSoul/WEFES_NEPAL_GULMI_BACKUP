@@ -5,6 +5,8 @@
 
 import { useMemo } from 'react';
 
+import type { FeatureCollection, GeoJsonObject } from 'geojson';
+
 import {
   JoinedPalikaData,
   PalikaChoroplethMetricConfig,
@@ -28,15 +30,20 @@ import {
   PALIKA_LANDHOLDING_DATA as palikaLandholdingData,
   PALIKA_SOIL_DATA as palikaSoilData,
 } from '../data/districtIndicatorAssets';
-import { DISTRICT_PALIKAS, HYDRO_PALIKA_SUMMARY } from '../data/districtPalikaAssets';
+import {
+  DISTRICT_PALIKAS,
+  DistrictPalika,
+  HYDRO_PALIKA_SUMMARY,
+  PalikaFeasibleCrop,
+} from '../data/districtPalikaAssets';
 import { getPalikaMicroClimate } from '../utils/climateDownscaling';
 
 import { CHOROPLETH_RAMPS, computeGradientColor, normalizePalikaName } from './choroplethUtils';
 
 export interface UsePalikaChoroplethParams {
-  rawGeoJson: any;
+  rawGeoJson: GeoJsonObject | FeatureCollection | null | unknown;
   selectedPillar: WEFESPillar;
-  subFilters: Record<string, any>;
+  subFilters: Record<string, string>;
   selectedCropId?: string;
   climateMonth?: number;
   currentRainMm?: number;
@@ -53,12 +60,12 @@ export function computePalikaChoropleth({
   currentTempC = 19.5,
 }: UsePalikaChoroplethParams): PalikaChoroplethResult {
   const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
-  const profileLookup = new Map<string, any>();
+  const profileLookup = new Map<string, DistrictPalika>();
   for (const p of gulmiPalikas) {
     profileLookup.set(normalizePalikaName(p.name), p);
   }
-  const hydroLookup = new Map<string, any>();
-  for (const h of HYDRO_PALIKA_SUMMARY as any[]) {
+  const hydroLookup = new Map<string, (typeof HYDRO_PALIKA_SUMMARY)[number]>();
+  for (const h of HYDRO_PALIKA_SUMMARY) {
     hydroLookup.set(normalizePalikaName(h.palika), h);
   }
 
@@ -73,9 +80,9 @@ export function computePalikaChoropleth({
   };
 
   const joinedData: Record<string, JoinedPalikaData> = {};
-  const features = rawGeoJson?.features || [];
+  const features = (rawGeoJson as FeatureCollection | null | undefined)?.features || [];
 
-  const getProfile = (props: any) => {
+  const getProfile = (props?: { name?: string; [key: string]: unknown }) => {
     const norm = normalizePalikaName(props?.name || '');
     const match = profileLookup.get(norm);
     if (!match) {
@@ -86,7 +93,7 @@ export function computePalikaChoropleth({
     return match;
   };
 
-  const getHydro = (props: any) => {
+  const getHydro = (props?: { name?: string; [key: string]: unknown }) => {
     const norm = normalizePalikaName(props?.name || '');
     const match = hydroLookup.get(norm);
     if (!match) {
@@ -185,7 +192,7 @@ export function computePalikaChoropleth({
       }
     } else if (foodMode === 'land_typology') {
       const landMetric = subFilters.landMetric || 'khet_pct';
-      const landholdingMap = (palikaLandholdingData as any).palikas || {};
+      const landholdingMap = palikaLandholdingData.palikas || {};
 
       metricConfig = {
         metricKey: `land_typology_${landMetric}`,
@@ -339,7 +346,9 @@ export function computePalikaChoropleth({
         const soilPh = pData?.soilPh ?? 0;
 
         const cropKey = cropId === 'finger_millet' ? 'millet' : cropId === 'large_cardamom' ? 'cardamom' : cropId;
-        const surveyedCrop = (pData?.feasibleCrops || []).find((c: any) => c.cropId === cropId || c.cropId === cropKey);
+        const surveyedCrop = (pData?.feasibleCrops || []).find(
+          (c: PalikaFeasibleCrop) => c.cropId === cropId || c.cropId === cropKey
+        );
 
         const evalRes = evaluateCropSuitability(
           cropId,
@@ -721,7 +730,7 @@ export function computePalikaChoropleth({
         colorRamp: CHOROPLETH_RAMPS.ylgn,
       };
 
-      const soilMap = (palikaSoilData as any).palikas || {};
+      const soilMap = palikaSoilData.palikas || {};
 
       for (const feat of features) {
         const props = feat.properties || {};
@@ -768,7 +777,7 @@ export function computePalikaChoropleth({
         colorRamp: CHOROPLETH_RAMPS.blues,
       };
 
-      const soilMap = (palikaSoilData as any).palikas || {};
+      const soilMap = palikaSoilData.palikas || {};
 
       for (const feat of features) {
         const props = feat.properties || {};
@@ -815,7 +824,7 @@ export function computePalikaChoropleth({
         colorRamp: CHOROPLETH_RAMPS.blues,
       };
 
-      const soilMap = (palikaSoilData as any).palikas || {};
+      const soilMap = palikaSoilData.palikas || {};
 
       for (const feat of features) {
         const props = feat.properties || {};
@@ -898,7 +907,7 @@ export function computePalikaChoropleth({
         colorRamp: ['#fbbf24', '#f59e0b', '#b45309'],
       };
 
-      const palikaGhiMap = (palikaGhiData as any).palikas || {};
+      const palikaGhiMap = palikaGhiData.palikas || {};
 
       for (const feat of features) {
         const props = feat.properties || {};
@@ -945,7 +954,7 @@ export function computePalikaChoropleth({
         colorRamp: ['#10b981', '#f59e0b', '#ef4444', '#991b1b'],
       };
 
-      const cookingPalikas = (palikaCookingData as any).palikas || {};
+      const cookingPalikas = palikaCookingData.palikas || {};
 
       for (const feat of features) {
         const props = feat.properties || {};
@@ -1010,7 +1019,7 @@ export function computePalikaChoropleth({
         colorRamp: ['#047857', '#0ea5e9', '#8b5cf6', '#f59e0b'],
       };
 
-      const gridPalikas = (palikaGridData as any).palikas || {};
+      const gridPalikas = palikaGridData.palikas || {};
 
       for (const feat of features) {
         const props = feat.properties || {};
@@ -1119,7 +1128,7 @@ export function computePalikaChoropleth({
         colorRamp: CHOROPLETH_RAMPS.ylgn,
       };
 
-      const landholdingMap = (palikaLandholdingData as any).palikas || {};
+      const landholdingMap = palikaLandholdingData.palikas || {};
 
       for (const feat of features) {
         const props = feat.properties || {};
@@ -1163,7 +1172,7 @@ export function computePalikaChoropleth({
                               • Bari (Upland Rainfed): <strong>${matched.bariLandHa.toLocaleString()} ha</strong> (${matched.bariPercentage}%)
                             </div>
                             <div style="color: #64748b; font-size: 8.5px; margin-top: 2px; border-top: 1px dashed #cbd5e1; pt-0.5;">
-                              👥 Census HHs: <strong>${matched.censusHouseholds2021.toLocaleString()}</strong> | 🏠 OSM Buildings: <strong>${matched.osmBuildingCount.toLocaleString()}</strong>
+                              👥 Census HHs: <strong>${(matched.censusHouseholds2021 ?? 0).toLocaleString()}</strong> | 🏠 OSM Buildings: <strong>${(matched.osmBuildingCount ?? 0).toLocaleString()}</strong>
                             </div>
                           </div>`,
           raw: matched,
@@ -1221,17 +1230,26 @@ export function computePalikaChoropleth({
   };
 }
 
-export function usePalikaChoropleth(params: UsePalikaChoroplethParams): PalikaChoroplethResult {
+export function usePalikaChoropleth({
+  rawGeoJson,
+  selectedPillar,
+  subFilters,
+  selectedCropId,
+  climateMonth,
+  currentRainMm,
+  currentTempC,
+}: UsePalikaChoroplethParams): PalikaChoroplethResult {
   return useMemo(
-    () => computePalikaChoropleth(params),
-    [
-      params.rawGeoJson,
-      params.selectedPillar,
-      params.subFilters,
-      params.selectedCropId,
-      params.climateMonth,
-      params.currentRainMm,
-      params.currentTempC,
-    ]
+    () =>
+      computePalikaChoropleth({
+        rawGeoJson,
+        selectedPillar,
+        subFilters,
+        selectedCropId,
+        climateMonth,
+        currentRainMm,
+        currentTempC,
+      }),
+    [rawGeoJson, selectedPillar, subFilters, selectedCropId, climateMonth, currentRainMm, currentTempC]
   );
 }

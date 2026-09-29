@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { db } from '@wefes/database';
-import { Crop, District, WEFESOutput, WEFESPillar } from '@wefes/shared-types';
+import { ClimateDataset, Crop, District, WEFESOutput, WEFESPillar } from '@wefes/shared-types';
 
 export interface NexusState {
   // --- 1. Pillar & Sub-filter State ---
@@ -44,7 +44,7 @@ export interface NexusState {
   setShowPalikaLabels: (show: boolean | ((prev: boolean) => boolean)) => void;
 
   // --- 5. Climate Telemetry & Spatial Cache ---
-  climateDataset: any | null;
+  climateDataset: ClimateDataset | null;
   isClimateLoading: boolean;
   fetchClimateDataset: () => Promise<void>;
 }

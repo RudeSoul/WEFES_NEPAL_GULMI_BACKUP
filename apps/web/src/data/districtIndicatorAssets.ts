@@ -21,14 +21,21 @@ export interface PalikaCookingProfile {
   electricity: number;
   biogas: number;
   cleanCookingPct?: number;
+  [key: string]: unknown;
 }
 
 export interface PalikaGhiProfile {
-  meanGhiKwhM2Day: number;
-  minGhi: number;
-  maxGhi: number;
-  pvoutKwhKwp: number;
-  solarClass: string;
+  min: number;
+  max: number;
+  mean: number;
+  opta: number;
+  count: number;
+  meanGhiKwhM2Day?: number;
+  minGhi?: number;
+  maxGhi?: number;
+  pvoutKwhKwp?: number;
+  solarClass?: string;
+  [key: string]: unknown;
 }
 
 export interface PalikaGridProfile {
@@ -36,7 +43,18 @@ export interface PalikaGridProfile {
   totalConsumers: number;
   substationCount: number;
   nearestSubstation: string;
+  substationName?: string;
   reliabilityTier: string;
+  substationNepali?: string;
+  connectedHydro?: string;
+  color?: string;
+  hubVoltage?: string;
+  capacityMVA?: number;
+  tierKey?: string;
+  feederDistanceKm?: number;
+  lineLossEstimatePct?: number;
+  technicalDetails?: string;
+  [key: string]: unknown;
 }
 
 export interface PalikaLandholdingProfile {
@@ -47,6 +65,18 @@ export interface PalikaLandholdingProfile {
   bariPct: number;
   irrigatedPct: number;
   parcelDensityPerHolding: number;
+  avgHoldingRopaniPerHh: number;
+  avgHoldingHaPerHh: number;
+  totalAgriLandHa: number;
+  khetLandHa: number;
+  bariLandHa: number;
+  khetPercentage?: number;
+  bariPercentage?: number;
+  avgParcelsPerHolding?: number;
+  agriculturalHoldings2021?: number;
+  censusHouseholds2021?: number;
+  osmBuildingCount?: number;
+  [key: string]: unknown;
 }
 
 export interface PalikaSoilProfile {
@@ -60,6 +90,28 @@ export interface PalikaSoilProfile {
   ph: number;
   phRating: string;
   texture: string;
+  [key: string]: unknown;
+}
+
+export interface SubstationInfo {
+  name: string;
+  nepaliName?: string;
+  voltage: string;
+  ward?: number | string;
+  palika?: string;
+  capacityMVA: number;
+  transmissionCapacityMW?: number;
+  connectedHydro?: string;
+  budgetNPR?: string;
+  contractor?: string;
+  status: string;
+  coordinates?: [number, number];
+  color?: string;
+  tierKey?: string;
+  tierLabel?: string;
+  hubVoltage?: string;
+  substationNepali?: string;
+  [key: string]: unknown;
 }
 
 export const PALIKA_COOKING_DATA = palikaCookingRaw as unknown as {
@@ -72,7 +124,7 @@ export const PALIKA_GHI_DATA = palikaGhiRaw as unknown as {
 };
 
 export const PALIKA_GRID_DATA = palikaGridRaw as unknown as {
-  substations: Record<string, any>;
+  substations: Record<string, SubstationInfo>;
   palikas: Record<string, PalikaGridProfile>;
 };
 
@@ -85,7 +137,7 @@ export const PALIKA_SOIL_DATA = palikaSoilRaw as unknown as {
 };
 
 export const PALIKA_TRANSIT_DATA = palikaTransitRaw as unknown as {
-  palikas: Record<string, any>;
+  palikas: Record<string, Record<string, unknown>>;
 };
 
 export const GULMI_GHI_GRID = ghiGridRaw as unknown as {

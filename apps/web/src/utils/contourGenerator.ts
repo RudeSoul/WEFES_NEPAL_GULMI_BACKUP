@@ -1,3 +1,5 @@
+import type { GeoJsonObject, Geometry, MultiPolygon, Polygon } from 'geojson';
+
 import { District } from '@wefes/shared-types';
 
 export interface ContourLine {
@@ -26,29 +28,32 @@ function isPointInRing(pt: [number, number], ring: [number, number][]): boolean 
 }
 
 // Strict point-in-polygon test against GeoJSON Polygon or MultiPolygon
-function isPointInsideDistrict(pt: [number, number], geometry: any): boolean {
-  if (!geometry || !geometry.coordinates) return true;
-  const { type, coordinates } = geometry;
+function isPointInsideDistrict(pt: [number, number], geometry?: Geometry | GeoJsonObject | null): boolean {
+  if (!geometry || !('coordinates' in geometry)) return true;
+  const geom = geometry as Polygon | MultiPolygon;
+  const { type, coordinates } = geom;
 
   if (type === 'Polygon') {
-    if (!coordinates[0] || coordinates[0].length === 0) return true;
-    const outerRing: [number, number][] = coordinates[0].map((c: any) => [c[1], c[0]]);
+    const polyCoords = coordinates as number[][][];
+    if (!polyCoords[0] || polyCoords[0].length === 0) return true;
+    const outerRing: [number, number][] = polyCoords[0].map((c) => [c[1], c[0]]);
     if (!isPointInRing(pt, outerRing)) return false;
 
     // Check inner holes
-    for (let h = 1; h < coordinates.length; h++) {
-      const holeRing: [number, number][] = coordinates[h].map((c: any) => [c[1], c[0]]);
+    for (let h = 1; h < polyCoords.length; h++) {
+      const holeRing: [number, number][] = polyCoords[h].map((c) => [c[1], c[0]]);
       if (isPointInRing(pt, holeRing)) return false;
     }
     return true;
   } else if (type === 'MultiPolygon') {
-    for (const poly of coordinates) {
+    const multiCoords = coordinates as number[][][][];
+    for (const poly of multiCoords) {
       if (!poly[0] || poly[0].length === 0) continue;
-      const outerRing: [number, number][] = poly[0].map((c: any) => [c[1], c[0]]);
+      const outerRing: [number, number][] = poly[0].map((c) => [c[1], c[0]]);
       if (isPointInRing(pt, outerRing)) {
         let inHole = false;
         for (let h = 1; h < poly.length; h++) {
-          const holeRing: [number, number][] = poly[h].map((c: any) => [c[1], c[0]]);
+          const holeRing: [number, number][] = poly[h].map((c) => [c[1], c[0]]);
           if (isPointInRing(pt, holeRing)) {
             inHole = true;
             break;
@@ -59,7 +64,6 @@ function isPointInsideDistrict(pt: [number, number], geometry: any): boolean {
     }
     return false;
   }
-
   return true;
 }
 
@@ -162,21 +166,27 @@ function getInterpolatedElevation(lat: number, lng: number): number {
  * Generate strictly boundary-clipped topographic contour isolines across ALL 12 Palikas
  * with comprehensive grid-marching coverage.
  */
-export function generateDistrictContours(district: District, featureGeometry?: any): ContourLine[] {
+export function generateDistrictContours(
+  district: District,
+  featureGeometry?: Geometry | GeoJsonObject | null
+): ContourLine[] {
   let minLat = 27.91,
     maxLat = 28.25,
     minLng = 83.05,
     maxLng = 83.58;
   let allCoords: [number, number][] = [];
 
-  if (featureGeometry && featureGeometry.coordinates) {
+  if (featureGeometry && 'coordinates' in featureGeometry) {
     try {
-      const extractRings = (coords: any): [number, number][] => {
-        if (typeof coords[0] === 'number') return [[coords[1], coords[0]]];
-        if (typeof coords[0][0] === 'number') return coords.map((c: any) => [c[1], c[0]]);
-        return coords.flatMap(extractRings);
+      type NestedCoords = number[] | NestedCoords[];
+      const extractRings = (coords: NestedCoords): [number, number][] => {
+        if (typeof coords[0] === 'number') return [[coords[1] as number, coords[0] as number]];
+        if (Array.isArray(coords[0]) && typeof coords[0][0] === 'number') {
+          return (coords as number[][]).map((c) => [c[1], c[0]]);
+        }
+        return (coords as NestedCoords[]).flatMap(extractRings);
       };
-      allCoords = extractRings(featureGeometry.coordinates);
+      allCoords = extractRings(featureGeometry.coordinates as NestedCoords);
       if (allCoords.length > 0) {
         minLat = Math.min(...allCoords.map((p) => p[0]));
         maxLat = Math.max(...allCoords.map((p) => p[0]));
@@ -189,7 +199,7 @@ export function generateDistrictContours(district: District, featureGeometry?: a
   }
 
   const contours: ContourLine[] = [];
-  const baseTemp = (district as any).avgTempC ?? 18;
+  const baseTemp = (district as unknown as { avgTempC?: number }).avgTempC ?? 18;
 
   // Grid resolution for Marching Squares
   const gridRows = 48;

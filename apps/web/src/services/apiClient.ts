@@ -1,6 +1,6 @@
 // Base API Client for WEFES Nexus Gateway
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data: T;
   count?: number;
@@ -17,7 +17,7 @@ export class ApiClient {
     this.baseUrl = baseUrl || (typeof window !== 'undefined' ? '' : 'http://localhost:3001');
   }
 
-  public async get<T = any>(
+  public async get<T = unknown>(
     endpoint: string,
     params?: Record<string, string | number | boolean | undefined>
   ): Promise<T> {
@@ -50,7 +50,7 @@ export class ApiClient {
     return response.json();
   }
 
-  public async post<T = any>(endpoint: string, body: any): Promise<T> {
+  public async post<T = unknown>(endpoint: string, body: unknown): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     const response = await fetch(url, {
       method: 'POST',

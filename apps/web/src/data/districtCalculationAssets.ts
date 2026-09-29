@@ -56,7 +56,7 @@ export const ANALYTICAL_METHODOLOGIES = methodologiesData.methodologies as Recor
 
 export interface ResolveMethodologyParams {
   selectedPillar: string;
-  subFilters: Record<string, any>;
+  subFilters: Record<string, string>;
   lang: 'en' | 'np';
   cropName?: string;
   cropNameNepali?: string;

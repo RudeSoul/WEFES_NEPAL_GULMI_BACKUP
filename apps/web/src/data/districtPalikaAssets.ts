@@ -49,28 +49,34 @@ export interface DistrictPalika {
 }
 
 export const PALIKA_GEO_CENTROIDS: Record<string, { lat: number; lng: number }> =
-  rawPalikaData.palikas.gulmi.reduce((acc: Record<string, {lat: number, lng: number}>, palika: any) => {
-    acc[palika.name] = { lat: palika.coordinates[0], lng: palika.coordinates[1]};
-    return acc;
-  }, {}) as Record<string, {lat: number, lng: number}>;
+  (rawPalikaData.palikas.gulmi as unknown as Array<{ name: string; coordinates: [number, number] }>).reduce(
+    (acc: Record<string, { lat: number; lng: number }>, palika) => {
+      acc[palika.name] = { lat: palika.coordinates[0], lng: palika.coordinates[1] };
+      return acc;
+    },
+    {}
+  );
 
-const { _provenance, ...palikaCentroidsMap } = palikaCentroidsData as any;
+const { _provenance, ...palikaCentroidsMap } = palikaCentroidsData as unknown as Record<
+  string,
+  { lat: number; lng: number; nepali: string }
+>;
 export const PALIKA_CENTROIDS: Record<string, { lat: number; lng: number; nepali: string }> =
   palikaCentroidsMap as Record<string, { lat: number; lng: number; nepali: string }>;
 
 export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> =
-  (rawPalikaData.palikas as unknown) as Record<string, DistrictPalika[]>;
+  rawPalikaData.palikas as unknown as Record<string, DistrictPalika[]>;
 
 export const GULMI_PALIKA_NEPALI: Record<string, string> = {
   ...(
-    (boundaryData as any).features || []
-  ).reduce((acc: Record<string, string>, f: any) => {
+    (boundaryData as unknown as { features?: Array<{ properties?: { name?: string; nepaliName?: string } }> }).features || []
+  ).reduce((acc: Record<string, string>, f) => {
     if (f.properties?.name) {
       acc[f.properties.name] = f.properties.nepaliName || f.properties.name;
     }
     return acc;
   }, {}),
-  ...Object.entries(palikaCentroidsData as Record<string, any>).reduce(
+  ...Object.entries(palikaCentroidsData as unknown as Record<string, { nepali?: string }>).reduce(
     (acc: Record<string, string>, [k, v]) => {
       if (k !== '_provenance' && v?.nepali) {
         acc[k] = v.nepali.includes('गाउँपालिका') || v.nepali.includes('नगरपालिका')
@@ -83,6 +89,15 @@ export const GULMI_PALIKA_NEPALI: Record<string, string> = {
   ),
 };
 
-export const HYDRO_PALIKA_SUMMARY: any[] = hydroSummaryData as any[];
+export interface HydroPalikaSummaryItem {
+  palika: string;
+  reachCount?: number;
+  totalLengthKm?: number;
+  meanDischargeCms?: number;
+  total_installed_capacity_MW?: number;
+  [key: string]: unknown;
+}
+
+export const HYDRO_PALIKA_SUMMARY: HydroPalikaSummaryItem[] = hydroSummaryData as unknown as HydroPalikaSummaryItem[];
 
 

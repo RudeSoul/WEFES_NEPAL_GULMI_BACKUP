@@ -57,17 +57,29 @@ export interface PalikaDhmStationInfo {
   color: string;
 }
 
+interface DhmStationFeature {
+  properties?: {
+    palika?: string;
+    stationType?: string;
+    monitoringParameters?: string[];
+    stationName?: string;
+    indexNo?: string;
+    elevation_m?: number;
+    [key: string]: unknown;
+  };
+}
+
 export const DHM_PALIKA_STATIONS_MAP: Record<string, PalikaDhmStationInfo> = (
-  (rawDhmStations as any).features || []
-).reduce((acc: Record<string, PalikaDhmStationInfo>, f: any) => {
+  (rawDhmStations as unknown as { features?: DhmStationFeature[] }).features || []
+).reduce((acc: Record<string, PalikaDhmStationInfo>, f: DhmStationFeature) => {
   const p = f.properties || {};
   const palikaKey = (p.palika || '').toLowerCase().replace(/[^a-z]/g, '');
   if (palikaKey) {
     const isAws = p.stationType === 'AWS' || (p.monitoringParameters || []).includes('Solar Radiation');
     const isClim = p.stationType === 'Climatology' || p.stationType === 'Climatology/Rain';
     acc[palikaKey] = {
-      station: `${p.stationName} (#${p.indexNo} ${p.stationType})`,
-      type: p.stationType,
+      station: `${p.stationName || ''} (#${p.indexNo || ''} ${p.stationType || ''})`.trim(),
+      type: p.stationType || 'Station',
       elev: p.elevation_m || 0,
       color: isAws ? '#10b981' : isClim ? '#8b5cf6' : '#0284c7',
     };

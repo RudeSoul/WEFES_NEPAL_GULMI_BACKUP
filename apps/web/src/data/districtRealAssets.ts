@@ -51,5 +51,5 @@ export const GULMI_COFFEE_LANDMARKS: CoffeeLandmark[] =
   rawAssets.coffeeLandmarks as CoffeeLandmark[];
 
 export const GULMI_CROP_POCKETS: Record<string, RealCropPocket[]> =
-  ((rawAssets as any).cropPockets || {}) as Record<string, RealCropPocket[]>;
+  ((rawAssets as unknown as { cropPockets?: Record<string, RealCropPocket[]> }).cropPockets || {}) as Record<string, RealCropPocket[]>;
 
