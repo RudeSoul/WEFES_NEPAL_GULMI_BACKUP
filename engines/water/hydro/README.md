@@ -26,18 +26,19 @@ engines/water/hydro/
 
 ## The 10 Pipeline Steps & Scientific Citations
 
-| Step   | Operation                       | Source Algorithm / SAGA Lineage                 | Scientific Citation                                                                                                                                                                     |
-| ------ | ------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1**  | **Component Integration**       | SAGA Parameter System (`saga_cmd`)              | Standard CLI parser with robust error handling and step logging                                                                                                                         |
-| **2**  | **Load DEM**                    | `CSG_Grid` via `rasterio` & `pysheds.grid.Grid` | Automatic metric resolution calibration ($dx, dy$ in meters)                                                                                                                            |
-| **3**  | **Handle NoData**               | SAGA `CGrid_Gaps`                               | Soap-bubble / Dirichlet Laplacian boundary relaxation                                                                                                                                   |
-| **4**  | **Fill Sinks & Depressions**    | SAGA `CFillSinks_WL`                            | **Wang, L., and Liu, H. (2006)**. _"An efficient method for identifying and filling depressions in digital elevation models."_ Int. J. of Geographical Information Science.             |
-| **5**  | **Flow Direction**              | SAGA `CD8_Flow_Analysis::Get_Direction`         | **O'Callaghan, J. F., and Mark, D. M. (1984)**. _"The extraction of drainage networks from digital elevation models."_ Computer Vision, Graphics, and Image Processing.                 |
-| **6**  | **Flow Accumulation**           | SAGA `CFlow_Parallel` (Top-down sort)           | **Tarboton, D. G., et al. (1991)**. _"On the extraction of channel networks from digital elevation data."_ Hydrological Processes.                                                      |
-| **7**  | **Extract Streams**             | SAGA `CChannelNetwork` (Pass 2)                 | **Jenson, S. K., and Dominique, J. O. (1988)**. _"Extracting topographic structure from digital elevation model data for geographic information system analysis."_ PE&RS.               |
-| **8**  | **Segment Reaches & Head/Tail** | SAGA `CD8_Flow_Analysis::Get_Segments`          | Continuous topologic reach tracing; extracts Intake $(X_h, Y_h, Z_h)$ & Powerhouse $(X_t, Y_t, Z_t)$                                                                                    |
-| **9**  | **Calculate Power Output**      | BHA / IHA Hydropower Standard                   | **British Hydropower Association (BHA) / International Hydropower Association (IHA)** guidelines: $P (\text{kW}) = g \cdot Q \cdot H \cdot \eta$ ($g = 9.81\text{ m/s}^2, \eta = 0.70$) |
-| **10** | **Output Generation**           | SAGA `CSG_Shapes` Vector Export                 | GeoJSON `LineString` format with 3D elevations, hydraulic attributes, and CSV summary                                                                                                   |
+| Step    | Operation                       | Source Algorithm / SAGA Lineage                 | Scientific Citation                                                                                                                                                                     |
+| ------- | ------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1**   | **Component Integration**       | SAGA Parameter System (`saga_cmd`)              | Standard CLI parser with robust error handling and step logging                                                                                                                         |
+| **2**   | **Load DEM**                    | `CSG_Grid` via `rasterio` & `pysheds.grid.Grid` | Automatic metric resolution calibration ($dx, dy$ in meters)                                                                                                                            |
+| **3**   | **Handle NoData**               | SAGA `CGrid_Gaps`                               | Soap-bubble / Dirichlet Laplacian boundary relaxation                                                                                                                                   |
+| **4**   | **Fill Sinks & Depressions**    | SAGA `CFillSinks_WL`                            | **Wang, L., and Liu, H. (2006)**. _"An efficient method for identifying and filling depressions in digital elevation models."_ Int. J. of Geographical Information Science.             |
+| **5**   | **Flow Direction**              | SAGA `CD8_Flow_Analysis::Get_Direction`         | **O'Callaghan, J. F., and Mark, D. M. (1984)**. _"The extraction of drainage networks from digital elevation models."_ Computer Vision, Graphics, and Image Processing.                 |
+| **6**   | **Flow Accumulation**           | SAGA `CFlow_Parallel` (Top-down sort)           | **Tarboton, D. G., et al. (1991)**. _"On the extraction of channel networks from digital elevation data."_ Hydrological Processes.                                                      |
+| **7**   | **Extract Streams**             | SAGA `CChannelNetwork` (Pass 2)                 | **Jenson, S. K., and Dominique, J. O. (1988)**. _"Extracting topographic structure from digital elevation model data for geographic information system analysis."_ PE&RS.               |
+| **8**   | **Segment Reaches & Head/Tail** | SAGA `CD8_Flow_Analysis::Get_Segments`          | Continuous topologic reach tracing; extracts Intake $(X_h, Y_h, Z_h)$ & Powerhouse $(X_t, Y_t, Z_t)$                                                                                    |
+| **9**   | **Calculate Power Output**      | BHA / IHA Hydropower Standard                   | **British Hydropower Association (BHA) / International Hydropower Association (IHA)** guidelines: $P (\text{kW}) = g \cdot Q \cdot H \cdot \eta$ ($g = 9.81\text{ m/s}^2, \eta = 0.70$) |
+| **9.1** | **Boundary Clip & Viability**   | Spatial Join & Capacity Screening               | **Mandatory Multi-District Boundary Clipping**: Uses `geopandas` & `shapely.prepared` to clip out-of-district reaches and tag local Palikas                                             |
+| **10**  | **Output Generation**           | SAGA `CSG_Shapes` Vector Export                 | GeoJSON `LineString` format with 3D elevations, hydraulic attributes, Palika tags, and CSV summary                                                                                      |
 
 ---
 
@@ -45,10 +46,25 @@ engines/water/hydro/
 
 This engine is completely terrain, coordinate, and district agnostic. It can be run on any district in Nepal or worldwide without altering source code.
 
+### ⚠️ Mandatory Requirement When Adding a New District: Always Send the Boundary
+
+When evaluating any new district, you **must provide both the DEM raster (`--input-dem`) AND the administrative boundary vector (`--boundary`)**.
+
+**Why the Boundary is Required:**
+
+1. **Satellite Footprint Multi-District Coverage:** Satellite DEM GeoTIFFs (SRTM, ALOS PALSAR, Copernicus 30m) are rectangular bounding boxes covering thousands of square kilometers. For instance, the Gulmi DEM tile covers 6,942 km² across 7 districts (Gulmi, Baglung, Parbat, Syangja, Palpa, Arghakhanchi, Pyuthan). Gulmi itself is only 1,149 km² (~16.5% of the scene).
+2. **Preventing Regional Reach Inflation:** Without `--boundary`, the algorithm delineates stream networks across all 7 districts (15,000+ reaches). Providing `--boundary` restricts delineation strictly to the target district (~2,400 viable reaches for Gulmi).
+3. **Local Palika Attribution:** The engine performs a spatial point-in-polygon test against the boundary features, tagging every reach with its exact local municipality (Palika).
+4. **Viability Screening (`--min-power-kw`):** Discards sub-viable trickles and agricultural irrigation ditches (< 5.0 kW).
+
+---
+
 ### 1. Default Run (Gulmi District)
 
+Auto-resolves the DEM raster and the boundary vector `gulmi-palikas.json`:
+
 ```bash
-python3 engines/water/hydro/cli.py --district Gulmi --threshold 500
+python3 engines/water/hydro/cli.py --district Gulmi --threshold 500 --min-power-kw 5.0
 ```
 
 ### 2. Baglung District (Steep Mountain Heads)
@@ -56,10 +72,12 @@ python3 engines/water/hydro/cli.py --district Gulmi --threshold 500
 ```bash
 python3 engines/water/hydro/cli.py \
     --input-dem /path/to/baglung_dem_30m.tif \
+    --boundary /path/to/baglung-palikas.json \
     --district Baglung \
     --threshold 300 \
     --runoff-factor 0.038 \
-    --output data/calculated/hydro_reaches/baglung_hydro_reaches.geojson
+    --min-power-kw 5.0 \
+    --output output/baglung_hydro_reaches.geojson
 ```
 
 ### 3. Mustang District (Arid Trans-Himalayan Region)
@@ -67,10 +85,12 @@ python3 engines/water/hydro/cli.py \
 ```bash
 python3 engines/water/hydro/cli.py \
     --input-dem /path/to/mustang_dem_30m.tif \
+    --boundary /path/to/mustang-palikas.json \
     --district Mustang \
     --threshold 600 \
     --runoff-factor 0.015 \
-    --output data/calculated/hydro_reaches/mustang_hydro_reaches.geojson
+    --min-power-kw 5.0 \
+    --output output/mustang_hydro_reaches.geojson
 ```
 
 ### 4. Jhapa District (Lowland Terai River Stems)
@@ -78,24 +98,28 @@ python3 engines/water/hydro/cli.py \
 ```bash
 python3 engines/water/hydro/cli.py \
     --input-dem /path/to/jhapa_dem_30m.tif \
+    --boundary /path/to/jhapa-palikas.json \
     --district Jhapa \
     --threshold 2000 \
     --runoff-factor 0.028 \
-    --output data/calculated/hydro_reaches/jhapa_hydro_reaches.geojson
+    --min-power-kw 10.0 \
+    --output output/jhapa_hydro_reaches.geojson
 ```
 
 ---
 
 ## Key CLI Options
 
-| Argument          | Type    | Default       | Description                                                        |
-| ----------------- | ------- | ------------- | ------------------------------------------------------------------ |
-| `--input-dem`     | String  | Auto-resolved | Path to input DEM GeoTIFF                                          |
-| `--threshold`     | Integer | `500`         | Stream initiation flow accumulation threshold in cells             |
-| `--output`        | String  | Auto-resolved | Target GeoJSON destination file path                               |
-| `--output-csv`    | String  | Auto-resolved | Target CSV summary destination file path                           |
-| `--district`      | String  | `"Gulmi"`     | Target district name for metadata attribution                      |
-| `--runoff-factor` | Float   | `0.032`       | Localized runoff factor in $\text{m}^3/(\text{s}\cdot\text{km}^2)$ |
-| `--efficiency`    | Float   | `0.70`        | Total electromechanical efficiency $\eta$ (BHA/IHA Standard)       |
-| `--reach-len`     | Float   | `500.0`       | Target reach segmentation interval in meters                       |
-| `--min-slope`     | Float   | `0.01`        | Minimum downward slope in degrees preserved during sink filling    |
+| Argument          | Type    | Default       | Description                                                         |
+| ----------------- | ------- | ------------- | ------------------------------------------------------------------- |
+| `--input-dem`     | String  | Auto-resolved | Path to input DEM GeoTIFF                                           |
+| `--boundary`      | String  | Auto-resolved | Path to district administrative boundary vector (GeoJSON/Shapefile) |
+| `--threshold`     | Integer | `500`         | Stream initiation flow accumulation threshold in cells              |
+| `--min-power-kw`  | Float   | `5.0`         | Minimum capacity threshold in kW to filter sub-viable trickles      |
+| `--output`        | String  | Auto-resolved | Target GeoJSON destination file path                                |
+| `--output-csv`    | String  | Auto-resolved | Target CSV summary destination file path                            |
+| `--district`      | String  | `"Gulmi"`     | Target district name for metadata attribution                       |
+| `--runoff-factor` | Float   | `0.032`       | Localized runoff factor in $\text{m}^3/(\text{s}\cdot\text{km}^2)$  |
+| `--efficiency`    | Float   | `0.70`        | Total electromechanical efficiency $\eta$ (BHA/IHA Standard)        |
+| `--reach-len`     | Float   | `500.0`       | Target reach segmentation interval in meters                        |
+| `--min-slope`     | Float   | `0.01`        | Minimum downward slope in degrees preserved during sink filling     |

@@ -17,7 +17,7 @@ from .step1_dem_io import load_dem_and_grid, clean_nodata_values
 from .step2_depression_filling import fill_sinks_wang_liu
 from .step3_flow_routing import compute_d8_flow_direction, compute_d8_flow_accumulation
 from .step4_stream_network import extract_stream_network, segment_reaches_and_extract_head_tail
-from .step5_power_calculation import calculate_hydropower_potential
+from .step5_power_calculation import calculate_hydropower_potential, filter_and_screen_reaches
 from .step6_export import export_results
 
 
@@ -25,7 +25,9 @@ def run_hydro_pipeline(
     dem_path: str,
     output_vector_path: str,
     output_csv_path: Optional[str] = None,
+    boundary_path: Optional[str] = None,
     threshold: int = 500,
+    min_power_kw: float = 0.0,
     district: str = "Gulmi",
     runoff_factor: float = 0.032,
     efficiency: float = 0.70,
@@ -102,9 +104,18 @@ def run_hydro_pipeline(
         efficiency=efficiency
     )
 
+    # STEP 9.1: BOUNDARY CLIPPING & VIABILITY SCREENING
+    screened_reaches = filter_and_screen_reaches(
+        enriched_reaches,
+        boundary_path=boundary_path,
+        min_power_kw=min_power_kw,
+        district_name=district,
+        raster_crs=profile.get("crs")
+    )
+
     # STEP 10: OUTPUT GENERATION
     report = export_results(
-        enriched_reaches,
+        screened_reaches,
         output_vector_path=output_vector_path,
         output_csv_path=output_csv_path
     )
@@ -121,6 +132,7 @@ __all__ = [
     "extract_stream_network",
     "segment_reaches_and_extract_head_tail",
     "calculate_hydropower_potential",
+    "filter_and_screen_reaches",
     "export_results",
     "run_hydro_pipeline"
 ]

@@ -59,6 +59,7 @@ def export_results(
         props = {
             "reach_id": int(r["reach_id"]),
             "district": str(r["district"]),
+            "palika": str(r.get("palika", r.get("district", "Unknown"))),
             "intake_x": float(r["intake_x"]),
             "intake_y": float(r["intake_y"]),
             "z_head_m": float(r["z_head_m"]),
