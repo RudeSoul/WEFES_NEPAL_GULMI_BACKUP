@@ -1,9 +1,10 @@
 // [DATA PROVENANCE]
-// Data Source: data/calculated/indicators/gulmi_palika_cooking.json, data/calculated/indicators/gulmi_palika_ghi.json, data/calculated/indicators/gulmi_palika_grid.json, data/calculated/indicators/gulmi_palika_landholding.json, data/calculated/indicators/gulmi_palika_soil.json, data/calculated/indicators/gulmi_palika_transit.json, data/calculated/indicators/gulmi_ghi_grid.json, data/real/land_and_soil/gulmi_soil_points_81.json, data/calculated/indicators/gulmi_palika_chirps_precipitation.json
-// Classification: CALCULATED EMPIRICAL INDICATORS (Census 2021, NEA, NARC, Global Solar Atlas, CHIRPS v2.0)
-// Citations: National Statistics Office (NSO), Nepal Electricity Authority (NEA), NARC Soil Science Division, Global Solar Atlas, Funk et al. (2015)
+// Data Source: data/calculated/indicators/gulmi_palika_cooking.json, data/calculated/indicators/gulmi_palika_ghi.json, data/calculated/indicators/gulmi_palika_grid.json, data/calculated/indicators/gulmi_palika_landholding.json, data/calculated/indicators/gulmi_palika_soil.json, data/calculated/indicators/gulmi_palika_transit.json, data/calculated/indicators/gulmi_ghi_grid.json, data/real/land_and_soil/gulmi_soil_points_81.json, data/calculated/indicators/gulmi_palika_chirps_precipitation.json, data/calculated/indicators/gulmi_palika_agro_hydrology.json
+// Classification: CALCULATED EMPIRICAL INDICATORS (Census 2021, NEA, NARC, Global Solar Atlas, CHIRPS v2.0, FAO-56 Penman-Monteith)
+// Citations: National Statistics Office (NSO), Nepal Electricity Authority (NEA), NARC Soil Science Division, Global Solar Atlas, Funk et al. (2015), Allen et al. (1998)
 
 import ghiGridRaw from '../../../../data/calculated/indicators/gulmi_ghi_grid.json';
+import agroHydrologyRaw from '../../../../data/calculated/indicators/gulmi_palika_agro_hydrology.json';
 import chirpsPrecipRaw from '../../../../data/calculated/indicators/gulmi_palika_chirps_precipitation.json';
 import palikaCookingRaw from '../../../../data/calculated/indicators/gulmi_palika_cooking.json';
 import palikaGhiRaw from '../../../../data/calculated/indicators/gulmi_palika_ghi.json';
@@ -165,6 +166,66 @@ export const GULMI_SOIL_POINTS = soilPointsRaw as unknown as Array<{
   soilType: string;
 }>;
 
+export interface MonthAgroHydrology {
+  month_num: number;
+  month_en: string;
+  month_np: string;
+  agro_season: string;
+  crop_kc: number;
+  precip_wmo_normal_mm: number;
+  precip_std_mm: number;
+  precip_p10_mm: number;
+  precip_p25_mm: number;
+  precip_p50_mm: number;
+  precip_p75_mm: number;
+  precip_p90_mm: number;
+  effective_precip_mm: number;
+  tmean_c: number;
+  tmax_c: number;
+  tmin_c: number;
+  et0_reference_mm: number;
+  etc_crop_demand_mm: number;
+  climatic_water_balance_mm: number;
+  soil_storage_start_mm: number;
+  soil_storage_end_mm: number;
+  soil_depletion_fraction: number;
+  soil_depletion_pct: number;
+  net_irrigation_req_mm: number;
+  surplus_drainage_mm: number;
+  stress_level: 'adequate_hydration' | 'depletion_watch' | 'moderate_stress' | 'critical_deficit';
+  advisory: string;
+}
+
+export interface PalikaAgroHydrologyProfile {
+  palika_name: string;
+  palika_nepali: string;
+  elevation_m: number;
+  soil_lithology: string;
+  awc_volumetric: number;
+  awc_uncertainty: number;
+  root_zone_depth_m: number;
+  taw_mm: number;
+  raw_mm: number;
+  annual_summary: {
+    precipitation_wmo_normal_mm: number;
+    effective_precipitation_mm: number;
+    et0_reference_mm: number;
+    etc_crop_demand_mm: number;
+    net_irrigation_requirement_mm: number;
+    monsoon_surplus_drainage_mm: number;
+    irrigation_deficit_months: number;
+    adequate_moisture_months: number;
+    critical_stress_window: string;
+    monsoon_recharge_window: string;
+  };
+  months: MonthAgroHydrology[];
+}
+
+export interface AgroHydrologyDataset {
+  _metadata: Record<string, unknown>;
+  palikas: Record<string, PalikaAgroHydrologyProfile>;
+}
+
 export interface PalikaChirpsPrecipitationBaseline {
   annual: number;
   monsoon: number;
@@ -173,4 +234,6 @@ export interface PalikaChirpsPrecipitationBaseline {
 
 export const PALIKA_CHIRPS_PRECIPITATION_DATA: Record<string, PalikaChirpsPrecipitationBaseline> =
   (chirpsPrecipRaw as { baseline: Record<string, PalikaChirpsPrecipitationBaseline> }).baseline;
+
+export const PALIKA_AGRO_HYDROLOGY_DATA = agroHydrologyRaw as unknown as AgroHydrologyDataset;
 

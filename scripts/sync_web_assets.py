@@ -40,6 +40,7 @@ SYNC_MAPPINGS = [
     ("data/calculated/indicators/gulmi_palika_soil.json", PUBLIC_DATA_DIR, "gulmi_palika_soil.json"),
     ("data/calculated/indicators/gulmi_palika_transit.json", PUBLIC_DATA_DIR, "gulmi_palika_transit.json"),
     ("data/calculated/indicators/gulmi_palika_chirps_precipitation.json", PUBLIC_DATA_DIR, "gulmi_palika_chirps_precipitation.json"),
+    ("data/calculated/indicators/gulmi_palika_agro_hydrology.json", PUBLIC_DATA_DIR, "gulmi_palika_agro_hydrology.json"),
     ("data/real/boundaries/palika_centroids.json", PUBLIC_DATA_DIR, "palika_centroids.json"),
     ("data/calculated/hydro_reaches/hydro_palika_summary.json", PUBLIC_DATA_DIR, "hydro_palika_summary.json"),
     ("data/real/municipal/palika_profiles.json", PUBLIC_DATA_DIR, "palika_profiles.json"),
