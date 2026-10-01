@@ -1235,10 +1235,10 @@ export function computePalikaChoropleth({
       metricConfig = {
         metricKey: 'hydro_capacity',
         pillar: 'energy',
-        label: 'Hydropower Installed Capacity',
+        label: 'Gross Theoretical Hydropower Potential',
         unit: 'MW',
-        min: 1.5,
-        max: 4.8,
+        min: 10.0,
+        max: 460.0,
         colorRamp: ['#10b981', '#7c3aed', '#4c1d95'],
       };
 
@@ -1246,9 +1246,9 @@ export function computePalikaChoropleth({
         const props = feat.properties || {};
         const hItem = getHydro(props);
         const capMw = hItem?.total_installed_capacity_MW ?? 0;
-        // DOED classification matching SUBFILTER_LEGENDS['hydro_corridor']
-        const capKw = capMw * 1000;
-        const color = capKw >= 1000 ? '#4c1d95' : capKw >= 100 ? '#7c3aed' : capKw > 0 ? '#10b981' : '#94a3b8';
+        const reachCount = hItem?.total_reaches ?? 0;
+        // Classification: High commercial RoR corridor (>200 MW), Medium hub (30-200 MW), Micro (<30 MW)
+        const color = capMw >= 200 ? '#4c1d95' : capMw >= 30 ? '#7c3aed' : capMw > 0 ? '#10b981' : '#94a3b8';
 
         joinedData[props.name] = {
           id: props.id || props.name,
@@ -1257,10 +1257,10 @@ export function computePalikaChoropleth({
           type: props.type,
           areaSqKm: props.areaSqKm,
           value: capMw,
-          formattedValue: `${capMw.toFixed(1)} MW`,
+          formattedValue: `${capMw.toFixed(1)} MW (${reachCount} reaches)`,
           color,
           tooltipHtml: `<div style="color: #7c3aed; font-size: 10px; margin-top: 2px;">
-                            ⚡ Hydro Capacity: <strong>${capMw.toFixed(1)} MW</strong>
+                            ⚡ Hydro Potential: <strong>${capMw.toFixed(1)} MW</strong> (${reachCount} reaches)
                           </div>`,
           raw: hItem,
         };
