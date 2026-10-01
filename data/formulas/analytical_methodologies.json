@@ -711,8 +711,8 @@
       "inputs": [
         "30m Digital Elevation Model (Copernicus DEM / ALOS PALSAR)",
         "SAGA GIS CFillSinks_WL & CD8_Flow_Analysis Algorithms",
-        "Survey Department Gulmi Palika Boundary Vector (2,446 Screened Reaches)",
-        "British & International Hydropower Association (BHA/IHA) Standard (η = 0.70)",
+        "Gulmi Palika Boundary Vector (2,446 Screened Reaches)",
+        "BHA / IHA Hydropower Standard (η = 0.70)",
         "hydro_palika_summary.json"
       ],
       "citation": "SAGA GIS (Conrad et al., 2015); Wang & Liu (2006); BHA / IHA Hydropower Guidelines; DOED Nepal",

@@ -1997,11 +1997,11 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
                   {lang === 'np' ? 'इनपुट प्यारामिटरहरू:' : 'Empirical Datasets:'}
                 </div>
-                <ul className="space-y-0.5 text-[11px] text-slate-600">
+                <ul className="space-y-1 text-[11px] text-slate-600">
                   {activeCalc.inputs.map((inp, idx) => (
-                    <li key={idx} className="flex items-center gap-1.5">
-                      <span className="w-1 h-1 rounded-full bg-slate-300 shrink-0" />
-                      <span className="truncate">{inp}</span>
+                    <li key={idx} className="flex items-start gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-slate-400 shrink-0 mt-1.5" />
+                      <span className="leading-snug break-words">{inp}</span>
                     </li>
                   ))}
                 </ul>
