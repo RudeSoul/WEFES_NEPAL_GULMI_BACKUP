@@ -1,95 +1,50 @@
 #!/usr/bin/env python3
 # [DATA PROVENANCE]
-# Data Source: User-provided Digital Elevation Model (GeoTIFF)
-# Classification: AUTONOMOUS HYDRO-TOPOGRAPHIC DECISION SUPPORT ENGINE
-# Citations: SAGA GIS (Conrad et al., 2015); Wang & Liu (2006); O'Callaghan & Mark (1984);
-#            Tarboton et al. (1991); Jenson & Dominique (1988); British Hydropower Association (BHA)
+# Data Source: User-specified DEM raster, district boundary vectors, and scientific hydrology models
+# Classification: HYDROPOWER & TOPOGRAPHIC ENERGY ASSESSMENT ENGINE
+# Citations: Conrad et al. (2015); Wang & Liu (2006); O'Callaghan & Mark (1984); Tarboton (1991); Jenson & Dominique (1988); BHA/IHA
 
 """
-engines/water/hydro/cli.py
-==========================
-STEP 1. COMPONENT INTEGRATION:
-Standard CLI entry point for the Autonomous WEFES Hydropower & Topographic Engine.
-Complies with Rule 1 of RULESET.md (Zero Inward Code Imports) and Rule 2 (Data Provenance).
-
 ================================================================================
-HOW TO USE THIS ENGINE FOR ANY OTHER DISTRICT (100% REUSABLE)
+WEFES AUTONOMOUS HYDRO-POWER ASSESSMENT ENGINE (CLI ENTRYPOINT)
 ================================================================================
-This engine is completely terrain, coordinate, and district agnostic. To run the
-assessment for any new district in Nepal (or globally):
+End-to-end command-line interface for the 10-step Hydropower Potential Screening
+pipeline. Designed for district reusability and rigorous scientific validation.
 
-CRITICAL REQUIREMENT WHEN ADDING A NEW DISTRICT:
-------------------------------------------------
-When running for a new district, ALWAYS provide BOTH the DEM raster (--input-dem)
-AND the district boundary vector (--boundary)!
+HOW TO RUN FOR ANY NEW DISTRICT (MANDATORY REQUIREMENT):
+---------------------------------------------------------
+When analyzing any district outside Gulmi, you MUST provide BOTH:
+  1. The input DEM raster:
+     --input-dem /path/to/district_dem.tif
+  2. The district administrative boundary vector:
+     --boundary /path/to/district_palikas.json (or .geojson / .shp)
 
-Why is the Boundary Mandatory for New Districts?
-1. Broad Satellite Tiles Cover Multiple Districts:
-   Satellite DEMs (SRTM, ALOS PALSAR, Copernicus 30m) are rectangular bounding boxes
-   that cover thousands of square kilometers across 5 to 10 neighboring districts.
-   For example, the Gulmi DEM tile covers 6,942 km² across 7 districts (Gulmi, Baglung,
-   Parbat, Syangja, Palpa, Arghakhanchi, and Pyuthan). Gulmi itself is only 1,149 km²
-   (~16.5% of the raster area).
-2. Preventing Massive Over-Delineation:
-   Without `--boundary`, the algorithm delineates river networks across all 7 districts,
-   producing 15,000+ reaches instead of the realistic ~2,400 reaches belonging to Gulmi.
-3. Local Municipality / Palika Attribution:
-   When an administrative boundary with Palika sub-units is passed (e.g. `gulmi-palikas.json`),
-   the engine spatially intersects every reach to assign its local government unit (Palika/Municipality).
-4. Viability Screening (--min-power-kw):
-   Filters out tiny agricultural drainage ditches and intermittent trickles (< 5.0 kW)
-   that are technically stream cells but economically non-viable for hydropower.
+WHY THE BOUNDARY VECTOR IS MANDATORY:
+-------------------------------------
+1. SATELLITE FOOTPRINT MULTI-DISTRICT COVERAGE:
+   Raw satellite DEM GeoTIFFs (Copernicus 30m, SRTM, ALOS) are rectangular scenes
+   spanning thousands of square kilometers across multiple districts. For example,
+   the Gulmi DEM tile covers 6,942 km² across 7 districts (Gulmi, Baglung, Parbat,
+   Syangja, Palpa, Arghakhanchi, Pyuthan). Gulmi itself is only 1,149 km² (~16.5%).
+2. PREVENTING REGIONAL REACH INFLATION:
+   Without `--boundary`, stream networks are delineated across all 7 districts (15,000+
+   reaches). Providing `--boundary` restricts delineation strictly to the target district.
+3. LOCAL PALIKA ATTRIBUTION:
+   The boundary vector enables dynamic spatial attribution of each reach to its exact
+   local government unit (Palika).
 
-RUNNING THE CLI FOR OTHER DISTRICTS:
------------------------------------
-1. Prepare your input files:
-   a. DEM Raster: 30m, 12.5m, or 10m GeoTIFF.
-   b. Administrative Boundary: GeoJSON or Shapefile of the district / palikas.
+EXAMPLE RUNS:
+-------------
+1. Gulmi District (Default):
+   python cli.py --district Gulmi
 
-2. Run CLI commands:
-
-   # Example 1: Gulmi District (Default with Boundary & 5.0 kW Screening)
-   python3 engines/water/hydro/cli.py \\
-       --district Gulmi \\
-       --threshold 500 \\
-       --min-power-kw 5.0
-
-   # Example 2: Baglung District (Steep High-Head Torrents)
-   python3 engines/water/hydro/cli.py \\
-       --input-dem /path/to/baglung_dem_30m.tif \\
-       --boundary /path/to/baglung-palikas.json \\
-       --district Baglung \\
-       --threshold 300 \\
-       --runoff-factor 0.038 \\
-       --min-power-kw 5.0 \\
-       --output output/baglung_hydro_reaches.geojson
-
-   # Example 3: Mustang District (Arid Trans-Himalayan Region)
-   python3 engines/water/hydro/cli.py \\
-       --input-dem /path/to/mustang_dem_30m.tif \\
-       --boundary /path/to/mustang-palikas.json \\
-       --district Mustang \\
-       --threshold 600 \\
-       --runoff-factor 0.015 \\
-       --min-power-kw 5.0 \\
+2. New District (e.g. Mustang):
+   python cli.py --district Mustang \
+       --input-dem data/real/rasters/mustang_dem_30m.tif \
+       --boundary data/real/boundaries/mustang-palikas.json \
+       --threshold 300 \
+       --min-power-kw 10.0 \
        --output output/mustang_hydro_reaches.geojson
-
-   # Example 4: Jhapa District (Lowland River Basins)
-   python3 engines/water/hydro/cli.py \\
-       --input-dem /path/to/jhapa_dem_30m.tif \\
-       --boundary /path/to/jhapa-palikas.json \\
-       --district Jhapa \\
-       --threshold 2000 \\
-       --runoff-factor 0.028 \\
-       --min-power-kw 10.0 \\
-       --output output/jhapa_hydro_reaches.geojson
-
-3. AUTOMATIC COORDINATE SYSTEM & PROJECTION HANDLING:
-   - If your DEM is in UTM meters (e.g. EPSG:32644 / Zone 44N or EPSG:32645 / Zone 45N),
-     it directly uses the metric pixel grid.
-   - If your DEM is in geographic degrees (EPSG:4326), it automatically calibrates
-     planar metric spacing (dx, dy in meters) at the district's centroid latitude.
-   - If the boundary vector is in a different CRS, it is automatically reprojected to match.
 ================================================================================
 """
 
@@ -100,6 +55,7 @@ import os
 import sys
 import time
 from pathlib import Path
+from typing import Optional
 
 # Add engine directory to path so `src` resolves cleanly
 ENGINE_DIR = Path(__file__).resolve().parent
@@ -121,25 +77,43 @@ except ImportError:
 
 
 def resolve_default_dem_path(district: str) -> str:
-    """Finds available DEM file in the repository or returns standard default."""
-    candidates = [
-        PROJECT_ROOT / "data" / "real" / "rasters" / f"{district.lower()}_dem_30m.tif",
-        PROJECT_ROOT / "data" / "real" / "rasters" / "gulmi_dem_30m.tif",
-        PROJECT_ROOT / "data" / "Gulmi_OpenTopography_data_Hillside_and_slope" / "gulmi_dem_30m.tif",
-    ]
-    for p in candidates:
-        if p.exists():
-            return str(p)
-    return str(candidates[0])
+    """
+    Finds available DEM file for the target district.
+    PREVENTS DANGEROUS FALLBACK: Never silently returns Gulmi DEM for other districts.
+    """
+    dist_lower = district.lower()
+    
+    if dist_lower == "gulmi":
+        candidates = [
+            PROJECT_ROOT / "data" / "real" / "rasters" / "gulmi_dem_30m.tif",
+            PROJECT_ROOT / "data" / "Gulmi_OpenTopography_data_Hillside_and_slope" / "gulmi_dem_30m.tif",
+        ]
+        for p in candidates:
+            if p.exists():
+                return str(p)
+        return str(candidates[0])
+    
+    # Non-Gulmi district: Look strictly for district-specific DEM
+    district_path = PROJECT_ROOT / "data" / "real" / "rasters" / f"{dist_lower}_dem_30m.tif"
+    if district_path.exists():
+        return str(district_path)
+        
+    raise FileNotFoundError(
+        f"[ERROR] No default DEM found on disk for district '{district}'.\n"
+        f"Searched: {district_path}\n"
+        f"You must explicitly provide the DEM raster via: --input-dem /path/to/{dist_lower}_dem.tif"
+    )
 
 
 def resolve_default_boundary_path(district: str) -> Optional[str]:
     """Finds available administrative boundary vector for target district."""
+    dist_lower = district.lower()
     candidates = [
-        PROJECT_ROOT / "data" / "real" / "boundaries" / f"{district.lower()}-palikas.json",
-        PROJECT_ROOT / "data" / "real" / "boundaries" / f"{district.lower()}_boundary.geojson",
-        PROJECT_ROOT / "data" / "real" / "boundaries" / f"{district.lower()}.geojson",
-        PROJECT_ROOT / "data" / "real" / "boundaries" / f"{district.lower()}.json",
+        PROJECT_ROOT / "data" / "real" / "boundaries" / f"{dist_lower}-palikas.json",
+        PROJECT_ROOT / "data" / "real" / "boundaries" / f"{dist_lower}_palikas.json",
+        PROJECT_ROOT / "data" / "real" / "boundaries" / f"{dist_lower}_boundary.geojson",
+        PROJECT_ROOT / "data" / "real" / "boundaries" / f"{dist_lower}.geojson",
+        PROJECT_ROOT / "data" / "real" / "boundaries" / f"{dist_lower}.json",
     ]
     for p in candidates:
         if p.exists():
@@ -149,11 +123,11 @@ def resolve_default_boundary_path(district: str) -> Optional[str]:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Autonomous WEFES Hydropower & Topographic Assessment Engine (SAGA GIS Algorithms)",
+        description="Autonomous WEFES Hydropower Potential Screening Engine (BHA/IHA Standards)",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     
-    # Required / Primary CLI Arguments (Step 1)
+    # Required / Primary CLI Arguments
     parser.add_argument(
         "--input-dem",
         type=str,
@@ -170,7 +144,7 @@ def main():
         "--threshold",
         type=int,
         default=500,
-        help="Stream initiation flow accumulation threshold in pixels"
+        help="Stream initiation flow accumulation threshold in cells"
     )
     parser.add_argument(
         "--min-power-kw",
@@ -182,7 +156,7 @@ def main():
         "--output",
         type=str,
         default=None,
-        help="Target output vector file path (GeoJSON format)"
+        help="Target output vector file path (GeoJSON format, RFC 7946)"
     )
     parser.add_argument(
         "--output-csv",
@@ -199,10 +173,16 @@ def main():
         help="Target district name (e.g. Gulmi, Baglung, Mustang, Jhapa)"
     )
     parser.add_argument(
-        "--runoff-factor",
+        "--specific-discharge",
         type=float,
         default=0.032,
-        help="Localized runoff factor in m³/(s·km²) to convert catchment area to design discharge Q"
+        help="Specific discharge rate in m³/(s·km²) to convert catchment area to mean discharge Q"
+    )
+    parser.add_argument(
+        "--runoff-factor",
+        type=float,
+        default=None,
+        help="[Alias for --specific-discharge] Specific discharge rate in m³/(s·km²)"
     )
     parser.add_argument(
         "--efficiency",
@@ -211,34 +191,100 @@ def main():
         help="Total electromechanical efficiency η (enforced standard: 0.70 per BHA/IHA guidelines)"
     )
     parser.add_argument(
+        "--head-loss-factor",
+        type=float,
+        default=0.90,
+        help="Hydraulic head preservation factor (default: 0.90 = 10% head loss in penstock/trash rack)"
+    )
+    parser.add_argument(
+        "--capacity-factor",
+        type=float,
+        default=0.60,
+        help="Screening plant load factor (default: 0.60 for annual energy estimation)"
+    )
+    parser.add_argument(
+        "--env-flow-fraction",
+        type=float,
+        default=0.10,
+        help="Mandatory residual environmental river flow fraction (default: 0.10 per Nepal Hydropower Policy)"
+    )
+    parser.add_argument(
         "--reach-len",
         type=float,
         default=500.0,
-        help="Target reach segmentation interval in meters"
+        help="Target reach segmentation interval in curvilinear path meters"
     )
     parser.add_argument(
         "--min-slope",
         type=float,
         default=0.01,
-        help="Minimum downward slope gradient in degrees preserved during sink filling (Wang & Liu, 2006)"
+        help="Minimum downward slope gradient in degrees preserved during sink filling"
+    )
+    parser.add_argument(
+        "--allow-unbounded",
+        action="store_true",
+        help="Allow running without boundary vector for whole-scene regional delineation"
     )
 
     args = parser.parse_args()
 
-    # 1. Resolve input DEM path
-    dem_path = args.input_dem if args.input_dem else resolve_default_dem_path(args.district)
+    # =========================================================================
+    # INPUT VALIDATION
+    # =========================================================================
+    if args.threshold <= 0:
+        parser.error("--threshold must be an integer > 0.")
+    if not (0.0 < args.efficiency <= 1.0):
+        parser.error("--efficiency must be between 0.0 and 1.0.")
+    if not (0.0 < args.head_loss_factor <= 1.0):
+        parser.error("--head-loss-factor must be between 0.0 and 1.0.")
+    if not (0.0 < args.capacity_factor <= 1.0):
+        parser.error("--capacity-factor must be between 0.0 and 1.0.")
+    if not (0.0 <= args.env_flow_fraction < 1.0):
+        parser.error("--env-flow-fraction must be between 0.0 and 1.0.")
+    if args.reach_len <= 0.0:
+        parser.error("--reach-len must be > 0.0 meters.")
+    if args.min_slope < 0.0:
+        parser.error("--min-slope must be >= 0.0 degrees.")
+    if args.min_power_kw < 0.0:
+        parser.error("--min-power-kw must be >= 0.0 kW.")
+
+    # Resolve specific discharge (prioritize --runoff-factor if provided as alias)
+    q_spec = args.runoff_factor if args.runoff_factor is not None else args.specific_discharge
+    if q_spec <= 0.0:
+        parser.error("--specific-discharge (or --runoff-factor) must be > 0.0 m³/(s·km²).")
+
+    # =========================================================================
+    # 1. RESOLVE INPUT DEM PATH
+    # =========================================================================
+    try:
+        dem_path = args.input_dem if args.input_dem else resolve_default_dem_path(args.district)
+    except FileNotFoundError as err:
+        print(f"\n{err}\n")
+        sys.exit(1)
+
     if not os.path.exists(dem_path):
         print(f"\n[FATAL ERROR] Input DEM raster does not exist on physical disk:\n  -> {dem_path}")
         print("Please provide a valid DEM via: --input-dem /path/to/raster.tif\n")
         sys.exit(1)
 
-    # 2. Resolve administrative boundary path
+    # =========================================================================
+    # 2. RESOLVE ADMINISTRATIVE BOUNDARY PATH
+    # =========================================================================
     boundary_path = args.boundary if args.boundary else resolve_default_boundary_path(args.district)
+    
+    if args.district.lower() != "gulmi" and not boundary_path and not args.allow_unbounded:
+        print(f"\n[ERROR] Mandatory administrative boundary vector missing for district '{args.district}'.")
+        print("Because satellite DEMs span multiple districts, you must provide --boundary <path.geojson>")
+        print("To deliberately run unbounded across the entire satellite scene, pass --allow-unbounded.\n")
+        sys.exit(1)
+
     if args.boundary and not os.path.exists(args.boundary):
         print(f"\n[FATAL ERROR] Specified boundary file does not exist on physical disk:\n  -> {args.boundary}")
         sys.exit(1)
 
-    # 3. Resolve output paths
+    # =========================================================================
+    # 3. RESOLVE OUTPUT PATHS
+    # =========================================================================
     if args.output:
         output_vector = args.output
     else:
@@ -247,31 +293,28 @@ def main():
         
     output_csv = args.output_csv
 
-    # Terminal Header
-    print("==================================================================")
-    print("  WEFES AUTONOMOUS HYDRO ENGINE: SAGA GIS SCIENTIFIC PIPELINE     ")
-    print("==================================================================")
-    print(f"  • District Target:      {args.district}")
-    print(f"  • Input DEM Path:       {dem_path}")
-    if boundary_path:
-        print(f"  • Boundary Vector:      {boundary_path}")
-        print(f"  • Boundary Clipping:    ENABLED (Spatial clipping & Palika attribution active)")
-    else:
-        print(f"  • Boundary Vector:      [NONE DETECTED]")
-        print(f"  • Boundary Clipping:    DISABLED (Full rectangular DEM scene will be delineated)")
-        print(f"    [ADVISORY] When adding a new district, pass --boundary <path.geojson> to isolate reaches.")
-    print(f"  • Stream Threshold:     {args.threshold:,} cells")
-    print(f"  • Viability Threshold:  {args.min_power_kw:.1f} kW (filters micro-trickles)")
-    print(f"  • Runoff Factor:        {args.runoff_factor:.4f} m³/(s·km²)")
-    print(f"  • System Efficiency:    {args.efficiency:.2f} (BHA/IHA Guidelines)")
-    print(f"  • Target Reach Step:    {args.reach_len:.1f} m")
-    print(f"  • Target Output Vector: {output_vector}")
-    print("==================================================================")
+    # =========================================================================
+    # 4. EXECUTE PIPELINE
+    # =========================================================================
+    print("=" * 80)
+    print("  WEFES AUTONOMOUS HYDRO-POWER ASSESSMENT ENGINE")
+    print(f"  Target District:        {args.district}")
+    print(f"  Input DEM:              {dem_path}")
+    print(f"  Boundary Vector:        {boundary_path if boundary_path else 'None (Full Scene Unbounded)'}")
+    print(f"  Flow Accum. Threshold:  {args.threshold:,} cells")
+    print(f"  Viability Filter:       >= {args.min_power_kw:.1f} kW")
+    print(f"  Specific Discharge:     {q_spec:.4f} m³/(s·km²)")
+    print(f"  Electromechanical η:    {args.efficiency:.2f}")
+    print(f"  Head Loss Factor:       {args.head_loss_factor:.2f} (Net Head = Gross Head * {args.head_loss_factor:.2f})")
+    print(f"  Capacity Factor:        {args.capacity_factor:.2f}")
+    print(f"  Environmental Reserve:  {args.env_flow_fraction*100:.0f}% of natural discharge")
+    print(f"  Reach Length Step:      {args.reach_len:.1f} m")
+    print(f"  Min Slope Preserved:    {args.min_slope:.3f}°")
+    print(f"  Output Vector:          {output_vector}")
+    print("=" * 80)
 
     start_time = time.time()
-
     try:
-        # Execute the 10-step pipeline
         report = run_hydro_pipeline(
             dem_path=dem_path,
             output_vector_path=output_vector,
@@ -280,33 +323,37 @@ def main():
             threshold=args.threshold,
             min_power_kw=args.min_power_kw,
             district=args.district,
-            runoff_factor=args.runoff_factor,
+            specific_discharge=q_spec,
             efficiency=args.efficiency,
+            head_loss_factor=args.head_loss_factor,
+            capacity_factor=args.capacity_factor,
+            env_flow_fraction=args.env_flow_fraction,
             target_reach_len_m=args.reach_len,
             min_slope_deg=args.min_slope
         )
-
-        elapsed = time.time() - start_time
-        print("\n==================================================================")
-        print(" [SUCCESS] Hydropower Assessment Complete!")
-        print("==================================================================")
-        print(f"  • District:                  {args.district}")
-        print(f"  • Viable Stream Reaches:     {report['total_reaches']:,}")
-        print(f"  • Total Capacity Potential:  {report['total_potential_mw']:.3f} MW")
-        print(f"  • Estimated Annual Energy:   {report['total_annual_generation_gwh']:.2f} GWh/yr")
-        print(f"  • Mean Gross Head:           {report['mean_gross_head_m']:.1f} m")
-        print(f"  • Mean Design Discharge:     {report['mean_discharge_m3s']:.4f} m³/s")
-        print(f"  • Max Single Reach Output:   {report['max_reach_power_kw']:.1f} kW")
-        print(f"  • Exported GeoJSON:          {report['vector_file']}")
-        print(f"  • Exported Summary CSV:      {report['csv_file']}")
-        print(f"  • Total Execution Time:      {elapsed:.2f} seconds")
-        print("==================================================================\n")
-
-    except Exception as err:
-        print(f"\n[FATAL ERROR] Engine execution failed: {err}", file=sys.stderr)
+    except Exception as e:
+        print(f"\n[FATAL PIPELINE FAILURE]: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)
+
+    elapsed = time.time() - start_time
+    print("\n" + "=" * 80)
+    print(f"  HYDROPOWER SCREENING ASSESSMENT COMPLETED in {elapsed:.2f} seconds")
+    print("=" * 80)
+    print(f"  Total Viable Reaches Delineated:   {report['total_reaches']:,}")
+    print(f"  Gross Theoretical Reach Potential: {report['gross_theoretical_potential_mw']:,.2f} MW")
+    print(f"  Screening Annual Generation:       {report['screening_annual_generation_gwh']:,.2f} GWh/year")
+    print(f"  Mean Gross Head:                   {report['mean_gross_head_m']:.2f} m")
+    print(f"  Mean Net Head:                     {report['mean_net_head_m']:.2f} m")
+    print(f"  Mean Turbined Discharge:           {report['mean_turbined_discharge_m3s']:.4f} m³/s")
+    print(f"  Max Single Reach Power:            {report['max_reach_power_kw']:,.1f} kW ({report['max_reach_power_kw']/1000.0:.2f} MW)")
+    print(f"  Output Vector GeoJSON:             {report['vector_file']}")
+    print(f"  Output Summary CSV:                {report['csv_file']}")
+    print("=" * 80)
+    print("  [SCIENTIFIC NOTICE] Reaches along the same river trunk share upstream flow.")
+    print("  Gross Theoretical Potential represents a kinetic ceiling, not independent cascade capacity.")
+    print("=" * 80 + "\n")
 
 
 if __name__ == "__main__":

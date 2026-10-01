@@ -1,158 +1,98 @@
-[
-  {
-    "palika": "Chandrakot",
-    "total_reaches": 243,
-    "screened_viable_reaches": 243,
-    "total_stream_length_km": 103.4,
-    "total_installed_capacity_MW": 123.65,
-    "annual_energy_GWh": 649.89,
-    "dry_season_energy_GWh": 194.97,
-    "wet_season_energy_GWh": 454.92,
-    "micro_count": 145,
-    "mini_count": 83,
-    "ror_count": 15
+{
+  "Chandrakot": {
+    "total_reaches": 267,
+    "total_capacity_mw": 48.52,
+    "mean_net_head_m": 68.09,
+    "mean_gross_head_m": 75.66,
+    "mean_discharge_m3s": 1.3906,
+    "annual_generation_gwh": 255.03
   },
-  {
-    "palika": "Chatrakot",
-    "total_reaches": 192,
-    "screened_viable_reaches": 192,
-    "total_stream_length_km": 86.6,
-    "total_installed_capacity_MW": 320.58,
-    "annual_energy_GWh": 1684.95,
-    "dry_season_energy_GWh": 505.48,
-    "wet_season_energy_GWh": 1179.46,
-    "micro_count": 127,
-    "mini_count": 44,
-    "ror_count": 21
+  "Chatrakot": {
+    "total_reaches": 204,
+    "total_capacity_mw": 252.1,
+    "mean_net_head_m": 46.85,
+    "mean_gross_head_m": 52.06,
+    "mean_discharge_m3s": 7.9516,
+    "annual_generation_gwh": 1325.01
   },
-  {
-    "palika": "Dhurkot",
-    "total_reaches": 186,
-    "screened_viable_reaches": 186,
-    "total_stream_length_km": 83.0,
-    "total_installed_capacity_MW": 32.58,
-    "annual_energy_GWh": 171.23,
-    "dry_season_energy_GWh": 51.37,
-    "wet_season_energy_GWh": 119.86,
-    "micro_count": 126,
-    "mini_count": 52,
-    "ror_count": 8
+  "Dhurkot": {
+    "total_reaches": 196,
+    "total_capacity_mw": 24.72,
+    "mean_net_head_m": 39.45,
+    "mean_gross_head_m": 43.83,
+    "mean_discharge_m3s": 0.988,
+    "annual_generation_gwh": 129.94
   },
-  {
-    "palika": "Gulmidarbar",
-    "total_reaches": 181,
-    "screened_viable_reaches": 181,
-    "total_stream_length_km": 82.8,
-    "total_installed_capacity_MW": 106.02,
-    "annual_energy_GWh": 557.24,
-    "dry_season_energy_GWh": 167.17,
-    "wet_season_energy_GWh": 390.07,
-    "micro_count": 151,
-    "mini_count": 20,
-    "ror_count": 10
+  "Gulmidarbar": {
+    "total_reaches": 199,
+    "total_capacity_mw": 47.17,
+    "mean_net_head_m": 39.9,
+    "mean_gross_head_m": 44.33,
+    "mean_discharge_m3s": 8.5015,
+    "annual_generation_gwh": 247.92
   },
-  {
-    "palika": "Isma",
-    "total_reaches": 173,
-    "screened_viable_reaches": 173,
-    "total_stream_length_km": 80.4,
-    "total_installed_capacity_MW": 25.84,
-    "annual_energy_GWh": 135.85,
-    "dry_season_energy_GWh": 40.75,
-    "wet_season_energy_GWh": 95.09,
-    "micro_count": 139,
-    "mini_count": 26,
-    "ror_count": 8
+  "Isma": {
+    "total_reaches": 170,
+    "total_capacity_mw": 16.24,
+    "mean_net_head_m": 36.5,
+    "mean_gross_head_m": 40.55,
+    "mean_discharge_m3s": 0.9998,
+    "annual_generation_gwh": 85.33
   },
-  {
-    "palika": "Kaligandaki",
-    "total_reaches": 257,
-    "screened_viable_reaches": 257,
-    "total_stream_length_km": 115.7,
-    "total_installed_capacity_MW": 297.55,
-    "annual_energy_GWh": 1563.97,
-    "dry_season_energy_GWh": 469.19,
-    "wet_season_energy_GWh": 1094.78,
-    "micro_count": 182,
-    "mini_count": 57,
-    "ror_count": 18
+  "Kaligandaki": {
+    "total_reaches": 275,
+    "total_capacity_mw": 269.94,
+    "mean_net_head_m": 71.55,
+    "mean_gross_head_m": 79.5,
+    "mean_discharge_m3s": 10.1096,
+    "annual_generation_gwh": 1418.77
   },
-  {
-    "palika": "Madane",
-    "total_reaches": 211,
-    "screened_viable_reaches": 211,
-    "total_stream_length_km": 95.7,
-    "total_installed_capacity_MW": 13.14,
-    "annual_energy_GWh": 69.04,
-    "dry_season_energy_GWh": 20.71,
-    "wet_season_energy_GWh": 48.33,
-    "micro_count": 180,
-    "mini_count": 31,
-    "ror_count": 0
+  "Madane": {
+    "total_reaches": 222,
+    "total_capacity_mw": 10.08,
+    "mean_net_head_m": 51.87,
+    "mean_gross_head_m": 57.63,
+    "mean_discharge_m3s": 0.2496,
+    "annual_generation_gwh": 52.98
   },
-  {
-    "palika": "Malika",
-    "total_reaches": 178,
-    "screened_viable_reaches": 178,
-    "total_stream_length_km": 81.0,
-    "total_installed_capacity_MW": 18.14,
-    "annual_energy_GWh": 95.34,
-    "dry_season_energy_GWh": 28.6,
-    "wet_season_energy_GWh": 66.74,
-    "micro_count": 143,
-    "mini_count": 33,
-    "ror_count": 2
+  "Malika": {
+    "total_reaches": 188,
+    "total_capacity_mw": 14.4,
+    "mean_net_head_m": 60.33,
+    "mean_gross_head_m": 67.03,
+    "mean_discharge_m3s": 0.5175,
+    "annual_generation_gwh": 75.7
   },
-  {
-    "palika": "Musikot",
-    "total_reaches": 282,
-    "screened_viable_reaches": 282,
-    "total_stream_length_km": 126.6,
-    "total_installed_capacity_MW": 643.17,
-    "annual_energy_GWh": 3380.51,
-    "dry_season_energy_GWh": 1014.15,
-    "wet_season_energy_GWh": 2366.36,
-    "micro_count": 132,
-    "mini_count": 83,
-    "ror_count": 67
+  "Musikot": {
+    "total_reaches": 300,
+    "total_capacity_mw": 451.45,
+    "mean_net_head_m": 62.09,
+    "mean_gross_head_m": 68.99,
+    "mean_discharge_m3s": 10.1391,
+    "annual_generation_gwh": 2372.84
   },
-  {
-    "palika": "Resunga",
-    "total_reaches": 155,
-    "screened_viable_reaches": 155,
-    "total_stream_length_km": 76.8,
-    "total_installed_capacity_MW": 41.86,
-    "annual_energy_GWh": 219.96,
-    "dry_season_energy_GWh": 65.99,
-    "wet_season_energy_GWh": 153.97,
-    "micro_count": 112,
-    "mini_count": 38,
-    "ror_count": 5
+  "Resunga": {
+    "total_reaches": 179,
+    "total_capacity_mw": 38.79,
+    "mean_net_head_m": 58.44,
+    "mean_gross_head_m": 64.93,
+    "mean_discharge_m3s": 1.8449,
+    "annual_generation_gwh": 203.87
   },
-  {
-    "palika": "Ruru",
-    "total_reaches": 150,
-    "screened_viable_reaches": 150,
-    "total_stream_length_km": 69.3,
-    "total_installed_capacity_MW": 571.13,
-    "annual_energy_GWh": 3001.88,
-    "dry_season_energy_GWh": 900.56,
-    "wet_season_energy_GWh": 2101.32,
-    "micro_count": 101,
-    "mini_count": 22,
-    "ror_count": 27
+  "Ruru": {
+    "total_reaches": 158,
+    "total_capacity_mw": 377.1,
+    "mean_net_head_m": 44.56,
+    "mean_gross_head_m": 49.51,
+    "mean_discharge_m3s": 28.1413,
+    "annual_generation_gwh": 1982.06
   },
-  {
-    "palika": "Satyawati",
-    "total_reaches": 238,
-    "screened_viable_reaches": 238,
-    "total_stream_length_km": 108.9,
-    "total_installed_capacity_MW": 223.04,
-    "annual_energy_GWh": 1172.28,
-    "dry_season_energy_GWh": 351.68,
-    "wet_season_energy_GWh": 820.6,
-    "micro_count": 166,
-    "mini_count": 62,
-    "ror_count": 10
+  "Satyawati": {
+    "total_reaches": 262,
+    "total_capacity_mw": 180.18,
+    "mean_net_head_m": 79.27,
+    "mean_gross_head_m": 88.07,
+    "mean_discharge_m3s": 7.8158,
+    "annual_generation_gwh": 947.08
   }
-]
+}

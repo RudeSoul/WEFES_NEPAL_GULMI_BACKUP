@@ -693,32 +693,32 @@
     "hydro_corridor": {
       "shortTitle": { "en": "Hydropower Potential", "np": "जलविद्युत सम्भाव्यता" },
       "pillarName": { "en": "Energy", "np": "ऊर्जा" },
-      "model": { "en": "SAGA GIS Topographic Hydropower Engine & BHA/IHA Standard (P = η·ρ·g·Q·H)", "np": "SAGA GIS स्थलरूपी जलविद्युत इन्जिन र BHA/IHA मापदण्ड (P = η·ρ·g·Q·H)" },
-      "formula": "P (kW) = 9.81 × Q × Head × η",
-      "parameter": { "en": "Electromechanical Efficiency η = 0.70, Gross Head (m), Design Discharge Q (m³/s)", "np": "विद्युत-यान्त्रिक दक्षता η = ०.७० • ठाडो उचाइ गिरावट (Head) • बहाव Q (m³/s)" },
+      "model": { "en": "Topographic Hydropower Screening Engine & BHA/IHA Standard (P = 9.81·Q_turb·H_net·η)", "np": "स्थलरूपी जलविद्युत स्क्रिनिङ इन्जिन र BHA/IHA मापदण्ड (P = ९.८१·Q_turb·H_net·η)" },
+      "formula": "P (kW) = 9.81 × Q_turb × Net Head × η",
+      "parameter": { "en": "Electromechanical Efficiency η = 0.70, Net Head (H_net = H_gross × 0.90), Turbined Discharge Q_turb (m³/s)", "np": "विद्युत-यान्त्रिक दक्षता η = ०.७० • खुद हेड (H_net = H_gross × ०.९०) • टर्बाइन बहाव Q_turb (m³/s)" },
       "variables": [
-        { "symbol": "P", "definition": { "en": "Theoretical power generation potential (kW)", "np": "सम्भावित जलविद्युत उत्पादन क्षमता (किलोवाट)" } },
+        { "symbol": "P", "definition": { "en": "Screening-level theoretical power generation potential (kW)", "np": "स्क्रिनिङ तहको सम्भावित जलविद्युत उत्पादन क्षमता (किलोवाट)" } },
         { "symbol": "9.81", "definition": { "en": "Specific weight of water: ρ · g = 1,000 kg/m³ × 9.81 m/s² / 1000", "np": "पानीको विशिष्ट तौल र गुरुत्व प्रवेग गुणनफल" } },
-        { "symbol": "Q", "definition": { "en": "Design river discharge rate (m³/s) from upstream catchment accumulation and runoff factor", "np": "माथिल्लो जलाधार संकलन र बहाव गुणकबाट निकालिएको डिजाइन नदी बहाव (घनमिटर प्रति सेकेन्ड)" } },
-        { "symbol": "Head", "definition": { "en": "Gross topographic vertical drop from reach intake to powerhouse: Z_Head - Z_Tail (m)", "np": "इन्टेकदेखि पावरहाउससम्मको ठाडो उचाइ गिरावट Z_Head - Z_Tail (मिटर)" } },
-        { "symbol": "η", "definition": { "en": "Total system electromechanical efficiency (0.70 enforced standard per BHA/IHA guidelines)", "np": "टर्बाइन, जेनेरेटर र प्रसारणको समग्र विद्युत-यान्त्रिक दक्षता (७०% BHA/IHA मापदण्ड)" } }
+        { "symbol": "Q_turb", "definition": { "en": "Turbined river discharge (m³/s) deducting 10% environmental river reserve from mean catchment flow", "np": "१०% वातावरणीय बहाव कट्टा गरी प्राप्त टर्बाइनमा जाने खुद नदी बहाव (घनमिटर प्रति सेकेन्ड)" } },
+        { "symbol": "Net Head", "definition": { "en": "Effective hydraulic head after 10% penstock/friction loss: H_net = (Z_upstream - Z_downstream) × 0.90 (m)", "np": "१०% घर्षण तथा पेनस्टक गिरावट कट्टा पछिको खुद हेड: H_net = H_gross × ०.९० (मिटर)" } },
+        { "symbol": "η", "definition": { "en": "Total electromechanical efficiency (0.70 enforced standard per BHA/IHA guidelines)", "np": "टर्बाइन, जेनेरेटर र प्रसारणको समग्र विद्युत-यान्त्रिक दक्षता (७०% BHA/IHA मापदण्ड)" } }
       ],
       "description": {
-        "en": "Calculates potential installed capacity across Gulmi sub-basins utilizing SAGA GIS Wang & Liu (2006) depression-free hydrological routing, O'Callaghan D8 steepest descent, and 30m topographic gradient analysis. Screened against district administrative boundary and 5.0 kW minimum capacity threshold.",
-        "np": "SAGA GIS वाङ र लिउ (२००६) सिङ्क-रहित हाइड्रोलोजिकल मोडल र ३० मिटर उचाइगत रास्टर प्रयोग गरी गुल्मीका नदी तथा खोलाहरूमा सम्भावित जलविद्युत क्षमताको वैज्ञानिक गणना। पालिका सीमाना र न्यूनतम ५ किलोवाट क्षमताका आधारमा प्रशोधित।"
+        "en": "Calculates screening-level Gross Theoretical Reach Potential across Gulmi sub-basins utilizing priority-flood depression-free routing, acyclic D8 DAG flow accumulation, and curvilinear path distance tracing. Screened against district administrative boundary and 5.0 kW minimum capacity threshold.",
+        "np": "सिङ्क-रहित हाइड्रोलोजिकल मोडल, चक्रीय-त्रुटि-रहित D8 बहाव संकलन र वास्तविक वक्र रेखा दूरीका आधारमा गुल्मीका नदी तथा खोलाहरूमा सम्भावित जलविद्युत क्षमताको वैज्ञानिक गणना। पालिका सीमाना र न्यूनतम ५ किलोवाट क्षमताका आधारमा प्रशोधित।"
       },
       "confidence": "CALCULATED",
       "inputs": [
         "30m Digital Elevation Model (Copernicus DEM / ALOS PALSAR)",
-        "SAGA GIS CFillSinks_WL & CD8_Flow_Analysis Algorithms",
-        "Gulmi Palika Boundary Vector (2,446 Screened Reaches)",
-        "BHA / IHA Hydropower Standard (η = 0.70)",
+        "Priority-Flood & Topological DAG Flow Routing",
+        "Gulmi Palika Boundary Vector (2,620 Screened Reaches)",
+        "BHA / IHA Hydropower Standard (η = 0.70, Net Head, 10% Env Flow)",
         "hydro_palika_summary.json"
       ],
-      "citation": "SAGA GIS (Conrad et al., 2015); Wang & Liu (2006); BHA / IHA Hydropower Guidelines; DOED Nepal",
+      "citation": "Conrad et al. (2015); Wang & Liu (2006); BHA / IHA Hydropower Guidelines; DOED Nepal",
       "provenancePath": "data/calculated/hydro_reaches/hydro_palika_summary.json",
-      "unit": "Installed Capacity (MW)",
-      "currentStat": "2,446 Viable Screened Reaches (≥ 5 kW) across 12 Palikas | Total Capacity: 2,416.7 MW | Mean Gross Head: 68.2 m"
+      "unit": "Gross Potential (MW)",
+      "currentStat": "2,620 Viable Screened Reaches (≥ 5 kW) | Gross Theoretical Potential: 1,730.7 MW | Mean Net Head: 56.9 m"
     },
     "solar_irradiance": {
       "shortTitle": { "en": "Solar PV Potential & Tilt", "np": "सौर्य फोटोभोल्टिक सम्भाव्यता र टिल्ट" },
