@@ -693,30 +693,32 @@
     "hydro_corridor": {
       "shortTitle": { "en": "Hydropower Potential", "np": "जलविद्युत सम्भाव्यता" },
       "pillarName": { "en": "Energy", "np": "ऊर्जा" },
-      "model": { "en": "Theoretical Run-of-River Power Potential (P = η·ρ·g·Q·H)", "np": "नदी बहाव जलविद्युत मोडल (P = η·ρ·g·Q·H)" },
+      "model": { "en": "SAGA GIS Topographic Hydropower Engine & BHA/IHA Standard (P = η·ρ·g·Q·H)", "np": "SAGA GIS स्थलरूपी जलविद्युत इन्जिन र BHA/IHA मापदण्ड (P = η·ρ·g·Q·H)" },
       "formula": "P (kW) = 9.81 × Q × Head × η",
-      "parameter": { "en": "Turbine Efficiency η = 0.82, Head (m), Q (m³/s)", "np": "टर्बाइन दक्षता η = ०.८२ • बहाव Q (m³/s)" },
+      "parameter": { "en": "Electromechanical Efficiency η = 0.70, Gross Head (m), Design Discharge Q (m³/s)", "np": "विद्युत-यान्त्रिक दक्षता η = ०.७० • ठाडो उचाइ गिरावट (Head) • बहाव Q (m³/s)" },
       "variables": [
         { "symbol": "P", "definition": { "en": "Theoretical power generation potential (kW)", "np": "सम्भावित जलविद्युत उत्पादन क्षमता (किलोवाट)" } },
         { "symbol": "9.81", "definition": { "en": "Specific weight of water: ρ · g = 1,000 kg/m³ × 9.81 m/s² / 1000", "np": "पानीको विशिष्ट तौल र गुरुत्व प्रवेग गुणनफल" } },
-        { "symbol": "Q", "definition": { "en": "Design river discharge rate at Q40 exceedance (m³/s)", "np": "४०% बहाव सम्भाव्यता भएको नदी बहाव (घनमिटर प्रति सेकेन्ड)" } },
-        { "symbol": "Head", "definition": { "en": "Gross surveyed vertical fall height from reach topology (m)", "np": "खोलाको माथिल्लो र तल्लो बिन्दु बीचको ठाडो उचाइ गिरावट (मिटर)" } },
-        { "symbol": "η", "definition": { "en": "Combined electro-mechanical efficiency of turbine and generator (0.82)", "np": "टर्बाइन र जेनेरेटरको समग्र प्राविधिक दक्षता (८२%)" } }
+        { "symbol": "Q", "definition": { "en": "Design river discharge rate (m³/s) from upstream catchment accumulation and runoff factor", "np": "माथिल्लो जलाधार संकलन र बहाव गुणकबाट निकालिएको डिजाइन नदी बहाव (घनमिटर प्रति सेकेन्ड)" } },
+        { "symbol": "Head", "definition": { "en": "Gross topographic vertical drop from reach intake to powerhouse: Z_Head - Z_Tail (m)", "np": "इन्टेकदेखि पावरहाउससम्मको ठाडो उचाइ गिरावट Z_Head - Z_Tail (मिटर)" } },
+        { "symbol": "η", "definition": { "en": "Total system electromechanical efficiency (0.70 enforced standard per BHA/IHA guidelines)", "np": "टर्बाइन, जेनेरेटर र प्रसारणको समग्र विद्युत-यान्त्रिक दक्षता (७०% BHA/IHA मापदण्ड)" } }
       ],
       "description": {
-        "en": "Calculates potential installed capacity across Gulmi sub-basins utilizing surveyed reach heads and Q40/Q80 flow duration curves.",
-        "np": "गुल्मीका नदी तथा खोलाहरूको उचाइ गिरावट (Head) र वार्षिक बहाव (Discharge) बाट सम्भावित विद्युत क्षमता।"
+        "en": "Calculates potential installed capacity across Gulmi sub-basins utilizing SAGA GIS Wang & Liu (2006) depression-free hydrological routing, O'Callaghan D8 steepest descent, and 30m topographic gradient analysis. Screened against district administrative boundary and 5.0 kW minimum capacity threshold.",
+        "np": "SAGA GIS वाङ र लिउ (२००६) सिङ्क-रहित हाइड्रोलोजिकल मोडल र ३० मिटर उचाइगत रास्टर प्रयोग गरी गुल्मीका नदी तथा खोलाहरूमा सम्भावित जलविद्युत क्षमताको वैज्ञानिक गणना। पालिका सीमाना र न्यूनतम ५ किलोवाट क्षमताका आधारमा प्रशोधित।"
       },
       "confidence": "CALCULATED",
       "inputs": [
-        "DOED Hydrographic Reach Survey",
-        "DHM River Gauging Baselines",
+        "30m Digital Elevation Model (Copernicus DEM / ALOS PALSAR)",
+        "SAGA GIS CFillSinks_WL & CD8_Flow_Analysis Algorithms",
+        "Survey Department Gulmi Palika Boundary Vector (2,446 Screened Reaches)",
+        "British & International Hydropower Association (BHA/IHA) Standard (η = 0.70)",
         "hydro_palika_summary.json"
       ],
-      "citation": "Department of Electricity Development (DOED) Nepal",
+      "citation": "SAGA GIS (Conrad et al., 2015); Wang & Liu (2006); BHA / IHA Hydropower Guidelines; DOED Nepal",
       "provenancePath": "data/calculated/hydro_reaches/hydro_palika_summary.json",
       "unit": "Installed Capacity (MW)",
-      "currentStat": "Run-of-River Reach Power Screening across 12 Palikas"
+      "currentStat": "2,446 Viable Screened Reaches (≥ 5 kW) across 12 Palikas | Total Capacity: 2,416.7 MW | Mean Gross Head: 68.2 m"
     },
     "solar_irradiance": {
       "shortTitle": { "en": "Solar PV Potential & Tilt", "np": "सौर्य फोटोभोल्टिक सम्भाव्यता र टिल्ट" },
