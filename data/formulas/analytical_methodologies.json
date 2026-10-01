@@ -527,7 +527,7 @@
         "Hydrographic Reach Elevation Profiling"
       ],
       "citation": "Ministry of Agriculture and Livestock Development (MoALD)",
-      "provenancePath": "data/calculated/hydro_reaches/hydro_reaches.geojson",
+      "provenancePath": "data/calculated/hydro_reaches/hydro_potential_reaches.geojson",
       "unit": "Command Score %",
       "currentStat": "Prime Riverbed Gravity (≥80%) to Rainfed Ridges (<40%)"
     },

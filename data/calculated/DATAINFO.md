@@ -19,10 +19,9 @@
 - **Output Artifacts**:
   | File Name | Format | Description | Primary Key |
   |---|---|---|---|
-  | `reaches_screened.csv` | CSV | 1,656 viable screened reaches with full hydraulic & energy fields | `reach_id` |
-  | `hydro_reaches.geojson` | GeoJSON | Vector LineStrings with properties for Leaflet/QGIS map rendering | `reach_id` |
+  | `hydro_potential_reaches_summary.csv` | CSV | 2,620 viable screened reaches with full hydraulic & energy fields | `reach_id` |
+  | `hydro_potential_reaches.geojson` | GeoJSON | Vector LineStrings with properties for Leaflet/QGIS map rendering | `reach_id` |
   | `hydro_palika_summary.json` | JSON | Aggregated viable potential (MW) and energy (GWh/yr) per Palika | `palika_name` |
-  | `verification_report.json` | JSON | Ground-truth concordance report with AEPC and DOED licenses | `district` |
 
 ### `downscaled_rainfall/`
 - **Generating Engine**: Topographic lapse-rate downscaling engine

@@ -2,6 +2,7 @@
 // Data Source:
 // - data/real/municipal/palika_profiles.json
 // - data/calculated/hydro_reaches/hydro_palika_summary.json
+// - data/calculated/hydro_reaches/hydro_potential_reaches.geojson
 // - data/real/boundaries/gulmi-palikas.json
 // - apps/web/public/geojson/gulmi-contours.json
 // - data/real/hydrology/catchments_l10.geojson
@@ -372,6 +373,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
   const [gulmiRivers, setGulmiRivers] = useState<GeoJsonObject | null>(null);
   const [catchmentsData, setCatchmentsData] = useState<GeoJsonObject | null>(null);
   const [riversStreamsData, setRiversStreamsData] = useState<GeoJsonObject | null>(null);
+  const [hydroReachesData, setHydroReachesData] = useState<GeoJsonObject | null>(null);
+  const [hydroReachesLoading, setHydroReachesLoading] = useState<boolean>(false);
   const [contoursData, setContoursData] = useState<GeoJsonObject | null>(null);
 
   const [palikasData, setPalikasData] = useState<GeoJsonObject | null>(null);
@@ -602,6 +605,25 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
   const isLandholdingActive =
     selectedPillar === 'socioeconomics' &&
     (subFilters.socioSubFilter === 'agri_landholding' || subFilters.socioSubFilter === 'landholding');
+
+  // Lazy-load 2,620 calculated curvilinear hydropower reaches when Hydro Corridor is selected
+  useEffect(() => {
+    if (isHydroCorridorActive && !hydroReachesData && !hydroReachesLoading) {
+      setHydroReachesLoading(true);
+      fetch('/geojson/hydro_potential_reaches.geojson')
+        .then((r) => r.json())
+        .then((data) => {
+          if (data?.type === 'FeatureCollection') {
+            setHydroReachesData(data);
+          }
+          setHydroReachesLoading(false);
+        })
+        .catch((err) => {
+          console.warn('Failed to load hydro_potential_reaches.geojson:', err);
+          setHydroReachesLoading(false);
+        });
+    }
+  }, [isHydroCorridorActive, hydroReachesData, hydroReachesLoading]);
 
   const isOverlayModeActive =
     isMerraRainfallActive ||
@@ -1551,70 +1573,149 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 />
               )}
 
-            {/* Contextual Layer Isolation 2: Run-of-River & Micro-Hydro Potential Corridors (Styled by DOED Legend Tiers) */}
+            {/* Contextual Layer Isolation 2: Curvilinear Hydropower Potential Reaches (2,620 Reaches Styled by DOED Legend Tiers) */}
             {isHydroCorridorActive && (
               <>
-                {/* Full HydroRIVERS stream network classified by Hydropower Potential Tiers */}
-                {riversStreamsData && (
+                {/* Real 2,620 Curvilinear Hydropower Potential Reaches with Accurate Net Head & Power Physics */}
+                {hydroReachesData ? (
                   <GeoJSON
-                    key={`hydro-corridor-streams-${selectedPillar}`}
-                    data={riversStreamsData}
+                    key={`hydro-calculated-reaches-${selectedPillar}`}
+                    data={hydroReachesData}
                     pane="riversPane"
                     style={(feature?: Feature) => {
-                      const order = feature?.properties?.ORD_STRA || 1;
-                      // Tier 1: Commercial RoR (>1 MW) - Strahler Order 5+ (Kali Gandaki / Lower Badigad)
-                      if (order >= 5) {
+                      const pKw = feature?.properties?.power_potential_kw || 0;
+                      // Tier 1: Commercial RoR (>1 MW / 1,000 kW)
+                      if (pKw >= 1000) {
                         return {
                           color: '#4c1d95',
-                          weight: 5.5,
+                          weight: 4.8,
                           opacity: 0.98,
                         };
                       }
-                      // Tier 2: Mini Hydro (100–999 kW) - Strahler Order 3-4 (Badigad / Ridi / Panaha)
-                      if (order === 3 || order === 4) {
+                      // Tier 2: Mini Hydro (100–999 kW)
+                      if (pKw >= 100) {
                         return {
                           color: '#7c3aed',
-                          weight: 3.8,
-                          opacity: 0.95,
+                          weight: 3.2,
+                          opacity: 0.92,
                         };
                       }
-                      // Tier 3: Rural Micro-Hydro (<100 kW) - Strahler Order 1-2 (Headwater streams)
+                      // Tier 3: Rural Micro-Hydro (<100 kW)
                       return {
                         color: '#10b981',
-                        weight: 2.2,
-                        opacity: 0.88,
+                        weight: 1.8,
+                        opacity: 0.85,
                       };
                     }}
                     onEachFeature={(feature: Feature, layer: L.Layer) => {
                       const p = feature?.properties || {};
-                      const order = p.ORD_STRA || 1;
-                      const tierTitle =
-                        order >= 5
-                          ? '⚡ Commercial RoR (>1 MW)'
-                          : order === 3 || order === 4
-                            ? '⚡ Mini Hydro (100–999 kW)'
-                            : '⚡ Rural Micro-Hydro (<100 kW)';
-                      const tierColor = order >= 5 ? '#4c1d95' : order === 3 || order === 4 ? '#7c3aed' : '#10b981';
-                      const estPower =
-                        order >= 5 ? '1,500 – 12,000 kW' : order === 3 || order === 4 ? '150 – 950 kW' : '15 – 85 kW';
+                      const pKw = p.power_potential_kw || 0;
+                      const pMw = p.power_potential_mw ?? (pKw / 1000).toFixed(2);
+                      const isCommercial = pKw >= 1000;
+                      const isMini = pKw >= 100 && pKw < 1000;
+                      const tierTitle = isCommercial
+                        ? '⚡ Commercial RoR (>1 MW)'
+                        : isMini
+                          ? '⚡ Mini Hydro (100–999 kW)'
+                          : '⚡ Rural Micro-Hydro (<100 kW)';
+                      const tierColor = isCommercial ? '#4c1d95' : isMini ? '#7c3aed' : '#10b981';
 
                       layer.bindTooltip(
                         `
-                          <div style="padding: 5px 8px; font-size: 11px; min-width: 200px;">
-                            <div style="font-weight: 800; color: ${tierColor}; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px;">
-                              ${tierTitle}
+                          <div style="padding: 6px 9px; font-size: 11px; min-width: 230px; font-family: ui-sans-serif, system-ui, sans-serif;">
+                            <div style="font-weight: 800; color: ${tierColor}; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
+                              <span>${tierTitle}</span>
+                              <span style="font-size: 9.5px; background: #f1f5f9; color: #475569; padding: 1px 5px; border-radius: 4px;">#${p.reach_id ?? 'N/A'}</span>
                             </div>
-                            <div style="color: #1e293b; font-size: 10.5px;"><strong>Reach ID:</strong> #${p.HYRIV_ID || 'N/A'} (Strahler Order ${order})</div>
-                            <div style="color: #0369a1; font-size: 10.5px; font-weight: 700;">Mean Flow: ${p.DIS_AV_CMS ?? 'N/A'} m³/s</div>
-                            <div style="color: #7c3aed; font-size: 10.5px; font-weight: 700;">Est. Potential: ${estPower}</div>
-                            <div style="color: #475569; font-size: 10px; margin-top: 2px;">Corridor Reach Length: <strong>${p.LENGTH_KM ?? 'N/A'} km</strong></div>
-                            <div style="color: #64748b; font-size: 9.5px;">Upland Basin: ${p.UPLAND_SKM ?? 'N/A'} km²</div>
+                            <div style="color: #1e293b; font-size: 10.5px; margin-bottom: 3px;">
+                              <strong>Palika:</strong> ${p.palika || 'Gulmi'}
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 4px; background: #f8fafc; padding: 5px 6px; border-radius: 4px;">
+                              <div>
+                                <div style="color: #64748b; font-size: 8.5px; font-weight: 600;">THEORETICAL POWER</div>
+                                <div style="color: #7c3aed; font-size: 11px; font-weight: 800;">${pKw.toLocaleString()} kW <span style="font-size: 9px; font-weight: 600;">(${pMw} MW)</span></div>
+                              </div>
+                              <div>
+                                <div style="color: #64748b; font-size: 8.5px; font-weight: 600;">NET HEAD (H_net)</div>
+                                <div style="color: #0284c7; font-size: 11px; font-weight: 800;">${p.net_head_m ?? 'N/A'} m <span style="font-size: 8.5px; color: #94a3b8;">(${p.gross_head_m ?? ''}m gross)</span></div>
+                              </div>
+                              <div>
+                                <div style="color: #64748b; font-size: 8.5px; font-weight: 600;">TURBINE FLOW (Q)</div>
+                                <div style="color: #059669; font-size: 10.5px; font-weight: 700;">${p.discharge_m3s ?? 'N/A'} m³/s</div>
+                              </div>
+                              <div>
+                                <div style="color: #64748b; font-size: 8.5px; font-weight: 600;">ANNUAL GENERATION</div>
+                                <div style="color: #d97706; font-size: 10.5px; font-weight: 700;">${p.screening_annual_energy_mwh ?? p.annual_energy_mwh ?? 'N/A'} MWh</div>
+                              </div>
+                            </div>
+                            <div style="color: #64748b; font-size: 9px; margin-top: 4px; border-top: 1px dotted #e2e8f0; padding-top: 2px;">
+                              Length: <strong>${p.length_m ? Math.round(p.length_m) : 500} m</strong> | Slope: <strong>${p.slope_pct ?? 'N/A'}%</strong> | Basin: <strong>${p.catchment_km2 ?? 'N/A'} km²</strong>
+                            </div>
                           </div>
                         `,
                         { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' }
                       );
                     }}
                   />
+                ) : (
+                  /* Fallback to HydroRIVERS if reaches are still loading */
+                  riversStreamsData && (
+                    <GeoJSON
+                      key={`hydro-corridor-streams-${selectedPillar}`}
+                      data={riversStreamsData}
+                      pane="riversPane"
+                      style={(feature?: Feature) => {
+                        const order = feature?.properties?.ORD_STRA || 1;
+                        if (order >= 5) {
+                          return {
+                            color: '#4c1d95',
+                            weight: 5.5,
+                            opacity: 0.98,
+                          };
+                        }
+                        if (order === 3 || order === 4) {
+                          return {
+                            color: '#7c3aed',
+                            weight: 3.8,
+                            opacity: 0.95,
+                          };
+                        }
+                        return {
+                          color: '#10b981',
+                          weight: 2.2,
+                          opacity: 0.88,
+                        };
+                      }}
+                      onEachFeature={(feature: Feature, layer: L.Layer) => {
+                        const p = feature?.properties || {};
+                        const order = p.ORD_STRA || 1;
+                        const tierTitle =
+                          order >= 5
+                            ? '⚡ Commercial RoR (>1 MW)'
+                            : order === 3 || order === 4
+                              ? '⚡ Mini Hydro (100–999 kW)'
+                              : '⚡ Rural Micro-Hydro (<100 kW)';
+                        const tierColor = order >= 5 ? '#4c1d95' : order === 3 || order === 4 ? '#7c3aed' : '#10b981';
+                        const estPower =
+                          order >= 5 ? '1,500 – 12,000 kW' : order === 3 || order === 4 ? '150 – 950 kW' : '15 – 85 kW';
+
+                        layer.bindTooltip(
+                          `
+                            <div style="padding: 5px 8px; font-size: 11px; min-width: 200px;">
+                              <div style="font-weight: 800; color: ${tierColor}; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px;">
+                                ${tierTitle}
+                              </div>
+                              <div style="color: #1e293b; font-size: 10.5px;"><strong>Reach ID:</strong> #${p.HYRIV_ID || 'N/A'} (Strahler Order ${order})</div>
+                              <div style="color: #0369a1; font-size: 10.5px; font-weight: 700;">Mean Flow: ${p.DIS_AV_CMS ?? 'N/A'} m³/s</div>
+                              <div style="color: #7c3aed; font-size: 10.5px; font-weight: 700;">Est. Potential: ${estPower}</div>
+                              <div style="color: #475569; font-size: 10px; margin-top: 2px;">Corridor Reach Length: <strong>${p.LENGTH_KM ?? 'N/A'} km</strong></div>
+                            </div>
+                          `,
+                          { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' }
+                        );
+                      }}
+                    />
+                  )
                 )}
 
                 {/* 6 Named Major River Corridor Arteries with Enhanced Glowing Highlight */}

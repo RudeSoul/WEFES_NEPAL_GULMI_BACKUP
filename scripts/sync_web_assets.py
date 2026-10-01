@@ -46,7 +46,10 @@ SYNC_MAPPINGS = [
     
     # Spatial GeoJSON layers
     ("data/real/boundaries/gulmi-palikas.json", PUBLIC_GEOJSON_DIR, "gulmi-palikas.json"),
-    ("data/real/hydrology/gulmi_hydrology_assets.json", PUBLIC_GEOJSON_DIR, "gulmi-hydrology-assets.json"),
+    ("data/real/hydrology/gulmi_dhm_stations.geojson", PUBLIC_GEOJSON_DIR, "gulmi-dhm-stations.json"),
+    ("data/real/hydrology/catchments_l10.geojson", PUBLIC_GEOJSON_DIR, "catchments_l10.geojson"),
+    ("data/real/hydrology/rivers_streams.geojson", PUBLIC_GEOJSON_DIR, "rivers_streams.geojson"),
+    ("data/calculated/hydro_reaches/hydro_potential_reaches.geojson", PUBLIC_GEOJSON_DIR, "hydro_potential_reaches.geojson"),
 
     # Hydrological Rasters (CHIRPS & HydroSHEDS GeoTIFFs)
     ("data/real/hydrology/average_annual_precipitation.tif", PUBLIC_TILES_DIR, "average_annual_precipitation.tif"),
