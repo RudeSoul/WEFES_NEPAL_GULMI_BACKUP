@@ -678,13 +678,65 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
     };
   };
 
+  /**
+   * Automatically adjusts tooltip direction between 'top' and 'bottom'
+   * based on whether the mouse cursor is in the upper or lower area of the map,
+   * completely preventing tooltips from clipping against container edges.
+   */
+  const bindSmartTooltip = (
+    layer: L.Layer,
+    htmlContent: string,
+    options?: {
+      pane?: string;
+      opacity?: number;
+      className?: string;
+      topThreshold?: number;
+    }
+  ) => {
+    const topThreshold = options?.topThreshold ?? 175;
+
+    layer.bindTooltip(htmlContent, {
+      sticky: true,
+      direction: 'top',
+      offset: [0, -12],
+      opacity: options?.opacity ?? 0.98,
+      pane: options?.pane ?? 'popupPane',
+      className: options?.className,
+    });
+
+    const updateDirection = (e: L.LeafletMouseEvent) => {
+      const tooltip = (layer as any).getTooltip?.();
+      if (!tooltip) return;
+      const y = e.containerPoint?.y;
+      if (y === undefined) return;
+
+      const isNearTop = y < topThreshold;
+      const targetDir = isNearTop ? 'bottom' : 'top';
+      const targetOffset: L.PointTuple = isNearTop ? [0, 14] : [0, -14];
+
+      if (tooltip.options.direction !== targetDir) {
+        tooltip.options.direction = targetDir;
+        tooltip.options.offset = targetOffset;
+        if (typeof tooltip.update === 'function') {
+          tooltip.update();
+        }
+      }
+    };
+
+    layer.on({
+      mouseover: updateDirection,
+      mousemove: updateDirection,
+    });
+  };
+
   const onEachPalika = (feature: Feature, layer: L.Layer) => {
     const props = feature.properties;
     if (!props) return;
 
     const metricSnippet = choropleth.getTooltipHtml(props.name || '');
 
-    layer.bindTooltip(
+    bindSmartTooltip(
+      layer,
       `
       <div style="font-family: sans-serif; font-size: 11px; padding: 3px 5px;">
         <div style="font-weight: 700; color: #0f172a;">${props.name} (${props.nepaliName || ''})</div>
@@ -692,7 +744,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
         ${metricSnippet}
       </div>
     `,
-      { sticky: true, direction: 'top', opacity: 0.95 }
+      { topThreshold: 150, opacity: 0.95 }
     );
 
     layer.on({
@@ -1620,7 +1672,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                           : '⚡ Rural Micro-Hydro (<100 kW)';
                       const tierColor = isCommercial ? '#4c1d95' : isMini ? '#7c3aed' : '#10b981';
 
-                      layer.bindTooltip(
+                      bindSmartTooltip(
+                        layer,
                         `
                           <div style="padding: 6px 9px; font-size: 11px; min-width: 230px; font-family: ui-sans-serif, system-ui, sans-serif;">
                             <div style="font-weight: 800; color: ${tierColor}; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
@@ -1653,7 +1706,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                             </div>
                           </div>
                         `,
-                        { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' }
+                        { pane: 'popupPane', topThreshold: 175 }
                       );
                     }}
                   />
@@ -1699,7 +1752,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                         const estPower =
                           order >= 5 ? '1,500 – 12,000 kW' : order === 3 || order === 4 ? '150 – 950 kW' : '15 – 85 kW';
 
-                        layer.bindTooltip(
+                        bindSmartTooltip(
+                          layer,
                           `
                             <div style="padding: 5px 8px; font-size: 11px; min-width: 200px;">
                               <div style="font-weight: 800; color: ${tierColor}; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 4px;">
@@ -1711,7 +1765,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                               <div style="color: #475569; font-size: 10px; margin-top: 2px;">Corridor Reach Length: <strong>${p.LENGTH_KM ?? 'N/A'} km</strong></div>
                             </div>
                           `,
-                          { direction: 'top', offset: [0, -4], opacity: 0.98, pane: 'popupPane' }
+                          { pane: 'popupPane', topThreshold: 175 }
                         );
                       }}
                     />
