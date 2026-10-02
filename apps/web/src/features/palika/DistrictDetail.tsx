@@ -5,13 +5,12 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ArrowLeft, ArrowUp, CloudRain, Mountain, Sparkles, Thermometer } from 'lucide-react';
+import { ArrowLeft, ArrowUp } from 'lucide-react';
 
 import { db } from '@wefes/database';
 import { ClimateDataset, Crop, District } from '@wefes/shared-types';
 import { arimaForecast, extractAnnualRainfallSeries } from '@wefes/wefes-engine';
 
-import { PALIKA_AGRO_HYDROLOGY_DATA } from '../../data/districtIndicatorAssets';
 import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
 import { fetchGeoJson } from '../../services/dataClient';
 import { DistrictDetailMap } from '../map/DistrictDetailMap';
@@ -20,7 +19,6 @@ import { IndicatorModal, ModalKey } from './components/IndicatorModal';
 import { PalikaAgroHydrologyCalendar } from './components/PalikaAgroHydrologyCalendar';
 import { PalikaCropSuitabilityGrid } from './components/PalikaCropSuitabilityGrid';
 import { PalikaHeroHeader } from './components/PalikaHeroHeader';
-import { PalikaIndicatorsGrid } from './components/PalikaIndicatorsGrid';
 import { PalikaSeasonalRotationsCard } from './components/PalikaSeasonalRotationsCard';
 import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
 
@@ -111,64 +109,6 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   const hasRainfallSeries = rainfallSeries.length >= 8;
   const rainfallARIMA = hasRainfallSeries ? arimaForecast(rainfallSeries, rfStartYear, 10) : null;
 
-  const arimaForecastValue = rainfallARIMA ? Math.round(rainfallARIMA.forecasts[4]) : null;
-  const cardRainfallValue = arimaForecastValue ?? (district.avgRainfallMm || 0);
-
-  // Canonical agro-hydrology normal from CHIRPS 30-year dataset (Funk et al., 2015)
-  const agroProfile = PALIKA_AGRO_HYDROLOGY_DATA.palikas[activePalika.name];
-  const canonicalRainfall =
-    agroProfile?.annual_summary?.precipitation_wmo_normal_mm ?? activePalika.rainfallMm ?? cardRainfallValue;
-
-  const hasRealSoil =
-    district.hasRealSoilData !== false && (district.soilSampleCount || 0) > 0 && district.baseSoilPh !== undefined;
-
-  const indicators = [
-    {
-      key: 'rainfall' as ModalKey,
-      icon: <CloudRain className="w-5 h-5 text-sky-600" />,
-      label: 'Local Precipitation',
-      value: `${canonicalRainfall} mm/yr`,
-      badge: '30-Yr WMO Normal (CHIRPS)',
-      cardBg: 'bg-sky-50/70 border-sky-200/90 hover:border-sky-300 hover:bg-sky-50 cursor-pointer',
-      iconBg: 'bg-sky-100 border-sky-200',
-      badgeClass: 'bg-sky-100 text-sky-800 border-sky-300',
-      badgeDot: 'bg-sky-500',
-    },
-    {
-      key: 'elevation' as ModalKey,
-      icon: <Mountain className="w-5 h-5 text-amber-600" />,
-      label: 'Mean Elevation',
-      value: activePalika.elevation ? `${activePalika.elevation}m ASL` : `${district.elevationRange}m`,
-      badge: 'Mid-Hills Belt',
-      cardBg: 'bg-amber-50/70 border-amber-200/90 hover:border-amber-300 hover:bg-amber-50 cursor-pointer',
-      iconBg: 'bg-amber-100 border-amber-200',
-      badgeClass: 'bg-amber-100 text-amber-800 border-amber-300',
-      badgeDot: 'bg-amber-500',
-    },
-    {
-      key: 'soil' as ModalKey,
-      icon: <Sparkles className="w-5 h-5 text-emerald-600" />,
-      label: 'Soil Benchmark',
-      value: activePalika.soilPh ? `pH ${activePalika.soilPh}` : hasRealSoil ? `pH ${district.baseSoilPh}` : 'No Data',
-      badge: 'NARC Ground Grid',
-      cardBg: 'bg-emerald-50/70 border-emerald-200/90 hover:border-emerald-300 hover:bg-emerald-50 cursor-pointer',
-      iconBg: 'bg-emerald-100 border-emerald-200',
-      badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-300',
-      badgeDot: 'bg-emerald-500',
-    },
-    {
-      key: 'temp' as ModalKey,
-      icon: <Thermometer className="w-5 h-5 text-purple-600" />,
-      label: 'Local Avg Temp',
-      value: activePalika.avgTempC ? `${activePalika.avgTempC}°C` : `${distClimatology?.[7]?.t2m || 17.8}°C`,
-      badge: 'Lapse Adjusted',
-      cardBg: 'bg-purple-50/70 border-purple-200/90 hover:border-purple-300 hover:bg-purple-50 cursor-pointer',
-      iconBg: 'bg-purple-100 border-purple-200',
-      badgeClass: 'bg-purple-100 text-purple-800 border-purple-300',
-      badgeDot: 'bg-purple-500',
-    },
-  ];
-
   return (
     <div className="space-y-6 animate-fade-in-up">
       {openModal && (
@@ -195,9 +135,11 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
           onBackToMap={onBackToMap}
         />
 
-        <PalikaAgroHydrologyCalendar activePalika={activePalika} climateDataset={climateDataset} />
-
-        <PalikaIndicatorsGrid activePalika={activePalika} indicators={indicators} onOpenModal={setOpenModal} />
+        <PalikaAgroHydrologyCalendar
+          activePalika={activePalika}
+          climateDataset={climateDataset}
+          onOpenSoilModal={() => setOpenModal('soil')}
+        />
 
         <PalikaSeasonalRotationsCard activePalika={activePalika} onSelectCrop={onSelectCrop} />
 

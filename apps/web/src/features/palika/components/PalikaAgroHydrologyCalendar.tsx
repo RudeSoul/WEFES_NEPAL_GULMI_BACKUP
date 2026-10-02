@@ -1,12 +1,13 @@
 // [DATA PROVENANCE]
-// Data Source: data/calculated/indicators/gulmi_palika_agro_hydrology.json, data/calculated/indicators/gulmi_palika_landholding.json, data/calculated/indicators/gulmi_palika_ghi.json, data/calculated/indicators/gulmi_palika_grid.json
-// Classification: CALCULATED EMPIRICAL (1991–2020 CHIRPS Climatological Baseline, NSO Census 2021/22, Global Solar Atlas 2.0, NEA Substation Network)
+// Data Source: data/calculated/indicators/gulmi_palika_agro_hydrology.json, data/calculated/indicators/gulmi_palika_landholding.json, data/calculated/indicators/gulmi_palika_ghi.json, data/calculated/indicators/gulmi_palika_grid.json, data/calculated/indicators/gulmi_palika_soil.json
+// Classification: CALCULATED EMPIRICAL (1991–2020 CHIRPS Climatological Baseline, NSO Census 2021/22, Global Solar Atlas 2.0, NEA Substation Network, NARC 100m Soil Grid)
 // Citations: CHIRPS v2.0 (1981–2025), FAO-56 Penman-Monteith, FAO Irrigation Training Manual No. 4, NARC Soil Science Division, National Statistics Office (NSO), World Bank ESMAP Global Solar Atlas, Nepal Electricity Authority (NEA) Tariff Schedule 2024–2026
 import React, { useMemo, useState } from 'react';
 
 import {
   AlertTriangle,
   ArrowRight,
+  ArrowUpRight,
   BookOpen,
   ChevronDown,
   ChevronUp,
@@ -19,6 +20,7 @@ import {
   Power,
   ShieldCheck,
   Sliders,
+  Sparkles,
   Sun,
   Zap,
 } from 'lucide-react';
@@ -44,6 +46,7 @@ import {
   PALIKA_GHI_DATA,
   PALIKA_GRID_DATA,
   PALIKA_LANDHOLDING_DATA,
+  PALIKA_SOIL_DATA,
   PalikaAgroHydrologyProfile,
 } from '../../../data/districtIndicatorAssets';
 import { DistrictPalika } from '../../../data/districtPalikaAssets';
@@ -51,6 +54,7 @@ import { DistrictPalika } from '../../../data/districtPalikaAssets';
 interface SeasonalAgroHydrologyProps {
   activePalika: DistrictPalika;
   climateDataset?: ClimateDataset | null;
+  onOpenSoilModal?: () => void;
 }
 
 export type AgroHydrologyTab = 'balance' | 'soil' | 'solar_sizing';
@@ -96,7 +100,10 @@ function formatFlowRate(lps: number): { value: string; unit: string } {
   return { value: lps >= 10 ? Math.round(lps).toLocaleString() : lps.toFixed(1), unit: 'L/s' };
 }
 
-export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> = ({ activePalika }) => {
+export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> = ({
+  activePalika,
+  onOpenSoilModal,
+}) => {
   const [activeTab, setActiveTab] = useState<AgroHydrologyTab>('balance');
   const [commandAreaMode, setCommandAreaMode] = useState<CommandAreaMode>('cluster10');
   const [customAreaHa, setCustomAreaHa] = useState<number>(25);
@@ -113,6 +120,11 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
   // Load canonical agro-hydrological indicators for this palika
   const palikaData: PalikaAgroHydrologyProfile | undefined = useMemo(() => {
     return PALIKA_AGRO_HYDROLOGY_DATA.palikas[activePalika.name];
+  }, [activePalika.name]);
+
+  // Load NARC 100m empirical soil profile for this palika
+  const soilProfile = useMemo(() => {
+    return PALIKA_SOIL_DATA.palikas[activePalika.name];
   }, [activePalika.name]);
 
   // Load official NSO Census 2021/22 agricultural landholding data
@@ -391,6 +403,23 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               Estimated TAW: {taw_mm}mm (Zr: {palikaData.root_zone_depth_m}m · AWC: {palikaData.awc_volumetric} · FAO-56
               Eq. 82)
             </span>
+            {soilProfile && (
+              <button
+                type="button"
+                onClick={onOpenSoilModal}
+                className="text-[10px] px-2 py-0.5 rounded font-mono font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-300 flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs group"
+                title="Click to inspect NARC 100m empirical soil diagnostic dossier"
+              >
+                <Sparkles className="w-3 h-3 text-emerald-600" />
+                <span>
+                  NARC Soil: pH {soilProfile.ph} ({soilProfile.texture}, {soilProfile.organicMatterPct}% SOM)
+                </span>
+                <span className="text-[9px] font-sans font-medium text-emerald-700 underline group-hover:text-emerald-950 flex items-center gap-0.5">
+                  <span>Dossier</span>
+                  <ArrowUpRight className="w-2.5 h-2.5" />
+                </span>
+              </button>
+            )}
             {activeTab === 'solar_sizing' && (
               <span className="text-[10px] px-2 py-0.5 rounded font-mono font-semibold bg-rose-50 text-rose-800 border border-rose-300 flex items-center gap-1">
                 <Zap className="w-3 h-3 text-rose-600" />
@@ -871,6 +900,49 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
             falls in June–September as unretained terrace runoff ({summary.unretained_rainfall_mm} mm). Consequently, a
             root-zone deficit emerges across the 6 dry winter/spring months ({summary.critical_stress_window}),
             requiring <strong>{summary.net_irrigation_requirement_mm} mm</strong> of supplemental irrigation.
+          </div>
+        </div>
+      )}
+
+      {/* Stage 2 Soil Health Diagnosis & Liming Advisory */}
+      {activeTab === 'soil' && (
+        <div className="p-3 bg-emerald-50/80 rounded-xl border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-emerald-950 animate-fade-in">
+          <div className="flex items-center gap-2.5">
+            <span className="text-lg">🧪</span>
+            <div>
+              <div className="font-bold font-outfit text-emerald-900 uppercase tracking-wider text-[11px] flex items-center gap-2">
+                <span>NARC Soil Health Diagnosis for {activePalika.name}</span>
+                <span className="text-[9px] font-mono font-normal text-emerald-700 lowercase">
+                  (100m empirical grid)
+                </span>
+              </div>
+              <div className="text-[11px] text-emerald-800 mt-0.5">
+                Benchmark Soil:{' '}
+                <strong className="font-mono">pH {soilProfile?.ph ?? activePalika.soilPh ?? '—'}</strong>
+                {soilProfile ? ` (${soilProfile.texture}, ${soilProfile.organicMatterPct}% SOM)` : ''} •{' '}
+                {(soilProfile?.ph ?? activePalika.soilPh ?? 7) < 6.0
+                  ? 'Acidic Hill Slope (Moderate Lime Required)'
+                  : 'Near-Neutral Balanced Soil (Optimal Micronutrient Availability)'}
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="bg-white px-3 py-1.5 rounded-lg border border-emerald-300 text-emerald-800 font-semibold font-mono text-[11px]">
+              {(soilProfile?.ph ?? activePalika.soilPh ?? 7) < 6.0
+                ? 'Advisory: Apply 1.5–2.0 t/ha Agri-Lime'
+                : 'Advisory: Standard N-P-K Organic Compost'}
+            </div>
+            {onOpenSoilModal && (
+              <button
+                type="button"
+                onClick={onOpenSoilModal}
+                className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-[11px] flex items-center gap-1 shadow-2xs transition-colors cursor-pointer"
+                title="Inspect detailed NARC 100m soil chemical analysis"
+              >
+                <span>Inspect Dossier</span>
+                <ArrowUpRight className="w-3 h-3" />
+              </button>
+            )}
           </div>
         </div>
       )}
