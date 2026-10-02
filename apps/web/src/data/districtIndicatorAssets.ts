@@ -104,6 +104,7 @@ export interface PalikaSoilProfile {
   phRating: string;
   phMin?: number;
   phMax?: number;
+  phStd?: number;
   organicMatterPct?: number;
   organicMatterRating?: string;
   clayPct?: number;

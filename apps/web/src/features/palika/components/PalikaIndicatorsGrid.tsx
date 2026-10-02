@@ -1,7 +1,13 @@
+// [DATA PROVENANCE]
+// Data Source: data/calculated/indicators/gulmi_palika_soil.json, data/real/municipal/palika_profiles.json
+// Classification: EMPIRICAL GROUND BENCHMARK (NARC NSSRC 100m Grid, CBS 2021)
+// Citations: Nepal Agricultural Research Council (NARC), MoFAGA
+
 import React from 'react';
 
 import { ArrowUpRight } from 'lucide-react';
 
+import { PALIKA_SOIL_DATA } from '../../../data/districtIndicatorAssets';
 import { DistrictPalika } from '../../../data/districtPalikaAssets';
 
 import { ModalKey } from './IndicatorModal';
@@ -29,6 +35,8 @@ export const PalikaIndicatorsGrid: React.FC<PalikaIndicatorsGridProps> = ({
   indicators,
   onOpenModal,
 }) => {
+  const soilProfile = PALIKA_SOIL_DATA.palikas[activePalika.name];
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -97,7 +105,8 @@ export const PalikaIndicatorsGrid: React.FC<PalikaIndicatorsGridProps> = ({
               NARC Soil Health Diagnosis for {activePalika.name}:
             </div>
             <div className="text-[11px] text-emerald-800 mt-0.5">
-              Benchmark Soil pH: <strong className="font-mono">{activePalika.soilPh}</strong> •{' '}
+              Benchmark Soil: <strong className="font-mono">pH {activePalika.soilPh}</strong>
+              {soilProfile ? ` (${soilProfile.texture}, ${soilProfile.organicMatterPct}% SOM)` : ''} •{' '}
               {activePalika.soilPh && activePalika.soilPh < 6.0
                 ? 'Acidic Hill Slope (Moderate Lime Required)'
                 : 'Near-Neutral Balanced Soil (Optimal Micronutrient Availability)'}
@@ -106,7 +115,7 @@ export const PalikaIndicatorsGrid: React.FC<PalikaIndicatorsGridProps> = ({
         </div>
         <div className="shrink-0 bg-white px-3 py-1.5 rounded-lg border border-emerald-300 text-emerald-800 font-semibold font-mono text-[11px]">
           {activePalika.soilPh && activePalika.soilPh < 6.0
-            ? 'Advisory: Apply 2.0 t/ha Agri-Lime'
+            ? 'Advisory: Apply 1.5–2.0 t/ha Agri-Lime'
             : 'Advisory: Standard N-P-K Organic Compost'}
         </div>
       </div>
