@@ -356,8 +356,8 @@ def main():
             s_readily_available = max(0.0, s_start - (taw_mm - raw_mm))
             net_irrigation_req = max(0.0, demand - inflow - s_readily_available)
 
-            # Surplus Runoff & Drainage
-            surplus_drainage = max(
+            # Surplus Unretained Rainfall (Runoff, Deep Percolation, Interception)
+            unretained_rainfall = max(
                 0.0,
                 (m_item["precip_normal"] - inflow) + max(0.0, s_start + inflow - demand - taw_mm),
             )
@@ -365,16 +365,16 @@ def main():
             # Classify agronomic stress tier based on depletion fraction Dt
             if depletion_frac <= 0.25:
                 stress_level = "adequate_hydration"
-                advisory = "Adequate Soil Hydration: Soil moisture fully satisfies crop evapotranspiration without irrigation."
+                advisory = "Adequate Soil Hydration: Modelled root-zone storage satisfies crop evapotranspiration without supplemental irrigation."
             elif depletion_frac <= 0.50:
                 stress_level = "depletion_watch"
-                advisory = "Soil Storage Buffer: Stored soil moisture satisfies crop demand; monitor initial depletion."
+                advisory = "Soil Storage Buffer: Stored soil moisture satisfies crop demand; initial depletion underway."
             elif depletion_frac <= 0.75:
                 stress_level = "moderate_stress"
-                advisory = "Moderate Moisture Stress: Supplemental irrigation recommended to protect yield."
+                advisory = "Moderate Moisture Stress: Soil storage below RAW threshold; supplemental irrigation recommended to protect yield."
             else:
                 stress_level = "critical_deficit"
-                advisory = "Critical Water Deficit: Crop under severe moisture stress; triggers solar/river lift pumping or recharge storage."
+                advisory = "Critical Water Deficit: Crop under severe root-zone moisture stress; triggers solar/river lift pumping or storage draw."
 
             months_records.append(
                 {
@@ -402,7 +402,8 @@ def main():
                     "soil_depletion_fraction": depletion_frac,
                     "soil_depletion_pct": depletion_pct,
                     "net_irrigation_req_mm": round(net_irrigation_req, 1),
-                    "surplus_drainage_mm": round(surplus_drainage, 1),
+                    "unretained_rainfall_mm": round(unretained_rainfall, 1),
+                    "surplus_drainage_mm": round(unretained_rainfall, 1),
                     "stress_level": stress_level,
                     "advisory": advisory,
                 }
@@ -417,7 +418,7 @@ def main():
         total_et0 = sum(m["et0_reference_mm"] for m in months_records)
         total_etc = sum(m["etc_crop_demand_mm"] for m in months_records)
         total_ireq = sum(m["net_irrigation_req_mm"] for m in months_records)
-        total_surplus = sum(m["surplus_drainage_mm"] for m in months_records)
+        total_unretained = sum(m["unretained_rainfall_mm"] for m in months_records)
         deficit_months = sum(1 for m in months_records if m["net_irrigation_req_mm"] > 0)
         adequate_months = 12 - deficit_months
 
@@ -437,7 +438,8 @@ def main():
                 "et0_reference_mm": round(total_et0, 1),
                 "etc_crop_demand_mm": round(total_etc, 1),
                 "net_irrigation_requirement_mm": round(total_ireq, 1),
-                "monsoon_surplus_drainage_mm": round(total_surplus, 1),
+                "unretained_rainfall_mm": round(total_unretained, 1),
+                "monsoon_surplus_drainage_mm": round(total_unretained, 1),
                 "irrigation_deficit_months": deficit_months,
                 "adequate_moisture_months": adequate_months,
                 "critical_stress_window": "Falgun – Baisakh (Feb – Apr)",
@@ -456,10 +458,10 @@ def main():
     final_document = {
         "_metadata": {
             "dataset": "Gulmi Palika 12-Month Agro-Hydrological Climatology & Root-Zone Water Balance",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "generated_at": datetime.now().isoformat(),
             "governance": {
-                "tier": "CALCULATED EMPIRICAL (WMO Standard Normal & Physical Balance)",
+                "tier": "CALCULATED EMPIRICAL (1991–2020 CHIRPS Climatological Baseline & Physical Balance)",
                 "citations": [
                     "Funk et al. (2015) The climate hazards group infrared precipitation with stations (CHIRPS)",
                     "Allen et al. (1998) FAO Irrigation and Drainage Paper No. 56 (Penman-Monteith)",
@@ -471,28 +473,30 @@ def main():
             "scientific_specifications": {
                 "precipitation": {
                     "source": "CHIRPS v2.0 0.05° (~5 km) Multi-Decadal Gridded Reanalysis (1981–2025)",
-                    "normal_period": "1991–2020 (WMO 30-Year Climatological Standard Normal, 360 months)",
+                    "baseline_period": "1991–2020 (30-Year Climatological Baseline, 360 months)",
                     "variability_period": "1981–2025 (45 Years, 540 months)",
                     "extraction_method": "Area-Weighted Polygon Intersection (EPSG:32644 UTM Zone 44N)",
                     "percentiles_stored": ["P10", "P25", "P50", "P75", "P90"],
+                    "p90_definition": "90th percentile of historical monthly precipitation (1981–2025), indicating a relatively wet historical condition (10% of historical years exceeded this level).",
                 },
                 "reference_evapotranspiration": {
                     "method": "FAO-56 Penman-Monteith (Equation 6)",
-                    "temperature_downscaling": "Empirical mountain lapse rate (-5.1°C/km) relative to 1400m district baseline",
-                    "radiation": "NASA POWER / MERRA-2 GHI coupled with extraterrestrial Ra solar geometry",
+                    "temperature_downscaling": "Empirical Gulmi station temperature lapse rate assumption (-5.1°C/km) relative to 1400m district baseline",
+                    "radiation_chain": "NASA POWER / MERRA-2 GHI (kWh/m2/d) -> Rs (MJ/m2/d) -> Rns (albedo 0.23) -> Rnl (Stefan-Boltzmann + actual vapor pressure ea) -> Rn",
                     "vapor_pressure": "FAO-56 Psychrometric vapor deficit derived from 2m relative humidity",
-                    "wind_speed": "Logarithmic boundary layer profile: u2 = u10 * 0.748",
+                    "wind_speed": "FAO-56 Eq. 47 logarithmic boundary layer profile: u2 = u10 * 0.748",
                 },
                 "crop_water_demand": {
                     "method": "ETc = Kc * ET0",
-                    "cropping_pattern": "Gulmi seasonal composite (Monsoon paddy/millet, Winter wheat/potato, Spring maize)",
+                    "nature": "Representative composite seasonal terrace rotation (Monsoon paddy/millet, Winter wheat/potato, Spring maize). Kc ranges from 0.65 to 1.15.",
                 },
                 "soil_water_balance": {
                     "storage_model": "Sequential single-bucket root-zone storage with moisture carry-over",
-                    "equation": "St = min(TAW, max(0, S_{t-1} + Peff - ETc))",
-                    "awc_source": "NARC Laboratory Soil Points (127/81 laboratory samples) + regional terrace lithology",
-                    "effective_precipitation": "USDA-SCS Monthly Runoff Partitioning Model",
-                    "depletion_threshold": "Allowable depletion fraction p = 0.50 (RAW = 0.50 * TAW)",
+                    "storage_equation": "St = min(TAW, max(0, S_{t-1} + Peff - ETc))",
+                    "irrigation_requirement_equation": "Ireq_t = max(0, ETc_t - Peff_t - max(0, S_{t-1} - (TAW - RAW)))",
+                    "taw_nature": "Estimated Total Available Water (TAW = 1000 * Zr * AWC) derived from available NARC soil laboratory points and regional terrace lithology.",
+                    "allowable_depletion_fraction": "p = 0.50 composite rotation assumption (RAW = 0.50 * TAW)",
+                    "effective_precipitation_attribution": "USDA-SCS Monthly Runoff Partitioning Model (Peff). Residual rainfall not retained in root zone comprises surface runoff, deep percolation, and canopy interception.",
                 },
             },
         },

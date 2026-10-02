@@ -191,6 +191,7 @@ export interface MonthAgroHydrology {
   soil_depletion_fraction: number;
   soil_depletion_pct: number;
   net_irrigation_req_mm: number;
+  unretained_rainfall_mm?: number;
   surplus_drainage_mm: number;
   stress_level: 'adequate_hydration' | 'depletion_watch' | 'moderate_stress' | 'critical_deficit';
   advisory: string;
@@ -212,6 +213,7 @@ export interface PalikaAgroHydrologyProfile {
     et0_reference_mm: number;
     etc_crop_demand_mm: number;
     net_irrigation_requirement_mm: number;
+    unretained_rainfall_mm?: number;
     monsoon_surplus_drainage_mm: number;
     irrigation_deficit_months: number;
     adequate_moisture_months: number;

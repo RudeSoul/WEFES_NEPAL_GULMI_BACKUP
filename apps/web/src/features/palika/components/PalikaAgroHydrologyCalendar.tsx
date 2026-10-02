@@ -1,6 +1,6 @@
 // [DATA PROVENANCE]
 // Data Source: data/calculated/indicators/gulmi_palika_agro_hydrology.json
-// Classification: CALCULATED EMPIRICAL (WMO Standard Normal & Physical Balance)
+// Classification: CALCULATED EMPIRICAL (1991–2020 CHIRPS Climatological Baseline & Root-Zone Water Balance)
 // Citations: CHIRPS v2.0 (1981–2025), FAO-56 Penman-Monteith, NARC Soil Science Division, NASA POWER MERRA-2
 import React, { useMemo, useState } from 'react';
 
@@ -49,7 +49,7 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
     );
   }
 
-  const { annual_summary: summary, months, taw_mm, raw_mm, awc_volumetric, soil_lithology, elevation_m } = palikaData;
+  const { annual_summary: summary, months, taw_mm, raw_mm, soil_lithology, elevation_m } = palikaData;
 
   return (
     <div className="p-5 rounded-2xl bg-white/95 text-slate-800 border border-slate-200/90 shadow-xs space-y-4 animate-fade-in glass-panel">
@@ -61,18 +61,18 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               <span>📅 12-Month Agro-Hydrological Calendar</span>
             </span>
             <span className="text-[10px] px-2 py-0.5 rounded font-mono font-semibold bg-sky-50 text-sky-800 border border-sky-300">
-              CHIRPS 5km WMO 1991–2020 Normal
+              CHIRPS 5km Baseline (1991–2020)
             </span>
             <span className="text-[10px] px-2 py-0.5 rounded font-mono font-semibold bg-amber-50 text-amber-800 border border-amber-300">
-              FAO-56 Penman-Monteith ET₀ & ETc
+              FAO-56 Penman-Monteith ET₀ & Composite ETc
             </span>
             <span className="text-[10px] px-2 py-0.5 rounded font-mono font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300">
-              NARC Root-Zone Storage (TAW: {taw_mm}mm)
+              Estimated Storage (TAW: {taw_mm}mm)
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Area-weighted precipitation ($P$), crop evapotranspiration ($ET_c$), and soil carry-over balance for{' '}
-            <strong>{activePalika.name}</strong> ({elevation_m}m ASL · {soil_lithology}).
+            Area-weighted precipitation baseline ($P$), representative composite crop evapotranspiration ($ET_c$), and
+            root-zone soil balance for <strong>{activePalika.name}</strong> ({elevation_m}m ASL · {soil_lithology}).
           </p>
         </div>
 
@@ -110,15 +110,21 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
           <div className="text-base font-extrabold text-sky-950 mt-0.5">
             {summary.precipitation_wmo_normal_mm} <span className="text-[10px] font-normal text-slate-500">mm/yr</span>
           </div>
-          <div className="text-[10px] text-slate-500 font-sans">Effective: {summary.effective_precipitation_mm} mm</div>
+          <div className="text-[10px] text-slate-500 font-sans">
+            1991–2020 Baseline (Effective: {summary.effective_precipitation_mm} mm)
+          </div>
         </div>
 
         <div className="p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
-          <div className="text-[10px] text-amber-700 uppercase font-sans font-semibold">Crop Water Demand (ETc)</div>
+          <div className="text-[10px] text-amber-700 uppercase font-sans font-semibold">
+            Composite Crop Demand (ETc)
+          </div>
           <div className="text-base font-extrabold text-amber-950 mt-0.5">
             {summary.etc_crop_demand_mm} <span className="text-[10px] font-normal text-slate-500">mm/yr</span>
           </div>
-          <div className="text-[10px] text-slate-500 font-sans">Reference ET₀: {summary.et0_reference_mm} mm</div>
+          <div className="text-[10px] text-slate-500 font-sans">
+            Mixed terrace rotation (Reference ET₀: {summary.et0_reference_mm} mm)
+          </div>
         </div>
 
         <div className="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200">
@@ -128,16 +134,17 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
             <span className="text-[10px] font-normal text-slate-500">mm/yr</span>
           </div>
           <div className="text-[10px] text-slate-500 font-sans">
-            {summary.irrigation_deficit_months} deficit months (Falgun–Baisakh)
+            Modelled root-zone deficit · {summary.irrigation_deficit_months} deficit months (Falgun–Baisakh)
           </div>
         </div>
 
         <div className="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200">
-          <div className="text-[10px] text-emerald-700 uppercase font-sans font-semibold">Monsoon Surplus Drainage</div>
+          <div className="text-[10px] text-emerald-700 uppercase font-sans font-semibold">Unretained Precipitation</div>
           <div className="text-base font-extrabold text-emerald-950 mt-0.5">
-            {summary.monsoon_surplus_drainage_mm} <span className="text-[10px] font-normal text-slate-500">mm/yr</span>
+            {summary.unretained_rainfall_mm ?? summary.monsoon_surplus_drainage_mm}{' '}
+            <span className="text-[10px] font-normal text-slate-500">mm/yr</span>
           </div>
-          <div className="text-[10px] text-slate-500 font-sans">Terrace runoff & recharge capture</div>
+          <div className="text-[10px] text-slate-500 font-sans">Rainfall exceeding root-zone retention</div>
         </div>
       </div>
 
@@ -164,10 +171,10 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                           <span>
                             {d.month_en} ({d.month_np}) · {d.agro_season}
                           </span>
-                          <span className="text-[10px] font-mono text-slate-400">Kc: {d.crop_kc}</span>
+                          <span className="text-[10px] font-mono text-slate-400">Composite Kc: {d.crop_kc}</span>
                         </div>
                         <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 font-mono text-[11px]">
-                          <span className="text-slate-400">WMO Precip Normal:</span>
+                          <span className="text-slate-400">CHIRPS Baseline:</span>
                           <strong className="text-sky-400">{d.precip_wmo_normal_mm} mm</strong>
                           <span className="text-slate-400">Historical P10–P90:</span>
                           <span className="text-slate-300">
@@ -177,7 +184,7 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                           <strong className="text-sky-300">{d.effective_precip_mm} mm</strong>
                           <span className="text-slate-400">Reference ET₀:</span>
                           <span className="text-amber-300">{d.et0_reference_mm} mm</span>
-                          <span className="text-slate-400">Crop Demand ETc:</span>
+                          <span className="text-slate-400">Composite Crop ETc:</span>
                           <strong className="text-amber-400">{d.etc_crop_demand_mm} mm</strong>
                           <span className="text-slate-400">Net Irrigation Req:</span>
                           <strong className={d.net_irrigation_req_mm > 0 ? 'text-rose-400' : 'text-emerald-400'}>
@@ -199,18 +206,18 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               />
               <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '6px' }} iconType="circle" />
               <ReferenceLine y={0} stroke="#94a3b8" />
-              {/* Historical 10-90th percentile variability range */}
+              {/* Historical 90th percentile wet condition */}
               <Area
                 type="monotone"
                 dataKey="precip_p90_mm"
-                name="Historical P90 Ceiling"
+                name="Historical P90 Rainfall"
                 stroke="none"
                 fill="#38bdf8"
                 fillOpacity={0.12}
               />
               <Bar
                 dataKey="precip_wmo_normal_mm"
-                name="Precipitation Normal (mm)"
+                name="Precipitation Baseline (mm)"
                 fill="#0284c7"
                 radius={[4, 4, 0, 0]}
               />
@@ -225,7 +232,7 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               <Line
                 type="monotone"
                 dataKey="etc_crop_demand_mm"
-                name="Crop Demand ETc (mm)"
+                name="Composite Crop Demand ETc (mm)"
                 stroke="#d97706"
                 strokeWidth={2.5}
                 strokeDasharray="4 3"
@@ -260,10 +267,10 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                     return (
                       <div className="p-3 bg-slate-900 text-white rounded-xl shadow-xl border border-slate-700 text-xs space-y-1.5 font-sans max-w-xs">
                         <div className="font-bold border-b border-slate-700 pb-1 text-emerald-300">
-                          {d.month_en} ({d.month_np}) · Soil Storage Dynamics
+                          {d.month_en} ({d.month_np}) · Root-Zone Storage Dynamics
                         </div>
                         <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 font-mono text-[11px]">
-                          <span className="text-slate-400">Total Available (TAW):</span>
+                          <span className="text-slate-400">Estimated TAW:</span>
                           <strong className="text-slate-200">{taw_mm} mm</strong>
                           <span className="text-slate-400">Readily Available (RAW):</span>
                           <strong className="text-amber-300">{raw_mm} mm</strong>
@@ -273,8 +280,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                           <strong className={d.soil_depletion_pct > 50 ? 'text-rose-400' : 'text-emerald-400'}>
                             {d.soil_depletion_pct}%
                           </strong>
-                          <span className="text-slate-400">Surplus Runoff/Percolation:</span>
-                          <span className="text-sky-300">{d.surplus_drainage_mm} mm</span>
+                          <span className="text-slate-400">Unretained Rainfall:</span>
+                          <span className="text-sky-300">{d.unretained_rainfall_mm ?? d.surplus_drainage_mm} mm</span>
                         </div>
                         <div className="text-[10px] text-slate-300 pt-1.5 border-t border-slate-800 leading-snug">
                           {d.advisory}
@@ -290,14 +297,14 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                 y={taw_mm}
                 stroke="#10b981"
                 strokeDasharray="4 4"
-                label={{ value: `TAW Capacity (${taw_mm} mm)`, fontSize: 10, fill: '#059669', position: 'top' }}
+                label={{ value: `Estimated TAW (${taw_mm} mm)`, fontSize: 10, fill: '#059669', position: 'top' }}
               />
               <ReferenceLine
                 y={taw_mm - raw_mm}
                 stroke="#f59e0b"
                 strokeDasharray="3 3"
                 label={{
-                  value: `Irrigation Threshold (${Math.round(taw_mm - raw_mm)} mm)`,
+                  value: `Irrigation Threshold RAW (${Math.round(taw_mm - raw_mm)} mm)`,
                   fontSize: 10,
                   fill: '#d97706',
                   position: 'bottom',
@@ -312,12 +319,7 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                 strokeWidth={2}
                 fillOpacity={0.25}
               />
-              <Bar
-                dataKey="surplus_drainage_mm"
-                name="Surplus Drainage / Runoff (mm)"
-                fill="#0ea5e9"
-                radius={[4, 4, 0, 0]}
-              />
+              <Bar dataKey="surplus_drainage_mm" name="Unretained Rainfall (mm)" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
             </ComposedChart>
           )}
         </ResponsiveContainer>
@@ -357,15 +359,15 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
         <div className="p-3 rounded-xl bg-sky-50/70 border border-sky-200">
           <div className="flex items-center gap-1.5 text-sky-900 font-bold uppercase text-[10px]">
             <Droplets className="w-3.5 h-3.5 text-sky-600" />
-            <span>Monsoon Recharge (Asar–Ashwin)</span>
+            <span>Monsoon Unretained Moisture</span>
           </div>
           <div className="text-base font-extrabold text-sky-950 font-mono mt-1">
-            {summary.monsoon_surplus_drainage_mm}{' '}
-            <span className="text-[10px] font-normal text-slate-500">mm surplus</span>
+            {summary.unretained_rainfall_mm ?? summary.monsoon_surplus_drainage_mm}{' '}
+            <span className="text-[10px] font-normal text-slate-500">mm unretained</span>
           </div>
           <div className="text-[10px] text-slate-600 mt-1 leading-snug">
-            100% soil saturation reached by July. Capturing excess terrace runoff replenishes community recharge ponds
-            and mountain springs.
+            Rainfall exceeding root-zone capacity. Generates terrace runoff and deep percolation, key for community
+            recharge ponds and aquifer replenishment.
           </div>
         </div>
 
@@ -378,8 +380,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
             Kartik Buffer: {months[9]?.soil_storage_end_mm || 0} mm
           </div>
           <div className="text-[10px] text-slate-600 mt-1 leading-snug">
-            Monsoon storage buffers soil moisture through October/November, sustaining winter sowing before irrigation
-            is required.
+            Under modelled root-zone soil balance, monsoon moisture buffers October/November, sustaining winter sowing
+            before irrigation is required.
           </div>
         </div>
       </div>
