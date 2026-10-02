@@ -3,10 +3,10 @@
 // Classification: OBSERVED REAL (Nepal Local Levels 774 Palikas, CBS 2021 Census, Survey Department)
 // Citations: Ministry of Federal Affairs and General Administration (MoFAGA); MoALD; Survey Department Nepal
 
-import hydroSummaryData from '../../../../data/calculated/hydro_reaches/hydro_palika_summary.json';
-import boundaryData from '../../../../data/real/boundaries/gulmi-palikas.json';
-import palikaCentroidsData from '../../../../data/real/boundaries/palika_centroids.json';
-import rawPalikaData from '../../../../data/real/municipal/palika_profiles.json';
+import hydroSummaryData from '@data/calculated/hydro_reaches/hydro_palika_summary.json';
+import boundaryData from '@data/real/boundaries/gulmi-palikas.json';
+import palikaCentroidsData from '@data/real/boundaries/palika_centroids.json';
+import rawPalikaData from '@data/real/municipal/palika_profiles.json';
 
 export interface PalikaFeasibleCrop {
   cropId: string;

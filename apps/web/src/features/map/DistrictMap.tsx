@@ -11,7 +11,7 @@
 // - data/real/hydrology/flow_direction.tif
 // Classification: OBSERVED REAL & CALCULATED BASELINES
 // Citations: Ministry of Federal Affairs and General Administration (MoFAGA), DHM Nepal, Survey Department of Nepal, HydroSHEDS / HydroRIVERS / HydroBASINS (WWF/USGS)
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import type { Feature, GeoJsonObject, Point } from 'geojson';
 import L from 'leaflet';
@@ -52,6 +52,7 @@ import { resolveCalculationMethodology } from '../../data/districtCalculationAss
 import { PALIKA_GRID_DATA as palikaGridData, SubstationInfo } from '../../data/districtIndicatorAssets';
 import { DISTRICT_PALIKAS, PALIKA_CENTROIDS } from '../../data/districtPalikaAssets';
 import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
+import { fetchGeoJson, getTileUrl } from '../../services/dataClient';
 import { type GeoTiffRasterStats, getGeoTiffZonalStats } from '../../services/geoTiffZonalStats';
 import { useNexusStore } from '../../store';
 import { PalikaHoverCard } from '../palika/PalikaHoverCard';
@@ -491,39 +492,17 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
   useEffect(() => {
     Promise.all([
-      fetch('/geojson/gulmi-district.json')
-        .then((r) => r.json())
-        .catch(() => null),
-      fetch('/geojson/gulmi-palikas.json')
-        .then((r) => r.json())
-        .catch(() => null),
-      fetch('/geojson/roads/gulmi.json')
-        .then((r) => r.json())
-        .catch(() => null),
-      fetch('/geojson/gulmi-dhm-stations.json')
-        .then((r) => r.json())
-        .catch(() => null),
-      fetch('/geojson/gulmi-rivers.json')
-        .then((r) => r.json())
-        .catch(() => null),
-      fetch('/geojson/gulmi-contours.json')
-        .then((r) => r.json())
-        .catch(() => null),
-      fetch('/geojson/catchments_l10.geojson')
-        .then((r) => r.json())
-        .catch(() => null),
-      fetch('/geojson/rivers_streams.geojson')
-        .then((r) => r.json())
-        .catch(() => null),
+      fetchGeoJson('gulmi-district.json').catch(() => null),
+      fetchGeoJson('gulmi-palikas.json').catch(() => null),
+      fetchGeoJson('roads/gulmi.json').catch(() => null),
+      fetchGeoJson('gulmi-dhm-stations.json').catch(() => null),
+      fetchGeoJson('gulmi-rivers.json').catch(() => null),
     ])
-      .then(([geo, palikas, roads, hydroAssets, rivers, contours, catchments, riversStreams]) => {
+      .then(([geo, palikas, roads, hydroAssets, rivers]) => {
         if (geo) setGeoData(geo);
         if (palikas) setPalikasData(palikas);
         if (roads) setNationalRoads(roads);
         if (rivers) setGulmiRivers(rivers);
-        if (contours) setContoursData(contours);
-        if (catchments) setCatchmentsData(catchments);
-        if (riversStreams) setRiversStreamsData(riversStreams);
         if (hydroAssets?.type === 'FeatureCollection' && Array.isArray(hydroAssets.features)) {
           setHydrologyStations(hydroAssets.features);
         }
@@ -532,24 +511,46 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
       .catch(() => setGeoLoading(false));
   }, []);
 
-  // Decode CHIRPS GeoTIFF rasters in background to extract dynamic zonal statistics directly from TIF
+  // Precipitation subfilter active-state flags — declared here so the lazy-load useEffect below can use them
+  const isAnnualPrecipitationActive =
+    selectedPillar === 'water' && subFilters.waterSubFilter === 'annual_precipitation';
+  const isMonsoonPrecipitationActive =
+    selectedPillar === 'water' && subFilters.waterSubFilter === 'monsoon_precipitation';
+  const isDrySeasonPrecipitationActive =
+    selectedPillar === 'water' && subFilters.waterSubFilter === 'dry_season_precipitation';
+  const isChirpsPrecipitationActive =
+    isAnnualPrecipitationActive || isMonsoonPrecipitationActive || isDrySeasonPrecipitationActive;
+
+  // Decode CHIRPS GeoTIFF rasters ON-DEMAND: only when user selects a precipitation subfilter.
+  // Module-level session cache ensures each TIF is fetched and decoded at most once per browser session.
+  // Zero network requests occur until the user actively opens the Water > Precipitation subfilter.
+  const precipSessionCache = useRef<Record<string, GeoTiffRasterStats>>({});
   useEffect(() => {
-    if (!palikasData) return;
-    const tiffConfigs = [
-      { key: 'annual_precipitation', url: '/tiles/average_annual_precipitation.tif' },
-      { key: 'monsoon_precipitation', url: '/tiles/average_monsoon_precipitation.tif' },
-      { key: 'dry_season_precipitation', url: '/tiles/average_dry_season_precipitation.tif' },
-    ];
-    tiffConfigs.forEach(({ key, url }) => {
-      getGeoTiffZonalStats(url, palikasData)
-        .then((stats) => {
-          setDynamicPrecipStats((prev) => ({ ...prev, [key]: stats }));
-        })
-        .catch((err) => {
-          console.warn(`Dynamic GeoTIFF decoding for ${key} skipped:`, err);
-        });
-    });
-  }, [palikasData]);
+    if (!palikasData || !isChirpsPrecipitationActive) return;
+
+    const activeKey =
+      isAnnualPrecipitationActive
+        ? 'annual_precipitation'
+        : isMonsoonPrecipitationActive
+          ? 'monsoon_precipitation'
+          : 'dry_season_precipitation';
+
+    // Already computed this session — serve from cache instantly
+    if (precipSessionCache.current[activeKey]) {
+      setDynamicPrecipStats((prev) => ({ ...prev, [activeKey]: precipSessionCache.current[activeKey] }));
+      return;
+    }
+
+    const url = getTileUrl(`average_${activeKey.replace('_precipitation', '')}_precipitation.tif`);
+    getGeoTiffZonalStats(url, palikasData)
+      .then((stats) => {
+        precipSessionCache.current[activeKey] = stats;
+        setDynamicPrecipStats((prev) => ({ ...prev, [activeKey]: stats }));
+      })
+      .catch((err) => {
+        console.warn(`Dynamic GeoTIFF decoding for ${activeKey} skipped:`, err);
+      });
+  }, [palikasData, isChirpsPrecipitationActive, isAnnualPrecipitationActive, isMonsoonPrecipitationActive, isDrySeasonPrecipitationActive]);
 
   // Live Climate Telemetry for Gulmi District (MERRA-2 & NASA POWER)
   const currentRainMm = climateDataset
@@ -584,14 +585,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
   const isMerraRainfallActive =
     selectedPillar === 'water' && (subFilters.waterSubFilter || 'merra_rainfall') === 'merra_rainfall';
-  const isAnnualPrecipitationActive =
-    selectedPillar === 'water' && subFilters.waterSubFilter === 'annual_precipitation';
-  const isMonsoonPrecipitationActive =
-    selectedPillar === 'water' && subFilters.waterSubFilter === 'monsoon_precipitation';
-  const isDrySeasonPrecipitationActive =
-    selectedPillar === 'water' && subFilters.waterSubFilter === 'dry_season_precipitation';
-  const isChirpsPrecipitationActive =
-    isAnnualPrecipitationActive || isMonsoonPrecipitationActive || isDrySeasonPrecipitationActive;
   const isCatchmentsActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'catchments';
   const isRiversStreamsActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'rivers_streams';
   const isFlowAccumulationActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'flow_accumulation';
@@ -610,8 +603,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
   useEffect(() => {
     if (isHydroCorridorActive && !hydroReachesData && !hydroReachesLoading) {
       setHydroReachesLoading(true);
-      fetch('/geojson/hydro_potential_reaches.geojson')
-        .then((r) => r.json())
+      fetchGeoJson('hydro_potential_reaches.geojson')
         .then((data) => {
           if (data?.type === 'FeatureCollection') {
             setHydroReachesData(data);
@@ -624,6 +616,40 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
         });
     }
   }, [isHydroCorridorActive, hydroReachesData, hydroReachesLoading]);
+
+  // Lazy-load Contours when toggled ON or terrain basemap active
+  useEffect(() => {
+    const isContourActive = showContours || basemap === 'terrain';
+    if (isContourActive && !contoursData) {
+      fetchGeoJson('gulmi-contours.json')
+        .then((data) => {
+          if (data) setContoursData(data);
+        })
+        .catch(() => null);
+    }
+  }, [showContours, basemap, contoursData]);
+
+  // Lazy-load Watershed Catchments only when subfilter is active
+  useEffect(() => {
+    if (isCatchmentsActive && !catchmentsData) {
+      fetchGeoJson('catchments_l10.geojson')
+        .then((data) => {
+          if (data) setCatchmentsData(data);
+        })
+        .catch(() => null);
+    }
+  }, [isCatchmentsActive, catchmentsData]);
+
+  // Lazy-load Detailed Rivers & Streams only when subfilter is active
+  useEffect(() => {
+    if (isRiversStreamsActive && !riversStreamsData) {
+      fetchGeoJson('rivers_streams.geojson')
+        .then((data) => {
+          if (data) setRiversStreamsData(data);
+        })
+        .catch(() => null);
+    }
+  }, [isRiversStreamsActive, riversStreamsData]);
 
   const isOverlayModeActive =
     isMerraRainfallActive ||

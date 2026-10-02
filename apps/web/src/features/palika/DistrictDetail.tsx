@@ -1,3 +1,8 @@
+// [DATA PROVENANCE]
+// Data Source: data/real/municipal/palika_profiles.json, data/calculated/indicators/gulmi_palika_agro_hydrology.json
+// Classification: SCIENTIFIC EVIDENCE & DECISION SUPPORT (MoALD, NARC, CHIRPS v2.0, FAO-56 Penman-Monteith)
+// Citations: Ministry of Agriculture and Livestock Development (MoALD); NARC Soil Science; Funk et al. (2015); Allen et al. (1998)
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ArrowLeft, ArrowUp, CloudRain, Mountain, Sparkles, Thermometer } from 'lucide-react';
@@ -6,7 +11,9 @@ import { db } from '@wefes/database';
 import { ClimateDataset, Crop, District } from '@wefes/shared-types';
 import { arimaForecast, extractAnnualRainfallSeries } from '@wefes/wefes-engine';
 
-import { DISTRICT_PALIKAS, DistrictPalika, PALIKA_GEO_CENTROIDS } from '../../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
+import { PALIKA_AGRO_HYDROLOGY_DATA } from '../../data/districtIndicatorAssets';
+import { fetchGeoJson } from '../../services/dataClient';
 import { DistrictDetailMap } from '../map/DistrictDetailMap';
 
 import { IndicatorModal, ModalKey } from './components/IndicatorModal';
@@ -15,7 +22,6 @@ import { PalikaCropSuitabilityGrid } from './components/PalikaCropSuitabilityGri
 import { PalikaHeroHeader } from './components/PalikaHeroHeader';
 import { PalikaIndicatorsGrid } from './components/PalikaIndicatorsGrid';
 import { PalikaSeasonalRotationsCard } from './components/PalikaSeasonalRotationsCard';
-import { PalikaLiveWeather, PalikaWeatherConsole } from './components/PalikaWeatherConsole';
 import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
 
 export interface DistrictDetailProps {
@@ -45,8 +51,6 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   const [climateDataset, setClimateDataset] = useState<ClimateDataset | null>(initialClimateDataset || null);
   const [openModal, setOpenModal] = useState<ModalKey>(null);
   const [activePalikaName, setActivePalikaNameState] = useState<string>(initialPalikaName || 'Resunga');
-  const [palikaWeather, setPalikaWeather] = useState<PalikaLiveWeather | null>(null);
-  const [weatherTelemetryMode, setWeatherTelemetryMode] = useState<'live' | 'archive'>('archive');
 
   const setActivePalikaName = useCallback(
     (pName: string) => {
@@ -61,8 +65,7 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
       setClimateDataset(initialClimateDataset);
       return;
     }
-    fetch('/geojson/gulmi-climate-monthly.json')
-      .then((res) => res.json())
+    fetchGeoJson<ClimateDataset>('gulmi-climate-monthly.json')
       .then((data) => setClimateDataset(data))
       .catch(() => null);
   }, [initialClimateDataset]);
@@ -111,117 +114,10 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   const arimaForecastValue = rainfallARIMA ? Math.round(rainfallARIMA.forecasts[4]) : null;
   const cardRainfallValue = arimaForecastValue ?? (district.avgRainfallMm || 0);
 
-  // Live weather telemetry
-  useEffect(() => {
-    const coords = PALIKA_GEO_CENTROIDS[activePalika.name] || { lat: 28.068, lng: 83.248 };
-
-    fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lng}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,wind_speed_10m,direct_radiation,cloud_cover,surface_pressure,et0_fao_evapotranspiration,vapour_pressure_deficit,soil_moisture_0_to_7cm,soil_moisture_7_to_28cm,uv_index,is_day&past_days=1&forecast_days=2&hourly=precipitation,direct_radiation&timezone=Asia%2FKathmandu`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && data.current) {
-          const c = data.current;
-          const topsoil = c.soil_moisture_0_to_7cm ?? 0.35;
-          const deepSoil = c.soil_moisture_7_to_28cm ?? 0.38;
-          const vpdVal = c.vapour_pressure_deficit ?? 0.65;
-          const rh = Math.round(c.relative_humidity_2m);
-          const temp = Number(c.temperature_2m.toFixed(1));
-          const wind = Number((c.wind_speed_10m / 3.6).toFixed(1)); // m/s
-          const solar = Math.round(c.direct_radiation || 0);
-
-          const hourlyRain: number[] = data.hourly?.precipitation || [];
-          const hourlySolar: number[] = data.hourly?.direct_radiation || [];
-
-          // 1. Observed Past 24h Rainfall (Hours 0..24) & Forecast 24h (Hours 24..48)
-          const past24hRain = Number(
-            hourlyRain
-              .slice(0, 24)
-              .reduce((sum, v) => sum + (v || 0), 0)
-              .toFixed(1)
-          );
-          const forecast24hRain = Number(
-            hourlyRain
-              .slice(24, 48)
-              .reduce((sum, v) => sum + (v || 0), 0)
-              .toFixed(1)
-          );
-          const currentRain1h = Number((c.precipitation || 0).toFixed(1));
-
-          // 2. Soil Relative Wetness Index (Configurable saturation porosity theta = 0.48 m³/m³)
-          const SOIL_SATURATION_THETA = 0.48;
-          const soilWaterIdx = Math.min(100, Math.max(0, Math.round((topsoil / SOIL_SATURATION_THETA) * 100)));
-
-          // 3. Coffee Leaf Rust Weather Favourability (Hemileia vastatrix)
-          const coffeeRustStatus: 'Low' | 'Moderate' | 'High' =
-            (temp >= 18 && temp <= 28 && rh >= 85 && vpdVal <= 0.4) || (rh >= 80 && past24hRain > 10)
-              ? 'High'
-              : temp >= 15 && temp <= 30 && (rh >= 75 || vpdVal <= 0.8)
-                ? 'Moderate'
-                : 'Low';
-
-          // 4. Solar Pumping Viability (Integrated 24h solar energy kWh/m²/day vs 4.5 kWh/m² target)
-          const dailySolarRadiationSum = hourlySolar.slice(24, 48).reduce((sum, v) => sum + (v || 0), 0);
-          const dailySolarYieldKwh = Number((dailySolarRadiationSum / 1000).toFixed(2));
-          const TARGET_SOLAR_PUMPING_KWH = 4.5;
-          const solarPumpScore = Math.min(100, Math.round((dailySolarYieldKwh / TARGET_SOLAR_PUMPING_KWH) * 100));
-
-          // 5. Fire Weather Dryness Heuristic (Micro-climate fuel dryness with 24h rainfall guard)
-          const fireHeuristic: 'Low' | 'Moderate' | 'High' | 'Extreme' =
-            topsoil < 0.18 && vpdVal > 1.4 && wind > 3.5 && past24hRain < 2
-              ? 'Extreme'
-              : topsoil < 0.24 && vpdVal > 1.0 && wind > 2.5 && past24hRain < 5
-                ? 'High'
-                : topsoil < 0.3 && vpdVal > 0.8 && past24hRain < 10
-                  ? 'Moderate'
-                  : 'Low';
-
-          // 6. Landslide Rainfall Exceedance Ratio (Palpa/Nepal Empirical Curve: I_threshold = 58.67 * D^-0.84)
-          // Uses observed past 24h rainfall & current 1h rain intensity
-          const thresh1h = 58.67 * Math.pow(1, -0.84); // ~58.7 mm/h
-          const thresh24h = 58.67 * Math.pow(24, -0.84) * 24; // ~97.3 mm/24h
-
-          const ratio1h = currentRain1h / thresh1h;
-          const ratio24h = past24hRain / thresh24h;
-          const maxExceedanceRatio = Number(Math.max(ratio1h, ratio24h).toFixed(2));
-
-          const landslideAlertStatus: 'Low' | 'Moderate' | 'Alert' =
-            maxExceedanceRatio >= 1.0 || (past24hRain > 80 && soilWaterIdx > 80)
-              ? 'Alert'
-              : maxExceedanceRatio >= 0.4 || past24hRain > 40 || soilWaterIdx > 75
-                ? 'Moderate'
-                : 'Low';
-
-          setPalikaWeather({
-            temperature: temp,
-            apparentTemp: Number(c.apparent_temperature.toFixed(1)),
-            humidity: rh,
-            precipitation: currentRain1h,
-            windSpeed: wind,
-            solarRadiation: solar,
-            cloudCover: Math.round(c.cloud_cover || 0),
-            surfacePressure: Number((c.surface_pressure || 830).toFixed(1)),
-            et0: Number((c.et0_fao_evapotranspiration || 0).toFixed(2)),
-            vpd: Number(vpdVal.toFixed(2)),
-            topsoilMoisture: Number(topsoil.toFixed(3)),
-            deepSoilMoisture: Number(deepSoil.toFixed(3)),
-            uvIndex: Number((c.uv_index || 0).toFixed(1)),
-            isDay: c.is_day === 1,
-            time: c.time,
-            soilWaterIndex: soilWaterIdx,
-            coffeeRustRisk: coffeeRustStatus,
-            solarYieldKwhPerM2: dailySolarYieldKwh,
-            solarPumpingScore: solarPumpScore,
-            fireWeatherHeuristic: fireHeuristic,
-            landslideExceedanceRatio: maxExceedanceRatio,
-            landslideHazard: landslideAlertStatus,
-            hourlyInflow24h: past24hRain,
-            hourlyInflow72h: forecast24hRain,
-          });
-        }
-      })
-      .catch(() => null);
-  }, [activePalika.name]);
+  // Canonical agro-hydrology normal from CHIRPS 30-year dataset (Funk et al., 2015)
+  const agroProfile = PALIKA_AGRO_HYDROLOGY_DATA.palikas[activePalika.name];
+  const canonicalRainfall =
+    agroProfile?.annual_summary?.precipitation_wmo_normal_mm ?? activePalika.rainfallMm ?? cardRainfallValue;
 
   const hasRealSoil =
     district.hasRealSoilData !== false && (district.soilSampleCount || 0) > 0 && district.baseSoilPh !== undefined;
@@ -231,8 +127,8 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
       key: 'rainfall' as ModalKey,
       icon: <CloudRain className="w-5 h-5 text-sky-600" />,
       label: 'Local Precipitation',
-      value: activePalika.rainfallMm ? `${activePalika.rainfallMm} mm/yr` : `${cardRainfallValue} mm/yr`,
-      badge: 'Elevation Adjusted',
+      value: `${canonicalRainfall} mm/yr`,
+      badge: '30-Yr WMO Normal (CHIRPS)',
       cardBg: 'bg-sky-50/70 border-sky-200/90 hover:border-sky-300 hover:bg-sky-50 cursor-pointer',
       iconBg: 'bg-sky-100 border-sky-200',
       badgeClass: 'bg-sky-100 text-sky-800 border-sky-300',
@@ -297,21 +193,9 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
           gulmiPalikas={gulmiPalikas}
           onSelectPalika={setActivePalikaName}
           onBackToMap={onBackToMap}
-          weatherTelemetryMode={weatherTelemetryMode}
-          setWeatherTelemetryMode={setWeatherTelemetryMode}
-          palikaWeather={palikaWeather}
         />
 
-        {weatherTelemetryMode === 'archive' ? (
-          <PalikaAgroHydrologyCalendar activePalika={activePalika} climateDataset={climateDataset} />
-        ) : (
-          <PalikaWeatherConsole
-            activePalika={activePalika}
-            palikaWeather={palikaWeather}
-            weatherTelemetryMode={weatherTelemetryMode}
-            PALIKA_GEO_CENTROIDS={PALIKA_GEO_CENTROIDS}
-          />
-        )}
+        <PalikaAgroHydrologyCalendar activePalika={activePalika} climateDataset={climateDataset} />
 
         <PalikaIndicatorsGrid activePalika={activePalika} indicators={indicators} onOpenModal={setOpenModal} />
 

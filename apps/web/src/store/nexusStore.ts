@@ -4,6 +4,8 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { db } from '@wefes/database';
 import { ClimateDataset, Crop, District, WEFESOutput, WEFESPillar } from '@wefes/shared-types';
 
+import { fetchGeoJson } from '../services/dataClient';
+
 export interface NexusState {
   // --- 1. Pillar & Sub-filter State ---
   selectedPillar: WEFESPillar;
@@ -151,13 +153,8 @@ export const useNexusStore = create<NexusState>()(
         if (get().climateDataset || get().isClimateLoading) return;
         set({ isClimateLoading: true });
         try {
-          const res = await fetch('/geojson/gulmi-climate-monthly.json');
-          if (res.ok) {
-            const data = await res.json();
-            set({ climateDataset: data, isClimateLoading: false });
-          } else {
-            set({ isClimateLoading: false });
-          }
+          const data = await fetchGeoJson<ClimateDataset>('gulmi-climate-monthly.json');
+          set({ climateDataset: data, isClimateLoading: false });
         } catch (err) {
           console.warn('Gulmi MERRA-2 Climatology fetch warning:', err);
           set({ isClimateLoading: false });

@@ -5,8 +5,8 @@
 // Consumed By: apps/web/src/features/map/DistrictMap.tsx
 
 import React from 'react';
-
 import { ImageOverlay } from 'react-leaflet';
+import { getTileUrl } from '../../services/dataClient';
 
 // Bounding box matching the exact Gulmi district boundary extent
 const SETTLEMENT_DENSITY_BOUNDS: [[number, number], [number, number]] = [
@@ -25,7 +25,7 @@ interface SpatialSettlementDensityOverlayProps {
 export const SpatialSettlementDensityOverlay: React.FC<SpatialSettlementDensityOverlayProps> = ({ opacity = 0.78 }) => {
   return (
     <ImageOverlay
-      url="/tiles/gulmi_settlement_density_overlay.png"
+      url={getTileUrl('gulmi_settlement_density_overlay.png')}
       bounds={SETTLEMENT_DENSITY_BOUNDS}
       opacity={opacity}
       zIndex={360}

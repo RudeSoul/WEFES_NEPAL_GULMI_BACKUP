@@ -3,16 +3,17 @@
 // Classification: CALCULATED EMPIRICAL INDICATORS (Census 2021, NEA, NARC, Global Solar Atlas, CHIRPS v2.0, FAO-56 Penman-Monteith)
 // Citations: National Statistics Office (NSO), Nepal Electricity Authority (NEA), NARC Soil Science Division, Global Solar Atlas, Funk et al. (2015), Allen et al. (1998)
 
-import ghiGridRaw from '../../../../data/calculated/indicators/gulmi_ghi_grid.json';
-import agroHydrologyRaw from '../../../../data/calculated/indicators/gulmi_palika_agro_hydrology.json';
-import chirpsPrecipRaw from '../../../../data/calculated/indicators/gulmi_palika_chirps_precipitation.json';
-import palikaCookingRaw from '../../../../data/calculated/indicators/gulmi_palika_cooking.json';
-import palikaGhiRaw from '../../../../data/calculated/indicators/gulmi_palika_ghi.json';
-import palikaGridRaw from '../../../../data/calculated/indicators/gulmi_palika_grid.json';
-import palikaLandholdingRaw from '../../../../data/calculated/indicators/gulmi_palika_landholding.json';
-import palikaSoilRaw from '../../../../data/calculated/indicators/gulmi_palika_soil.json';
-import palikaTransitRaw from '../../../../data/calculated/indicators/gulmi_palika_transit.json';
-import soilPointsRaw from '../../../../data/real/land_and_soil/gulmi_soil_points_81.json';
+import ghiGridRaw from '@data/calculated/indicators/gulmi_ghi_grid.json';
+import agroHydrologyRaw from '@data/calculated/indicators/gulmi_palika_agro_hydrology.json';
+import chirpsPrecipRaw from '@data/calculated/indicators/gulmi_palika_chirps_precipitation.json';
+import palikaCookingRaw from '@data/calculated/indicators/gulmi_palika_cooking.json';
+import palikaGhiRaw from '@data/calculated/indicators/gulmi_palika_ghi.json';
+import palikaGridRaw from '@data/calculated/indicators/gulmi_palika_grid.json';
+import palikaLandholdingRaw from '@data/calculated/indicators/gulmi_palika_landholding.json';
+import palikaSoilRaw from '@data/calculated/indicators/gulmi_palika_soil.json';
+import palikaTransitRaw from '@data/calculated/indicators/gulmi_palika_transit.json';
+import soilPointsRaw from '@data/real/land_and_soil/gulmi_soil_points_81.json';
+import { fetchDataset } from '../services/dataClient';
 
 export interface PalikaCookingProfile {
   totalHouseholds: number;
@@ -78,6 +79,9 @@ export interface PalikaLandholdingProfile {
   agriculturalHoldings2021?: number;
   censusHouseholds2021?: number;
   osmBuildingCount?: number;
+  arableLandHa?: number;
+  temporaryCropsLandHa?: number;
+  permanentCropsLandHa?: number;
   [key: string]: unknown;
 }
 
@@ -215,9 +219,11 @@ export interface PalikaAgroHydrologyProfile {
     net_irrigation_requirement_mm: number;
     unretained_rainfall_mm?: number;
     monsoon_surplus_drainage_mm: number;
+    deep_percolation_mm?: number;
     irrigation_deficit_months: number;
     adequate_moisture_months: number;
     critical_stress_window: string;
+    peak_deficit_window?: string;
     monsoon_recharge_window: string;
   };
   months: MonthAgroHydrology[];
@@ -238,4 +244,37 @@ export const PALIKA_CHIRPS_PRECIPITATION_DATA: Record<string, PalikaChirpsPrecip
   (chirpsPrecipRaw as { baseline: Record<string, PalikaChirpsPrecipitationBaseline> }).baseline;
 
 export const PALIKA_AGRO_HYDROLOGY_DATA = agroHydrologyRaw as unknown as AgroHydrologyDataset;
+
+/**
+ * Rehydrates indicator datasets from remote storage when VITE_DATA_BASE_URL is configured.
+ * Seamlessly merges remote data over the local baseline without breaking synchronous access.
+ */
+export async function initializeRemoteIndicatorData(): Promise<void> {
+  const dataBaseUrl = (import.meta.env?.VITE_DATA_BASE_URL as string) || '';
+  if (!dataBaseUrl) return;
+
+  try {
+    const [cooking, ghi, grid, landholding, soil, transit, chirps, agro] = await Promise.all([
+      fetchDataset<typeof PALIKA_COOKING_DATA>('gulmi_palika_cooking.json').catch(() => null),
+      fetchDataset<typeof PALIKA_GHI_DATA>('gulmi_palika_ghi.json').catch(() => null),
+      fetchDataset<typeof PALIKA_GRID_DATA>('gulmi_palika_grid.json').catch(() => null),
+      fetchDataset<typeof PALIKA_LANDHOLDING_DATA>('gulmi_palika_landholding.json').catch(() => null),
+      fetchDataset<typeof PALIKA_SOIL_DATA>('gulmi_palika_soil.json').catch(() => null),
+      fetchDataset<typeof PALIKA_TRANSIT_DATA>('gulmi_palika_transit.json').catch(() => null),
+      fetchDataset<{ baseline: Record<string, PalikaChirpsPrecipitationBaseline> }>('gulmi_palika_chirps_precipitation.json').catch(() => null),
+      fetchDataset<AgroHydrologyDataset>('gulmi_palika_agro_hydrology.json').catch(() => null),
+    ]);
+
+    if (cooking) Object.assign(PALIKA_COOKING_DATA, cooking);
+    if (ghi) Object.assign(PALIKA_GHI_DATA, ghi);
+    if (grid) Object.assign(PALIKA_GRID_DATA, grid);
+    if (landholding) Object.assign(PALIKA_LANDHOLDING_DATA, landholding);
+    if (soil) Object.assign(PALIKA_SOIL_DATA, soil);
+    if (transit) Object.assign(PALIKA_TRANSIT_DATA, transit);
+    if (chirps?.baseline) Object.assign(PALIKA_CHIRPS_PRECIPITATION_DATA, chirps.baseline);
+    if (agro) Object.assign(PALIKA_AGRO_HYDROLOGY_DATA, agro);
+  } catch (err) {
+    console.warn('[DataClient] Error loading remote indicators:', err);
+  }
+}
 

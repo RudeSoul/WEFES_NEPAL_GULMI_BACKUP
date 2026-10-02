@@ -37,6 +37,7 @@ import {
   PalikaFeasibleCrop,
 } from '../data/districtPalikaAssets';
 import type { GeoTiffRasterStats } from '../services/geoTiffZonalStats';
+import { fetchGeoJson } from '../services/dataClient';
 import { getPalikaMicroClimate } from '../utils/climateDownscaling';
 
 import { CHOROPLETH_RAMPS, computeGradientColor, normalizePalikaName } from './choroplethUtils';
@@ -88,11 +89,7 @@ export async function fetchDhmStationsMap(): Promise<Record<string, PalikaDhmSta
   if (!dhmStationsPromise) {
     dhmStationsPromise = (async () => {
       try {
-        const response = await fetch('/geojson/gulmi-dhm-stations.json');
-        if (!response.ok) {
-          throw new Error(`Failed to fetch DHM stations: ${response.status} ${response.statusText}`);
-        }
-        const data = (await response.json()) as { features?: DhmStationFeature[] };
+        const data = await fetchGeoJson<{ features?: DhmStationFeature[] }>('gulmi-dhm-stations.json');
         cachedDhmStationsMap = parseDhmStationsMap(data.features || []);
         return cachedDhmStationsMap;
       } catch (err) {

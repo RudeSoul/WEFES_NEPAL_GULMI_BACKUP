@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import type { GeoJsonObject, Geometry } from 'geojson';
 import { fromArrayBuffer } from 'geotiff';
 import { ImageOverlay } from 'react-leaflet';
+import { getTileUrl } from '../../services/dataClient';
 
 interface SpatialFlowDirectionOverlayProps {
   opacity?: number;
@@ -42,7 +43,7 @@ export const SpatialFlowDirectionOverlay: React.FC<SpatialFlowDirectionOverlayPr
 
     async function loadRaster() {
       try {
-        const response = await fetch('/tiles/flow_direction.tif');
+        const response = await fetch(getTileUrl('flow_direction.tif'));
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const arrayBuffer = await response.arrayBuffer();
 

@@ -3,7 +3,7 @@
 // Classification: CALCULATED & BASELINE METHODOLOGIES
 // Citations: DHM, MoALD, NARC, ICIMOD, DOED, NEA, CBS, NASA POWER, Survey Department Nepal
 
-import methodologiesData from '../../../../data/formulas/analytical_methodologies.json';
+import methodologiesData from '@data/formulas/analytical_methodologies.json';
 
 export interface LocalizedString {
   en: string;

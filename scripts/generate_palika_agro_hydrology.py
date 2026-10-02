@@ -356,11 +356,11 @@ def main():
             s_readily_available = max(0.0, s_start - (taw_mm - raw_mm))
             net_irrigation_req = max(0.0, demand - inflow - s_readily_available)
 
-            # Surplus Unretained Rainfall (Runoff, Deep Percolation, Interception)
-            unretained_rainfall = max(
-                0.0,
-                (m_item["precip_normal"] - inflow) + max(0.0, s_start + inflow - demand - taw_mm),
-            )
+            # Exact Rainfall Mass Balance Closure: P = Peff + P_unretained (Surface Runoff & Interception)
+            unretained_rainfall = max(0.0, m_item["precip_normal"] - inflow)
+
+            # Root-Zone Deep Percolation (Drainage exceeding TAW capacity)
+            deep_percolation = max(0.0, s_start + inflow - demand - taw_mm)
 
             # Classify agronomic stress tier based on depletion fraction Dt
             if depletion_frac <= 0.25:
@@ -371,7 +371,7 @@ def main():
                 advisory = "Soil Storage Buffer: Stored soil moisture satisfies crop demand; initial depletion underway."
             elif depletion_frac <= 0.75:
                 stress_level = "moderate_stress"
-                advisory = "Moderate Moisture Stress: Soil storage below RAW threshold; supplemental irrigation recommended to protect yield."
+                advisory = "Moderate Moisture Stress: Root-zone depletion exceeds RAW threshold (Dr > p·TAW); supplemental irrigation recommended to protect yield."
             else:
                 stress_level = "critical_deficit"
                 advisory = "Critical Water Deficit: Crop under severe root-zone moisture stress; triggers solar/river lift pumping or storage draw."
@@ -403,6 +403,7 @@ def main():
                     "soil_depletion_pct": depletion_pct,
                     "net_irrigation_req_mm": round(net_irrigation_req, 1),
                     "unretained_rainfall_mm": round(unretained_rainfall, 1),
+                    "deep_percolation_mm": round(deep_percolation, 1),
                     "surplus_drainage_mm": round(unretained_rainfall, 1),
                     "stress_level": stress_level,
                     "advisory": advisory,
@@ -418,9 +419,27 @@ def main():
         total_et0 = sum(m["et0_reference_mm"] for m in months_records)
         total_etc = sum(m["etc_crop_demand_mm"] for m in months_records)
         total_ireq = sum(m["net_irrigation_req_mm"] for m in months_records)
-        total_unretained = sum(m["unretained_rainfall_mm"] for m in months_records)
+        total_unretained = round(total_p - total_peff, 1)  # Exact mass balance: P = Peff + Unretained
+        total_deep_percolation = sum(m["deep_percolation_mm"] for m in months_records)
         deficit_months = sum(1 for m in months_records if m["net_irrigation_req_mm"] > 0)
         adequate_months = 12 - deficit_months
+
+        # Dynamic continuous deficit window
+        def_records = [m for m in months_records if m["net_irrigation_req_mm"] > 0]
+        if def_records:
+            def_en = [m["month_en"] for m in def_records]
+            if "Dec" in def_en and "Jan" in def_en:
+                start_m = [m for m in def_records if m["month_en"] == "Dec"][0]
+                end_m = [m for m in def_records if m["month_en"] != "Dec"][-1]
+                critical_stress_window = f"{start_m['month_np']} – {end_m['month_np']} ({start_m['month_en']} – {end_m['month_en']})"
+            else:
+                critical_stress_window = f"{def_records[0]['month_np']} – {def_records[-1]['month_np']} ({def_records[0]['month_en']} – {def_records[-1]['month_en']})"
+        else:
+            critical_stress_window = "None"
+
+        # Peak monthly deficit (typically Chaitra - Baisakh)
+        peak_def_m = max(months_records, key=lambda m: m["net_irrigation_req_mm"])
+        peak_deficit_window = f"{peak_def_m['month_np']} ({peak_def_m['month_en']})"
 
         palika_output[name] = {
             "palika_name": name,
@@ -438,11 +457,13 @@ def main():
                 "et0_reference_mm": round(total_et0, 1),
                 "etc_crop_demand_mm": round(total_etc, 1),
                 "net_irrigation_requirement_mm": round(total_ireq, 1),
-                "unretained_rainfall_mm": round(total_unretained, 1),
-                "monsoon_surplus_drainage_mm": round(total_unretained, 1),
+                "unretained_rainfall_mm": total_unretained,
+                "monsoon_surplus_drainage_mm": total_unretained,
+                "deep_percolation_mm": round(total_deep_percolation, 1),
                 "irrigation_deficit_months": deficit_months,
                 "adequate_moisture_months": adequate_months,
-                "critical_stress_window": "Falgun – Baisakh (Feb – Apr)",
+                "critical_stress_window": critical_stress_window,
+                "peak_deficit_window": peak_deficit_window,
                 "monsoon_recharge_window": "Asar – Ashwin (Jun – Sep)",
             },
             "months": months_records,

@@ -3,7 +3,7 @@
 // Classification: OBSERVED REAL (Nepal Electricity Authority, NARC, Department of Survey)
 // Citations: Nepal Electricity Authority (NEA) Powerhouse Registry; National Tea and Coffee Development Board (NTCDB)
 
-import rawAssets from '../../../../data/real/infrastructure/district_infrastructure_assets.json';
+import rawAssets from '@data/real/infrastructure/district_infrastructure_assets.json';
 
 export interface DistrictLandmarks {
   peak: { name: string; elevation: number; lat: number; lon: number };

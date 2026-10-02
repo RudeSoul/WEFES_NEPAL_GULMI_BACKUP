@@ -41,6 +41,7 @@ import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data
 import { GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 import { GULMI_COFFEE_LANDMARKS, REAL_HYDROPOWER_PLANTS, RealHydropowerAsset } from '../../data/districtRealAssets';
 import { ContourLine, generateDistrictContours } from '../../utils/contourGenerator';
+import { fetchGeoJson } from '../../services/dataClient';
 
 import { DistrictElevationProfiler } from './DistrictElevationProfiler';
 import { MapGestureHandler } from './MapGestureHandler';
@@ -317,15 +318,9 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
     setLoading(true);
 
     Promise.all([
-      fetch('/geojson/gulmi-palikas.json')
-        .then((r) => (r.ok ? r.json() : null))
-        .catch(() => null),
-      fetch('/geojson/gulmi-district.json')
-        .then((r) => (r.ok ? r.json() : null))
-        .catch(() => null),
-      fetch('/geojson/gulmi-contours.json')
-        .then((r) => (r.ok ? r.json() : null))
-        .catch(() => null),
+      fetchGeoJson('gulmi-palikas.json').catch(() => null),
+      fetchGeoJson('gulmi-district.json').catch(() => null),
+      fetchGeoJson('gulmi-contours.json').catch(() => null),
     ]).then(([palikasData, districtData, contoursData]) => {
       if (!isMounted) return;
 
@@ -361,8 +356,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
     let isMounted = true;
 
     const distId = district.id.toLowerCase();
-    fetch(`/geojson/roads/${distId}.json`)
-      .then((r) => (r.ok ? r.json() : null))
+    fetchGeoJson(`roads/${distId}.json`)
       .then((data) => {
         if (!isMounted) return;
         setDistrictRoadsData(data);

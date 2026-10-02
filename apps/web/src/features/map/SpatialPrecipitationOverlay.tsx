@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import type { FeatureCollection, GeoJsonObject, Geometry, Position } from 'geojson';
 import { fromArrayBuffer } from 'geotiff';
 import { ImageOverlay } from 'react-leaflet';
+import { getTileUrl } from '../../services/dataClient';
 
 export type PrecipitationSeasonType = 'annual' | 'monsoon' | 'dry_season';
 
@@ -94,7 +95,7 @@ export const SpatialPrecipitationOverlay: React.FC<SpatialPrecipitationOverlayPr
       try {
         setLoading(true);
         const fileName = `average_${type}_precipitation.tif`;
-        const response = await fetch(`/tiles/${fileName}`);
+        const response = await fetch(getTileUrl(fileName));
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status} for ${fileName}`);
         const arrayBuffer = await response.arrayBuffer();
 

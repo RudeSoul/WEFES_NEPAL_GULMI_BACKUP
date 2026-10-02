@@ -37,9 +37,9 @@ SCAN_DIRS = ["apps", "engines", "packages"]
 SCAN_EXTENSIONS = {".ts", ".tsx", ".js", ".jsx", ".py", ".json", ".md"}
 CODE_EXTENSIONS = {".ts", ".tsx", ".js", ".jsx", ".py"}
 
-# Pattern to capture data path references: data/(real|calculated|proxy)/...
+# Pattern to capture data path references: data/(real|calculated|proxy)/... or @data/...
 DATA_PATH_PATTERN = re.compile(
-    r'(?:["\'`])(?:\.?\.?/)*(data/(?:real|calculated|proxy)/[a-zA-Z0-9_\-\./]+\.[a-zA-Z0-9]+)(?:["\'`])'
+    r'(?:["\'`])(?:@|(?:\.?\.?/)*)(data/(?:real|calculated|proxy)/[a-zA-Z0-9_\-\./]+\.[a-zA-Z0-9]+)(?:["\'`])'
 )
 
 # Engine inward import patterns (Rule 4)
@@ -307,11 +307,106 @@ def check_branch_protection() -> list[str]:
 
 
 # ==============================================================================
+# Rule 7: Numerical Invariants & Mass Balance Integrity
+# ==============================================================================
+def check_numerical_invariants() -> tuple[list[str], int]:
+    """Validates mathematical closure, mass balance, and annual-monthly recurrence across indicators."""
+    errors = []
+    checked_count = 0
+    agro_path = REPO_ROOT / "data" / "calculated" / "indicators" / "gulmi_palika_agro_hydrology.json"
+    if not agro_path.exists():
+        return errors, checked_count
+
+    try:
+        import json
+        with open(agro_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        palikas = data.get("palikas", {})
+        for name, p in palikas.items():
+            ann = p.get("annual_summary", {})
+            months = p.get("months", [])
+            if not months or not ann:
+                continue
+
+            checked_count += 1
+            sum_p = sum(m["precip_wmo_normal_mm"] for m in months)
+            sum_peff = sum(m["effective_precip_mm"] for m in months)
+            sum_etc = sum(m["etc_crop_demand_mm"] for m in months)
+            sum_ireq = sum(m["net_irrigation_req_mm"] for m in months)
+            sum_dp = sum(m["deep_percolation_mm"] for m in months)
+            def_count = sum(1 for m in months if m["net_irrigation_req_mm"] > 0)
+
+            if abs(sum_p - ann["precipitation_wmo_normal_mm"]) > 0.5:
+                errors.append(f"❌ [Rule 7 Violation] {name}: Monthly P sum ({sum_p:.1f}) != Annual P ({ann['precipitation_wmo_normal_mm']:.1f})")
+            if abs(sum_peff - ann["effective_precipitation_mm"]) > 0.5:
+                errors.append(f"❌ [Rule 7 Violation] {name}: Monthly Peff sum ({sum_peff:.1f}) != Annual Peff ({ann['effective_precipitation_mm']:.1f})")
+            if abs(sum_etc - ann["etc_crop_demand_mm"]) > 0.5:
+                errors.append(f"❌ [Rule 7 Violation] {name}: Monthly ETc sum ({sum_etc:.1f}) != Annual ETc ({ann['etc_crop_demand_mm']:.1f})")
+            if abs(sum_ireq - ann["net_irrigation_requirement_mm"]) > 0.5:
+                errors.append(f"❌ [Rule 7 Violation] {name}: Monthly Ireq sum ({sum_ireq:.1f}) != Annual Ireq ({ann['net_irrigation_requirement_mm']:.1f})")
+            if abs(sum_dp - ann["deep_percolation_mm"]) > 0.5:
+                errors.append(f"❌ [Rule 7 Violation] {name}: Monthly DP sum ({sum_dp:.1f}) != Annual DP ({ann['deep_percolation_mm']:.1f})")
+            if def_count != ann["irrigation_deficit_months"]:
+                errors.append(f"❌ [Rule 7 Violation] {name}: Deficit months count ({def_count}) != Annual metadata ({ann['irrigation_deficit_months']})")
+    except Exception as e:
+        errors.append(f"❌ [Rule 7 Violation] Invariant check error: {e}")
+
+    return errors, checked_count
+
+
+# ==============================================================================
+# Rule 8: Decoupled Data Hygiene & Relative Root Import Prohibition
+# ==============================================================================
+def check_decoupled_data_hygiene() -> list[str]:
+    """Ensures source files in apps/ and packages/ do not use deep relative traversal to root data/
+    and do not bypass services/dataClient.ts with hardcoded static fetch calls.
+    """
+    errors = []
+    deep_relative_data_pattern = re.compile(r'from\s+["\'](?:\.\./)+data/(?:real|calculated|proxy|formulas|boundaries|geojson)/')
+    raw_fetch_pattern = re.compile(r'fetch\(\s*["\'`]\s*/(?:geojson|data|tiles)/')
+
+    web_src = REPO_ROOT / "apps" / "web" / "src"
+    if not web_src.exists():
+        return errors
+
+    for root, dirs, files in os.walk(web_src):
+        dirs[:] = [d for d in dirs if d not in {"node_modules", "dist", ".turbo", "__pycache__", ".git"}]
+
+        for file in files:
+            file_path = Path(root) / file
+            if file_path.suffix not in CODE_EXTENSIONS:
+                continue
+
+            # Skip test files and dataClient itself
+            if "test" in file_path.name.lower() or "spec" in file_path.name.lower() or file_path.name == "dataClient.ts":
+                continue
+
+            try:
+                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                    for idx, line in enumerate(f, 1):
+                        if deep_relative_data_pattern.search(line):
+                            errors.append(
+                                f"❌ [Rule 8 Violation] Deep Relative Root Data Import: {file_path.relative_to(REPO_ROOT)}:{idx} "
+                                f"uses relative traversal to root data/! Use '@data/...' alias or services/dataClient.ts."
+                            )
+                        if raw_fetch_pattern.search(line):
+                            errors.append(
+                                f"❌ [Rule 8 Violation] Bypassed Data Client: {file_path.relative_to(REPO_ROOT)}:{idx} "
+                                f"uses raw fetch() to /geojson, /data, or /tiles! Use fetchGeoJson(), fetchDataset(), or getTileUrl() from services/dataClient.ts."
+                            )
+            except Exception:
+                continue
+
+    return errors
+
+
+# ==============================================================================
 # Master Gatekeeper Runner
 # ==============================================================================
 def main():
     print("==================================================================")
-    print(" 🛡️  WEFES NEXUS NEPAL: 6-TIER AUTOMATED GOVERNANCE GATEKEEPER")
+    print(" 🛡️  WEFES NEXUS NEPAL: 8-TIER AUTOMATED GOVERNANCE GATEKEEPER")
     print("==================================================================")
 
     rule1_errors = check_real_data_discipline()
@@ -320,6 +415,8 @@ def main():
     rule4_errors = check_engine_isolation()
     rule5_errors = check_zero_hardcoding()
     rule6_errors = check_branch_protection()
+    rule7_errors, checked_palikas = check_numerical_invariants()
+    rule8_errors = check_decoupled_data_hygiene()
 
     all_errors = (
         rule1_errors +
@@ -327,7 +424,9 @@ def main():
         rule3_errors +
         rule4_errors +
         rule5_errors +
-        rule6_errors
+        rule6_errors +
+        rule7_errors +
+        rule8_errors
     )
 
     # Print summary status per rule
@@ -343,6 +442,8 @@ def main():
     status_line(4, "Headless Engine Isolation", rule4_errors, "zero inward imports into engines/")
     status_line(5, "Zero Hardcoding", rule5_errors, "zero mock/dummy palika dictionaries")
     status_line(6, "Git Hygiene & Branch Protection", rule6_errors, "branch protected")
+    status_line(7, "Numerical Invariants & Mass Balance", rule7_errors, f"{checked_palikas} palikas verified closure")
+    status_line(8, "Decoupled Data Hygiene & Universal Client", rule8_errors, "zero bypassed fetches & zero root traversal")
 
     print("==================================================================")
 
@@ -355,10 +456,11 @@ def main():
         print("==================================================================")
         sys.exit(1)
     else:
-        print(" 🚀 ALL 6 PLATFORM RULES VERIFIED — COMMIT PERMITTED")
+        print(" 🚀 ALL 8 PLATFORM RULES VERIFIED — COMMIT PERMITTED")
         print("==================================================================")
         sys.exit(0)
 
 
 if __name__ == "__main__":
     main()
+

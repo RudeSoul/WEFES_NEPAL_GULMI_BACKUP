@@ -3,7 +3,7 @@
 // Classification: OBSERVED REAL (DHM National River Network & Kali Gandaki / Badigad Sub-Catchments)
 // Citations: Department of Hydrology and Meteorology (DHM), Government of Nepal
 
-import rawHydro from '../../../../data/real/hydrology/gulmi_hydrology_assets.json';
+import rawHydro from '@data/real/hydrology/gulmi_hydrology_assets.json';
 
 export type { PalikaDhmStationInfo } from '../hooks/usePalikaChoropleth';
 

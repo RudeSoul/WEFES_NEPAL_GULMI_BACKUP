@@ -97,3 +97,16 @@ When working on maps, subfilters, legends, or analytics, **NEVER search or grep 
 - **Layer Briefing & Methodologies**: `apps/web/src/data/districtCalculationAssets.ts` and `data/formulas/analytical_methodologies.json`.
 - **Crop Suitability & Water Stress Assets**: `apps/web/src/data/cropSuitabilityAssets.ts`.
 - **Legend Type Contracts**: `packages/shared-types/src/legend-contracts.ts`.
+
+---
+
+## 8. Decoupled Data Architecture & Lazy-Loading Lifecycle (Anti-Lag Guarantee)
+
+- **Universal Data Client**: Frontend data and raster queries must use `fetchGeoJson()`, `fetchDataset()`, or `getTileUrl()` from `apps/web/src/services/dataClient.ts` to allow seamless remote CDN/S3 hosting via `VITE_DATA_BASE_URL`, `VITE_GEOJSON_BASE_URL`, and `VITE_TILES_BASE_URL`.
+- **No Direct Deep Relative Traversal**: Never use `../../../../data/...` in frontend files. Use the `@data` path alias for compile-time assets or runtime `dataClient`.
+- **3-Tier Lifecycle Loading**:
+  1. **Tier 1 (Base Viewport)**: Only district boundary, palika polygons, roads, and DHM stations may load on map mount.
+  2. **Tier 2 (On-Demand Layers)**: Heavy vector assets (`hydro_potential_reaches.geojson` ~5MB, `catchments_l10.geojson`, `rivers_streams.geojson`, `gulmi-contours.json`) and GeoTIFF rasters MUST be lazy-loaded only when their specific toggle/subfilter is activated.
+  3. **Tier 3 (Route-Specific)**: Detailed municipal profiles (`gulmi_palika_agro_hydrology.json`) must only be loaded on `/palikas/:palikaName` routes.
+- **Automated Gatekeeper Rule 8**: `scripts/verify_data_integrity.py` actively blocks commits containing raw `fetch('/geojson/...')` or deep relative root data traversals.
+- **Reference**: Full loading matrix, raster budgets, and cloud deployment procedures are documented in `docs/DATA_LIFECYCLE_AND_LAZY_LOADING.md`.
