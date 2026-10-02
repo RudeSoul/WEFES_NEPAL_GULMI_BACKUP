@@ -71,7 +71,7 @@
         "tempMaxC": 27.5,
         "tempMinC": 7.2,
         "rainfallMm": 1980,
-        "soilPh": 6.7,
+        "soilPh": 6.66,
         "feasibleCropsCount": 8,
         "feasibleCrops": [
           {
@@ -290,7 +290,7 @@
         "tempMaxC": 28.6,
         "tempMinC": 8,
         "rainfallMm": 1710,
-        "soilPh": 6.7,
+        "soilPh": 6.73,
         "feasibleCropsCount": 10,
         "feasibleCrops": [
           {
@@ -470,7 +470,7 @@
         "tempMaxC": 27.8,
         "tempMinC": 7.2,
         "rainfallMm": 1860,
-        "soilPh": 6.5,
+        "soilPh": 6.14,
         "feasibleCropsCount": 9,
         "feasibleCrops": [
           {
@@ -637,7 +637,7 @@
         "tempMaxC": 28.2,
         "tempMinC": 8.1,
         "rainfallMm": 1820,
-        "soilPh": 6.6,
+        "soilPh": 6.74,
         "feasibleCropsCount": 10,
         "feasibleCrops": [
           {
@@ -804,7 +804,7 @@
         "tempMaxC": 27.2,
         "tempMinC": 7,
         "rainfallMm": 1890,
-        "soilPh": 6.4,
+        "soilPh": 6.18,
         "feasibleCropsCount": 9,
         "feasibleCrops": [
           {
@@ -958,7 +958,7 @@
         "tempMaxC": 32.5,
         "tempMinC": 10.2,
         "rainfallMm": 1560,
-        "soilPh": 6.8,
+        "soilPh": 6.59,
         "feasibleCropsCount": 11,
         "feasibleCrops": [
           {
@@ -1112,7 +1112,7 @@
         "tempMaxC": 26.2,
         "tempMinC": 5.8,
         "rainfallMm": 2180,
-        "soilPh": 6.3,
+        "soilPh": 5.85,
         "feasibleCropsCount": 8,
         "feasibleCrops": [
           {
@@ -1253,7 +1253,7 @@
         "tempMaxC": 26.8,
         "tempMinC": 6.2,
         "rainfallMm": 2040,
-        "soilPh": 6.4,
+        "soilPh": 5.98,
         "feasibleCropsCount": 8,
         "feasibleCrops": [
           {
@@ -1394,7 +1394,7 @@
         "tempMaxC": 28.8,
         "tempMinC": 8.2,
         "rainfallMm": 1740,
-        "soilPh": 6.6,
+        "soilPh": 6.54,
         "feasibleCropsCount": 10,
         "feasibleCrops": [
           {
@@ -1548,7 +1548,7 @@
         "tempMaxC": 27.6,
         "tempMinC": 7.2,
         "rainfallMm": 2120,
-        "soilPh": 6.2,
+        "soilPh": 6.61,
         "feasibleCropsCount": 11,
         "feasibleCrops": [
           {
@@ -1715,7 +1715,7 @@
         "tempMaxC": 30.5,
         "tempMinC": 9,
         "rainfallMm": 1650,
-        "soilPh": 6.7,
+        "soilPh": 6.73,
         "feasibleCropsCount": 11,
         "feasibleCrops": [
           {
@@ -1869,7 +1869,7 @@
         "tempMaxC": 29.2,
         "tempMinC": 8.4,
         "rainfallMm": 1780,
-        "soilPh": 6.7,
+        "soilPh": 6.66,
         "feasibleCropsCount": 10,
         "feasibleCrops": [
           {

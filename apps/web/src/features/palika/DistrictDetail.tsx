@@ -11,8 +11,8 @@ import { db } from '@wefes/database';
 import { ClimateDataset, Crop, District } from '@wefes/shared-types';
 import { arimaForecast, extractAnnualRainfallSeries } from '@wefes/wefes-engine';
 
-import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
 import { PALIKA_AGRO_HYDROLOGY_DATA } from '../../data/districtIndicatorAssets';
+import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
 import { fetchGeoJson } from '../../services/dataClient';
 import { DistrictDetailMap } from '../map/DistrictDetailMap';
 

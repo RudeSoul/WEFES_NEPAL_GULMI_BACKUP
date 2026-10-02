@@ -53,7 +53,8 @@ export const PalikaHeroHeader: React.FC<PalikaHeroHeaderProps> = ({
           </span>
         </div>
         <p className="text-xs text-slate-500 mt-1 max-w-2xl font-normal leading-relaxed">
-          Integrated Water-Energy-Food-Ecosystem (WEFE) Decision Support System &amp; Agro-Hydrological Infrastructure Platform.
+          Integrated Water-Energy-Food-Ecosystem (WEFE) Decision Support System &amp; Agro-Hydrological Infrastructure
+          Platform.
         </p>
       </div>
 

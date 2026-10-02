@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import type { FeatureCollection, GeoJsonObject, Geometry, Position } from 'geojson';
 import { fromArrayBuffer } from 'geotiff';
 import { ImageOverlay } from 'react-leaflet';
+
 import { getTileUrl } from '../../services/dataClient';
 
 export type PrecipitationSeasonType = 'annual' | 'monsoon' | 'dry_season';

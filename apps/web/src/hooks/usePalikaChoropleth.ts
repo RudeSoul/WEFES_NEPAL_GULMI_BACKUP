@@ -1,5 +1,5 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson, data/real/infrastructure/gulmi_nea_substations.geojson, data/real/hydrology/gulmi_dhm_stations.geojson, data/real/agriculture/gulmi_agricultural_landholding.geojson, data/real/land_and_soil/gulmi_soil_points_81.json, data/calculated/indicators/gulmi_palika_chirps_precipitation.json
+// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson, data/real/infrastructure/gulmi_nea_substations.geojson, data/real/hydrology/gulmi_dhm_stations.geojson, data/real/agriculture/gulmi_agricultural_landholding.geojson, data/real/land_and_soil/gulmi_soil_data.nc, data/real/land_and_soil/gulmi_soil_points_81.json, data/calculated/indicators/gulmi_palika_chirps_precipitation.json
 // Classification: OBSERVED REAL & EMPIRICAL DOWNSCALING
 // Citations: MoALD Nepal, MoFAGA Nepal, DHM Nepal, CBS/NSO 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas 2.0, Nepal Electricity Authority (NEA), NARC Soil Science Division, OpenStreetMap Contributors
 
@@ -36,8 +36,8 @@ import {
   HYDRO_PALIKA_SUMMARY,
   PalikaFeasibleCrop,
 } from '../data/districtPalikaAssets';
-import type { GeoTiffRasterStats } from '../services/geoTiffZonalStats';
 import { fetchGeoJson } from '../services/dataClient';
+import type { GeoTiffRasterStats } from '../services/geoTiffZonalStats';
 import { getPalikaMicroClimate } from '../utils/climateDownscaling';
 
 import { CHOROPLETH_RAMPS, computeGradientColor, normalizePalikaName } from './choroplethUtils';
@@ -874,7 +874,7 @@ export function computePalikaChoropleth({
         pillar: 'ecosystem',
         label: 'NARC Available Nitrogen (N)',
         unit: '%',
-        min: 0.14,
+        min: 0.1,
         max: 0.2,
         colorRamp: CHOROPLETH_RAMPS.ylgn,
       };
@@ -895,7 +895,7 @@ export function computePalikaChoropleth({
           };
 
         const nVal = matched.nitrogenPct;
-        const color = nVal >= 0.175 ? '#047857' : nVal >= 0.165 ? '#10b981' : nVal > 0 ? '#f59e0b' : '#94a3b8';
+        const color = nVal >= 0.175 ? '#047857' : nVal >= 0.15 ? '#10b981' : nVal > 0 ? '#f59e0b' : '#94a3b8';
 
         joinedData[props.name] = {
           id: props.id || props.name,
@@ -907,9 +907,9 @@ export function computePalikaChoropleth({
           formattedValue: `${nVal.toFixed(3)}%`,
           color,
           tooltipHtml: `<div style="color: #047857; font-size: 10px; margin-top: 2px;">
-                            🌱 Soil N: <strong>${nVal.toFixed(3)}%</strong> (${nVal >= 0.175 ? 'High' : nVal > 0 ? 'Medium' : 'N/A'})
+                            🌱 Soil N: <strong>${nVal.toFixed(3)}%</strong> (${matched.nitrogenRating || (nVal >= 0.175 ? 'High' : nVal > 0 ? 'Medium' : 'N/A')})
                             <div style="color: #64748b; font-size: 8.5px; margin-top: 1px;">
-                               🔬 NARC 81-Point Lab Observation Inverse Distance Weighted
+                               🔬 NARC NSSRC 100m Geospatial Grid (${matched.sampleCount ? `${matched.sampleCount.toLocaleString()} cells` : '3,000+ cells'})
                             </div>
                           </div>`,
           raw: matched,
@@ -921,8 +921,8 @@ export function computePalikaChoropleth({
         pillar: 'ecosystem',
         label: 'NARC Available Phosphorus (P₂O₅)',
         unit: 'kg/ha',
-        min: 120,
-        max: 170,
+        min: 100,
+        max: 190,
         colorRamp: CHOROPLETH_RAMPS.blues,
       };
 
@@ -942,7 +942,7 @@ export function computePalikaChoropleth({
           };
 
         const pVal = matched.phosphorusKgHa;
-        const color = pVal >= 145 ? '#0284c7' : pVal >= 135 ? '#38bdf8' : pVal > 0 ? '#93c5fd' : '#94a3b8';
+        const color = pVal >= 165 ? '#0284c7' : pVal >= 140 ? '#38bdf8' : pVal > 0 ? '#93c5fd' : '#94a3b8';
 
         joinedData[props.name] = {
           id: props.id || props.name,
@@ -954,9 +954,9 @@ export function computePalikaChoropleth({
           formattedValue: `${pVal} kg/ha`,
           color,
           tooltipHtml: `<div style="color: #0284c7; font-size: 10px; margin-top: 2px;">
-                            🌱 Soil P₂O₅: <strong>${pVal} kg/ha</strong> (${pVal >= 140 ? 'High' : pVal > 0 ? 'Medium' : 'N/A'})
+                            🌱 Soil P₂O₅: <strong>${pVal} kg/ha</strong> (${matched.phosphorusRating || (pVal >= 140 ? 'High' : pVal > 0 ? 'Medium' : 'N/A')})
                             <div style="color: #64748b; font-size: 8.5px; margin-top: 1px;">
-                               🔬 NARC 81-Point Lab Observation Inverse Distance Weighted
+                               🔬 NARC NSSRC 100m Geospatial Grid (${matched.sampleCount ? `${matched.sampleCount.toLocaleString()} cells` : '3,000+ cells'})
                             </div>
                           </div>`,
           raw: matched,
@@ -969,7 +969,7 @@ export function computePalikaChoropleth({
         label: 'NARC Available Potassium (K₂O)',
         unit: 'kg/ha',
         min: 220,
-        max: 270,
+        max: 290,
         colorRamp: CHOROPLETH_RAMPS.blues,
       };
 
@@ -989,7 +989,7 @@ export function computePalikaChoropleth({
           };
 
         const kVal = matched.potassiumKgHa;
-        const color = kVal >= 250 ? '#0284c7' : kVal >= 235 ? '#38bdf8' : kVal > 0 ? '#93c5fd' : '#94a3b8';
+        const color = kVal >= 265 ? '#0284c7' : kVal >= 240 ? '#38bdf8' : kVal > 0 ? '#93c5fd' : '#94a3b8';
 
         joinedData[props.name] = {
           id: props.id || props.name,
@@ -1001,9 +1001,9 @@ export function computePalikaChoropleth({
           formattedValue: `${kVal} kg/ha`,
           color,
           tooltipHtml: `<div style="color: #0284c7; font-size: 10px; margin-top: 2px;">
-                            🌱 Soil K₂O: <strong>${kVal} kg/ha</strong> (${kVal >= 250 ? 'High' : kVal > 0 ? 'Medium' : 'N/A'})
+                            🌱 Soil K₂O: <strong>${kVal} kg/ha</strong> (${matched.potassiumRating || (kVal >= 250 ? 'High' : kVal > 0 ? 'Medium' : 'N/A')})
                             <div style="color: #64748b; font-size: 8.5px; margin-top: 1px;">
-                               🔬 NARC 81-Point Lab Observation Inverse Distance Weighted
+                               🔬 NARC NSSRC 100m Geospatial Grid (${matched.sampleCount ? `${matched.sampleCount.toLocaleString()} cells` : '3,000+ cells'})
                             </div>
                           </div>`,
           raw: matched,
@@ -1015,15 +1015,24 @@ export function computePalikaChoropleth({
         pillar: 'ecosystem',
         label: 'Topsoil pH Baseline',
         unit: 'pH',
-        min: 5.2,
-        max: 7.3,
+        min: 5.5,
+        max: 7.2,
         colorRamp: ['#ef4444', '#f59e0b', '#10b981', '#3b82f6'],
       };
+
+      const soilMap = palikaSoilData.palikas || {};
 
       for (const feat of features) {
         const props = feat.properties || {};
         const pData = getProfile(props);
-        const ph = pData?.soilPh ?? 0;
+        const pName = props.name || '';
+        const matched =
+          soilMap[pName] ||
+          Object.entries(soilMap).find(
+            ([k]) => pName.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(pName.toLowerCase())
+          )?.[1];
+
+        const ph = matched?.ph ?? pData?.soilPh ?? 0;
         // NARC & FAO classification matching SUBFILTER_LEGENDS['soil_ph']
         const color =
           ph === 0 ? '#94a3b8' : ph < 5.0 ? '#ef4444' : ph < 6.0 ? '#f59e0b' : ph <= 7.2 ? '#10b981' : '#3b82f6';
@@ -1035,10 +1044,18 @@ export function computePalikaChoropleth({
           type: props.type,
           areaSqKm: props.areaSqKm,
           value: ph,
-          formattedValue: ph > 0 ? `${ph.toFixed(1)} pH` : 'N/A',
+          formattedValue: ph > 0 ? `${ph.toFixed(2)} pH` : 'N/A',
           color,
-          tooltipHtml: `<div style="color: #059669; font-size: 10px; margin-top: 2px;">🧪 Soil pH: <strong>${ph > 0 ? ph.toFixed(1) : 'N/A'}</strong></div>`,
-          raw: pData,
+          tooltipHtml: `<div style="color: #059669; font-size: 10px; margin-top: 2px;">
+                            🧪 Soil pH: <strong>${ph > 0 ? ph.toFixed(2) : 'N/A'}</strong> (${matched?.phRating || (ph < 6.0 ? 'Moderately Acidic' : 'Neutral / Optimal')})
+                            <div style="color: #64748b; font-size: 8.5px; margin-top: 1px;">
+                               🌿 SOM: <strong>${matched?.organicMatterPct ? `${matched.organicMatterPct}%` : '—'}</strong> | Texture: <strong>${matched?.texture || 'Loam'}</strong> (${matched?.dominantSoil || 'Cambisols'})
+                            </div>
+                            <div style="color: #94a3b8; font-size: 8px; margin-top: 1px;">
+                               🔬 NARC NSSRC 100m Grid (${matched?.sampleCount ? `${matched.sampleCount.toLocaleString()} cells` : '3,000+ cells'})
+                            </div>
+                          </div>`,
+          raw: { ...pData, ...matched },
         };
       }
     }

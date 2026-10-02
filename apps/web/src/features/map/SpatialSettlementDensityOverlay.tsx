@@ -5,7 +5,9 @@
 // Consumed By: apps/web/src/features/map/DistrictMap.tsx
 
 import React from 'react';
+
 import { ImageOverlay } from 'react-leaflet';
+
 import { getTileUrl } from '../../services/dataClient';
 
 // Bounding box matching the exact Gulmi district boundary extent

@@ -41,9 +41,9 @@
 - **Description**: Photovoltaic electricity potential (PVOUT), optimum tilt angle (OPTA), and 10-year daily reanalysis meteorological data.
 
 ### `land_and_soil/`
-- **Files**: `district-soil-summary.json`, `gulmi_soil_points_81.json`
-- **Source**: National Soil Science Research Centre (NARC) & Soil Management Directorate.
-- **Description**: Soil texture, pH distribution, 81 geo-referenced field soil sampling observations, and organic matter percentage.
+- **Files**: `gulmi_soil_data.nc`, `district-soil-summary.json`, `gulmi_soil_points_81.json`
+- **Source**: National Soil Science Research Centre (NSSRC), NARC & Soil Management Directorate.
+- **Description**: 100m continuous geospatial NetCDF soil archive (pH, N, P, K, SOM, texture fractions, micronutrients, dominant soil taxonomy) and 81 geo-referenced laboratory soil observations.
 
 ### `socioeconomics/`
 - **Files**: `nepal_investment_benchmarks.json`

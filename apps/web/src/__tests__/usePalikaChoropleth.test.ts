@@ -148,7 +148,7 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
       });
 
       expect(resN.metricConfig.metricKey).toBe('soil_nitrogen');
-      expect(resN.joinedData['Chandrakot']?.value).toBe(0.172);
+      expect(resN.joinedData['Chandrakot']?.value).toBe(0.128);
 
       const resElev = await evaluateChoropleth({
         rawGeoJson: mockGeoJson,

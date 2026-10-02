@@ -20,7 +20,7 @@ import {
   ShieldCheck,
   Sliders,
   Sun,
-  Zap
+  Zap,
 } from 'lucide-react';
 import {
   Area,
@@ -176,7 +176,7 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
 
   // Field Irrigation Application Efficiency (FAO-56 Table 21 & FAO Irrigation Training Manual 4)
   const fieldEfficiency = useMemo(() => {
-    return irrigationTech === 'drip' ? 0.80 : 0.45;
+    return irrigationTech === 'drip' ? 0.8 : 0.45;
   }, [irrigationTech]);
 
   // Sizing indicators computed per month
@@ -187,12 +187,12 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
     const PUMPING_HOURS_PER_DAY = powerSource === 'solar' ? 6.0 : 8.0;
     const WIRE_TO_WATER_EFF = 0.65; // High-efficiency submersible helical/centrifugal pump & motor (to be specified per ISO 9906:2012 Grade 2B)
     const SYSTEM_DERATE = 0.85; // Dirt, cable drop, inverter, and cell thermal derating
-    const NEA_AGRI_TARIFF_PER_KWH = 5.00; // NPR 5.00 / kWh official NEA ERC Agricultural Tariff
+    const NEA_AGRI_TARIFF_PER_KWH = 5.0; // NPR 5.00 / kWh official NEA ERC Agricultural Tariff
 
     return palikaData.months.map((m) => {
       // Net irrigation requirement volume (1 mm over 1 ha = 10 m³)
       const volNetDeficitM3 = Math.round(m.net_irrigation_req_mm * targetAreaHa * 10);
-      
+
       // Gross lifted water volume applying field efficiency (Vgross = Vnet / eta_field)
       const volGrossLiftM3 = Math.round(volNetDeficitM3 / fieldEfficiency);
       const volGrossThousandM3 = Number((volGrossLiftM3 / 1000).toFixed(1));
@@ -210,14 +210,18 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
 
       // Required Solar PV Array capacity (kWp) - sized for peak daily hydraulic energy
       const requiredSolarKwp =
-        dailyGrossM3 > 0 ? Number((dailyHydraulicKwh / (pvoutKwhPerKwp * WIRE_TO_WATER_EFF * SYSTEM_DERATE)).toFixed(1)) : 0;
+        dailyGrossM3 > 0
+          ? Number((dailyHydraulicKwh / (pvoutKwhPerKwp * WIRE_TO_WATER_EFF * SYSTEM_DERATE)).toFixed(1))
+          : 0;
 
       // Tier-1 550W Mono PERC panel count
       const panelCount = requiredSolarKwp > 0 ? Math.ceil((requiredSolarKwp * 1000) / 550) : 0;
 
       // Pump motor power rating (kW and HP)
       const motorPowerKw =
-        flowRateM3Hr > 0 ? Number(((9.81 * (flowRateM3Hr / 3600) * totalDynamicHeadM) / WIRE_TO_WATER_EFF).toFixed(1)) : 0;
+        flowRateM3Hr > 0
+          ? Number(((9.81 * (flowRateM3Hr / 3600) * totalDynamicHeadM) / WIRE_TO_WATER_EFF).toFixed(1))
+          : 0;
       const motorPowerHp = Number((motorPowerKw * 1.341).toFixed(1));
 
       // Monthly electrical energy consumption (kWh/month)
@@ -228,8 +232,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
         powerSource === 'grid'
           ? Math.round(monthlyElectricalKwh * NEA_AGRI_TARIFF_PER_KWH)
           : powerSource === 'hybrid'
-          ? Math.round(monthlyElectricalKwh * 0.25 * NEA_AGRI_TARIFF_PER_KWH) // 75% solar displacement
-          : 0;
+            ? Math.round(monthlyElectricalKwh * 0.25 * NEA_AGRI_TARIFF_PER_KWH) // 75% solar displacement
+            : 0;
 
       // Diesel displacement estimate: ~0.35 L diesel per kWh electrical in small rural generators
       const monthlyDieselLiters = Math.round(monthlyElectricalKwh * 0.35);
@@ -266,7 +270,10 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
     const annualGrossVolM3 = sizingMonthlyData.reduce((sum, d) => sum + d.volGrossLiftM3, 0);
     const annualGrossVolThousandM3 = Number((annualGrossVolM3 / 1000).toFixed(1));
 
-    const peakMonth = sizingMonthlyData.reduce((max, d) => (d.volGrossLiftM3 > max.volGrossLiftM3 ? d : max), sizingMonthlyData[0]);
+    const peakMonth = sizingMonthlyData.reduce(
+      (max, d) => (d.volGrossLiftM3 > max.volGrossLiftM3 ? d : max),
+      sizingMonthlyData[0]
+    );
 
     const peakPanelCount = peakMonth.panelCount;
     // Exactly reconcile installed array rating with panel count: panels * 550W
@@ -296,7 +303,9 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
     const qM3s = (peakMonth.flowRateM3Hr || 1) / 3600;
     const dMeters = Math.sqrt((4 * qM3s) / (Math.PI * 1.2));
     const dMm = Math.round(dMeters * 1000);
-    const standardSizes = [32, 40, 50, 63, 75, 90, 110, 125, 140, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1200, 1400, 1600];
+    const standardSizes = [
+      32, 40, 50, 63, 75, 90, 110, 125, 140, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1200, 1400, 1600,
+    ];
     const recommendedPipeMm = standardSizes.find((s) => s >= dMm) || dMm;
 
     return {
@@ -339,13 +348,25 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
   const { annual_summary: summary, months, taw_mm, raw_mm, soil_lithology, elevation_m } = palikaData;
 
   // Formatted display values
-  const annualVolFormatted = sizingSummary ? formatWaterVolume(sizingSummary.annualGrossVolM3) : { value: '0', unit: 'm³' };
-  const annualNetVolFormatted = sizingSummary ? formatWaterVolume(sizingSummary.annualNetVolM3) : { value: '0', unit: 'm³' };
-  const peakMonthVolFormatted = sizingSummary ? formatWaterVolume(sizingSummary.peakMonth.volGrossLiftM3) : { value: '0', unit: 'm³' };
-  const dailyPeakFormatted = sizingSummary ? formatWaterVolume(sizingSummary.peakMonth.dailyGrossM3) : { value: '0', unit: 'm³' };
-  const bufferTankFormatted = sizingSummary ? formatWaterVolume(sizingSummary.peakDailyBufferTankM3) : { value: '0', unit: 'm³' };
+  const annualVolFormatted = sizingSummary
+    ? formatWaterVolume(sizingSummary.annualGrossVolM3)
+    : { value: '0', unit: 'm³' };
+  const annualNetVolFormatted = sizingSummary
+    ? formatWaterVolume(sizingSummary.annualNetVolM3)
+    : { value: '0', unit: 'm³' };
+  const peakMonthVolFormatted = sizingSummary
+    ? formatWaterVolume(sizingSummary.peakMonth.volGrossLiftM3)
+    : { value: '0', unit: 'm³' };
+  const dailyPeakFormatted = sizingSummary
+    ? formatWaterVolume(sizingSummary.peakMonth.dailyGrossM3)
+    : { value: '0', unit: 'm³' };
+  const bufferTankFormatted = sizingSummary
+    ? formatWaterVolume(sizingSummary.peakDailyBufferTankM3)
+    : { value: '0', unit: 'm³' };
   const peakFlowFormatted = sizingSummary ? formatFlowRate(sizingSummary.peakFlowLps) : { value: '0', unit: 'L/s' };
-  const peakSolarFormatted = sizingSummary ? formatSolarArray(sizingSummary.peakInstalledKwp) : { value: '0', unit: 'kWp' };
+  const peakSolarFormatted = sizingSummary
+    ? formatSolarArray(sizingSummary.peakInstalledKwp)
+    : { value: '0', unit: 'kWp' };
   const peakMotorFormatted = sizingSummary ? formatPower(sizingSummary.peakMotorKw) : { value: '0', unit: 'kW' };
 
   return (
@@ -367,7 +388,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               className="text-[10px] px-2 py-0.5 rounded font-mono font-semibold bg-emerald-50 text-emerald-800 border border-emerald-300"
               title={`TAW = 1000 × (θ_FC - θ_WP) × Zr (FAO-56 Eq. 82) = 1000 × ${palikaData.awc_volumetric} m³/m³ × ${palikaData.root_zone_depth_m}m`}
             >
-              Estimated TAW: {taw_mm}mm (Zr: {palikaData.root_zone_depth_m}m · AWC: {palikaData.awc_volumetric} · FAO-56 Eq. 82)
+              Estimated TAW: {taw_mm}mm (Zr: {palikaData.root_zone_depth_m}m · AWC: {palikaData.awc_volumetric} · FAO-56
+              Eq. 82)
             </span>
             {activeTab === 'solar_sizing' && (
               <span className="text-[10px] px-2 py-0.5 rounded font-mono font-semibold bg-rose-50 text-rose-800 border border-rose-300 flex items-center gap-1">
@@ -380,17 +402,20 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
             {activeTab === 'solar_sizing' ? (
               <>
                 <strong>Stage 3:</strong> Multi-energy river-lift pump sizing, monthly gross water demand ($m^3$), and
-                energy optimization for <strong>{activePalika.name}</strong> ({elevation_m}m ASL · PVOUT: {pvoutKwhPerKwp} kWh/kWp/day · Grid: {sizingSummary?.gridProfile?.electrificationRatePct ?? 90}%).
+                energy optimization for <strong>{activePalika.name}</strong> ({elevation_m}m ASL · PVOUT:{' '}
+                {pvoutKwhPerKwp} kWh/kWp/day · Grid: {sizingSummary?.gridProfile?.electrificationRatePct ?? 90}%).
               </>
             ) : activeTab === 'soil' ? (
               <>
-                <strong>Stage 2:</strong> Sequential root-zone soil water balance, moisture carry-over ($S_t$), and allowable
-                depletion threshold for <strong>{activePalika.name}</strong> ({elevation_m}m ASL · {soil_lithology}).
+                <strong>Stage 2:</strong> Sequential root-zone soil water balance, moisture carry-over ($S_t$), and
+                allowable depletion threshold for <strong>{activePalika.name}</strong> ({elevation_m}m ASL ·{' '}
+                {soil_lithology}).
               </>
             ) : (
               <>
-                <strong>Stage 1:</strong> Area-weighted precipitation baseline ($P$), representative composite crop evapotranspiration ($ET_c$), and
-                net irrigation requirement for <strong>{activePalika.name}</strong> ({elevation_m}m ASL · {soil_lithology}).
+                <strong>Stage 1:</strong> Area-weighted precipitation baseline ($P$), representative composite crop
+                evapotranspiration ($ET_c$), and net irrigation requirement for <strong>{activePalika.name}</strong> (
+                {elevation_m}m ASL · {soil_lithology}).
               </>
             )}
           </p>
@@ -516,7 +541,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               )}
               {targetAreaHa > totalAgriLandHa && (
                 <span className="text-[10px] font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
-                  Regional Watershed Scale ({formatCompactNumber(targetAreaHa)} ha &gt; {activePalika.name} Agri: {totalAgriLandHa} ha)
+                  Regional Watershed Scale ({formatCompactNumber(targetAreaHa)} ha &gt; {activePalika.name} Agri:{' '}
+                  {totalAgriLandHa} ha)
                 </span>
               )}
             </div>
@@ -683,13 +709,16 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono animate-fade-in">
           {/* Card 1: Gross Lift Volume */}
           <div className="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200 min-w-0 overflow-hidden">
-            <div className="text-[10px] text-rose-700 uppercase font-sans font-semibold truncate">Gross Lift Volume (Vgross)</div>
+            <div className="text-[10px] text-rose-700 uppercase font-sans font-semibold truncate">
+              Gross Lift Volume (Vgross)
+            </div>
             <div className="text-base font-extrabold text-rose-950 mt-0.5 truncate flex items-baseline gap-1">
               <span>{annualVolFormatted.value}</span>
               <span className="text-[10px] font-normal text-slate-500">{annualVolFormatted.unit}/yr</span>
             </div>
             <div className="text-[10px] text-slate-500 font-sans truncate">
-              {irrigationTech === 'drip' ? 'Piped Drip (80% η)' : 'Furrow Flood (45% η)'} · Net: {annualNetVolFormatted.value} {annualNetVolFormatted.unit}
+              {irrigationTech === 'drip' ? 'Piped Drip (80% η)' : 'Furrow Flood (45% η)'} · Net:{' '}
+              {annualNetVolFormatted.value} {annualNetVolFormatted.unit}
             </div>
           </div>
 
@@ -703,7 +732,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               <span className="text-[10px] font-normal text-slate-500">{peakMonthVolFormatted.unit}/mo</span>
             </div>
             <div className="text-[10px] text-slate-500 font-sans truncate">
-              Daily: {dailyPeakFormatted.value} {dailyPeakFormatted.unit}/d · Buffer Tank: {bufferTankFormatted.value} {bufferTankFormatted.unit}
+              Daily: {dailyPeakFormatted.value} {dailyPeakFormatted.unit}/d · Buffer Tank: {bufferTankFormatted.value}{' '}
+              {bufferTankFormatted.unit}
             </div>
           </div>
 
@@ -713,8 +743,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               {powerSource === 'solar'
                 ? 'Installed Solar PV Array'
                 : powerSource === 'grid'
-                ? '3-Phase Grid Connected Load'
-                : 'Hybrid Solar-Grid Rating'}
+                  ? '3-Phase Grid Connected Load'
+                  : 'Hybrid Solar-Grid Rating'}
             </div>
             <div className="text-base font-extrabold text-sky-950 mt-0.5 truncate flex items-baseline gap-1">
               {powerSource === 'solar' ? (
@@ -738,8 +768,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               {powerSource === 'solar'
                 ? `${formatCompactNumber(sizingSummary.peakPanelCount)} × 550W panels · OpEx: NPR 0`
                 : powerSource === 'grid'
-                ? `~${sizingSummary.peakMotorHp >= 1000 ? formatCompactNumber(sizingSummary.peakMotorHp) : sizingSummary.peakMotorHp.toFixed(1)} HP · Bill: ~NPR ${formatCompactNumber(sizingSummary.annualGridCostNpr)}/yr`
-                : `Solar 75% + Grid · Bill: ~NPR ${formatCompactNumber(sizingSummary.annualGridCostNpr)}/yr`}
+                  ? `~${sizingSummary.peakMotorHp >= 1000 ? formatCompactNumber(sizingSummary.peakMotorHp) : sizingSummary.peakMotorHp.toFixed(1)} HP · Bill: ~NPR ${formatCompactNumber(sizingSummary.annualGridCostNpr)}/yr`
+                  : `Solar 75% + Grid · Bill: ~NPR ${formatCompactNumber(sizingSummary.annualGridCostNpr)}/yr`}
             </div>
           </div>
 
@@ -757,7 +787,9 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               ) : (
                 <>
                   <span className="text-sm font-bold truncate">
-                    {sizingSummary.gridProfile?.substationName || sizingSummary.substationInfo?.name || 'Tamghas Substation'}
+                    {sizingSummary.gridProfile?.substationName ||
+                      sizingSummary.substationInfo?.name ||
+                      'Tamghas Substation'}
                   </span>
                 </>
               )}
@@ -775,7 +807,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
             <div>
               <div className="text-[10px] text-sky-700 uppercase font-sans font-semibold">Annual Precipitation (P)</div>
               <div className="text-base font-extrabold text-sky-950 mt-0.5">
-                {summary.precipitation_wmo_normal_mm} <span className="text-[10px] font-normal text-slate-500">mm/yr</span>
+                {summary.precipitation_wmo_normal_mm}{' '}
+                <span className="text-[10px] font-normal text-slate-500">mm/yr</span>
               </div>
             </div>
             <div className="text-[10px] text-slate-500 font-sans mt-1 leading-snug">
@@ -799,7 +832,9 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
 
           <div className="p-2.5 rounded-xl bg-rose-50/70 border border-rose-200 min-w-0 flex flex-col justify-between">
             <div>
-              <div className="text-[10px] text-rose-700 uppercase font-sans font-semibold">Net Irrigation Requirement (Ireq)</div>
+              <div className="text-[10px] text-rose-700 uppercase font-sans font-semibold">
+                Net Irrigation Requirement (Ireq)
+              </div>
               <div className="text-base font-extrabold text-rose-950 mt-0.5">
                 {summary.net_irrigation_requirement_mm}{' '}
                 <span className="text-[10px] font-normal text-slate-500">mm/yr</span>
@@ -812,10 +847,11 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
 
           <div className="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200 min-w-0 flex flex-col justify-between">
             <div>
-              <div className="text-[10px] text-emerald-700 uppercase font-sans font-semibold">Unretained Precipitation (P - Peff)</div>
+              <div className="text-[10px] text-emerald-700 uppercase font-sans font-semibold">
+                Unretained Precipitation (P - Peff)
+              </div>
               <div className="text-base font-extrabold text-emerald-950 mt-0.5">
-                {summary.unretained_rainfall_mm}{' '}
-                <span className="text-[10px] font-normal text-slate-500">mm/yr</span>
+                {summary.unretained_rainfall_mm} <span className="text-[10px] font-normal text-slate-500">mm/yr</span>
               </div>
             </div>
             <div className="text-[10px] text-slate-500 font-sans mt-1 leading-snug">
@@ -830,7 +866,11 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
         <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 flex items-start gap-2">
           <Info className="w-4 h-4 text-sky-600 mt-0.5 shrink-0" />
           <div>
-            <strong>Hydrological Seasonality Note:</strong> While total precipitation ({summary.precipitation_wmo_normal_mm} mm) exceeds annual crop demand ({summary.etc_crop_demand_mm} mm), ~80% falls in June–September as unretained terrace runoff ({summary.unretained_rainfall_mm} mm). Consequently, a root-zone deficit emerges across the 6 dry winter/spring months ({summary.critical_stress_window}), requiring <strong>{summary.net_irrigation_requirement_mm} mm</strong> of supplemental irrigation.
+            <strong>Hydrological Seasonality Note:</strong> While total precipitation (
+            {summary.precipitation_wmo_normal_mm} mm) exceeds annual crop demand ({summary.etc_crop_demand_mm} mm), ~80%
+            falls in June–September as unretained terrace runoff ({summary.unretained_rainfall_mm} mm). Consequently, a
+            root-zone deficit emerges across the 6 dry winter/spring months ({summary.critical_stress_window}),
+            requiring <strong>{summary.net_irrigation_requirement_mm} mm</strong> of supplemental irrigation.
           </div>
         </div>
       )}
@@ -885,15 +925,25 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                           <span>
                             {d.month_en} ({d.month_np}) · {d.agro_season}
                           </span>
-                          <span className="text-[10px] font-mono text-slate-400">{formatCompactNumber(targetAreaHa)} ha Command</span>
+                          <span className="text-[10px] font-mono text-slate-400">
+                            {formatCompactNumber(targetAreaHa)} ha Command
+                          </span>
                         </div>
                         <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 font-mono text-[11px]">
                           <span className="text-slate-400">Net Crop Deficit:</span>
-                          <strong className="text-rose-400">{d.net_irrigation_req_mm} mm ({vNet.value} {vNet.unit})</strong>
-                          <span className="text-slate-400">Gross Lift ({irrigationTech === 'drip' ? '80%' : '45%'} η):</span>
-                          <strong className="text-sky-300">{vGross.value} {vGross.unit}</strong>
+                          <strong className="text-rose-400">
+                            {d.net_irrigation_req_mm} mm ({vNet.value} {vNet.unit})
+                          </strong>
+                          <span className="text-slate-400">
+                            Gross Lift ({irrigationTech === 'drip' ? '80%' : '45%'} η):
+                          </span>
+                          <strong className="text-sky-300">
+                            {vGross.value} {vGross.unit}
+                          </strong>
                           <span className="text-slate-400">Daily Gross Lift:</span>
-                          <span className="text-slate-200">{vDaily.value} {vDaily.unit}/d</span>
+                          <span className="text-slate-200">
+                            {vDaily.value} {vDaily.unit}/d
+                          </span>
                           <span className="text-slate-400">Pumping Flow:</span>
                           <strong className="text-sky-400">
                             {vFlow.value} {vFlow.unit} ({formatCompactNumber(d.flowRateM3Hr)} m³/h)
@@ -907,23 +957,33 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                           {powerSource === 'solar' ? (
                             <>
                               <span className="text-slate-400">Required Solar PV:</span>
-                              <strong className="text-amber-400">{vSolar.value} {vSolar.unit}</strong>
+                              <strong className="text-amber-400">
+                                {vSolar.value} {vSolar.unit}
+                              </strong>
                               <span className="text-slate-400">550W Panels:</span>
                               <span className="text-amber-300">{formatCompactNumber(d.panelCount)} modules</span>
                             </>
                           ) : powerSource === 'grid' ? (
                             <>
                               <span className="text-slate-400">Motor Power:</span>
-                              <strong className="text-emerald-400">{vMotor.value} {vMotor.unit} ({d.motorPowerHp} HP)</strong>
+                              <strong className="text-emerald-400">
+                                {vMotor.value} {vMotor.unit} ({d.motorPowerHp} HP)
+                              </strong>
                               <span className="text-slate-400">NEA Grid Bill:</span>
-                              <span className="text-emerald-300">~NPR {formatCompactNumber(d.monthlyGridCostNpr)}/mo</span>
+                              <span className="text-emerald-300">
+                                ~NPR {formatCompactNumber(d.monthlyGridCostNpr)}/mo
+                              </span>
                             </>
                           ) : (
                             <>
                               <span className="text-slate-400">Solar Array:</span>
-                              <strong className="text-amber-400">{vSolar.value} {vSolar.unit}</strong>
+                              <strong className="text-amber-400">
+                                {vSolar.value} {vSolar.unit}
+                              </strong>
                               <span className="text-slate-400">Grid Top-up Bill:</span>
-                              <span className="text-emerald-300">~NPR {formatCompactNumber(d.monthlyGridCostNpr)}/mo</span>
+                              <span className="text-emerald-300">
+                                ~NPR {formatCompactNumber(d.monthlyGridCostNpr)}/mo
+                              </span>
                             </>
                           )}
                           <span className="text-slate-400">Diesel Displaced:</span>
@@ -1198,10 +1258,16 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               </div>
               <div className="text-base font-extrabold text-rose-950 font-mono mt-1 truncate">
                 {peakMonthVolFormatted.value}{' '}
-                <span className="text-[10px] font-normal text-slate-500">{peakMonthVolFormatted.unit} ({sizingSummary.peakMonth.month_en})</span>
+                <span className="text-[10px] font-normal text-slate-500">
+                  {peakMonthVolFormatted.unit} ({sizingSummary.peakMonth.month_en})
+                </span>
               </div>
               <div className="text-[10px] text-slate-600 mt-1 leading-snug">
-                Recommended 24h Header Reservoir: <strong>{bufferTankFormatted.value} {bufferTankFormatted.unit}</strong> masonry/plastic pond at ridge crest.
+                Recommended 24h Header Reservoir:{' '}
+                <strong>
+                  {bufferTankFormatted.value} {bufferTankFormatted.unit}
+                </strong>{' '}
+                masonry/plastic pond at ridge crest.
               </div>
             </div>
 
@@ -1216,24 +1282,43 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                   <Layers className="w-3.5 h-3.5 text-sky-600 shrink-0" />
                 )}
                 <span className="truncate">
-                  {powerSource === 'solar' ? 'Solar PV Array' : powerSource === 'grid' ? 'NEA Motor Load' : 'Hybrid System'}
+                  {powerSource === 'solar'
+                    ? 'Solar PV Array'
+                    : powerSource === 'grid'
+                      ? 'NEA Motor Load'
+                      : 'Hybrid System'}
                 </span>
               </div>
               <div className="text-base font-extrabold text-amber-950 font-mono mt-1 truncate">
                 {powerSource === 'solar' ? (
-                  <>{peakSolarFormatted.value} <span className="text-[10px] font-normal text-slate-500">{peakSolarFormatted.unit} Installed</span></>
+                  <>
+                    {peakSolarFormatted.value}{' '}
+                    <span className="text-[10px] font-normal text-slate-500">{peakSolarFormatted.unit} Installed</span>
+                  </>
                 ) : powerSource === 'grid' ? (
-                  <>{peakMotorFormatted.value} {peakMotorFormatted.unit} <span className="text-[10px] font-normal text-slate-500">(~{sizingSummary.peakMotorHp >= 1000 ? formatCompactNumber(sizingSummary.peakMotorHp) : sizingSummary.peakMotorHp.toFixed(1)} HP)</span></>
+                  <>
+                    {peakMotorFormatted.value} {peakMotorFormatted.unit}{' '}
+                    <span className="text-[10px] font-normal text-slate-500">
+                      (~
+                      {sizingSummary.peakMotorHp >= 1000
+                        ? formatCompactNumber(sizingSummary.peakMotorHp)
+                        : sizingSummary.peakMotorHp.toFixed(1)}{' '}
+                      HP)
+                    </span>
+                  </>
                 ) : (
-                  <>{peakSolarFormatted.value} {peakSolarFormatted.unit} <span className="text-[10px] font-normal text-slate-500">+ Grid Backup</span></>
+                  <>
+                    {peakSolarFormatted.value} {peakSolarFormatted.unit}{' '}
+                    <span className="text-[10px] font-normal text-slate-500">+ Grid Backup</span>
+                  </>
                 )}
               </div>
               <div className="text-[10px] text-slate-600 mt-1 leading-snug">
                 {powerSource === 'solar'
                   ? `${formatCompactNumber(sizingSummary.peakPanelCount)} × 550W Tier-1 panels @ ${optaTilt}° tilt (CapEx: ~NPR ${formatCompactNumber(sizingSummary.estimatedSolarCapexNpr)})`
                   : powerSource === 'grid'
-                  ? `Annual Energy: ~${formatCompactNumber(sizingSummary.annualElectricityKwh)} kWh · Bill: ~NPR ${formatCompactNumber(sizingSummary.annualGridCostNpr)}/yr (@ Rs 5.00/unit)`
-                  : `75% solar displacement; grid off-peak top-up ~NPR ${formatCompactNumber(sizingSummary.annualGridCostNpr)}/yr`}
+                    ? `Annual Energy: ~${formatCompactNumber(sizingSummary.annualElectricityKwh)} kWh · Bill: ~NPR ${formatCompactNumber(sizingSummary.annualGridCostNpr)}/yr (@ Rs 5.00/unit)`
+                    : `75% solar displacement; grid off-peak top-up ~NPR ${formatCompactNumber(sizingSummary.annualGridCostNpr)}/yr`}
               </div>
             </div>
 
@@ -1250,7 +1335,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                 </span>
               </div>
               <div className="text-[10px] text-slate-600 mt-1 leading-relaxed">
-                Total Lift: {totalDynamicHeadM.toFixed(0)}m TDH · Rising Main: DN{sizingSummary.recommendedPipeMm} (PN16 HDPE).
+                Total Lift: {totalDynamicHeadM.toFixed(0)}m TDH · Rising Main: DN{sizingSummary.recommendedPipeMm} (PN16
+                HDPE).
               </div>
             </div>
 
@@ -1265,7 +1351,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                 <span className="text-[10px] font-normal text-slate-500">L diesel offset/yr</span>
               </div>
               <div className="text-[10px] text-slate-600 mt-1 leading-relaxed">
-                {formatCompactNumber(sizingSummary.annualCo2Tons)} tCO₂/yr avoided; ~NPR {formatCompactNumber(sizingSummary.annualDieselCostNpr)} diesel saved.
+                {formatCompactNumber(sizingSummary.annualCo2Tons)} tCO₂/yr avoided; ~NPR{' '}
+                {formatCompactNumber(sizingSummary.annualDieselCostNpr)} diesel saved.
               </div>
             </div>
           </div>
@@ -1278,7 +1365,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                 <span>Multi-Energy Technology & Trade-Off Comparison (Gulmi Mid-Hills)</span>
               </span>
               <span className="text-[10px] font-mono text-slate-500">
-                Command: {formatCompactNumber(targetAreaHa)} ha · Lift: {totalDynamicHeadM.toFixed(0)}m TDH · Efficiency: {irrigationTech === 'drip' ? '80% (Drip)' : '45% (Furrow)'}
+                Command: {formatCompactNumber(targetAreaHa)} ha · Lift: {totalDynamicHeadM.toFixed(0)}m TDH ·
+                Efficiency: {irrigationTech === 'drip' ? '80% (Drip)' : '45% (Furrow)'}
               </span>
             </div>
             <div className="overflow-x-auto">
@@ -1298,38 +1386,68 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                     <td className="p-2.5 font-semibold text-slate-900 flex items-center gap-1.5">
                       <Sun className="w-3.5 h-3.5 text-amber-600" />
                       <span>Off-Grid Solar PV</span>
-                      {powerSource === 'solar' && <span className="text-[9px] bg-amber-200 text-amber-900 px-1 rounded font-bold">Selected</span>}
+                      {powerSource === 'solar' && (
+                        <span className="text-[9px] bg-amber-200 text-amber-900 px-1 rounded font-bold">Selected</span>
+                      )}
                     </td>
-                    <td className="p-2.5 text-rose-700 font-mono font-semibold">High (~NPR {formatCompactNumber(sizingSummary.estimatedSolarCapexNpr)})</td>
+                    <td className="p-2.5 text-rose-700 font-mono font-semibold">
+                      High (~NPR {formatCompactNumber(sizingSummary.estimatedSolarCapexNpr)})
+                    </td>
                     <td className="p-2.5 text-emerald-700 font-mono font-bold">NPR 0 / yr (Free Sun)</td>
-                    <td className="p-2.5 text-emerald-700">Highest (Directly coincides with 6.2 kWh/m²/day peak irradiance)</td>
-                    <td className="p-2.5 text-emerald-700">Zero direct emissions; ~{formatCompactNumber(sizingSummary.annualCo2Tons)} tCO₂ offset</td>
-                    <td className="p-2.5 text-slate-700">Universal on south-facing sunny terraces; requires array land</td>
+                    <td className="p-2.5 text-emerald-700">
+                      Highest (Directly coincides with 6.2 kWh/m²/day peak irradiance)
+                    </td>
+                    <td className="p-2.5 text-emerald-700">
+                      Zero direct emissions; ~{formatCompactNumber(sizingSummary.annualCo2Tons)} tCO₂ offset
+                    </td>
+                    <td className="p-2.5 text-slate-700">
+                      Universal on south-facing sunny terraces; requires array land
+                    </td>
                   </tr>
                   <tr className={powerSource === 'grid' ? 'bg-emerald-50/50 font-medium' : ''}>
                     <td className="p-2.5 font-semibold text-slate-900 flex items-center gap-1.5">
                       <Power className="w-3.5 h-3.5 text-emerald-600" />
                       <span>NEA Grid Hydro</span>
-                      {powerSource === 'grid' && <span className="text-[9px] bg-emerald-200 text-emerald-900 px-1 rounded font-bold">Selected</span>}
+                      {powerSource === 'grid' && (
+                        <span className="text-[9px] bg-emerald-200 text-emerald-900 px-1 rounded font-bold">
+                          Selected
+                        </span>
+                      )}
                     </td>
                     <td className="p-2.5 text-emerald-700 font-mono">Moderate (Motor + 11kV line drop)</td>
-                    <td className="p-2.5 text-amber-700 font-mono font-semibold">~NPR {formatCompactNumber(sizingSummary.annualGridCostNpr)} / yr (@ Rs 5.00/unit)</td>
-                    <td className="p-2.5 text-amber-700">Moderate (Dry-season run-of-river drops & rural 11kV line voltage sags)</td>
+                    <td className="p-2.5 text-amber-700 font-mono font-semibold">
+                      ~NPR {formatCompactNumber(sizingSummary.annualGridCostNpr)} / yr (@ Rs 5.00/unit)
+                    </td>
+                    <td className="p-2.5 text-amber-700">
+                      Moderate (Dry-season run-of-river drops & rural 11kV line voltage sags)
+                    </td>
                     <td className="p-2.5 text-emerald-600">Clean national hydropower grid; minimal emissions</td>
                     <td className="p-2.5 text-slate-700">
-                      Feasible within 1–2 km of 11kV lines ({sizingSummary.gridProfile?.substationName ?? 'Tamghas'} ~{sizingSummary.gridProfile?.feederDistanceKm ?? 8}km)
+                      Feasible within 1–2 km of 11kV lines ({sizingSummary.gridProfile?.substationName ?? 'Tamghas'} ~
+                      {sizingSummary.gridProfile?.feederDistanceKm ?? 8}km)
                     </td>
                   </tr>
                   <tr className={powerSource === 'hybrid' ? 'bg-sky-50/50 font-medium' : ''}>
                     <td className="p-2.5 font-semibold text-slate-900 flex items-center gap-1.5">
                       <Layers className="w-3.5 h-3.5 text-sky-600" />
                       <span>Hybrid Solar-Grid</span>
-                      {powerSource === 'hybrid' && <span className="text-[9px] bg-sky-200 text-sky-900 px-1 rounded font-bold">Selected</span>}
+                      {powerSource === 'hybrid' && (
+                        <span className="text-[9px] bg-sky-200 text-sky-900 px-1 rounded font-bold">Selected</span>
+                      )}
                     </td>
-                    <td className="p-2.5 text-rose-700 font-mono">High (~NPR {formatCompactNumber(sizingSummary.estimatedSolarCapexNpr)})</td>
-                    <td className="p-2.5 text-emerald-700 font-mono font-semibold">~NPR {formatCompactNumber(sizingSummary.annualGridCostNpr)} / yr (75% savings)</td>
-                    <td className="p-2.5 text-emerald-700">Optimal (Solar primary daytime + Grid morning/cloudy top-up)</td>
-                    <td className="p-2.5 text-emerald-700">Monsoon solar surplus (~{formatCompactNumber(sizingSummary.monsoonSurplusKwh)} kWh) can net-meter to NEA</td>
+                    <td className="p-2.5 text-rose-700 font-mono">
+                      High (~NPR {formatCompactNumber(sizingSummary.estimatedSolarCapexNpr)})
+                    </td>
+                    <td className="p-2.5 text-emerald-700 font-mono font-semibold">
+                      ~NPR {formatCompactNumber(sizingSummary.annualGridCostNpr)} / yr (75% savings)
+                    </td>
+                    <td className="p-2.5 text-emerald-700">
+                      Optimal (Solar primary daytime + Grid morning/cloudy top-up)
+                    </td>
+                    <td className="p-2.5 text-emerald-700">
+                      Monsoon solar surplus (~{formatCompactNumber(sizingSummary.monsoonSurplusKwh)} kWh) can net-meter
+                      to NEA
+                    </td>
                     <td className="p-2.5 text-slate-700">Best long-term commercial model for farmer cooperatives</td>
                   </tr>
                   <tr className="bg-slate-50/40 text-slate-500">
@@ -1338,10 +1456,18 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                       <span>Diesel Generator</span>
                     </td>
                     <td className="p-2.5 text-emerald-700 font-mono">Low (Engine purchase)</td>
-                    <td className="p-2.5 text-rose-700 font-mono font-bold">~NPR {formatCompactNumber(sizingSummary.annualDieselCostNpr)} / yr (@ Rs 175/L)</td>
-                    <td className="p-2.5 text-rose-700">High operational friction (Fuel transport to remote mountain terraces)</td>
-                    <td className="p-2.5 text-rose-700">{formatCompactNumber(sizingSummary.annualCo2Tons)} tCO₂/yr emitted + local particulate soot</td>
-                    <td className="p-2.5 text-slate-500">Emergency fallback only; economically unsustainable for hill farmers</td>
+                    <td className="p-2.5 text-rose-700 font-mono font-bold">
+                      ~NPR {formatCompactNumber(sizingSummary.annualDieselCostNpr)} / yr (@ Rs 175/L)
+                    </td>
+                    <td className="p-2.5 text-rose-700">
+                      High operational friction (Fuel transport to remote mountain terraces)
+                    </td>
+                    <td className="p-2.5 text-rose-700">
+                      {formatCompactNumber(sizingSummary.annualCo2Tons)} tCO₂/yr emitted + local particulate soot
+                    </td>
+                    <td className="p-2.5 text-slate-500">
+                      Emergency fallback only; economically unsustainable for hill farmers
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -1360,7 +1486,11 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               </div>
               <div className="flex items-center gap-1 text-[11px] text-slate-500 font-normal">
                 <span>{showEngineeringDrawer ? 'Hide Technical Details' : 'Show Technical Details'}</span>
-                {showEngineeringDrawer ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                {showEngineeringDrawer ? (
+                  <ChevronUp className="w-3.5 h-3.5" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5" />
+                )}
               </div>
             </button>
 
@@ -1374,25 +1504,65 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                     </h4>
                     <ul className="space-y-1 text-[11px] font-mono leading-relaxed">
                       <li>
-                        • <strong>Irrigation Efficiency (FAO-56):</strong> Net Crop Deficit: <strong>{annualNetVolFormatted.value} {annualNetVolFormatted.unit}</strong> → Gross Lift: <strong>{annualVolFormatted.value} {annualVolFormatted.unit}</strong> ({irrigationTech === 'drip' ? 'η = 80% Piped Drip' : 'η = 45% Earthen Furrow'}).
+                        • <strong>Irrigation Efficiency (FAO-56):</strong> Net Crop Deficit:{' '}
+                        <strong>
+                          {annualNetVolFormatted.value} {annualNetVolFormatted.unit}
+                        </strong>{' '}
+                        → Gross Lift:{' '}
+                        <strong>
+                          {annualVolFormatted.value} {annualVolFormatted.unit}
+                        </strong>{' '}
+                        ({irrigationTech === 'drip' ? 'η = 80% Piped Drip' : 'η = 45% Earthen Furrow'}).
                       </li>
                       <li>
-                        • <strong>Pumping Schedule:</strong> {dailyPeakFormatted.value} {dailyPeakFormatted.unit}/day pumped over <strong>{powerSource === 'solar' ? '6.0 hours/day (solar window)' : '8.0 hours/day (off-peak grid shift)'}</strong>.
+                        • <strong>Pumping Schedule:</strong> {dailyPeakFormatted.value} {dailyPeakFormatted.unit}/day
+                        pumped over{' '}
+                        <strong>
+                          {powerSource === 'solar'
+                            ? '6.0 hours/day (solar window)'
+                            : '8.0 hours/day (off-peak grid shift)'}
+                        </strong>
+                        .
                       </li>
                       <li>
-                        • <strong>Required Flow Rate:</strong> Q = {formatCompactNumber(sizingSummary.peakFlowM3Hr)} m³/hr = <strong>{peakFlowFormatted.value} {peakFlowFormatted.unit}</strong>.
+                        • <strong>Required Flow Rate:</strong> Q = {formatCompactNumber(sizingSummary.peakFlowM3Hr)}{' '}
+                        m³/hr ={' '}
+                        <strong>
+                          {peakFlowFormatted.value} {peakFlowFormatted.unit}
+                        </strong>
+                        .
                       </li>
                       <li>
-                        • <strong>Head Breakdown:</strong> Static Lift ({staticLiftHeadM}m) + Friction/Fittings (+10% / {frictionLossM}m) = <strong>Total Dynamic Head (TDH): {totalDynamicHeadM.toFixed(1)}m</strong>.
+                        • <strong>Head Breakdown:</strong> Static Lift ({staticLiftHeadM}m) + Friction/Fittings (+10% /{' '}
+                        {frictionLossM}m) = <strong>Total Dynamic Head (TDH): {totalDynamicHeadM.toFixed(1)}m</strong>.
                       </li>
                       <li>
-                        • <strong>Hydraulic Power:</strong> P_hyd = (ρ·g·Q·TDH)/1000 = <strong>{formatPower(((9.81 * (sizingSummary.peakFlowM3Hr / 3600) * totalDynamicHeadM))).value} {formatPower(((9.81 * (sizingSummary.peakFlowM3Hr / 3600) * totalDynamicHeadM))).unit}</strong> (Fluid Mechanics identity).
+                        • <strong>Hydraulic Power:</strong> P_hyd = (ρ·g·Q·TDH)/1000 ={' '}
+                        <strong>
+                          {formatPower(9.81 * (sizingSummary.peakFlowM3Hr / 3600) * totalDynamicHeadM).value}{' '}
+                          {formatPower(9.81 * (sizingSummary.peakFlowM3Hr / 3600) * totalDynamicHeadM).unit}
+                        </strong>{' '}
+                        (Fluid Mechanics identity).
                       </li>
                       <li>
-                        • <strong>Wire-to-Water Efficiency:</strong> η = <strong>65%</strong> (submersible multistage pump/motor specified per ISO 9906:2012 Grade 2B). Connected Motor Rating: <strong>{peakMotorFormatted.value} {peakMotorFormatted.unit} (~{sizingSummary.peakMotorHp >= 1000 ? formatCompactNumber(sizingSummary.peakMotorHp) : sizingSummary.peakMotorHp.toFixed(1)} HP)</strong>.
+                        • <strong>Wire-to-Water Efficiency:</strong> η = <strong>65%</strong> (submersible multistage
+                        pump/motor specified per ISO 9906:2012 Grade 2B). Connected Motor Rating:{' '}
+                        <strong>
+                          {peakMotorFormatted.value} {peakMotorFormatted.unit} (~
+                          {sizingSummary.peakMotorHp >= 1000
+                            ? formatCompactNumber(sizingSummary.peakMotorHp)
+                            : sizingSummary.peakMotorHp.toFixed(1)}{' '}
+                          HP)
+                        </strong>
+                        .
                       </li>
                       <li>
-                        • <strong>Ridge Header Buffer Reservoir (DWRI Standard):</strong> Sized for 24-hour peak storage = <strong>{bufferTankFormatted.value} {bufferTankFormatted.unit}</strong> polythene/masonry pond at terrace crest.
+                        • <strong>Ridge Header Buffer Reservoir (DWRI Standard):</strong> Sized for 24-hour peak storage
+                        ={' '}
+                        <strong>
+                          {bufferTankFormatted.value} {bufferTankFormatted.unit}
+                        </strong>{' '}
+                        polythene/masonry pond at terrace crest.
                       </li>
                     </ul>
                   </div>
@@ -1404,22 +1574,41 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                     </h4>
                     <ul className="space-y-1 text-[11px] font-mono leading-relaxed">
                       <li>
-                        • <strong>Solar Design Sizing Logic:</strong> Sized for <strong>peak-day dry season deficit</strong> in {sizingSummary.peakMonth.month_en} ({sizingSummary.peakMonth.month_np}), not annual average energy.
+                        • <strong>Solar Design Sizing Logic:</strong> Sized for{' '}
+                        <strong>peak-day dry season deficit</strong> in {sizingSummary.peakMonth.month_en} (
+                        {sizingSummary.peakMonth.month_np}), not annual average energy.
                       </li>
                       <li>
-                        • <strong>Array Capacity (ESMAP):</strong> Daily Hydraulic Energy ({formatCompactNumber(sizingSummary.peakMonth.dailyHydraulicKwh)} kWh) / (PVOUT {pvoutKwhPerKwp} × η_pump 0.65 × η_derate 0.85) = <strong>{formatSolarArray(sizingSummary.peakSolarKwp).value} {formatSolarArray(sizingSummary.peakSolarKwp).unit}</strong>.
+                        • <strong>Array Capacity (ESMAP):</strong> Daily Hydraulic Energy (
+                        {formatCompactNumber(sizingSummary.peakMonth.dailyHydraulicKwh)} kWh) / (PVOUT {pvoutKwhPerKwp}{' '}
+                        × η_pump 0.65 × η_derate 0.85) ={' '}
+                        <strong>
+                          {formatSolarArray(sizingSummary.peakSolarKwp).value}{' '}
+                          {formatSolarArray(sizingSummary.peakSolarKwp).unit}
+                        </strong>
+                        .
                       </li>
                       <li>
-                        • <strong>Installed Generator:</strong> {formatCompactNumber(sizingSummary.peakPanelCount)} × 550W Tier-1 Mono PERC panels = <strong>{peakSolarFormatted.value} {peakSolarFormatted.unit}</strong> at {optaTilt}° South tilt.
+                        • <strong>Installed Generator:</strong> {formatCompactNumber(sizingSummary.peakPanelCount)} ×
+                        550W Tier-1 Mono PERC panels ={' '}
+                        <strong>
+                          {peakSolarFormatted.value} {peakSolarFormatted.unit}
+                        </strong>{' '}
+                        at {optaTilt}° South tilt.
                       </li>
                       <li>
-                        • <strong>NEA Agricultural Tariff (ERC Approved):</strong> <strong>NPR 5.00 / kWh</strong> applied for agricultural irrigation pumping across rural feeder networks.
+                        • <strong>NEA Agricultural Tariff (ERC Approved):</strong> <strong>NPR 5.00 / kWh</strong>{' '}
+                        applied for agricultural irrigation pumping across rural feeder networks.
                       </li>
                       <li>
-                        • <strong>Monsoon Energy Dividend:</strong> Jun–Sep irrigation demand = 0 mm. Sized PV array generates <strong>~{formatCompactNumber(sizingSummary.monsoonSurplusKwh)} kWh</strong> surplus power for local mini-grid or agro-processing.
+                        • <strong>Monsoon Energy Dividend:</strong> Jun–Sep irrigation demand = 0 mm. Sized PV array
+                        generates <strong>~{formatCompactNumber(sizingSummary.monsoonSurplusKwh)} kWh</strong> surplus
+                        power for local mini-grid or agro-processing.
                       </li>
                       <li>
-                        • <strong>Diesel Offset Baseline:</strong> Rural generator fuel consumption: <strong>0.35 L/kWh</strong>; Emission factor: <strong>2.68 kg CO₂/L</strong>; Retail tariff: <strong>NPR 175/L</strong> (NOC).
+                        • <strong>Diesel Offset Baseline:</strong> Rural generator fuel consumption:{' '}
+                        <strong>0.35 L/kWh</strong>; Emission factor: <strong>2.68 kg CO₂/L</strong>; Retail tariff:{' '}
+                        <strong>NPR 175/L</strong> (NOC).
                       </li>
                     </ul>
                   </div>
@@ -1437,9 +1626,15 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                         1. Evaporative Demand (Ch. 2 & 6)
                       </span>
                       <div className="text-slate-600 space-y-0.5">
-                        <div>• <strong>ET₀:</strong> FAO Penman-Monteith (Eq. 6)</div>
-                        <div>• <strong>ETc:</strong> Kc · ET₀ (Table 12, Fig. 25)</div>
-                        <div>• <strong>P_eff:</strong> USDA-SCS / FAO Method</div>
+                        <div>
+                          • <strong>ET₀:</strong> FAO Penman-Monteith (Eq. 6)
+                        </div>
+                        <div>
+                          • <strong>ETc:</strong> Kc · ET₀ (Table 12, Fig. 25)
+                        </div>
+                        <div>
+                          • <strong>P_eff:</strong> USDA-SCS / FAO Method
+                        </div>
                       </div>
                     </div>
                     <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
@@ -1447,9 +1642,15 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                         2. Soil Water Bucket (Ch. 8)
                       </span>
                       <div className="text-slate-600 space-y-0.5">
-                        <div>• <strong>TAW:</strong> 1000 · (θ_FC - θ_WP) · Zr (Eq. 82)</div>
-                        <div>• <strong>RAW:</strong> p · TAW (p = 0.35–0.55, Eq. 83)</div>
-                        <div>• <strong>Percolation:</strong> S_t &gt; TAW (Fig. 43)</div>
+                        <div>
+                          • <strong>TAW:</strong> 1000 · (θ_FC - θ_WP) · Zr (Eq. 82)
+                        </div>
+                        <div>
+                          • <strong>RAW:</strong> p · TAW (p = 0.35–0.55, Eq. 83)
+                        </div>
+                        <div>
+                          • <strong>Percolation:</strong> S_t &gt; TAW (Fig. 43)
+                        </div>
                       </div>
                     </div>
                     <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
@@ -1457,14 +1658,22 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                         3. Stress & Lift Power (Ch. 8)
                       </span>
                       <div className="text-slate-600 space-y-0.5">
-                        <div>• <strong>Ks:</strong> (TAW - Dr) / ((1-p)TAW) (Eq. 84)</div>
-                        <div>• <strong>Gross Lift:</strong> NIR / η_field (Annex 8)</div>
-                        <div>• <strong>P_hyd:</strong> (ρ·g·Q·TDH)/1000 (Fluid Mechanics)</div>
+                        <div>
+                          • <strong>Ks:</strong> (TAW - Dr) / ((1-p)TAW) (Eq. 84)
+                        </div>
+                        <div>
+                          • <strong>Gross Lift:</strong> NIR / η_field (Annex 8)
+                        </div>
+                        <div>
+                          • <strong>P_hyd:</strong> (ρ·g·Q·TDH)/1000 (Fluid Mechanics)
+                        </div>
                       </div>
                     </div>
                   </div>
                   <p className="text-[10px] text-slate-500 italic mt-2 font-sans leading-relaxed">
-                    Primary Reference: Allen, R.G., Pereira, L.S., Raes, D., &amp; Smith, M. (1998/2000). <em>Crop Evapotranspiration: Guidelines for computing crop water requirements</em>. FAO Irrigation and Drainage Paper No. 56, Food and Agriculture Organization of the United Nations, Rome, 326p.
+                    Primary Reference: Allen, R.G., Pereira, L.S., Raes, D., &amp; Smith, M. (1998/2000).{' '}
+                    <em>Crop Evapotranspiration: Guidelines for computing crop water requirements</em>. FAO Irrigation
+                    and Drainage Paper No. 56, Food and Agriculture Organization of the United Nations, Rome, 326p.
                   </p>
                 </div>
               </div>
@@ -1485,7 +1694,9 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               </div>
             </div>
             <div className="text-[10px] text-slate-600 mt-2 leading-relaxed">
-              Peak: <strong>{summary.peak_deficit_window || 'Chaitra–Baisakh'}</strong>. Root-zone depletion exceeds RAW threshold (Dr &gt; p·TAW) across {summary.irrigation_deficit_months} months ({summary.critical_stress_window}).
+              Peak: <strong>{summary.peak_deficit_window || 'Chaitra–Baisakh'}</strong>. Root-zone depletion exceeds RAW
+              threshold (Dr &gt; p·TAW) across {summary.irrigation_deficit_months} months (
+              {summary.critical_stress_window}).
             </div>
           </div>
 
@@ -1509,7 +1720,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               </div>
             </div>
             <div className="text-[10px] text-slate-600 mt-2 leading-relaxed">
-              Maximum solar irradiance coincides directly with peak root-zone depletion. Click to model river-lift pump & array sizing.
+              Maximum solar irradiance coincides directly with peak root-zone depletion. Click to model river-lift pump
+              & array sizing.
             </div>
           </div>
 
@@ -1525,7 +1737,8 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
               </div>
             </div>
             <div className="text-[10px] text-slate-600 mt-2 leading-relaxed">
-              Precipitation not retained in root zone generates terrace runoff and deep aquifer recharge ({summary.deep_percolation_mm ?? 0} mm).
+              Precipitation not retained in root zone generates terrace runoff and deep aquifer recharge (
+              {summary.deep_percolation_mm ?? 0} mm).
             </div>
           </div>
 
@@ -1536,11 +1749,13 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
                 <span>Post-Monsoon Carry-Over (Kartik)</span>
               </div>
               <div className="text-xs font-bold text-emerald-950 font-mono mt-1">
-                Storage: {months[9]?.soil_storage_end_mm || 0} mm ({Math.round(((months[9]?.soil_storage_end_mm || 0) / taw_mm) * 100)}% of TAW)
+                Storage: {months[9]?.soil_storage_end_mm || 0} mm (
+                {Math.round(((months[9]?.soil_storage_end_mm || 0) / taw_mm) * 100)}% of TAW)
               </div>
             </div>
             <div className="text-[10px] text-slate-600 mt-2 leading-relaxed">
-              Under sequential water balance, October monsoon carry-over buffers soil moisture into November (Mangsir), allowing winter crop sowing before irrigation begins.
+              Under sequential water balance, October monsoon carry-over buffers soil moisture into November (Mangsir),
+              allowing winter crop sowing before irrigation begins.
             </div>
           </div>
         </div>

@@ -799,10 +799,10 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     id: 'soil_ph',
     pillar: 'ecosystem',
     title: 'Soil Reaction (pH Distribution)',
-    subtitle: 'NARC & FAO Agronomic Classification',
+    subtitle: 'NARC NSSRC 100m Geospatial Grid Survey',
     unit: 'pH',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/land_and_soil/district-soil-summary.json',
+    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_data.nc',
     confidence: 'REAL',
     thresholds: [
       {
@@ -916,10 +916,10 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     id: 'soil_nitrogen',
     pillar: 'ecosystem',
     title: 'NARC Soil Available Nitrogen (N)',
-    subtitle: 'NARC 81-Point Ground Soil Sampling Survey',
+    subtitle: 'NARC NSSRC 100m Geospatial Grid Survey',
     unit: '% N',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
+    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_data.nc',
     confidence: 'REAL',
     thresholds: [
       {
@@ -948,10 +948,10 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     id: 'soil_phosphorus',
     pillar: 'ecosystem',
     title: 'NARC Available Phosphorus (P₂O₅)',
-    subtitle: 'NARC 81-Point Ground Soil Sampling Survey',
+    subtitle: 'NARC NSSRC 100m Geospatial Grid Survey',
     unit: 'kg/ha P₂O₅',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
+    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_data.nc',
     confidence: 'REAL',
     thresholds: [
       {
@@ -980,10 +980,10 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     id: 'soil_potassium',
     pillar: 'ecosystem',
     title: 'NARC Available Potassium (K₂O)',
-    subtitle: 'NARC 81-Point Ground Soil Sampling Survey',
+    subtitle: 'NARC NSSRC 100m Geospatial Grid Survey',
     unit: 'kg/ha K₂O',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
+    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_data.nc',
     confidence: 'REAL',
     thresholds: [
       {

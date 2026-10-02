@@ -528,12 +528,11 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
   useEffect(() => {
     if (!palikasData || !isChirpsPrecipitationActive) return;
 
-    const activeKey =
-      isAnnualPrecipitationActive
-        ? 'annual_precipitation'
-        : isMonsoonPrecipitationActive
-          ? 'monsoon_precipitation'
-          : 'dry_season_precipitation';
+    const activeKey = isAnnualPrecipitationActive
+      ? 'annual_precipitation'
+      : isMonsoonPrecipitationActive
+        ? 'monsoon_precipitation'
+        : 'dry_season_precipitation';
 
     // Already computed this session — serve from cache instantly
     if (precipSessionCache.current[activeKey]) {
@@ -550,7 +549,13 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
       .catch((err) => {
         console.warn(`Dynamic GeoTIFF decoding for ${activeKey} skipped:`, err);
       });
-  }, [palikasData, isChirpsPrecipitationActive, isAnnualPrecipitationActive, isMonsoonPrecipitationActive, isDrySeasonPrecipitationActive]);
+  }, [
+    palikasData,
+    isChirpsPrecipitationActive,
+    isAnnualPrecipitationActive,
+    isMonsoonPrecipitationActive,
+    isDrySeasonPrecipitationActive,
+  ]);
 
   // Live Climate Telemetry for Gulmi District (MERRA-2 & NASA POWER)
   const currentRainMm = climateDataset

@@ -40,8 +40,8 @@ import { GULMI_SOIL_POINTS as gulmiSoilPoints } from '../../data/districtIndicat
 import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
 import { GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 import { GULMI_COFFEE_LANDMARKS, REAL_HYDROPOWER_PLANTS, RealHydropowerAsset } from '../../data/districtRealAssets';
-import { ContourLine, generateDistrictContours } from '../../utils/contourGenerator';
 import { fetchGeoJson } from '../../services/dataClient';
+import { ContourLine, generateDistrictContours } from '../../utils/contourGenerator';
 
 import { DistrictElevationProfiler } from './DistrictElevationProfiler';
 import { MapGestureHandler } from './MapGestureHandler';
