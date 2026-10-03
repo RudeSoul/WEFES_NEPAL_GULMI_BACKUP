@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+
+import { CloudRain, Coins, Mountain, Scale, Sparkles, Sprout } from 'lucide-react';
+
 import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
-import { Scale, Sparkles, Mountain, Thermometer, CloudRain, Zap, Sprout, Coins, Droplets, ArrowRight } from 'lucide-react';
 import { getPalikaMicroClimate } from '../../utils/climateDownscaling';
 
 interface PalikaBenchmarkComparatorProps {
@@ -18,15 +20,15 @@ export const PalikaBenchmarkComparator: React.FC<PalikaBenchmarkComparatorProps>
   const [palika2Name, setPalika2Name] = useState<string>(initialPalika2);
 
   const gulmiPalikas = DISTRICT_PALIKAS.gulmi || [];
-  const p1 = gulmiPalikas.find(p => p.name === palika1Name) || gulmiPalikas[10]; // Ruru
-  const p2 = gulmiPalikas.find(p => p.name === palika2Name) || gulmiPalikas[6]; // Madane
+  const p1 = gulmiPalikas.find((p) => p.name === palika1Name) || gulmiPalikas[10]; // Ruru
+  const p2 = gulmiPalikas.find((p) => p.name === palika2Name) || gulmiPalikas[6]; // Madane
 
   // Downscaled micro-climate calculations for baseline month (July, 318mm base, 19.5C base)
   const micro1 = getPalikaMicroClimate(p1.name, 318, 19.5, 7, p1.elevation);
   const micro2 = getPalikaMicroClimate(p2.name, 318, 19.5, 7, p2.elevation);
 
   // Compute 5-Pillar Score estimates (0-100)
-  const getPillarScores = (p: DistrictPalika, micro: any) => {
+  const getPillarScores = (p: DistrictPalika, micro: ReturnType<typeof getPalikaMicroClimate>) => {
     const foodScore = Math.round(
       (p.feasibleCrops?.reduce((acc, c) => acc + c.score, 0) || 600) / (p.feasibleCrops?.length || 8)
     );
@@ -61,13 +63,15 @@ export const PalikaBenchmarkComparator: React.FC<PalikaBenchmarkComparatorProps>
   const r = 85;
 
   const getCoordinates = (scores: Record<string, number>) => {
-    return pillars.map((p, i) => {
-      const angle = (Math.PI * 2 / 5) * i - Math.PI / 2;
-      const val = scores[p.key] / 100;
-      const x = cx + r * val * Math.cos(angle);
-      const y = cy + r * val * Math.sin(angle);
-      return `${x},${y}`;
-    }).join(' ');
+    return pillars
+      .map((p, i) => {
+        const angle = ((Math.PI * 2) / 5) * i - Math.PI / 2;
+        const val = scores[p.key] / 100;
+        const x = cx + r * val * Math.cos(angle);
+        const y = cy + r * val * Math.sin(angle);
+        return `${x},${y}`;
+      })
+      .join(' ');
   };
 
   const poly1 = getCoordinates(scores1);
@@ -83,7 +87,9 @@ export const PalikaBenchmarkComparator: React.FC<PalikaBenchmarkComparatorProps>
           </div>
           <div>
             <h3 className="text-sm font-bold text-slate-900 font-outfit uppercase tracking-wide flex items-center gap-2">
-              <span>{lang === 'np' ? 'दुई स्थानीय तह बेन्चमार्क राडार तुलना' : 'Two-Palika Side-by-Side Benchmark Radar'}</span>
+              <span>
+                {lang === 'np' ? 'दुई स्थानीय तह बेन्चमार्क राडार तुलना' : 'Two-Palika Side-by-Side Benchmark Radar'}
+              </span>
               <span className="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full font-mono font-bold">
                 Nexus Dual-Radar
               </span>
@@ -107,10 +113,10 @@ export const PalikaBenchmarkComparator: React.FC<PalikaBenchmarkComparatorProps>
               <div className="text-[10px] uppercase font-bold text-emerald-800 tracking-wider">Palika 1 (Primary)</div>
               <select
                 value={palika1Name}
-                onChange={e => setPalika1Name(e.target.value)}
+                onChange={(e) => setPalika1Name(e.target.value)}
                 className="bg-white border border-emerald-300 rounded-lg px-2 py-1 text-xs font-bold text-slate-900 cursor-pointer shadow-2xs mt-0.5"
               >
-                {gulmiPalikas.map(p => (
+                {gulmiPalikas.map((p) => (
                   <option key={p.id} value={p.name} disabled={p.name === palika2Name}>
                     {p.name} ({p.elevation}m)
                   </option>
@@ -131,10 +137,10 @@ export const PalikaBenchmarkComparator: React.FC<PalikaBenchmarkComparatorProps>
               <div className="text-[10px] uppercase font-bold text-indigo-800 tracking-wider">Palika 2 (Benchmark)</div>
               <select
                 value={palika2Name}
-                onChange={e => setPalika2Name(e.target.value)}
+                onChange={(e) => setPalika2Name(e.target.value)}
                 className="bg-white border border-indigo-300 rounded-lg px-2 py-1 text-xs font-bold text-slate-900 cursor-pointer shadow-2xs mt-0.5"
               >
-                {gulmiPalikas.map(p => (
+                {gulmiPalikas.map((p) => (
                   <option key={p.id} value={p.name} disabled={p.name === palika1Name}>
                     {p.name} ({p.elevation}m)
                   </option>
@@ -169,7 +175,7 @@ export const PalikaBenchmarkComparator: React.FC<PalikaBenchmarkComparatorProps>
 
             {/* Radial Axes & Labels */}
             {pillars.map((p, i) => {
-              const angle = (Math.PI * 2 / 5) * i - Math.PI / 2;
+              const angle = ((Math.PI * 2) / 5) * i - Math.PI / 2;
               const x2 = cx + r * Math.cos(angle);
               const y2 = cy + r * Math.sin(angle);
               const labelX = cx + (r + 18) * Math.cos(angle);
@@ -191,22 +197,10 @@ export const PalikaBenchmarkComparator: React.FC<PalikaBenchmarkComparatorProps>
             })}
 
             {/* Palika 1 Polygon (Emerald) */}
-            <polygon
-              points={poly1}
-              fill="#059669"
-              fillOpacity="0.35"
-              stroke="#059669"
-              strokeWidth="2.5"
-            />
+            <polygon points={poly1} fill="#059669" fillOpacity="0.35" stroke="#059669" strokeWidth="2.5" />
 
             {/* Palika 2 Polygon (Indigo) */}
-            <polygon
-              points={poly2}
-              fill="#6366f1"
-              fillOpacity="0.30"
-              stroke="#4f46e5"
-              strokeWidth="2.5"
-            />
+            <polygon points={poly2} fill="#6366f1" fillOpacity="0.30" stroke="#4f46e5" strokeWidth="2.5" />
           </svg>
 
           {/* Radar Legend */}
@@ -246,9 +240,15 @@ export const PalikaBenchmarkComparator: React.FC<PalikaBenchmarkComparatorProps>
                 <td className="p-2 font-medium text-slate-700 flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-emerald-600" /> Soil pH
                 </td>
-                <td className="p-2 font-mono font-bold text-emerald-800">{p1.soilPh} ({p1.soilPh < 6.0 ? 'Acidic' : 'Neutral'})</td>
-                <td className="p-2 font-mono font-bold text-indigo-800">{p2.soilPh} ({p2.soilPh < 6.0 ? 'Acidic' : 'Neutral'})</td>
-                <td className="p-2 text-[10px] font-bold text-emerald-700">{p1.soilPh >= p2.soilPh ? p1.name : p2.name}</td>
+                <td className="p-2 font-mono font-bold text-emerald-800">
+                  {p1.soilPh} ({p1.soilPh < 6.0 ? 'Acidic' : 'Neutral'})
+                </td>
+                <td className="p-2 font-mono font-bold text-indigo-800">
+                  {p2.soilPh} ({p2.soilPh < 6.0 ? 'Acidic' : 'Neutral'})
+                </td>
+                <td className="p-2 text-[10px] font-bold text-emerald-700">
+                  {p1.soilPh >= p2.soilPh ? p1.name : p2.name}
+                </td>
               </tr>
               <tr>
                 <td className="p-2 font-medium text-slate-700 flex items-center gap-1">
@@ -256,28 +256,37 @@ export const PalikaBenchmarkComparator: React.FC<PalikaBenchmarkComparatorProps>
                 </td>
                 <td className="p-2 font-mono font-bold text-slate-900">{micro1.annualRainMm} mm</td>
                 <td className="p-2 font-mono font-bold text-slate-900">{micro2.annualRainMm} mm</td>
-                <td className="p-2 text-[10px] font-bold text-sky-700">{micro1.annualRainMm >= micro2.annualRainMm ? p1.name : p2.name}</td>
+                <td className="p-2 text-[10px] font-bold text-sky-700">
+                  {micro1.annualRainMm >= micro2.annualRainMm ? p1.name : p2.name}
+                </td>
               </tr>
               <tr>
                 <td className="p-2 font-medium text-slate-700 flex items-center gap-1">
                   <Sprout className="w-3 h-3 text-emerald-600" /> ☕ Arabica Coffee
                 </td>
                 <td className="p-2 font-mono font-bold text-emerald-800">
-                  {p1.feasibleCrops?.find(c => c.cropId === 'coffee')?.score ?? 70}%
+                  {p1.feasibleCrops?.find((c) => c.cropId === 'coffee')?.score ?? 70}%
                 </td>
                 <td className="p-2 font-mono font-bold text-indigo-800">
-                  {p2.feasibleCrops?.find(c => c.cropId === 'coffee')?.score ?? 70}%
+                  {p2.feasibleCrops?.find((c) => c.cropId === 'coffee')?.score ?? 70}%
                 </td>
                 <td className="p-2 text-[10px] font-bold text-emerald-700">
-                  {(p1.feasibleCrops?.find(c => c.cropId === 'coffee')?.score ?? 0) >= (p2.feasibleCrops?.find(c => c.cropId === 'coffee')?.score ?? 0) ? p1.name : p2.name}
+                  {(p1.feasibleCrops?.find((c) => c.cropId === 'coffee')?.score ?? 0) >=
+                  (p2.feasibleCrops?.find((c) => c.cropId === 'coffee')?.score ?? 0)
+                    ? p1.name
+                    : p2.name}
                 </td>
               </tr>
               <tr>
                 <td className="p-2 font-medium text-slate-700 flex items-center gap-1">
                   <Coins className="w-3 h-3 text-amber-600" /> Labor Wage
                 </td>
-                <td className="p-2 font-mono text-slate-900">NPR {p1.name === 'Resunga' ? 900 : p1.name === 'Musikot' ? 850 : 700}/day</td>
-                <td className="p-2 font-mono text-slate-900">NPR {p2.name === 'Resunga' ? 900 : p2.name === 'Musikot' ? 850 : 700}/day</td>
+                <td className="p-2 font-mono text-slate-900">
+                  NPR {p1.name === 'Resunga' ? 900 : p1.name === 'Musikot' ? 850 : 700}/day
+                </td>
+                <td className="p-2 font-mono text-slate-900">
+                  NPR {p2.name === 'Resunga' ? 900 : p2.name === 'Musikot' ? 850 : 700}/day
+                </td>
                 <td className="p-2 text-[10px] text-slate-500">Regional Standard</td>
               </tr>
             </tbody>

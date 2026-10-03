@@ -1,28 +1,39 @@
 import React from 'react';
-import { District, WEFESPillar, Crop, CropSuitability } from '@wefes/shared-types';
-import { db, isCropFeasibleInDistrict } from '@wefes/database';
-import { computeCropSuitability } from '@wefes/wefes-engine';
+
 import {
-  Calendar, CloudRain, Thermometer, Wind, Gauge, Sparkles, Zap, Sun,
-  Sprout, Leaf, Cherry, Wheat as WheatIcon, MapPin, CheckCircle, AlertTriangle,
-  Award, TrendingUp
+  AlertTriangle,
+  Award,
+  Calendar,
+  CheckCircle,
+  Cherry,
+  CloudRain,
+  Gauge,
+  Leaf,
+  Sparkles,
+  Sprout,
+  Sun,
+  Thermometer,
+  TrendingUp,
+  Wheat as WheatIcon,
+  Wind,
+  Zap,
 } from 'lucide-react';
+
+import { db, isCropFeasibleInDistrict } from '@wefes/database';
+import { ClimateDataset, District, MonthlyClimatePoint, WEFESPillar } from '@wefes/shared-types';
+import { computeCropSuitability } from '@wefes/wefes-engine';
 
 interface DistrictHoverCardProps {
   district: District | null;
-  climateDataset?: any;
+  climateDataset?: ClimateDataset | null;
   climateYear?: number;
   climateMonth?: number;
   climateMode?: 'monthly' | 'annual' | 'climatology';
-  activeClimateMetric?: string;
   selectedPillar?: WEFESPillar;
   selectedCropId?: string | null;
 }
 
-const MONTH_NAMES = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-];
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 function parseCommissionedYear(commStr?: string): number | null {
   if (!commStr) return null;
@@ -48,26 +59,10 @@ function getActiveHydroInfoForYear(district: District, year: number) {
 
 function getNarcNStatus(n?: number): { label: string; color: string } {
   if (n === undefined) return { label: 'No Data', color: 'text-slate-400' };
-  if (n > 0.20) return { label: 'High', color: 'text-emerald-700' };
-  if (n >= 0.10) return { label: 'Medium', color: 'text-sky-700' };
+  if (n > 0.2) return { label: 'High', color: 'text-emerald-700' };
+  if (n >= 0.1) return { label: 'Medium', color: 'text-sky-700' };
   return { label: 'Low', color: 'text-rose-700' };
 }
-
-function getNarcPStatus(p?: number): { label: string; color: string } {
-  if (p === undefined) return { label: 'No Data', color: 'text-slate-400' };
-  if (p > 55) return { label: 'High', color: 'text-emerald-700' };
-  if (p >= 30) return { label: 'Medium', color: 'text-sky-700' };
-  return { label: 'Low', color: 'text-rose-700' };
-}
-
-function getNarcKStatus(k?: number): { label: string; color: string } {
-  if (k === undefined) return { label: 'No Data', color: 'text-slate-400' };
-  if (k > 280) return { label: 'High', color: 'text-emerald-700' };
-  if (k >= 110) return { label: 'Medium', color: 'text-purple-700' };
-  return { label: 'Low', color: 'text-rose-700' };
-}
-
-
 
 export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
   district,
@@ -75,38 +70,39 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
   climateYear = 2024,
   climateMonth = 12,
   climateMode = 'monthly',
-  activeClimateMetric = 'prectot',
   selectedPillar,
   selectedCropId,
 }) => {
+  // 2. If NO specific crop is selected, find the #1 Top Optimal Crop for this district:
+  const allRankedCrops = React.useMemo(() => {
+    if (!district) return [];
+    return db
+      .getAllCrops()
+      .map((crop) => {
+        const suit = computeCropSuitability(district, crop);
+        const isFeas = isCropFeasibleInDistrict(crop, district);
+        return { crop, suit, isFeas };
+      })
+      .sort((a, b) => b.suit.suitabilityScore - a.suit.suitabilityScore);
+  }, [district]);
+
   if (!district) return null;
 
-  const hasSoilData = district.hasRealSoilData !== false && (district.soilSampleCount || 0) > 0 && district.soilNitrogen !== undefined;
+  const hasSoilData =
+    district.hasRealSoilData !== false && (district.soilSampleCount || 0) > 0 && district.soilNitrogen !== undefined;
 
   const activeHydro = getActiveHydroInfoForYear(district, climateYear);
-  const yearlySolar = (district.nasaSolarYearly && district.nasaSolarYearly[climateYear])
-    ? district.nasaSolarYearly[climateYear]
-    : (district.nasaSolarRadiationKwh || district.solarRadiationKwh);
+  const yearlySolar =
+    district.nasaSolarYearly && district.nasaSolarYearly[climateYear]
+      ? district.nasaSolarYearly[climateYear]
+      : district.nasaSolarRadiationKwh || district.solarRadiationKwh;
 
   const nStatus = getNarcNStatus(district.soilNitrogen);
-  const pStatus = getNarcPStatus(district.soilPhosphorus);
-  const kStatus = getNarcKStatus(district.soilPotassium);
 
   // 1. If user selected a specific crop via sub-filter:
   const activeCrop = selectedCropId ? db.getCropById(selectedCropId) : null;
   const cropSuitability = activeCrop ? computeCropSuitability(district, activeCrop) : null;
-  const isSelectedCropFeasible = activeCrop
-    ? isCropFeasibleInDistrict(activeCrop, district)
-    : true;
-
-  // 2. If NO specific crop is selected, find the #1 Top Optimal Crop for this district:
-  const allRankedCrops = React.useMemo(() => {
-    return db.getAllCrops().map(crop => {
-      const suit = computeCropSuitability(district, crop);
-      const isFeas = isCropFeasibleInDistrict(crop, district);
-      return { crop, suit, isFeas };
-    }).sort((a, b) => b.suit.suitabilityScore - a.suit.suitabilityScore);
-  }, [district]);
+  const isSelectedCropFeasible = activeCrop ? isCropFeasibleInDistrict(activeCrop, district) : true;
 
   const topOptimal = allRankedCrops.length > 0 ? allRankedCrops[0] : null;
 
@@ -117,21 +113,26 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
     (district.feasibleSpicesCashCrops?.length || 0);
 
   // Extract real monthly climate metrics for hovered district
-  let climateData: any = null;
+  let climateData: (MonthlyClimatePoint & { ws50m?: number; rh2m?: number }) | null = null;
   if (climateDataset) {
     const targetYear = climateYear > 2019 ? 2019 : climateYear;
     if (climateMode === 'climatology') {
-      climateData = climateDataset.climatologyMap?.[district.id]?.[climateMonth];
+      climateData = climateDataset.climatologyMap?.[district.id]?.[climateMonth] || null;
     } else if (climateMode === 'annual') {
       const yrMap = climateDataset.climateMap?.[district.id]?.[targetYear];
       if (yrMap) {
-        let sumRain = 0, sumT = 0, sumWs = 0, sumRh = 0, count = 0;
+        let sumRain = 0,
+          sumT = 0,
+          sumWs = 0,
+          sumRh = 0,
+          count = 0;
         for (let m = 1; m <= 12; m++) {
-          if (yrMap[m]) {
-            sumRain += yrMap[m].prectot || 0;
-            sumT += yrMap[m].t2m || 0;
-            sumWs += yrMap[m].ws50m || 0;
-            sumRh += yrMap[m].rh2m || 0;
+          const mPoint = yrMap[m];
+          if (mPoint) {
+            sumRain += mPoint.prectot || 0;
+            sumT += mPoint.t2m || 0;
+            sumWs += (mPoint.ws50m as number) || 0;
+            sumRh += (mPoint.rh2m as number) || 0;
             count++;
           }
         }
@@ -145,8 +146,10 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
         }
       }
     } else {
-      climateData = climateDataset.climateMap?.[district.id]?.[targetYear]?.[climateMonth]
-        || climateDataset.climatologyMap?.[district.id]?.[climateMonth];
+      climateData =
+        climateDataset.climateMap?.[district.id]?.[targetYear]?.[climateMonth] ||
+        climateDataset.climatologyMap?.[district.id]?.[climateMonth] ||
+        null;
     }
   }
 
@@ -158,14 +161,8 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
         {/* Header row */}
         <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
           <div className="flex items-center space-x-2 flex-wrap">
-            <span className="font-bold text-sm text-slate-900 font-outfit">
-              {district.name}
-            </span>
-            {district.nepaliName && (
-              <span className="text-xs text-slate-500 font-serif">
-                ({district.nepaliName})
-              </span>
-            )}
+            <span className="font-bold text-sm text-slate-900 font-outfit">{district.name}</span>
+            {district.nepaliName && <span className="text-xs text-slate-500 font-serif">({district.nepaliName})</span>}
             <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono border border-slate-200">
               {district.province}
             </span>
@@ -194,13 +191,9 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <span className="font-bold text-slate-900 text-xs font-outfit">
-                        {activeCrop.name}
-                      </span>
+                      <span className="font-bold text-slate-900 text-xs font-outfit">{activeCrop.name}</span>
                       {activeCrop.nepaliName && (
-                        <span className="text-[10px] text-slate-500 font-serif">
-                          ({activeCrop.nepaliName})
-                        </span>
+                        <span className="text-[10px] text-slate-500 font-serif">({activeCrop.nepaliName})</span>
                       )}
                     </div>
                     <span className="text-[9px] text-slate-500 font-sans">
@@ -211,12 +204,15 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
 
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <span className={`text-xs px-2 py-0.5 rounded-md font-mono font-extrabold border ${cropSuitability.suitabilityScore >= 75
-                        ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
-                        : cropSuitability.suitabilityScore >= 50
-                          ? 'bg-amber-100 text-amber-900 border-amber-300'
-                          : 'bg-rose-100 text-rose-900 border-rose-300'
-                      }`}>
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-md font-mono font-extrabold border ${
+                        cropSuitability.suitabilityScore >= 75
+                          ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                          : cropSuitability.suitabilityScore >= 50
+                            ? 'bg-amber-100 text-amber-900 border-amber-300'
+                            : 'bg-rose-100 text-rose-900 border-rose-300'
+                      }`}
+                    >
                       {cropSuitability.suitabilityScore}/100
                     </span>
                   </div>
@@ -247,13 +243,9 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
                       <span className="text-[9px] text-sky-800 uppercase font-bold tracking-wider">
                         #1 Top Optimal Crop:
                       </span>
-                      <span className="font-bold text-slate-900 text-xs font-outfit">
-                        {topOptimal.crop.name}
-                      </span>
+                      <span className="font-bold text-slate-900 text-xs font-outfit">{topOptimal.crop.name}</span>
                       {topOptimal.crop.nepaliName && (
-                        <span className="text-[10px] text-slate-500 font-serif">
-                          ({topOptimal.crop.nepaliName})
-                        </span>
+                        <span className="text-[10px] text-slate-500 font-serif">({topOptimal.crop.nepaliName})</span>
                       )}
                     </div>
                     <div className="text-[9px] text-slate-600 flex items-center gap-2 font-mono mt-0.5">
@@ -274,16 +266,18 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
             ) : null}
 
             {/* Real Coffee Production 2080 Badge (if active crop is coffee OR if district is a key coffee hub) */}
-            {((activeCrop?.id === 'coffee') || (!activeCrop && topOptimal?.crop.id === 'coffee')) && district.coffeeProductionMt !== undefined && (
-              <div className="bg-amber-50/90 px-2.5 py-1.5 rounded-lg border border-amber-200 flex items-center justify-between text-[10px] font-mono">
-                <span className="text-amber-900 font-semibold flex items-center gap-1 font-sans">
-                  ☕ MoALD 2080 Coffee Census:
-                </span>
-                <span className="text-amber-950 font-bold">
-                  {district.coffeeProductionMt} MT • {district.coffeeAreaHa} Ha • {district.coffeeFarmersCount} Farmers ({district.coffeeYieldKgHa} kg/ha)
-                </span>
-              </div>
-            )}
+            {(activeCrop?.id === 'coffee' || (!activeCrop && topOptimal?.crop.id === 'coffee')) &&
+              district.coffeeProductionMt !== undefined && (
+                <div className="bg-amber-50/90 px-2.5 py-1.5 rounded-lg border border-amber-200 flex items-center justify-between text-[10px] font-mono">
+                  <span className="text-amber-900 font-semibold flex items-center gap-1 font-sans">
+                    ☕ MoALD 2080 Coffee Census:
+                  </span>
+                  <span className="text-amber-950 font-bold">
+                    {district.coffeeProductionMt} MT • {district.coffeeAreaHa} Ha • {district.coffeeFarmersCount}{' '}
+                    Farmers ({district.coffeeYieldKgHa} kg/ha)
+                  </span>
+                </div>
+              )}
 
             {/* Feasibility Profile Grid */}
             <div className="grid grid-cols-2 gap-2 text-[11px] font-sans">
@@ -294,7 +288,8 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
                 </div>
                 <div className="text-slate-800 text-[10px] leading-tight font-medium truncate">
                   {district.feasibleCrops && district.feasibleCrops.length > 0
-                    ? district.feasibleCrops.slice(0, 4).join(', ') + (district.feasibleCrops.length > 4 ? ` +${district.feasibleCrops.length - 4}` : '')
+                    ? district.feasibleCrops.slice(0, 4).join(', ') +
+                      (district.feasibleCrops.length > 4 ? ` +${district.feasibleCrops.length - 4}` : '')
                     : 'None documented'}
                 </div>
               </div>
@@ -306,7 +301,8 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
                 </div>
                 <div className="text-slate-800 text-[10px] leading-tight font-medium truncate">
                   {district.feasibleFruits && district.feasibleFruits.length > 0
-                    ? district.feasibleFruits.slice(0, 3).join(', ') + (district.feasibleFruits.length > 3 ? ` +${district.feasibleFruits.length - 3}` : '')
+                    ? district.feasibleFruits.slice(0, 3).join(', ') +
+                      (district.feasibleFruits.length > 3 ? ` +${district.feasibleFruits.length - 3}` : '')
                     : 'None documented'}
                 </div>
               </div>
@@ -318,7 +314,8 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
                 </div>
                 <div className="text-slate-800 text-[10px] leading-tight font-medium truncate">
                   {district.feasibleVegetables && district.feasibleVegetables.length > 0
-                    ? district.feasibleVegetables.slice(0, 3).join(', ') + (district.feasibleVegetables.length > 3 ? ` +${district.feasibleVegetables.length - 3}` : '')
+                    ? district.feasibleVegetables.slice(0, 3).join(', ') +
+                      (district.feasibleVegetables.length > 3 ? ` +${district.feasibleVegetables.length - 3}` : '')
                     : 'None documented'}
                 </div>
               </div>
@@ -330,7 +327,10 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
                 </div>
                 <div className="text-slate-800 text-[10px] leading-tight font-medium truncate">
                   {district.feasibleSpicesCashCrops && district.feasibleSpicesCashCrops.length > 0
-                    ? district.feasibleSpicesCashCrops.slice(0, 3).join(', ') + (district.feasibleSpicesCashCrops.length > 3 ? ` +${district.feasibleSpicesCashCrops.length - 3}` : '')
+                    ? district.feasibleSpicesCashCrops.slice(0, 3).join(', ') +
+                      (district.feasibleSpicesCashCrops.length > 3
+                        ? ` +${district.feasibleSpicesCashCrops.length - 3}`
+                        : '')
                     : 'None documented'}
                 </div>
               </div>
@@ -396,7 +396,8 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
                   {activeHydro.count} Plants ({activeHydro.capacityMW} MW)
                 </span>
                 <span className="text-[10px] text-slate-600 flex items-center gap-1">
-                  <Sun className="w-3 h-3 text-amber-600 inline" /> Solar: <strong className="text-slate-900">{yearlySolar} kWh/m²/d</strong>
+                  <Sun className="w-3 h-3 text-amber-600 inline" /> Solar:{' '}
+                  <strong className="text-slate-900">{yearlySolar} kWh/m²/d</strong>
                 </span>
               </div>
             )}
@@ -408,24 +409,37 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
                   <Sparkles className="w-3 h-3 text-emerald-600" />
                   Soil:
                 </span>
-                <span>pH: <strong className="text-slate-900">{district.baseSoilPh}</strong></span>
-                <span>N: <strong className="text-slate-900">{district.soilNitrogen}%</strong> <span className={`font-semibold ${nStatus.color}`}>({nStatus.label})</span></span>
-                <span>P: <strong className="text-slate-900">{district.soilPhosphorus}</strong> <span className="text-slate-500">kg/ha</span></span>
-                <span>K: <strong className="text-slate-900">{district.soilPotassium}</strong> <span className="text-slate-500">kg/ha</span></span>
+                <span>
+                  pH: <strong className="text-slate-900">{district.baseSoilPh}</strong>
+                </span>
+                <span>
+                  N: <strong className="text-slate-900">{district.soilNitrogen}%</strong>{' '}
+                  <span className={`font-semibold ${nStatus.color}`}>({nStatus.label})</span>
+                </span>
+                <span>
+                  P: <strong className="text-slate-900">{district.soilPhosphorus}</strong>{' '}
+                  <span className="text-slate-500">kg/ha</span>
+                </span>
+                <span>
+                  K: <strong className="text-slate-900">{district.soilPotassium}</strong>{' '}
+                  <span className="text-slate-500">kg/ha</span>
+                </span>
               </div>
             ) : null}
 
             {/* Water Hydrology & GLOF Indicator */}
-            {selectedPillar === 'water' && ((district.hydrologyStationsCount || 0) > 0 || (district.totalLakesCount || 0) > 0) && (
-              <div className="bg-sky-50/90 px-3 py-1.5 rounded-lg border border-sky-200 flex items-center justify-between text-[10px] font-mono">
-                <span className="text-sky-950 font-semibold flex items-center gap-1 font-sans">
-                  💧 Hydrology Network:
-                </span>
-                <span className="text-sky-900 font-bold">
-                  {district.hydrologyStationsCount || 0} DHM Gauges • {district.totalLakesCount || 0} Lakes ({district.glofRiskLevel || 'Low'} GLOF Risk)
-                </span>
-              </div>
-            )}
+            {selectedPillar === 'water' &&
+              ((district.hydrologyStationsCount || 0) > 0 || (district.totalLakesCount || 0) > 0) && (
+                <div className="bg-sky-50/90 px-3 py-1.5 rounded-lg border border-sky-200 flex items-center justify-between text-[10px] font-mono">
+                  <span className="text-sky-950 font-semibold flex items-center gap-1 font-sans">
+                    💧 Hydrology Network:
+                  </span>
+                  <span className="text-sky-900 font-bold">
+                    {district.hydrologyStationsCount || 0} DHM Gauges • {district.totalLakesCount || 0} Lakes (
+                    {district.glofRiskLevel || 'Low'} GLOF Risk)
+                  </span>
+                </div>
+              )}
 
             {/* Socioeconomics Dedicated Labor, Road Density & Demographics View */}
             {selectedPillar === 'socioeconomics' && (
@@ -436,11 +450,11 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
                       🌾
                     </div>
                     <div>
-                      <div className="font-bold text-purple-950 text-[11px]">
-                        Agricultural Field Labor Daily Wage
-                      </div>
+                      <div className="font-bold text-purple-950 text-[11px]">Agricultural Field Labor Daily Wage</div>
                       <div className="text-[10px] text-purple-800">
-                        Market Range: <strong className="font-mono">NPR {district.agriLaborRateRange || '650 - 750'}/day</strong> • {district.agriLaborEcoBelt || district.ecoZone}
+                        Market Range:{' '}
+                        <strong className="font-mono">NPR {district.agriLaborRateRange || '650 - 750'}/day</strong> •{' '}
+                        {district.agriLaborEcoBelt || district.ecoZone}
                       </div>
                     </div>
                   </div>
@@ -448,15 +462,23 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
                     <span className="text-xs px-2 py-0.5 rounded bg-purple-100 border border-purple-300 text-purple-900 font-bold">
                       NPR {district.laborRateNprPerDay}/day
                     </span>
-                    <div className="text-[9px] text-slate-500 mt-0.5">Jilla Dar: NPR {district.agriLaborRateBaselineNpr || district.laborRateNprPerDay}</div>
+                    <div className="text-[9px] text-slate-500 mt-0.5">
+                      Jilla Dar: NPR {district.agriLaborRateBaselineNpr || district.laborRateNprPerDay}
+                    </div>
                   </div>
                 </div>
 
                 {district.roadDensityKmPerKm2 !== undefined && (
                   <div className="bg-purple-50/60 px-3 py-1.5 rounded-lg border border-purple-200 flex items-center justify-between text-[10px] font-mono text-purple-950">
-                    <span>🛣️ Road Density: <strong>{district.roadDensityKmPerKm2} km/km²</strong></span>
-                    <span>🛒 Market Index: <strong>{district.marketAccessIndex || 60}/100</strong></span>
-                    <span>🚛 Freight: <strong>NPR {district.freightLogisticsTariffNprPerTonKm || 20}/t-km</strong></span>
+                    <span>
+                      🛣️ Road Density: <strong>{district.roadDensityKmPerKm2} km/km²</strong>
+                    </span>
+                    <span>
+                      🛒 Market Index: <strong>{district.marketAccessIndex || 60}/100</strong>
+                    </span>
+                    <span>
+                      🚛 Freight: <strong>NPR {district.freightLogisticsTariffNprPerTonKm || 20}/t-km</strong>
+                    </span>
                   </div>
                 )}
               </div>
@@ -467,7 +489,10 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
               <div className="text-[10px] text-slate-600 flex items-center justify-between bg-slate-50 px-2.5 py-1 rounded border border-slate-200">
                 <span className="flex items-center gap-1">
                   <Leaf className="w-3 h-3 text-emerald-600" />
-                  <span>Agricultural Varieties: <strong className="text-slate-800 font-mono">{totalVarietiesCount} Feasible Species</strong></span>
+                  <span>
+                    Agricultural Varieties:{' '}
+                    <strong className="text-slate-800 font-mono">{totalVarietiesCount} Feasible Species</strong>
+                  </span>
                 </span>
                 {district.elevationRange && (
                   <span className="font-mono text-slate-500">{district.elevationRange}m</span>

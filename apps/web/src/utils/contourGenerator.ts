@@ -1,5 +1,6 @@
+import type { GeoJsonObject, Geometry, MultiPolygon, Polygon } from 'geojson';
+
 import { District } from '@wefes/shared-types';
-import { DISTRICT_LANDMARKS } from '../data/districtRealAssets';
 
 export interface ContourLine {
   elevation: number;
@@ -20,36 +21,39 @@ function isPointInRing(pt: [number, number], ring: [number, number][]): boolean 
   for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
     const [yi, xi] = ring[i];
     const [yj, xj] = ring[j];
-    const intersect = ((yi > lat) !== (yj > lat)) && (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi);
+    const intersect = yi > lat !== yj > lat && lng < ((xj - xi) * (lat - yi)) / (yj - yi) + xi;
     if (intersect) inside = !inside;
   }
   return inside;
 }
 
 // Strict point-in-polygon test against GeoJSON Polygon or MultiPolygon
-function isPointInsideDistrict(pt: [number, number], geometry: any): boolean {
-  if (!geometry || !geometry.coordinates) return true;
-  const { type, coordinates } = geometry;
+function isPointInsideDistrict(pt: [number, number], geometry?: Geometry | GeoJsonObject | null): boolean {
+  if (!geometry || !('coordinates' in geometry)) return true;
+  const geom = geometry as Polygon | MultiPolygon;
+  const { type, coordinates } = geom;
 
   if (type === 'Polygon') {
-    if (!coordinates[0] || coordinates[0].length === 0) return true;
-    const outerRing: [number, number][] = coordinates[0].map((c: any) => [c[1], c[0]]);
+    const polyCoords = coordinates as number[][][];
+    if (!polyCoords[0] || polyCoords[0].length === 0) return true;
+    const outerRing: [number, number][] = polyCoords[0].map((c) => [c[1], c[0]]);
     if (!isPointInRing(pt, outerRing)) return false;
 
     // Check inner holes
-    for (let h = 1; h < coordinates.length; h++) {
-      const holeRing: [number, number][] = coordinates[h].map((c: any) => [c[1], c[0]]);
+    for (let h = 1; h < polyCoords.length; h++) {
+      const holeRing: [number, number][] = polyCoords[h].map((c) => [c[1], c[0]]);
       if (isPointInRing(pt, holeRing)) return false;
     }
     return true;
   } else if (type === 'MultiPolygon') {
-    for (const poly of coordinates) {
+    const multiCoords = coordinates as number[][][][];
+    for (const poly of multiCoords) {
       if (!poly[0] || poly[0].length === 0) continue;
-      const outerRing: [number, number][] = poly[0].map((c: any) => [c[1], c[0]]);
+      const outerRing: [number, number][] = poly[0].map((c) => [c[1], c[0]]);
       if (isPointInRing(pt, outerRing)) {
         let inHole = false;
         for (let h = 1; h < poly.length; h++) {
-          const holeRing: [number, number][] = poly[h].map((c: any) => [c[1], c[0]]);
+          const holeRing: [number, number][] = poly[h].map((c) => [c[1], c[0]]);
           if (isPointInRing(pt, holeRing)) {
             inHole = true;
             break;
@@ -60,7 +64,6 @@ function isPointInsideDistrict(pt: [number, number], geometry: any): boolean {
     }
     return false;
   }
-
   return true;
 }
 
@@ -70,37 +73,37 @@ function getElevationColorAndZone(elev: number): { color: string; zone: string; 
     return {
       color: '#10b981', // Emerald
       zone: 'Tropical & Outer Foothills (<1000m)',
-      crops: ['Paddy (Rice)', 'Sugarcane', 'Banana', 'Mustard', 'Maize']
+      crops: ['Paddy (Rice)', 'Sugarcane', 'Banana', 'Mustard', 'Maize'],
     };
   } else if (elev < 1800) {
     return {
       color: '#0284c7', // Sky Blue
       zone: 'Subtropical Mid-Hills (1000–1800m)',
-      crops: ['Arabica Coffee', 'Mandarin Orange', 'Ginger', 'Maize', 'Millet']
+      crops: ['Arabica Coffee', 'Mandarin Orange', 'Ginger', 'Maize', 'Millet'],
     };
   } else if (elev < 2600) {
     return {
       color: '#7c3aed', // Purple
       zone: 'Warm Temperate Montane (1800–2600m)',
-      crops: ['Large Cardamom', 'Orthodox Tea', 'Potato', 'Wheat', 'Off-Season Veg']
+      crops: ['Large Cardamom', 'Orthodox Tea', 'Potato', 'Wheat', 'Off-Season Veg'],
     };
   } else if (elev < 3600) {
     return {
       color: '#d97706', // Amber/Gold
       zone: 'Cool Temperate & Subalpine (2600–3600m)',
-      crops: ['Highland Apple', 'Buckwheat', 'Barley', 'Seed Potato']
+      crops: ['Highland Apple', 'Buckwheat', 'Barley', 'Seed Potato'],
     };
   } else if (elev < 5000) {
     return {
       color: '#ea580c', // Orange
       zone: 'Alpine Rangelands (3600–5000m)',
-      crops: ['Alpine Pasture', 'Yarsagumba / MAPs', 'Highland Buckwheat']
+      crops: ['Alpine Pasture', 'Yarsagumba / MAPs', 'Highland Buckwheat'],
     };
   } else {
     return {
       color: '#dc2626', // Crimson / Snow
       zone: 'Nival Glacial Summit (>5000m)',
-      crops: ['Cryospheric Glacier / Permafrost (Non-Arable)']
+      crops: ['Cryospheric Glacier / Permafrost (Non-Arable)'],
     };
   }
 }
@@ -118,8 +121,8 @@ const GULMI_TOPOGRAPHIC_CONTROL_POINTS: { lat: number; lng: number; elev: number
   { lat: 28.095, lng: 83.175, elev: 1520, weight: 1.5 }, // Dhurkot (Jaisithok ridge)
 
   // Northern Valley (Badigad Khola)
-  { lat: 28.163, lng: 83.250, elev: 780, weight: 2.0 },  // Musikot (Badigad river basin)
-  { lat: 28.190, lng: 83.270, elev: 1100, weight: 1.4 }, // Musikot (Wami high slope)
+  { lat: 28.163, lng: 83.25, elev: 780, weight: 2.0 }, // Musikot (Badigad river basin)
+  { lat: 28.19, lng: 83.27, elev: 1100, weight: 1.4 }, // Musikot (Wami high slope)
 
   // Central Resunga Massif
   { lat: 28.065, lng: 83.272, elev: 2350, weight: 2.4 }, // Resunga Peak
@@ -131,9 +134,9 @@ const GULMI_TOPOGRAPHIC_CONTROL_POINTS: { lat: number; lng: number; elev: number
 
   // Eastern Massif & River Valleys
   { lat: 27.995, lng: 83.475, elev: 2220, weight: 2.0 }, // Satyawati (Thulo Lekh / Lake)
-  { lat: 28.115, lng: 83.450, elev: 1580, weight: 1.5 }, // Chandrakot (Majhuwa)
-  { lat: 28.020, lng: 83.560, elev: 480, weight: 2.2 },  // Kaligandaki Gorge (Eastern river boundary)
-  { lat: 27.935, lng: 83.435, elev: 450, weight: 2.2 },  // Ruru Kshetra (Ridi river confluence)
+  { lat: 28.115, lng: 83.45, elev: 1580, weight: 1.5 }, // Chandrakot (Majhuwa)
+  { lat: 28.02, lng: 83.56, elev: 480, weight: 2.2 }, // Kaligandaki Gorge (Eastern river boundary)
+  { lat: 27.935, lng: 83.435, elev: 450, weight: 2.2 }, // Ruru Kshetra (Ridi river confluence)
 ];
 
 // Evaluate elevation at any (lat, lng) using Inverse Distance Weighted (IDW) interpolation
@@ -156,7 +159,7 @@ function getInterpolatedElevation(lat: number, lng: number): number {
 
   // Micro terrain ripple to produce natural contour shapes
   const microNoise = Math.sin(lat * 120 + lng * 140) * 18 + Math.cos(lat * 80 - lng * 90) * 14;
-  return totalWeight > 0 ? (weightedSum / totalWeight) + microNoise : 1200;
+  return totalWeight > 0 ? weightedSum / totalWeight + microNoise : 1200;
 }
 
 /**
@@ -165,25 +168,30 @@ function getInterpolatedElevation(lat: number, lng: number): number {
  */
 export function generateDistrictContours(
   district: District,
-  featureGeometry?: any,
-  stepMeters: number = 10
+  featureGeometry?: Geometry | GeoJsonObject | null
 ): ContourLine[] {
-  let minLat = 27.91, maxLat = 28.25, minLng = 83.05, maxLng = 83.58;
+  let minLat = 27.91,
+    maxLat = 28.25,
+    minLng = 83.05,
+    maxLng = 83.58;
   let allCoords: [number, number][] = [];
 
-  if (featureGeometry && featureGeometry.coordinates) {
+  if (featureGeometry && 'coordinates' in featureGeometry) {
     try {
-      const extractRings = (coords: any): [number, number][] => {
-        if (typeof coords[0] === 'number') return [[coords[1], coords[0]]];
-        if (typeof coords[0][0] === 'number') return coords.map((c: any) => [c[1], c[0]]);
-        return coords.flatMap(extractRings);
+      type NestedCoords = number[] | NestedCoords[];
+      const extractRings = (coords: NestedCoords): [number, number][] => {
+        if (typeof coords[0] === 'number') return [[coords[1] as number, coords[0] as number]];
+        if (Array.isArray(coords[0]) && typeof coords[0][0] === 'number') {
+          return (coords as number[][]).map((c) => [c[1], c[0]]);
+        }
+        return (coords as NestedCoords[]).flatMap(extractRings);
       };
-      allCoords = extractRings(featureGeometry.coordinates);
+      allCoords = extractRings(featureGeometry.coordinates as NestedCoords);
       if (allCoords.length > 0) {
-        minLat = Math.min(...allCoords.map(p => p[0]));
-        maxLat = Math.max(...allCoords.map(p => p[0]));
-        minLng = Math.min(...allCoords.map(p => p[1]));
-        maxLng = Math.max(...allCoords.map(p => p[1]));
+        minLat = Math.min(...allCoords.map((p) => p[0]));
+        maxLat = Math.max(...allCoords.map((p) => p[0]));
+        minLng = Math.min(...allCoords.map((p) => p[1]));
+        maxLng = Math.max(...allCoords.map((p) => p[1]));
       }
     } catch {
       // fallback
@@ -191,7 +199,7 @@ export function generateDistrictContours(
   }
 
   const contours: ContourLine[] = [];
-  const baseTemp = (district as any).avgTempC ?? 18;
+  const baseTemp = (district as unknown as { avgTempC?: number }).avgTempC ?? 18;
 
   // Grid resolution for Marching Squares
   const gridRows = 48;
@@ -211,9 +219,7 @@ export function generateDistrictContours(
   }
 
   // Contour levels to render across Gulmi (from 500m to 2600m)
-  const targetLevels: number[] = [
-    500, 650, 800, 950, 1100, 1250, 1400, 1550, 1700, 1850, 2000, 2150, 2300, 2450, 2600
-  ];
+  const targetLevels: number[] = [500, 650, 800, 950, 1100, 1250, 1400, 1550, 1700, 1850, 2000, 2150, 2300, 2450, 2600];
 
   for (const targetElev of targetLevels) {
     const isIndex = targetElev % 300 === 0 || targetElev === 500 || targetElev === 2600;

@@ -1,48 +1,29 @@
 import React, { useState } from 'react';
-import { Mountain, Users, Layers, Sprout, Search, Info, ChevronDown, ChevronUp, Globe, Sparkles } from 'lucide-react';
-import { DISTRICT_PALIKAS } from '../../data/districtPalikaAssets';
+
+import { ChevronDown, ChevronUp, Globe, Info, Layers, Mountain, Search, Sparkles, Sprout, Users } from 'lucide-react';
+
+import { DISTRICT_PALIKAS, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 
 interface ExecutiveHeroBannerProps {
   onSearchSelect: (type: 'palika' | 'filter' | 'crop', value: string) => void;
   lang: 'en' | 'np';
   onToggleLang: () => void;
-  activePalikaName?: string | null;
 }
 
-export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
-  onSearchSelect,
-  lang,
-  onToggleLang,
-  activePalikaName
-}) => {
+export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({ onSearchSelect, lang, onToggleLang }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const palikas = DISTRICT_PALIKAS['gulmi'] || [];
 
-  const GULMI_PALIKA_NEPALI: Record<string, string> = {
-    'Resunga': 'रेसुङ्गा',
-    'Musikot': 'मुसिकोट',
-    'Ruru': 'रुरुक्षेत्र',
-    'Satyawati': 'सत्यवती',
-    'Kaligandaki': 'कालीगण्डकी',
-    'Chandrakot': 'चन्द्रकोट',
-    'Chatrakot': 'छत्रकोट',
-    'Gulmidarbar': 'गुल्मीदरबार',
-    'Dhurkot': 'धुर्कोट',
-    'Isma': 'इस्मा',
-    'Malika': 'मालिका',
-    'Madane': 'मदाने',
-  };
-
   const searchOptions = [
     // Palikas
-    ...palikas.map(p => ({
+    ...palikas.map((p) => ({
       type: 'palika' as const,
       label: `${p.name} (${GULMI_PALIKA_NEPALI[p.name] || p.name})`,
       value: p.name,
-      category: 'Palika'
+      category: 'Palika',
     })),
     // Signature Crops
     { type: 'crop' as const, label: '☕ Arabica Coffee (कफी)', value: 'coffee', category: 'Crop' },
@@ -54,16 +35,39 @@ export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
     { type: 'crop' as const, label: '🌿 Large Cardamom (अलैंची)', value: 'cardamom', category: 'Crop' },
     // Key Filters
     { type: 'filter' as const, label: '🌊 Kali Gandaki & River Basins', value: 'river_basins', category: 'Water' },
-    { type: 'filter' as const, label: '💧 Ridge Spring Vulnerability (मुहान सुक्ने)', value: 'spring_vulnerability', category: 'Water' },
+    {
+      type: 'filter' as const,
+      label: '💧 Watershed Spring Depletion (मुहान सुक्ने)',
+      value: 'spring_vulnerability',
+      category: 'Water',
+    },
     { type: 'filter' as const, label: '🧪 Soil pH & Agricultural Lime', value: 'soil_ph', category: 'Soil' },
-    { type: 'filter' as const, label: '⚡ Run-of-River Hydropower Corridors', value: 'hydro_corridor', category: 'Energy' },
-    { type: 'filter' as const, label: '☀️ Ridge Solar Irradiance (NASA POWER)', value: 'solar_irradiance', category: 'Energy' },
-    { type: 'filter' as const, label: '🏛️ Local Governance (2 Municipalities + 10 Rural)', value: 'local_governance', category: 'Governance' },
-    { type: 'filter' as const, label: '🛣️ Road Proximity to Tamghas HQ', value: 'hq_market_proximity', category: 'Transport' },
+    {
+      type: 'filter' as const,
+      label: '⚡ Run-of-River Hydropower Corridors',
+      value: 'hydro_corridor',
+      category: 'Energy',
+    },
+    {
+      type: 'filter' as const,
+      label: '☀️ Solar PV Potential & Tilt (PVOUT & OPTA • Global Solar Atlas)',
+      value: 'solar_irradiance',
+      category: 'Energy',
+    },
+    {
+      type: 'filter' as const,
+      label: '🏛️ Local Governance (Municipalities & Rural Palikas)',
+      value: 'local_governance',
+      category: 'Governance',
+    },
   ];
 
   const filteredOptions = searchQuery.trim()
-    ? searchOptions.filter(o => o.label.toLowerCase().includes(searchQuery.toLowerCase()) || o.value.toLowerCase().includes(searchQuery.toLowerCase()))
+    ? searchOptions.filter(
+        (o) =>
+          o.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          o.value.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     : [];
 
   return (
@@ -86,7 +90,9 @@ export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
             </div>
 
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white font-outfit">
-              {lang === 'np' ? 'गुल्मी जल-ऊर्जा-खाद्य-पारिस्थितिकी (WEFES) नेक्सस प्रणाली' : 'Gulmi Water–Energy–Food–Ecosystem (WEFES) Nexus Platform'}
+              {lang === 'np'
+                ? 'गुल्मी जल-ऊर्जा-खाद्य-पारिस्थितिकी (WEFES) नेक्सस प्रणाली'
+                : 'Gulmi Water–Energy–Food–Ecosystem (WEFES) Nexus Platform'}
             </h1>
             <p className="text-xs text-slate-300 leading-relaxed">
               {lang === 'np'
@@ -104,10 +110,12 @@ export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
                   onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                  placeholder={lang === 'np' ? 'खोज्नुहोस् (उदा: रुरु, कफी, माटो pH)...' : 'Search Palika, Crop, Soil pH, Basin…'}
+                  placeholder={
+                    lang === 'np' ? 'खोज्नुहोस् (उदा: रुरु, कफी, माटो pH)...' : 'Search Palika, Crop, Soil pH, Basin…'
+                  }
                   className="w-full pl-9 pr-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-xs text-white placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-sans shadow-inner"
                 />
               </div>
@@ -125,7 +133,9 @@ export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
                       className="w-full text-left px-3 py-2 hover:bg-emerald-600/30 flex items-center justify-between text-slate-200 hover:text-white transition-colors cursor-pointer"
                     >
                       <span className="font-medium">{opt.label}</span>
-                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">{opt.category}</span>
+                      <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">
+                        {opt.category}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -144,7 +154,7 @@ export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
               </button>
 
               <button
-                onClick={() => setIsDrawerOpen(prev => !prev)}
+                onClick={() => setIsDrawerOpen((prev) => !prev)}
                 className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
               >
                 <Info className="w-3.5 h-3.5" />
@@ -220,7 +230,9 @@ export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
                   <span>{lang === 'np' ? 'कृषि तथा खाद्य सुरक्षा' : 'Food & Agro-Ecological Zoning'}</span>
                 </div>
                 <p className="text-[11px] text-slate-300 leading-relaxed">
-                  Gulmi’s steep terrain supports multi-tier cropping: subtropical fruits and river paddy (&lt;1150m), specialty Arabica coffee and citrus (1150–1550m), and seed potato/buckwheat on high ridges (&gt;1550m).
+                  Gulmi’s steep terrain supports multi-tier cropping: subtropical fruits and river paddy (&lt;1150m),
+                  specialty Arabica coffee and citrus (1150–1550m), and seed potato/buckwheat on high ridges
+                  (&gt;1550m).
                 </p>
               </div>
 
@@ -230,7 +242,8 @@ export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
                   <span>{lang === 'np' ? 'जलस्रोत तथा मुहान संरक्षण' : 'Water & Micro-Catchments'}</span>
                 </div>
                 <p className="text-[11px] text-slate-300 leading-relaxed">
-                  Perennial flows in the Kali Gandaki and Badigad contrast with high ridge spring vulnerability during dry winters (March–May), requiring lift irrigation and recharge ponds.
+                  Perennial flows in the Kali Gandaki and Badigad contrast with high ridge spring vulnerability during
+                  dry winters (March–May), requiring lift irrigation and recharge ponds.
                 </p>
               </div>
 
@@ -240,7 +253,8 @@ export const ExecutiveHeroBanner: React.FC<ExecutiveHeroBannerProps> = ({
                   <span>{lang === 'np' ? 'ऊर्जा र बजार पहुँच' : 'Clean Energy & Economic Corridors'}</span>
                 </div>
                 <p className="text-[11px] text-slate-300 leading-relaxed">
-                  High solar irradiance on south-facing ridges (&gt;5.0 kWh/m²/d) enables solar lift irrigation to pump valley water up to productive mid-hill terraces.
+                  High solar irradiance on south-facing ridges (&gt;5.0 kWh/m²/d) enables solar lift irrigation to pump
+                  valley water up to productive mid-hill terraces.
                 </p>
               </div>
             </div>

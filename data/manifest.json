@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-09-09",
+  "description": "Cryptographic manifest of heavy binary assets excluded from Git tracking.",
+  "assets": {
+    "gulmi_dem_30m.tif": {
+      "destination_path": "data/real/rasters/gulmi_dem_30m.tif",
+      "classification": "real",
+      "source_provider": "OpenTopography / Copernicus GLO-30",
+      "source_url": "https://portal.opentopography.org/API/globaldem?demtype=COP30&south=27.80&north=28.50&west=82.85&east=83.75&outputFormat=GTiff",
+      "sha256": "9ec0e0a16e3ef5ed2a05ecf0013b26ba05c0026f32d96a88be3846423388bd35",
+      "size_bytes": 34540189,
+      "format": "GeoTIFF",
+      "crs": "EPSG:4326"
+    }
+  }
+}

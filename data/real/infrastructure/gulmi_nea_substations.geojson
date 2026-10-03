@@ -1,0 +1,178 @@
+{
+  "type": "FeatureCollection",
+  "name": "gulmi_nea_substations",
+  "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+  "metadata": {
+    "source": "Nepal Electricity Authority (NEA) Transmission Directorate & Gulmi Distribution Center",
+    "project": "Burtibang–Paudi Amarai–Tamghas–Sandhikharka–Gorusinge 132 kV Transmission Line Project",
+    "citations": [
+      "Nepal Energy Forum (June 2024): Sandhikharka-Tamghas 132 kV Transmission Line and Substation Completed",
+      "My Republica (Feb 2026): Two substations in Gulmi mark historic achievement in power transmission",
+      "The Rising Nepal (Sept 2025): 33/11 kV Kisantari Substation Commissioned after a Decade",
+      "Public Procurement Monitoring Office (PPMO) / NEA Gulmi Distribution Center Tender Records (2023-2026)"
+    ],
+    "classification": "OBSERVED REAL",
+    "district": "Gulmi",
+    "province": "Lumbini"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "substation_unaichaur_tamghas",
+      "properties": {
+        "name": "Tamghas Substation (Unaichaur)",
+        "nepaliName": "तम्घास (उनाइचौर) सबस्टेसन",
+        "palika": "Resunga",
+        "ward": 7,
+        "location": "Unaichaur, Resunga-7, Gulmi",
+        "voltage_kV": "132/33/11",
+        "primaryVoltage_kV": 132,
+        "secondaryVoltage_kV": 33,
+        "distributionVoltage_kV": 11,
+        "transformerCapacity_MVA": 46,
+        "transformers": "132/33 kV (30 MVA) + 33/11 kV (16 MVA)",
+        "feeders_33kV": 3,
+        "feeders_11kV": 4,
+        "activeFeeders_33kV": 2,
+        "activeFeeders_11kV": 2,
+        "transmissionCapability_MW": 200,
+        "transmissionLineSource": "Sandhikharka-Tamghas 16 km 132 kV Double-Circuit Line",
+        "operationalStatus": "Operational (Commissioned June 2024)",
+        "role": "District Transmission Backbone & Central Urban Hub",
+        "servicingPalikas": ["Resunga"],
+        "citations": "Nepal Energy Forum (2024); My Republica (2026)",
+        "citationUrl": "http://www.nepalenergyforum.com/sandhikharka-tamghas-132-kv-transmission-line-and-substation-completed-ensuring-reliable-power-supply/"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [83.2685, 28.0645]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "substation_paudi_amarai",
+      "properties": {
+        "name": "Paudi Amarai Substation",
+        "nepaliName": "पौदी अमराई सबस्टेसन",
+        "palika": "Musikot",
+        "ward": 1,
+        "location": "Paudi Arewa / Amarai, Musikot Municipality, Gulmi",
+        "voltage_kV": "132/33/11",
+        "primaryVoltage_kV": 132,
+        "secondaryVoltage_kV": 33,
+        "distributionVoltage_kV": 11,
+        "transformerCapacity_MVA": 30,
+        "transformers": "132/33 kV & 33/11 kV Step-Down Units",
+        "feeders_33kV": 2,
+        "feeders_11kV": 4,
+        "activeFeeders_33kV": 2,
+        "activeFeeders_11kV": 3,
+        "transmissionCapability_MW": 132,
+        "transmissionLineSource": "Tamghas–Paudi Amarai 132 kV Extension Line (towards Burtibang, Baglung)",
+        "operationalStatus": "Operational / Final Commissioning (2025/2026)",
+        "role": "North-Western Regional Hub & Inter-District Link to Baglung",
+        "servicingPalikas": ["Musikot", "Isma"],
+        "citations": "My Republica (2026); The Rising Nepal (2025)",
+        "citationUrl": "https://myrepublica.nagariknetwork.com/news/two-substations-in-gulmi-mark-historic-achievement-in-power-transmission-74-14.html"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [83.2720, 28.1780]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "substation_kisantari",
+      "properties": {
+        "name": "Kisantari Substation",
+        "nepaliName": "किसनतरी सबस्टेसन",
+        "palika": "Malika",
+        "ward": 8,
+        "location": "Kisantari, Marbhung, Malika-8, Gulmi",
+        "voltage_kV": "33/11",
+        "primaryVoltage_kV": 33,
+        "secondaryVoltage_kV": 11,
+        "distributionVoltage_kV": 11,
+        "transformerCapacity_MVA": 3,
+        "transformers": "33/11 kV, 3 MVA Power Transformer",
+        "feeders_33kV": 1,
+        "feeders_11kV": 4,
+        "activeFeeders_33kV": 1,
+        "activeFeeders_11kV": 4,
+        "contractor": "MSA2Jet Infrastructure Pvt. Ltd.",
+        "projectCost_NPR": "Rs. 105 Million (रु १० करोड ५० लाख)",
+        "operationalStatus": "Operational (Commissioned Sept 19, 2025)",
+        "role": "Far-Western Rural Municipal Distribution & Voltage Stabilization Hub",
+        "servicingPalikas": ["Malika", "Madane", "Dhurkot"],
+        "citations": "The Rising Nepal (Sept 19, 2025); Khabarhub (2025)",
+        "citationUrl": "https://risingnepaldaily.com/news/68532"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [83.1480, 28.2100]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "substation_birbas",
+      "properties": {
+        "name": "Birbas Substation",
+        "nepaliName": "बीरबास सबस्टेसन",
+        "palika": "Gulmidarbar",
+        "ward": 4,
+        "location": "Birbas, Gulmidarbar Rural Municipality-4, Gulmi",
+        "voltage_kV": "33/11",
+        "primaryVoltage_kV": 33,
+        "secondaryVoltage_kV": 11,
+        "distributionVoltage_kV": 11,
+        "transformerCapacity_MVA": 8,
+        "transformers": "33/11 kV Step-Down Transformers",
+        "feeders_33kV": 2,
+        "feeders_11kV": 3,
+        "activeFeeders_33kV": 2,
+        "activeFeeders_11kV": 3,
+        "upgradeProject": "Upgrading & Construction of 33kV Line Birbas to Unayachaur Substation (Tender #84576628)",
+        "operationalStatus": "Operational (Upgraded 2023–2026)",
+        "role": "South-Eastern Intake & Interconnection Hub with Butwal/Palpa Lines",
+        "servicingPalikas": ["Gulmidarbar", "Chatrakot"],
+        "citations": "NEA Gulmi Distribution Center Tenders; NepalTender (2023/2026); New Business Age",
+        "citationUrl": "https://www.nepaltender.com/tender/upgrading-and-construction-33kv-line-birbas-33-11kv-substation-unayachaur-132-33kv-substation-50a8974.php"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [83.3320, 28.0420]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "substation_ridi",
+      "properties": {
+        "name": "Ridi Substation",
+        "nepaliName": "रिडी सबस्टेसन",
+        "palika": "Ruru",
+        "ward": 1,
+        "location": "Ridi Bazaar, Ruru Kshetra Rural Municipality-1, Gulmi",
+        "voltage_kV": "33/11",
+        "primaryVoltage_kV": 33,
+        "secondaryVoltage_kV": 11,
+        "distributionVoltage_kV": 11,
+        "transformerCapacity_MVA": 10,
+        "transformers": "33/11 kV Hydropower Interconnect Transformers",
+        "feeders_33kV": 2,
+        "feeders_11kV": 3,
+        "activeFeeders_33kV": 2,
+        "activeFeeders_11kV": 3,
+        "connectedHydro": "Upper Hugdi Hydro (5 MW) & Ridi Khola Hydropower (2.4 MW)",
+        "operationalStatus": "Operational",
+        "role": "Eastern River Corridor & Local Hydro Generation Injection Hub",
+        "servicingPalikas": ["Ruru", "Satyawati", "Kaligandaki"],
+        "citations": "The Rising Nepal (2025); NEA Hydro Interconnection Records",
+        "citationUrl": "https://risingnepaldaily.com/news/68532"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [83.4350, 27.9780]
+      }
+    }
+  ]
+}

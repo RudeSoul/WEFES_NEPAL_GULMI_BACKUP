@@ -7,12 +7,12 @@ import pandas as pd
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 SHAPEFILE_PATH = os.path.join(BASE_DIR, 'data/administrative/local_level.shp')
 CSV_PATH = os.path.join(BASE_DIR, 'mapped_output.csv')
-LOCAL_BODIES_CSV = os.path.join(BASE_DIR, 'data/administrative/local_bodies_district_code.csv')
+LOCAL_BODIES_CSV = os.path.join(BASE_DIR, 'data/real/boundaries/local_bodies_district_code.csv')
 
 OUTPUT_GEOJSON_WEB = os.path.join(BASE_DIR, 'apps/web/public/geojson/gulmi-palikas.json')
-OUTPUT_GEOJSON_DATA = os.path.join(BASE_DIR, 'data/geojson/gulmi-palikas.json')
+OUTPUT_GEOJSON_DATA = os.path.join(BASE_DIR, 'data/real/boundaries/gulmi-palikas.json')
 OUTPUT_SOIL_WEB = os.path.join(BASE_DIR, 'apps/web/public/geojson/gulmi-soil-points.json')
-OUTPUT_SOIL_SRC = os.path.join(BASE_DIR, 'apps/web/src/data/gulmiSoilPoints.json')
+OUTPUT_SOIL_DATA = os.path.join(BASE_DIR, 'data/real/land_and_soil/gulmi_soil_points_81.json')
 
 # 1. Extract Gulmi Palikas from Shapefile
 print("Reading local_level shapefile...")
@@ -101,12 +101,12 @@ for _, row in gulmi_soil_df.iterrows():
         "soilType": str(row['soil_type'])
     })
 
-os.makedirs(os.path.dirname(OUTPUT_SOIL_SRC), exist_ok=True)
+os.makedirs(os.path.dirname(OUTPUT_SOIL_DATA), exist_ok=True)
 
 with open(OUTPUT_SOIL_WEB, 'w', encoding='utf-8') as f:
     json.dump(soil_points, f, indent=2)
 
-with open(OUTPUT_SOIL_SRC, 'w', encoding='utf-8') as f:
+with open(OUTPUT_SOIL_DATA, 'w', encoding='utf-8') as f:
     json.dump(soil_points, f, indent=2)
 
-print(f"Exported {len(soil_points)} Gulmi soil sample points to {OUTPUT_SOIL_SRC}")
+print(f"Exported {len(soil_points)} Gulmi soil sample points to {OUTPUT_SOIL_DATA}")

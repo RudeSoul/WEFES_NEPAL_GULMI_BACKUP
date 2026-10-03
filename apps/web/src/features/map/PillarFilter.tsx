@@ -1,5 +1,7 @@
 import React from 'react';
-import { Droplets, Zap, Sprout, Trees, Coins } from 'lucide-react';
+
+import { Coins, Droplets, Sprout, Trees, Zap } from 'lucide-react';
+
 import { WEFESPillar } from '@wefes/shared-types';
 
 interface PillarFilterProps {
@@ -15,10 +17,7 @@ interface PillarConfig {
   iconColor: string;
 }
 
-export const PillarFilter: React.FC<PillarFilterProps> = ({
-  selectedPillar,
-  onSelectPillar
-}) => {
+export const PillarFilter: React.FC<PillarFilterProps> = ({ selectedPillar, onSelectPillar }) => {
   const pillars: PillarConfig[] = [
     {
       id: 'water',
@@ -54,7 +53,7 @@ export const PillarFilter: React.FC<PillarFilterProps> = ({
       icon: <Coins className="w-4 h-4" />,
       activeClass: 'bg-white text-purple-950 border-purple-300 shadow-2xs font-bold ring-2 ring-purple-500/20',
       iconColor: 'text-purple-600',
-    }
+    },
   ];
 
   return (
@@ -71,7 +70,9 @@ export const PillarFilter: React.FC<PillarFilterProps> = ({
                 : 'border-transparent text-slate-600 hover:text-slate-900 hover:bg-white/80'
             }`}
           >
-            <span className={`flex items-center justify-center shrink-0 ${isSelected ? pillar.iconColor : 'text-slate-400'}`}>
+            <span
+              className={`flex items-center justify-center shrink-0 ${isSelected ? pillar.iconColor : 'text-slate-400'}`}
+            >
               {pillar.icon}
             </span>
             <span>{pillar.label}</span>
@@ -83,4 +84,3 @@ export const PillarFilter: React.FC<PillarFilterProps> = ({
 };
 
 export default PillarFilter;
-

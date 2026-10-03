@@ -1,6 +1,8 @@
 import React from 'react';
-import { Crop } from '@wefes/shared-types';
+
 import { db } from '@wefes/database';
+import { Crop } from '@wefes/shared-types';
+
 import { DistrictPalika } from '../../../data/districtPalikaAssets';
 
 interface PalikaSeasonalRotationsCardProps {
@@ -39,7 +41,8 @@ export const PalikaSeasonalRotationsCard: React.FC<PalikaSeasonalRotationsCardPr
                   ({activePalika.seasonalRotations.barkhe.nepaliName})
                 </div>
                 <div className="text-[10px] text-sky-800 font-mono font-semibold">
-                  Suitability: {activePalika.seasonalRotations.barkhe.score}% ({activePalika.seasonalRotations.barkhe.rating})
+                  Suitability: {activePalika.seasonalRotations.barkhe.score}% (
+                  {activePalika.seasonalRotations.barkhe.rating})
                 </div>
               </div>
             ) : (
@@ -76,7 +79,8 @@ export const PalikaSeasonalRotationsCard: React.FC<PalikaSeasonalRotationsCardPr
                   ({activePalika.seasonalRotations.hiunde.nepaliName})
                 </div>
                 <div className="text-[10px] text-amber-800 font-mono font-semibold">
-                  Suitability: {activePalika.seasonalRotations.hiunde.score}% ({activePalika.seasonalRotations.hiunde.rating})
+                  Suitability: {activePalika.seasonalRotations.hiunde.score}% (
+                  {activePalika.seasonalRotations.hiunde.rating})
                 </div>
               </div>
             ) : (
@@ -113,7 +117,8 @@ export const PalikaSeasonalRotationsCard: React.FC<PalikaSeasonalRotationsCardPr
                   ({activePalika.seasonalRotations.chaite.nepaliName})
                 </div>
                 <div className="text-[10px] text-emerald-800 font-mono font-semibold">
-                  Suitability: {activePalika.seasonalRotations.chaite.score}% ({activePalika.seasonalRotations.chaite.rating})
+                  Suitability: {activePalika.seasonalRotations.chaite.score}% (
+                  {activePalika.seasonalRotations.chaite.rating})
                 </div>
               </div>
             ) : (
@@ -150,7 +155,8 @@ export const PalikaSeasonalRotationsCard: React.FC<PalikaSeasonalRotationsCardPr
                   ({activePalika.seasonalRotations.baahramase.nepaliName})
                 </div>
                 <div className="text-[10px] text-purple-800 font-mono font-semibold">
-                  Suitability: {activePalika.seasonalRotations.baahramase.score}% ({activePalika.seasonalRotations.baahramase.rating})
+                  Suitability: {activePalika.seasonalRotations.baahramase.score}% (
+                  {activePalika.seasonalRotations.baahramase.rating})
                 </div>
               </div>
             ) : (
@@ -160,7 +166,8 @@ export const PalikaSeasonalRotationsCard: React.FC<PalikaSeasonalRotationsCardPr
           {activePalika.seasonalRotations?.baahramase && (
             <button
               onClick={() => {
-                const c = db.getCropById(activePalika.seasonalRotations?.baahramase?.cropId || '') || db.getAllCrops()[0];
+                const c =
+                  db.getCropById(activePalika.seasonalRotations?.baahramase?.cropId || '') || db.getAllCrops()[0];
                 onSelectCrop(c);
               }}
               className="w-full py-1 px-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[10px] font-semibold flex items-center justify-center gap-1 transition-colors cursor-pointer"

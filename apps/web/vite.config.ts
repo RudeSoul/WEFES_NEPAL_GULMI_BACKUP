@@ -16,9 +16,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@data': path.resolve(__dirname, '../../data'),
       '@wefes/shared-types': path.resolve(__dirname, '../../packages/shared-types/src'),
       '@wefes/database': path.resolve(__dirname, '../../packages/database/src'),
-      '@wefes/wefes-engine': path.resolve(__dirname, '../../packages/wefes-engine/src'),
+      '@wefes/wefes-engine': path.resolve(__dirname, '../../engines/nexus/src'),
     },
   },
 });

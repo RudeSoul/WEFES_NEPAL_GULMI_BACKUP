@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+
 import { useMap } from 'react-leaflet';
 
 export const MapGestureHandler: React.FC = () => {
   const map = useMap();
   const [showHint, setShowHint] = useState(false);
-  const timeoutRef = useRef<any>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastZoomTimeRef = useRef<number>(0);
   const deltaAccumulatorRef = useRef<number>(0);
 

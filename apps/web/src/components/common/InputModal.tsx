@@ -1,56 +1,58 @@
 import React, { useState } from 'react';
-import { District, Crop, CropUnit, WEFESOutput } from '@wefes/shared-types';
+
+import { ArrowRight, Calculator, Scale, Sparkles, Sprout, X } from 'lucide-react';
+
+import { CropUnit } from '@wefes/shared-types';
 import { UNIT_CONVERSIONS } from '@wefes/wefes-engine';
 import { calculateHarvestImpact } from '@wefes/wefes-engine';
-import { X, Sprout, Layers, Zap, Droplets, Sparkles, ArrowRight, Scale, Calculator } from 'lucide-react';
+
+import { useNexusStore } from '../../store';
 
 interface InputModalProps {
-  district: District;
-  crop: Crop;
-  isOpen: boolean;
-  onClose: () => void;
-  onRunAnalysis: (output: WEFESOutput) => void;
+  onRunAnalysis?: () => void;
 }
 
-export const InputModal: React.FC<InputModalProps> = ({
-  district,
-  crop,
-  isOpen,
-  onClose,
-  onRunAnalysis
-}) => {
-  const [quantity, setQuantity] = useState<number>(1000);
-  const [unit, setUnit] = useState<CropUnit>(crop.defaultUnit);
+export const InputModal: React.FC<InputModalProps> = ({ onRunAnalysis }) => {
+  const district = useNexusStore((s) => s.selectedDistrict);
+  const crop = useNexusStore((s) => s.selectedCrop);
+  const isOpen = useNexusStore((s) => s.isInputModalOpen);
+  const onClose = useNexusStore((s) => s.closeAnalysisModal);
+  const setAnalysisOutput = useNexusStore((s) => s.setAnalysisOutput);
 
-  if (!isOpen) return null;
+  const [quantity, setQuantity] = useState<number>(1000);
+  const [unit, setUnit] = useState<CropUnit>(crop?.defaultUnit ?? 'kg');
+
+  if (!isOpen || !district || !crop) return null;
 
   // Live instant pre-calculation preview
   const liveOutput = calculateHarvestImpact(district, crop, quantity > 0 ? quantity : 1, unit);
 
   // Quick fill presets depending on base unit
-  const presets = crop.baseUnitName === 'm3'
-    ? [
-        { label: 'Small Scale (10 m³)', value: 10, unit: 'm3' as CropUnit },
-        { label: 'Medium Logging (50 m³)', value: 50, unit: 'm3' as CropUnit },
-        { label: 'Commercial Harvest (250 m³)', value: 250, unit: 'm3' as CropUnit }
-      ]
-    : [
-        { label: 'Smallholder (500 kg)', value: 500, unit: 'kg' as CropUnit },
-        { label: 'Commercial Farm (5,000 kg)', value: 5000, unit: 'kg' as CropUnit },
-        { label: 'Regional Supply (25 MT)', value: 25, unit: 'metric_ton' as CropUnit }
-      ];
+  const presets =
+    crop.baseUnitName === 'm3'
+      ? [
+          { label: 'Small Scale (10 m³)', value: 10, unit: 'm3' as CropUnit },
+          { label: 'Medium Logging (50 m³)', value: 50, unit: 'm3' as CropUnit },
+          { label: 'Commercial Harvest (250 m³)', value: 250, unit: 'm3' as CropUnit },
+        ]
+      : [
+          { label: 'Smallholder (500 kg)', value: 500, unit: 'kg' as CropUnit },
+          { label: 'Commercial Farm (5,000 kg)', value: 5000, unit: 'kg' as CropUnit },
+          { label: 'Regional Supply (25 MT)', value: 25, unit: 'metric_ton' as CropUnit },
+        ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (quantity <= 0) return;
     const result = calculateHarvestImpact(district, crop, quantity, unit);
-    onRunAnalysis(result);
+    setAnalysisOutput(result);
+    onRunAnalysis?.();
+    onClose();
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-200">
       <div className="glass-panel max-w-xl w-full rounded-2xl border border-slate-200 shadow-2xl overflow-hidden relative bg-white">
-        
         {/* Modal Header */}
         <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
           <div className="flex items-center space-x-3">
@@ -78,7 +80,6 @@ export const InputModal: React.FC<InputModalProps> = ({
 
         {/* Modal Form Content */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          
           {/* Quick-Fill Presets */}
           <div>
             <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider block mb-2 font-outfit">
@@ -146,21 +147,29 @@ export const InputModal: React.FC<InputModalProps> = ({
                 <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Live Impact Preview</span>
               </span>
-              <span className="font-mono text-slate-500 text-[11px] font-medium">Base: {liveOutput.baseQuantity.toLocaleString()} {liveOutput.baseUnit}</span>
+              <span className="font-mono text-slate-500 text-[11px] font-medium">
+                Base: {liveOutput.baseQuantity.toLocaleString()} {liveOutput.baseUnit}
+              </span>
             </div>
 
             <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 text-xs font-mono">
               <div className="bg-white p-2.5 rounded-lg border border-sky-200 shadow-2xs">
                 <span className="text-[10px] text-slate-500 block font-sans font-medium">Water</span>
-                <span className="font-extrabold text-sky-700 text-xs">{liveOutput.water.consumptionLiters.toLocaleString()} L</span>
+                <span className="font-extrabold text-sky-700 text-xs">
+                  {liveOutput.water.consumptionLiters.toLocaleString()} L
+                </span>
               </div>
               <div className="bg-white p-2.5 rounded-lg border border-amber-200 shadow-2xs">
                 <span className="text-[10px] text-slate-500 block font-sans font-medium">Energy</span>
-                <span className="font-extrabold text-amber-700 text-xs">{liveOutput.energy.loadKwh.toLocaleString()} kWh</span>
+                <span className="font-extrabold text-amber-700 text-xs">
+                  {liveOutput.energy.loadKwh.toLocaleString()} kWh
+                </span>
               </div>
               <div className="bg-white p-2.5 rounded-lg border border-emerald-200 shadow-2xs">
                 <span className="text-[10px] text-slate-500 block font-sans font-medium">Est. Revenue</span>
-                <span className="font-extrabold text-emerald-700 text-xs">NPR {liveOutput.socioeconomics.grossRevenueNpr.toLocaleString()}</span>
+                <span className="font-extrabold text-emerald-700 text-xs">
+                  NPR {liveOutput.socioeconomics.grossRevenueNpr.toLocaleString()}
+                </span>
               </div>
             </div>
           </div>
@@ -182,7 +191,6 @@ export const InputModal: React.FC<InputModalProps> = ({
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
-
         </form>
       </div>
     </div>

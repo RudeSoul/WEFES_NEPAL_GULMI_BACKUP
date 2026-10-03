@@ -1,6 +1,5 @@
 import { db } from '@wefes/database';
-import { Crop, District } from '@wefes/shared-types';
-import { computeCropSuitability } from '@wefes/wefes-engine';
+import type { Crop } from '@wefes/shared-types';
 
 export class AgronomySoilService {
   public getAllCrops(): Crop[] {

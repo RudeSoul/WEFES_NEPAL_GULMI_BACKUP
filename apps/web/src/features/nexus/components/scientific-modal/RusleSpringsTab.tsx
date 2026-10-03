@@ -1,6 +1,8 @@
 import React from 'react';
-import { DeepNexusAnalysis } from '@wefes/wefes-engine';
+
 import { Mountain, Waves } from 'lucide-react';
+
+import { DeepNexusAnalysis } from '@wefes/wefes-engine';
 
 interface RusleSpringsTabProps {
   deep: DeepNexusAnalysis;
@@ -31,24 +33,35 @@ export const RusleSpringsTab: React.FC<RusleSpringsTabProps> = ({ deep }) => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs">
           <div className="bg-white p-2.5 rounded-lg border border-emerald-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">Annual Soil Loss (A)</div>
-            <div className="text-base font-extrabold text-slate-900 mt-0.5">{rusle.annualSoilLossTonsPerHa} <span className="text-xs font-normal text-slate-500">t/ha/yr</span></div>
+            <div className="text-base font-extrabold text-slate-900 mt-0.5">
+              {rusle.annualSoilLossTonsPerHa} <span className="text-xs font-normal text-slate-500">t/ha/yr</span>
+            </div>
           </div>
           <div className="bg-white p-2.5 rounded-lg border border-emerald-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">Topsoil Preserved</div>
-            <div className="text-base font-extrabold text-emerald-700 mt-0.5">+{rusle.topsoilPreservedTons} <span className="text-xs font-normal text-slate-500">t/ha</span></div>
+            <div className="text-base font-extrabold text-emerald-700 mt-0.5">
+              +{rusle.topsoilPreservedTons} <span className="text-xs font-normal text-slate-500">t/ha</span>
+            </div>
           </div>
           <div className="bg-white p-2.5 rounded-lg border border-emerald-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">Cover Factor (C)</div>
-            <div className="text-base font-extrabold text-blue-800 mt-0.5">{rusle.cropCoverC} <span className="text-xs font-normal text-slate-500">canopy</span></div>
+            <div className="text-base font-extrabold text-blue-800 mt-0.5">
+              {rusle.cropCoverC} <span className="text-xs font-normal text-slate-500">canopy</span>
+            </div>
           </div>
           <div className="bg-white p-2.5 rounded-lg border border-emerald-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">Topsoil Capital Value</div>
-            <div className="text-base font-extrabold text-purple-800 mt-0.5">NPR {rusle.topsoilEconomicValueNpr.toLocaleString()}</div>
+            <div className="text-base font-extrabold text-purple-800 mt-0.5">
+              NPR {rusle.topsoilEconomicValueNpr.toLocaleString()}
+            </div>
           </div>
         </div>
 
         <p className="text-[11px] text-emerald-900/90 font-sans leading-relaxed">
-          <strong>Agronomic Mechanism:</strong> With a canopy cover factor of $C = {rusle.cropCoverC}$, root architecture and vegetative intercept significantly dissipate monsoon raindrop kinetic energy ($R = {rusle.rainfallErosivityR}$), preventing approximately <strong>{rusle.topsoilPreservedTons} tons/ha</strong> of nutrient-rich organic topsoil from washing into river siltation.
+          <strong>Agronomic Mechanism:</strong> With a canopy cover factor of $C = {rusle.cropCoverC}$, root
+          architecture and vegetative intercept significantly dissipate monsoon raindrop kinetic energy ($R ={' '}
+          {rusle.rainfallErosivityR}$), preventing approximately <strong>{rusle.topsoilPreservedTons} tons/ha</strong>{' '}
+          of nutrient-rich organic topsoil from washing into river siltation.
         </p>
       </div>
 
@@ -61,10 +74,14 @@ export const RusleSpringsTab: React.FC<RusleSpringsTabProps> = ({ deep }) => {
               <h4 className="text-xs font-bold text-sky-950 font-outfit">
                 ICIMOD Springshed Hydrogeology & Aquifer Recharge Index
               </h4>
-              <span className="text-[10px] text-sky-800 font-sans">Dying Springs of Nepal's Mid-Hills (Mulpani Restoration)</span>
+              <span className="text-[10px] text-sky-800 font-sans">
+                Dying Springs of Nepal's Mid-Hills (Mulpani Restoration)
+              </span>
             </div>
           </div>
-          <span className={`text-[10px] px-2 py-0.5 rounded-md font-mono font-bold border ${springshed.aquiferRechargeStatus === 'Aquifer Recharging Sponge' ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : 'bg-sky-100 text-sky-900 border-sky-300'}`}>
+          <span
+            className={`text-[10px] px-2 py-0.5 rounded-md font-mono font-bold border ${springshed.aquiferRechargeStatus === 'Aquifer Recharging Sponge' ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : 'bg-sky-100 text-sky-900 border-sky-300'}`}
+          >
             {springshed.aquiferRechargeStatus}
           </span>
         </div>
@@ -72,15 +89,22 @@ export const RusleSpringsTab: React.FC<RusleSpringsTabProps> = ({ deep }) => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-xs">
           <div className="bg-white p-2.5 rounded-lg border border-sky-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">Annual Aquifer Percolation</div>
-            <div className="text-base font-extrabold text-sky-900 mt-0.5">+{springshed.annualPercolationMm} <span className="text-xs font-normal text-slate-500">mm/yr</span></div>
+            <div className="text-base font-extrabold text-sky-900 mt-0.5">
+              +{springshed.annualPercolationMm} <span className="text-xs font-normal text-slate-500">mm/yr</span>
+            </div>
           </div>
           <div className="bg-white p-2.5 rounded-lg border border-sky-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">Recharge Coefficient</div>
-            <div className="text-base font-extrabold text-blue-900 mt-0.5">{springshed.rechargeCoefficient} <span className="text-xs font-normal text-slate-500">ratio</span></div>
+            <div className="text-base font-extrabold text-blue-900 mt-0.5">
+              {springshed.rechargeCoefficient} <span className="text-xs font-normal text-slate-500">ratio</span>
+            </div>
           </div>
           <div className="bg-white p-2.5 rounded-lg border border-sky-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">Drinking Springs Protected</div>
-            <div className="text-base font-extrabold text-emerald-800 mt-0.5">~{springshed.drinkingSpringsProtected} <span className="text-xs font-normal text-slate-500">households</span></div>
+            <div className="text-base font-extrabold text-emerald-800 mt-0.5">
+              ~{springshed.drinkingSpringsProtected}{' '}
+              <span className="text-xs font-normal text-slate-500">households</span>
+            </div>
           </div>
         </div>
 

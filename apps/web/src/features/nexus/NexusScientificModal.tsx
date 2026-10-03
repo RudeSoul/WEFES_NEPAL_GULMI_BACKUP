@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
+
+import { Award, Printer, Scale, X } from 'lucide-react';
+
 import { WEFESOutput } from '@wefes/shared-types';
 import { computeDeepNexusAnalysis, simulateSensitivity } from '@wefes/wefes-engine';
-import { X, Scale, Printer, Award, ArrowUpRight } from 'lucide-react';
-import { MathTab } from './components/scientific-modal/MathTab';
-import { SensitivityTab } from './components/scientific-modal/SensitivityTab';
-import { RusleSpringsTab } from './components/scientific-modal/RusleSpringsTab';
+
 import { GesiTab } from './components/scientific-modal/GesiTab';
-import { PhenologyImportTab } from './components/scientific-modal/PhenologyImportTab';
-import { ShadowSdgTab } from './components/scientific-modal/ShadowSdgTab';
 import { InterventionsTab } from './components/scientific-modal/InterventionsTab';
+import { MathTab } from './components/scientific-modal/MathTab';
+import { PhenologyImportTab } from './components/scientific-modal/PhenologyImportTab';
+import { RusleSpringsTab } from './components/scientific-modal/RusleSpringsTab';
+import { SensitivityTab } from './components/scientific-modal/SensitivityTab';
+import { ShadowSdgTab } from './components/scientific-modal/ShadowSdgTab';
 
 interface NexusScientificModalProps {
   output: WEFESOutput;
@@ -19,11 +22,7 @@ interface NexusScientificModalProps {
 
 type TabType = 'math' | 'sensitivity' | 'rusle_springs' | 'gesi' | 'phenology_import' | 'shadow_sdg' | 'interventions';
 
-export const NexusScientificModal: React.FC<NexusScientificModalProps> = ({
-  output,
-  isOpen,
-  onClose,
-}) => {
+export const NexusScientificModal: React.FC<NexusScientificModalProps> = ({ output, isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<TabType>('math');
 
   // Live Sensitivity Sliders State
@@ -112,7 +111,9 @@ export const NexusScientificModal: React.FC<NexusScientificModalProps> = ({
         {/* Systemic Status Strip */}
         <div className="px-4 sm:px-5 py-2.5 bg-white border-b border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shrink-0">
           <div className="flex items-center gap-2">
-            <span className={`text-xs px-2.5 py-1 rounded-lg border font-bold font-outfit ${systemicState.badgeBg} ${systemicState.color} ${systemicState.badgeBorder}`}>
+            <span
+              className={`text-xs px-2.5 py-1 rounded-lg border font-bold font-outfit ${systemicState.badgeBg} ${systemicState.color} ${systemicState.badgeBorder}`}
+            >
               {systemicState.title}
             </span>
             <span className="text-xs text-slate-600 hidden md:inline truncate max-w-md">
@@ -123,15 +124,26 @@ export const NexusScientificModal: React.FC<NexusScientificModalProps> = ({
           <div className="flex items-center gap-4 shrink-0 font-mono text-xs">
             <div className="text-right">
               <span className="text-[10px] text-slate-500 uppercase block font-sans font-semibold">Nexus Score</span>
-              <span className="text-sm sm:text-base font-extrabold text-emerald-900">{output.nexusBalanceIndex} <span className="text-xs font-normal text-slate-500">/ 100</span></span>
+              <span className="text-sm sm:text-base font-extrabold text-emerald-900">
+                {output.nexusBalanceIndex} <span className="text-xs font-normal text-slate-500">/ 100</span>
+              </span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] text-slate-500 uppercase block font-sans font-semibold">Shannon Entropy (E)</span>
-              <span className="text-sm sm:text-base font-extrabold text-blue-900">{shannonEntropy} <span className="text-xs font-normal text-slate-500">({Math.round(shannonEntropy * 100)}%)</span></span>
+              <span className="text-[10px] text-slate-500 uppercase block font-sans font-semibold">
+                Shannon Entropy (E)
+              </span>
+              <span className="text-sm sm:text-base font-extrabold text-blue-900">
+                {shannonEntropy}{' '}
+                <span className="text-xs font-normal text-slate-500">({Math.round(shannonEntropy * 100)}%)</span>
+              </span>
             </div>
             <div className="text-right hidden sm:block">
-              <span className="text-[10px] text-slate-500 uppercase block font-sans font-semibold">Topsoil Retained</span>
-              <span className="text-sm sm:text-base font-extrabold text-emerald-800">+{rusle.topsoilPreservedTons} t/ha</span>
+              <span className="text-[10px] text-slate-500 uppercase block font-sans font-semibold">
+                Topsoil Retained
+              </span>
+              <span className="text-sm sm:text-base font-extrabold text-emerald-800">
+                +{rusle.topsoilPreservedTons} t/ha
+              </span>
             </div>
           </div>
         </div>
@@ -149,7 +161,7 @@ export const NexusScientificModal: React.FC<NexusScientificModalProps> = ({
           ].map(({ id, label }) => (
             <button
               key={id}
-              onClick={() => setActiveTab(id as any)}
+              onClick={() => setActiveTab(id as TabType)}
               className={`px-3.5 py-2 border-b-2 font-outfit transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === id
                   ? 'border-emerald-600 text-emerald-900 font-bold bg-white rounded-t-xl border-t border-x border-slate-200 shadow-2xs'

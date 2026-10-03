@@ -10,7 +10,9 @@ agronomySoilRouter.get('/crops', (req, res, next) => agronomySoilController.getA
 agronomySoilRouter.get('/crops/:id', (req, res, next) => agronomySoilController.getCropById(req, res, next));
 
 // GET /api/v1/agronomy/suitability/:districtId - Get crop suitability ranking
-agronomySoilRouter.get('/suitability/:districtId', (req, res, next) => agronomySoilController.getSuitability(req, res, next));
+agronomySoilRouter.get('/suitability/:districtId', (req, res, next) =>
+  agronomySoilController.getSuitability(req, res, next)
+);
 
 // GET /api/v1/agronomy/soil/:districtId - Get soil NPK, pH & texture
 agronomySoilRouter.get('/soil/:districtId?', (req, res, next) => agronomySoilController.getSoilProfile(req, res, next));

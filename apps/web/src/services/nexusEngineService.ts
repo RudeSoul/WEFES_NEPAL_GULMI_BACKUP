@@ -1,5 +1,6 @@
+import { CropUnit, ScenarioParameters, WEFESOutput } from '@wefes/shared-types';
+
 import { apiClient, ApiResponse } from './apiClient';
-import { WEFESOutput, ScenarioParameters, CropUnit } from '@wefes/shared-types';
 
 export interface CalculateHarvestPayload {
   districtId: string;
@@ -21,11 +22,19 @@ export const nexusEngineService = {
     return apiClient.post('/api/v1/nexus/calculate', payload);
   },
 
-  simulateScenario: async (baselineOutput: WEFESOutput, parameters: ScenarioParameters): Promise<ApiResponse<WEFESOutput>> => {
+  simulateScenario: async (
+    baselineOutput: WEFESOutput,
+    parameters: ScenarioParameters
+  ): Promise<ApiResponse<WEFESOutput>> => {
     return apiClient.post('/api/v1/nexus/simulate', { baselineOutput, parameters });
   },
 
-  calculateFertilizer: async (districtId: string, cropId: string, harvestQuantityKg: number, palikaName?: string): Promise<ApiResponse> => {
+  calculateFertilizer: async (
+    districtId: string,
+    cropId: string,
+    harvestQuantityKg: number,
+    palikaName?: string
+  ): Promise<ApiResponse> => {
     return apiClient.post('/api/v1/nexus/fertilizer', { districtId, cropId, harvestQuantityKg, palikaName });
   },
 };
