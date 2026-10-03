@@ -55,7 +55,6 @@ import { usePalikaChoropleth } from '../../hooks/usePalikaChoropleth';
 import { fetchGeoJson, getTileUrl } from '../../services/dataClient';
 import { type GeoTiffRasterStats, getGeoTiffZonalStats } from '../../services/geoTiffZonalStats';
 import { useNexusStore } from '../../store';
-import { PalikaHoverCard } from '../palika/PalikaHoverCard';
 
 import { CatchmentsGeoJsonLayer } from './CatchmentsGeoJsonLayer';
 import { MapGestureHandler } from './MapGestureHandler';
@@ -769,13 +768,21 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
     bindSmartTooltip(
       layer,
       `
-      <div style="font-family: sans-serif; font-size: 11px; padding: 3px 5px;">
-        <div style="font-weight: 700; color: #0f172a;">${props.name} (${props.nepaliName || ''})</div>
-        <div style="color: #475569; font-size: 10px;">${props.type || 'Palika'} • ${props.areaSqKm ? `${props.areaSqKm} km²` : 'Gulmi'}</div>
+      <div style="font-family: sans-serif; font-size: 11px; padding: 4px 6px; min-width: 140px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+          <span style="font-weight: 700; color: #0f172a; font-size: 12px;">${props.name}</span>
+          ${props.nepaliName ? `<span style="font-size: 10px; color: #64748b;">${props.nepaliName}</span>` : ''}
+        </div>
+        <div style="color: #64748b; font-size: 9.5px; margin-bottom: 2px;">
+          ${props.type || 'Palika'} • ${props.areaSqKm ? `${props.areaSqKm} km²` : 'Gulmi'}
+        </div>
         ${metricSnippet}
+        <div style="margin-top: 4px; padding-top: 3px; border-top: 1px dashed #cbd5e1; font-size: 9px; color: #059669; font-weight: 500;">
+          👆 Click Palika to open decision support
+        </div>
       </div>
     `,
-      { topThreshold: 150, opacity: 0.95 }
+      { topThreshold: 150, opacity: 0.98 }
     );
 
     layer.on({
@@ -2085,18 +2092,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                 );
               })}
           </MapContainer>
-
-          {/* Palika-Specific Hover Card: Shows strictly when hovering a Palika */}
-          {hoveredPalika && (
-            <PalikaHoverCard
-              palikaProp={hoveredPalika}
-              currentRainMm={currentRainMm}
-              currentTempC={currentTempC}
-              climateMonth={CLI_MONTH}
-              climateMode={CLI_MODE}
-              climateYear={CLI_YEAR}
-            />
-          )}
         </div>
       </div>
 
