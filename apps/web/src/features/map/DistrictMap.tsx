@@ -64,6 +64,7 @@ import { SpatialFlowDirectionOverlay } from './SpatialFlowDirectionOverlay';
 import { SpatialPrecipitationOverlay } from './SpatialPrecipitationOverlay';
 import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
 import { SpatialSettlementDensityOverlay } from './SpatialSettlementDensityOverlay';
+import { SpatialSoilSurfaceOverlay } from './SpatialSoilSurfaceOverlay';
 import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
 import { SubFilterToolbar } from './SubFilterToolbar';
 
@@ -599,6 +600,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
     (subFilters.energySubFilter === 'grid_electrification' || subFilters.energySubFilter === 'grid_reach');
   const isHydroCorridorActive =
     selectedPillar === 'energy' && (!subFilters.energySubFilter || subFilters.energySubFilter === 'hydro_corridor');
+  const isEcosystemHeatmapActive = selectedPillar === 'ecosystem';
   const isLandholdingActive =
     selectedPillar === 'socioeconomics' &&
     (subFilters.socioSubFilter === 'agri_landholding' || subFilters.socioSubFilter === 'landholding');
@@ -664,7 +666,8 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
     isCatchmentsActive ||
     isRiversStreamsActive ||
     isGridSubstationActive ||
-    isHydroCorridorActive;
+    isHydroCorridorActive ||
+    isEcosystemHeatmapActive;
 
   const getPalikaStyle = (feature?: Feature) => {
     const props = feature?.properties;
@@ -680,7 +683,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
               ? '#0ea5e9'
               : isHydroCorridorActive
                 ? '#7c3aed'
-                : '#38bdf8'
+                : isEcosystemHeatmapActive
+                  ? '#10b981'
+                  : '#38bdf8'
           : 'transparent',
         weight: isHovered ? 2.5 : 1.5,
         opacity: 0.95,
@@ -1489,6 +1494,15 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             {/* Continuous Spatial Solar Irradiance Surface (Global Solar Atlas 900m Empirical Grid) */}
             {isSolarGhiActive && geoData && <SpatialSolarSurfaceOverlay geoData={geoData} opacity={0.85} />}
 
+            {/* Continuous Spatial Soil & Ecosystem Heatmap Surface (NARC 100m Soil Grid & 30m DEM) */}
+            {isEcosystemHeatmapActive && geoData && (
+              <SpatialSoilSurfaceOverlay
+                subFilter={subFilters.ecoSubFilter || 'soil_ph'}
+                geoData={geoData}
+                opacity={0.85}
+              />
+            )}
+
             {/* Continuous Spatial Settlement Building Density Heat Wave Overlay (78,934 OSM Building Geometries) */}
             {isLandholdingActive && geoData && (
               <SpatialSettlementDensityOverlay geoData={geoData} bounds={GULMI_BOUNDS} opacity={0.78} />
@@ -1542,7 +1556,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                           ? '#f59e0b'
                           : isGridSubstationActive
                             ? '#0ea5e9'
-                            : '#38bdf8'
+                            : isEcosystemHeatmapActive
+                              ? '#10b981'
+                              : '#38bdf8'
                         : 'transparent',
                       fillOpacity: isHovered ? 0.18 : 0,
                       color: isHovered
