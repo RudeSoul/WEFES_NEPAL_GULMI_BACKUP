@@ -13,7 +13,7 @@ import { ImageOverlay } from 'react-leaflet';
 import { getTileUrl } from '../../services/dataClient';
 
 export type SoilSubFilterType =
-  'soil_ph' | 'soil_nitrogen' | 'soil_phosphorus' | 'soil_potassium' | 'elevation_zones' | string;
+  'soil_ph' | 'soil_nitrogen' | 'soil_phosphorus' | 'soil_potassium' | 'elevation_zones' | 'agroforestry_belt' | string;
 
 interface SpatialSoilSurfaceOverlayProps {
   subFilter: SoilSubFilterType;
@@ -27,53 +27,64 @@ interface ColorStop {
   rgb: [number, number, number];
 }
 
-// Module-level cache for instantaneous switching across subfilters
+// Module-level in-memory cache for 0ms instantaneous subfilter switching
 const soilCacheMap = new Map<string, { url: string; bounds: [[number, number], [number, number]] }>();
 
 // Scientific multi-stop gradient color stops calibrated to official NARC & FAO thresholds
 const COLOR_STOPS: Record<string, ColorStop[]> = {
-  // Soil pH: Strongly Acidic (#ef4444) -> Moderately Acidic (#f59e0b) -> Optimal/Neutral (#10b981) -> Alkaline (#3b82f6)
+  // Soil pH: Strongly Acidic (<5.5, #ef4444) -> Moderately Acidic (5.5-6.0, #f59e0b) -> Neutral/Optimal (6.0-7.2, #10b981) -> Alkaline (>7.2, #3b82f6)
   soil_ph: [
     { val: 4.8, rgb: [239, 68, 68] },
-    { val: 5.3, rgb: [249, 115, 22] },
+    { val: 5.4, rgb: [249, 115, 22] },
     { val: 5.8, rgb: [245, 158, 11] },
     { val: 6.2, rgb: [132, 204, 22] },
     { val: 6.6, rgb: [16, 185, 129] },
     { val: 7.0, rgb: [4, 120, 87] },
     { val: 7.4, rgb: [59, 130, 246] },
   ],
-  // Available Nitrogen (%): Low (<0.10) -> Medium (0.10-0.19) -> High (>=0.20)
+  // Available Nitrogen (%): Low (<0.10, #ef4444) -> Medium (0.10-0.19, #10b981) -> High (>=0.20, #047857)
   soil_nitrogen: [
     { val: 0.05, rgb: [239, 68, 68] },
     { val: 0.09, rgb: [245, 158, 11] },
     { val: 0.13, rgb: [132, 204, 22] },
     { val: 0.17, rgb: [16, 185, 129] },
     { val: 0.22, rgb: [4, 120, 87] },
-    { val: 0.32, rgb: [6, 78, 59] },
+    { val: 0.3, rgb: [6, 78, 59] },
   ],
-  // Available Phosphorus (kg/ha): Low (<15) -> Medium (15-34) -> High (>=35)
+  // Available Phosphorus (kg/ha P2O5): Low (<15, #ef4444) -> Medium (15-34, #38bdf8) -> High (>=35, #0284c7)
   soil_phosphorus: [
     { val: 12, rgb: [239, 68, 68] },
-    { val: 20, rgb: [251, 146, 60] },
+    { val: 18, rgb: [147, 197, 253] },
     { val: 28, rgb: [56, 189, 248] },
     { val: 45, rgb: [2, 132, 199] },
-    { val: 120, rgb: [30, 58, 138] },
+    { val: 90, rgb: [30, 58, 138] },
+    { val: 200, rgb: [15, 23, 42] },
   ],
-  // Available Potassium (kg/ha): Low (<110) -> Medium (110-179) -> High (>=180)
+  // Available Potassium (kg/ha K2O): Low (<110, #ef4444) -> Medium (110-179, #38bdf8) -> High (>=180, #0284c7)
   soil_potassium: [
     { val: 90, rgb: [239, 68, 68] },
-    { val: 125, rgb: [251, 146, 60] },
-    { val: 160, rgb: [56, 189, 248] },
-    { val: 220, rgb: [2, 132, 199] },
-    { val: 380, rgb: [30, 58, 138] },
+    { val: 120, rgb: [147, 197, 253] },
+    { val: 155, rgb: [56, 189, 248] },
+    { val: 210, rgb: [2, 132, 199] },
+    { val: 320, rgb: [30, 58, 138] },
+    { val: 500, rgb: [15, 23, 42] },
   ],
-  // Elevation Tiers: Subtropical Valley -> Lower Hill -> Mid-Hill -> Alpine Ridge
+  // Elevation Tiers (AMSL): River Valleys (<1100m, #10b981) -> Mid-Hills (1100-1450m, #0ea5e9) -> Cool Temperate (1450-1700m, #7c3aed) -> Alpine Ridge (>1700m, #4c1d95)
   elevation_zones: [
-    { val: 550, rgb: [2, 132, 199] },
-    { val: 850, rgb: [16, 185, 129] },
-    { val: 1250, rgb: [245, 158, 11] },
-    { val: 1750, rgb: [124, 58, 237] },
-    { val: 2400, rgb: [76, 29, 149] },
+    { val: 600, rgb: [16, 185, 129] },
+    { val: 1000, rgb: [14, 165, 233] },
+    { val: 1350, rgb: [99, 102, 241] },
+    { val: 1650, rgb: [124, 58, 237] },
+    { val: 2200, rgb: [76, 29, 149] },
+  ],
+  // Community Forestry & Canopy Cover (%): Lowlands (<25%, #ef4444) -> Terraces (25-39%, #f59e0b) -> Agroforestry (40-59%, #10b981) -> Forest Sanctuary (>=60%, #047857)
+  agroforestry_belt: [
+    { val: 20, rgb: [239, 68, 68] },
+    { val: 28, rgb: [245, 158, 11] },
+    { val: 38, rgb: [234, 179, 8] },
+    { val: 48, rgb: [16, 185, 129] },
+    { val: 62, rgb: [4, 120, 87] },
+    { val: 72, rgb: [6, 78, 59] },
   ],
 };
 
@@ -99,7 +110,7 @@ function interpolateColor(val: number, stops: ColorStop[]): [number, number, num
 
 export const SpatialSoilSurfaceOverlay: React.FC<SpatialSoilSurfaceOverlayProps> = ({
   subFilter,
-  opacity = 0.85,
+  opacity = 0.88,
   pane = 'rainfallPane',
   geoData,
 }) => {
@@ -108,7 +119,17 @@ export const SpatialSoilSurfaceOverlay: React.FC<SpatialSoilSurfaceOverlayProps>
 
   useEffect(() => {
     const activeKey =
-      subFilter === 'elevation_zones' || subFilter === 'agroforestry_belt' ? 'elevation_zones' : subFilter;
+      subFilter === 'agroforestry_belt'
+        ? 'agroforestry_belt'
+        : subFilter === 'elevation_zones'
+          ? 'elevation_zones'
+          : subFilter === 'soil_nitrogen'
+            ? 'soil_nitrogen'
+            : subFilter === 'soil_phosphorus'
+              ? 'soil_phosphorus'
+              : subFilter === 'soil_potassium'
+                ? 'soil_potassium'
+                : 'soil_ph';
 
     const cacheKey = `${activeKey}_${geoData ? 'clipped' : 'raw'}`;
     const cached = soilCacheMap.get(cacheKey);
@@ -122,7 +143,7 @@ export const SpatialSoilSurfaceOverlay: React.FC<SpatialSoilSurfaceOverlayProps>
 
     async function loadRaster() {
       try {
-        const tifName = activeKey === 'elevation_zones' ? 'elevation_zones.tif' : `${activeKey}.tif`;
+        const tifName = `${activeKey}.tif`;
         const response = await fetch(getTileUrl(tifName));
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status} for ${tifName}`);
         const arrayBuffer = await response.arrayBuffer();
@@ -154,12 +175,13 @@ export const SpatialSoilSurfaceOverlay: React.FC<SpatialSoilSurfaceOverlayProps>
           const val = Number(rasterData[i]);
           const pIdx = i * 4;
 
-          // NoData check
-          if (isNaN(val) || val <= -9000 || val === 0) {
-            pixels[pIdx] = 0;
-            pixels[pIdx + 1] = 0;
-            pixels[pIdx + 2] = 0;
-            pixels[pIdx + 3] = 0;
+          // Out-of-bounds or nodata fallback
+          if (isNaN(val) || val <= -9000) {
+            const fallbackRgb = stops[1]?.rgb || [16, 185, 129];
+            pixels[pIdx] = fallbackRgb[0];
+            pixels[pIdx + 1] = fallbackRgb[1];
+            pixels[pIdx + 2] = fallbackRgb[2];
+            pixels[pIdx + 3] = 235;
             continue;
           }
 
@@ -167,14 +189,14 @@ export const SpatialSoilSurfaceOverlay: React.FC<SpatialSoilSurfaceOverlayProps>
           pixels[pIdx] = r;
           pixels[pIdx + 1] = g;
           pixels[pIdx + 2] = b;
-          pixels[pIdx + 3] = 230;
+          pixels[pIdx + 3] = 235;
         }
 
         tempCtx.putImageData(imgData, 0, 0);
 
         // Smooth high-resolution upscaling (interpolated canvas)
-        const renderWidth = Math.max(width * 2, 280);
-        const renderHeight = Math.max(height * 2, 260);
+        const renderWidth = Math.max(width * 2, 400);
+        const renderHeight = Math.max(height * 2, 380);
 
         const canvas = document.createElement('canvas');
         canvas.width = renderWidth;
