@@ -43,25 +43,12 @@ function getGhiRgb(val: number): [number, number, number] {
   return last.rgb;
 }
 
-// Ray-casting point-in-polygon algorithm for boundary clipping
-function isPointInPolygon(point: [number, number], vs: number[][][]): boolean {
-  const x = point[0]; // lng
-  const y = point[1]; // lat
-  let inside = false;
-
-  for (const ring of vs) {
-    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-      const xi = ring[i][0];
-      const yi = ring[i][1];
-      const xj = ring[j][0];
-      const yj = ring[j][1];
-
-      const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
-      if (intersect) inside = !inside;
-    }
-  }
-  return inside;
-}
+// Module-level in-memory cache for instant switching
+let cachedSolarOverlay: {
+  dataUrl: string;
+  bounds: [[number, number], [number, number]];
+} | null = null;
+let cachedGeoDataRef: GeoJsonObject | null = null;
 
 import type { GeoJsonObject } from 'geojson';
 
@@ -73,6 +60,10 @@ interface SpatialSolarSurfaceOverlayProps {
 export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProps> = ({ geoData, opacity = 0.88 }) => {
   const overlay = useMemo(() => {
     if (typeof window === 'undefined' || typeof document === 'undefined') return null;
+
+    if (cachedSolarOverlay && cachedGeoDataRef === geoData) {
+      return cachedSolarOverlay;
+    }
 
     const { rows, cols, grid, lat_max, lat_min, lon_min, lon_max, step } = ghiGridData as {
       rows: number;
@@ -133,13 +124,13 @@ export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProp
     const canvasWidth = colsCount * scale;
     const canvasHeight = rowsCount * scale;
 
-    const canvas = document.createElement('canvas');
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvasWidth;
+    tempCanvas.height = canvasHeight;
+    const tempCtx = tempCanvas.getContext('2d');
+    if (!tempCtx) return null;
 
-    const imgData = ctx.createImageData(canvasWidth, canvasHeight);
+    const imgData = tempCtx.createImageData(canvasWidth, canvasHeight);
     const data = imgData.data;
 
     // Fast bilinear interpolation with boundary gap fill
@@ -150,15 +141,6 @@ export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProp
       for (let px = 0; px < canvasWidth; px++) {
         const lng = canvasLonMin + (px / (canvasWidth - 1)) * (canvasLonMax - canvasLonMin);
         const pixelIdx = (py * canvasWidth + px) * 4;
-
-        // Clip strictly outside Gulmi district border
-        if (rings.length > 0 && !isPointInPolygon([lng, lat], rings)) {
-          data[pixelIdx] = 0;
-          data[pixelIdx + 1] = 0;
-          data[pixelIdx + 2] = 0;
-          data[pixelIdx + 3] = 0;
-          continue;
-        }
 
         const cFloat = (lng - lon_min) / step;
 
@@ -231,14 +213,46 @@ export const SpatialSolarSurfaceOverlay: React.FC<SpatialSolarSurfaceOverlayProp
       }
     }
 
-    ctx.putImageData(imgData, 0, 0);
-    return {
+    tempCtx.putImageData(imgData, 0, 0);
+
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+
+    if (rings.length > 0) {
+      ctx.save();
+      ctx.beginPath();
+      for (const ring of rings) {
+        for (let i = 0; i < ring.length; i++) {
+          const lng = ring[i][0];
+          const lat = ring[i][1];
+          const px = ((lng - canvasLonMin) / (canvasLonMax - canvasLonMin)) * (canvasWidth - 1);
+          const py = ((canvasLatMax - lat) / (canvasLatMax - canvasLatMin)) * (canvasHeight - 1);
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+      }
+      ctx.clip('evenodd');
+      ctx.drawImage(tempCanvas, 0, 0);
+      ctx.restore();
+    } else {
+      ctx.drawImage(tempCanvas, 0, 0);
+    }
+
+    const result = {
       dataUrl: canvas.toDataURL('image/png'),
       bounds: [
         [canvasLatMin, canvasLonMin],
         [canvasLatMax, canvasLonMax],
       ] as [[number, number], [number, number]],
     };
+
+    cachedSolarOverlay = result;
+    cachedGeoDataRef = geoData ?? null;
+    return result;
   }, [geoData]);
 
   if (!overlay) return null;
