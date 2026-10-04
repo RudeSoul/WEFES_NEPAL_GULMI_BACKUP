@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 
 import type { GeoJsonObject, Position } from 'geojson';
 import { fromArrayBuffer } from 'geotiff';
-import { ImageOverlay } from 'react-leaflet';
+import { ImageOverlay, useMap } from 'react-leaflet';
 
 import { getTileUrl } from '../../services/dataClient';
 
@@ -111,9 +111,10 @@ function interpolateColor(val: number, stops: ColorStop[]): [number, number, num
 export const SpatialSoilSurfaceOverlay: React.FC<SpatialSoilSurfaceOverlayProps> = ({
   subFilter,
   opacity = 0.88,
-  pane = 'rainfallPane',
+  pane = 'overlayPane',
   geoData,
 }) => {
+  const map = useMap();
   const [dataUrl, setDataUrl] = useState<string | null>(null);
   const [bounds, setBounds] = useState<[[number, number], [number, number]] | null>(null);
 
@@ -207,7 +208,7 @@ export const SpatialSoilSurfaceOverlay: React.FC<SpatialSoilSurfaceOverlayProps>
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
 
-        // Clip strictly within Gulmi boundary if geoData is provided
+        // Clip strictly within boundary if geoData is provided
         if (geoData) {
           const [minLng, minLat, maxLng, maxLat] = bbox;
           const lngSpan = maxLng - minLng;
@@ -232,22 +233,41 @@ export const SpatialSoilSurfaceOverlay: React.FC<SpatialSoilSurfaceOverlayProps>
             geometry?: { type: string; coordinates: unknown };
           };
 
+          let hasDrawn = false;
+          const geoms: Array<{ type: string; coordinates: unknown }> = [];
+
           if (fc.features && Array.isArray(fc.features)) {
             for (const feat of fc.features) {
-              const geom = feat.geometry;
-              if (geom?.type === 'Polygon' && Array.isArray(geom.coordinates)) {
-                for (const ring of geom.coordinates as number[][][]) drawRing(ring);
-              } else if (geom?.type === 'MultiPolygon' && Array.isArray(geom.coordinates)) {
-                for (const poly of geom.coordinates as number[][][][]) {
-                  for (const ring of poly) drawRing(ring);
+              if (feat?.geometry) geoms.push(feat.geometry);
+            }
+          } else if (fc.geometry) {
+            geoms.push(fc.geometry);
+          }
+
+          for (const geom of geoms) {
+            if (geom?.type === 'Polygon' && Array.isArray(geom.coordinates)) {
+              for (const ring of geom.coordinates as number[][][]) {
+                drawRing(ring);
+                hasDrawn = true;
+              }
+            } else if (geom?.type === 'MultiPolygon' && Array.isArray(geom.coordinates)) {
+              for (const poly of geom.coordinates as number[][][][]) {
+                for (const ring of poly) {
+                  drawRing(ring);
+                  hasDrawn = true;
                 }
               }
             }
           }
 
-          ctx.clip('evenodd');
-          ctx.drawImage(tempCanvas, 0, 0, renderWidth, renderHeight);
-          ctx.restore();
+          if (hasDrawn) {
+            ctx.clip('evenodd');
+            ctx.drawImage(tempCanvas, 0, 0, renderWidth, renderHeight);
+            ctx.restore();
+          } else {
+            ctx.restore();
+            ctx.drawImage(tempCanvas, 0, 0, renderWidth, renderHeight);
+          }
         } else {
           ctx.drawImage(tempCanvas, 0, 0, renderWidth, renderHeight);
         }
@@ -273,5 +293,7 @@ export const SpatialSoilSurfaceOverlay: React.FC<SpatialSoilSurfaceOverlayProps>
 
   if (!dataUrl || !bounds) return null;
 
-  return <ImageOverlay bounds={bounds} url={dataUrl} opacity={opacity} pane={pane} zIndex={330} />;
+  const targetPane = pane && map?.getPane && map.getPane(pane) ? pane : 'overlayPane';
+
+  return <ImageOverlay bounds={bounds} url={dataUrl} opacity={opacity} pane={targetPane} zIndex={330} />;
 };
