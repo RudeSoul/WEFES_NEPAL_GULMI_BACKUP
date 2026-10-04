@@ -185,5 +185,3 @@ export const Latex: React.FC<LatexProps> = ({ math, children, block = false, cla
 
   return null;
 };
-
-export default Latex;
