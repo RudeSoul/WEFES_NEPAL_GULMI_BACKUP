@@ -79,9 +79,39 @@ function parseMixedContent(text: string): React.ReactNode[] {
 }
 
 /**
+ * Recursively scans React children nodes (strings, arrays, React elements).
+ * Any string containing $...$ or $$...$$ delimiters is parsed into KaTeX nodes.
+ */
+function processChildren(node: React.ReactNode): React.ReactNode {
+  if (node === null || node === undefined || typeof node === 'boolean' || typeof node === 'number') {
+    return node;
+  }
+  if (typeof node === 'string') {
+    if (/\$\$[\s\S]+?\$\$|\$[^$]+\$/.test(node)) {
+      return parseMixedContent(node);
+    }
+    return node;
+  }
+  if (Array.isArray(node)) {
+    return React.Children.map(node, (child) => processChildren(child));
+  }
+  if (React.isValidElement(node)) {
+    const props = node.props as { children?: React.ReactNode };
+    if (props && props.children !== undefined) {
+      return React.cloneElement(node, {
+        ...props,
+        children: processChildren(props.children),
+      });
+    }
+    return node;
+  }
+  return node;
+}
+
+/**
  * Latex Component
  * Renders LaTeX mathematical formulas using KaTeX.
- * Supports inline/block math, pure math syntax, and mixed text with $...$ delimiters.
+ * Supports inline/block math, pure math syntax, and mixed text/JSX with $...$ delimiters.
  */
 export const Latex: React.FC<LatexProps> = ({ math, children, block = false, className = '' }) => {
   // If math prop is explicitly provided, render pure math formula
@@ -115,9 +145,7 @@ export const Latex: React.FC<LatexProps> = ({ math, children, block = false, cla
     const hasDelimiters = /\$\$[\s\S]+?\$\$|\$[^$]+\$/.test(children);
 
     if (hasDelimiters) {
-      // No hook here: parse directly because hooks cannot be called conditionally.
       const parsed = parseMixedContent(children);
-
       return <span className={className}>{parsed}</span>;
     }
 
@@ -146,8 +174,16 @@ export const Latex: React.FC<LatexProps> = ({ math, children, block = false, cla
     }
   }
 
-  // Fallback for non-string children
-  return <span className={className}>{children}</span>;
+  // If children contains elements, arrays, or fragments, recursively process mixed delimiters
+  if (children !== undefined && children !== null) {
+    const processed = processChildren(children);
+    if (block) {
+      return <div className={`my-2 text-center font-normal ${className}`}>{processed}</div>;
+    }
+    return <span className={className}>{processed}</span>;
+  }
+
+  return null;
 };
 
 export default Latex;

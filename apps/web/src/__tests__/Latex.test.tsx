@@ -24,6 +24,20 @@ describe('Latex component', () => {
     expect(html).toContain('crop demand');
   });
 
+  it('renders mixed React elements containing $inline$ math delimiters', () => {
+    const html = renderToString(
+      <Latex>
+        <strong>Stage 1:</strong> Area-weighted precipitation baseline ($P$), representative composite crop
+        evapotranspiration ($ET_c$), and net irrigation requirement for <strong>Madane</strong> (1750m ASL · High-Ridge
+        Skeletal Silt-Loam).
+      </Latex>
+    );
+    expect(html).toContain('<strong>Stage 1:</strong>');
+    expect(html).toContain('<strong>Madane</strong>');
+    expect(html).toContain('katex');
+    expect(html).toContain('High-Ridge');
+  });
+
   it('renders block mode when requested', () => {
     const html = renderToString(<Latex math="A = R \cdot K \cdot LS \cdot C \cdot P" block />);
     expect(html).toContain('katex-display');
