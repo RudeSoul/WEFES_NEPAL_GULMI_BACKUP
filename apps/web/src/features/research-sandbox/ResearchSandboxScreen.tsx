@@ -16,6 +16,8 @@ import {
 
 import { WEFESOutput } from '@wefes/shared-types';
 
+import { Latex } from '@/components/common';
+
 interface ResearchSandboxScreenProps {
   output?: WEFESOutput | null;
   onBackToAnalysis: () => void;
@@ -255,9 +257,11 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                 Live Parameter Override Sandbox (v2.0 Preview):
               </strong>
               <p className="text-purple-800 font-sans mt-0.5 leading-relaxed">
-                In Version 2.0, researchers will not be locked into default national averages. You will be able to
-                customize empirical boundary constants, adjust transpiration coefficients ($K_c$), and simulate new seed
-                varietals directly in the browser using WebAssembly.
+                <Latex>
+                  In Version 2.0, researchers will not be locked into default national averages. You will be able to
+                  customize empirical boundary constants, adjust transpiration coefficients ($K_c$), and simulate new
+                  seed varietals directly in the browser using WebAssembly.
+                </Latex>
               </p>
             </div>
           </div>
@@ -325,15 +329,21 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                 </div>
 
                 {/* Mathematical Equation Card */}
-                <div className="p-4 bg-slate-900 text-emerald-400 rounded-2xl font-mono text-xs sm:text-sm overflow-x-auto shadow-inner text-center">
-                  ET₀ = [ 0.408·Δ·(Rₙ - G) + γ·(900 / (T + 273))·u₂·(eₛ - eₐ) ] / [ Δ + γ·(1 + 0.34·u₂) ]
+                <div className="p-4 bg-slate-900 text-emerald-400 rounded-2xl overflow-x-auto shadow-inner text-center">
+                  <Latex
+                    math="\mathrm{ET}_0 = \frac{0.408 \Delta (R_n - G) + \gamma \frac{900}{T + 273} u_2 (e_s - e_a)}{\Delta + \gamma (1 + 0.34 u_2)}"
+                    block
+                  />
                 </div>
 
                 {/* Interactive Slider Overrides */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="font-bold text-slate-800 font-sans">Canopy Surface Albedo (α):</span>
+                      <span className="font-bold text-slate-800 font-sans">
+                        Canopy Surface Albedo (<Latex math="\alpha" />
+                        ):
+                      </span>
                       <span className="font-mono font-bold text-emerald-700">{penmanAlbedo}</span>
                     </div>
                     <input
@@ -354,7 +364,10 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
 
                   <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="font-bold text-slate-800 font-sans">Mid-Season Crop Coefficient (K_c):</span>
+                      <span className="font-bold text-slate-800 font-sans">
+                        Mid-Season Crop Coefficient (<Latex math="K_c" />
+                        ):
+                      </span>
                       <span className="font-mono font-bold text-blue-700">{penmanKc}x</span>
                     </div>
                     <input
@@ -378,10 +391,14 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                 <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
                   <div>
                     <span className="text-emerald-950 font-bold font-sans block">
-                      Simulated Daily Crop Water Demand (ET_c):
+                      Simulated Daily Crop Water Demand (<Latex math="\mathrm{ET}_c" />
+                      ):
                     </span>
                     <span className="text-emerald-800 text-[11px] font-sans">
-                      ET_c = {penmanKc} × ET₀(α = {penmanAlbedo}) → Recalculated live in WebAssembly memory
+                      <Latex>
+                        $\mathrm{ET}_c = {penmanKc} \times \mathrm{ET}_0(\alpha = {penmanAlbedo})$ → Recalculated live
+                        in WebAssembly memory
+                      </Latex>
                     </span>
                   </div>
                   <div className="text-right shrink-0">
@@ -410,14 +427,18 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                   </span>
                 </div>
 
-                <div className="p-4 bg-slate-900 text-purple-300 rounded-2xl font-mono text-xs sm:text-sm overflow-x-auto shadow-inner text-center">
-                  Yield_N = a + [ d·(U_N - r) / (1 + b·(U_N - r)) ] where U_N = Soil_Supply_N + (App_N · RE_N)
+                <div className="p-4 bg-slate-900 text-purple-300 rounded-2xl overflow-x-auto shadow-inner text-center">
+                  <Latex
+                    math="Y_N = a + \frac{d(U_N - r)}{1 + b(U_N - r)} \quad \text{where} \quad U_N = S_N + (A_N \cdot \mathrm{RE}_N)"
+                    block
+                  />
                 </div>
 
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
                   <div className="flex justify-between items-center text-xs">
                     <span className="font-bold text-slate-800 font-sans">
-                      Apparent Nitrogen Recovery Fraction (RE_N):
+                      Apparent Nitrogen Recovery Fraction (<Latex math="\mathrm{RE}_N" />
+                      ):
                     </span>
                     <span className="font-mono font-bold text-purple-700">
                       {(queftsRecoveryFraction * 100).toFixed(0)}%
@@ -473,13 +494,19 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                   </span>
                 </div>
 
-                <div className="p-4 bg-slate-900 text-teal-300 rounded-2xl font-mono text-xs sm:text-sm overflow-x-auto shadow-inner text-center">
-                  Biomass (B) = WP* · ∑ [ Tr_i / ET₀_i ] · K_s,i · Harvest_Index (HI₀)
+                <div className="p-4 bg-slate-900 text-teal-300 rounded-2xl overflow-x-auto shadow-inner text-center">
+                  <Latex
+                    math="B = \mathrm{WP}^* \cdot \sum \left( \frac{\mathrm{Tr}_i}{\mathrm{ET}_{0,i}} \right) \cdot K_{s,i} \cdot \mathrm{HI}_0"
+                    block
+                  />
                 </div>
 
                 <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="font-bold text-slate-800 font-sans">Normalized Water Productivity (WP*):</span>
+                    <span className="font-bold text-slate-800 font-sans">
+                      Normalized Water Productivity (<Latex math="\mathrm{WP}^*" />
+                      ):
+                    </span>
                     <span className="font-mono font-bold text-teal-700">{aquacropWpStar} g/m²</span>
                   </div>
                   <input
@@ -516,8 +543,11 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                   </span>
                 </div>
 
-                <div className="p-4 bg-slate-900 text-amber-300 rounded-2xl font-mono text-xs sm:text-sm overflow-x-auto shadow-inner text-center">
-                  EF_CH₄ = [ GE · (Y_m / 100) · 365 ] / 55.65 MJ/kg CH₄
+                <div className="p-4 bg-slate-900 text-amber-300 rounded-2xl overflow-x-auto shadow-inner text-center">
+                  <Latex
+                    math="\mathrm{EF}_{\mathrm{CH}_4} = \frac{\mathrm{GE} \cdot (Y_m / 100) \cdot 365}{55.65} \quad (\text{MJ/kg CH}_4)"
+                    block
+                  />
                 </div>
               </div>
             )}

@@ -61,6 +61,8 @@ import { SunburstWaterCarbon } from '../../components/charts/SunburstWaterCarbon
 import { CircularBioeconomyCockpit } from './CircularBioeconomyCockpit';
 import { PalikaFertilizerCockpit } from './PalikaFertilizerCockpit';
 
+import { Latex } from '@/components/common';
+
 interface ScientificDossierScreenProps {
   output: WEFESOutput;
   onBackToAnalysis: () => void;
@@ -1411,9 +1413,11 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
                       </span>
                     </div>
                     <p className="text-slate-700 font-sans leading-relaxed">
-                      Untreated paddy straw has poor crude protein ($3.5\%$) and low digestibility ($42\%$). Treating
-                      straw with $4\%$ urea under anaerobic conditions dramatically improves rumen microbial
-                      fermentation and prevents seasonal milk drops during dry winter months.
+                      <Latex>
+                        Untreated paddy straw has poor crude protein ($3.5\%$) and low digestibility ($42\%$). Treating
+                        straw with $4\%$ urea under anaerobic conditions dramatically improves rumen microbial
+                        fermentation and prevents seasonal milk drops during dry winter months.
+                      </Latex>
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono pt-1">
                       <div className="p-2.5 bg-white rounded-xl border border-amber-200">
