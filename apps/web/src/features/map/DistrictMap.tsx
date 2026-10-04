@@ -41,7 +41,7 @@ import {
   Wind,
   Zap,
 } from 'lucide-react';
-import { CircleMarker, GeoJSON, MapContainer, Marker, TileLayer, Tooltip, useMap } from 'react-leaflet';
+import { CircleMarker, GeoJSON, MapContainer, Marker, TileLayer, Tooltip, useMap, ZoomControl } from 'react-leaflet';
 
 import { db } from '@wefes/database';
 import { District, SUBFILTER_LEGENDS, WEFESPillar } from '@wefes/shared-types';
@@ -58,6 +58,7 @@ import { useNexusStore } from '../../store';
 
 import { CatchmentsGeoJsonLayer } from './CatchmentsGeoJsonLayer';
 import { MapGestureHandler } from './MapGestureHandler';
+import { MapLayerControl } from './MapLayerControl';
 import { RiversStreamsGeoJsonLayer } from './RiversStreamsGeoJsonLayer';
 import { SpatialFlowAccumulationOverlay } from './SpatialFlowAccumulationOverlay';
 import { SpatialFlowDirectionOverlay } from './SpatialFlowDirectionOverlay';
@@ -66,7 +67,6 @@ import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
 import { SpatialSettlementDensityOverlay } from './SpatialSettlementDensityOverlay';
 import { SpatialSoilSurfaceOverlay } from './SpatialSoilSurfaceOverlay';
 import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
-import { SubFilterToolbar } from './SubFilterToolbar';
 
 // Fix Leaflet default marker icon
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl;
@@ -1348,9 +1348,6 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
         </div>
       </div>
 
-      {/* 4. Sub-filter toolbar */}
-      <SubFilterToolbar />
-
       {/* Dynamic Heatmap Legend */}
       {renderLegend()}
 
@@ -1446,9 +1443,14 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
               <p className="text-white text-xs font-medium">Loading climate GIS datasets…</p>
             </div>
           )}
+
+          {/* Floating Map Layer Control (Google Maps / Mapbox Corner Widget) */}
+          <MapLayerControl onResetCamera={() => setResetTrigger((prev) => prev + 1)} />
+
           <MapContainer
             center={GULMI_MAP_CENTER}
             zoom={GULMI_MAP_ZOOM}
+            zoomControl={false}
             scrollWheelZoom={false}
             maxBounds={NEPAL_MAX_BOUNDS}
             maxBoundsViscosity={0.5}
@@ -1456,6 +1458,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
             maxZoom={14}
             style={{ height: '100%', width: '100%', borderRadius: '0.875rem' }}
           >
+            <ZoomControl position="bottomright" />
             <GulmiBoundsController resetTrigger={resetTrigger} />
             <MapGestureHandler />
             <MapPanesSetup />

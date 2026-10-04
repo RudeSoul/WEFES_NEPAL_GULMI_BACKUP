@@ -6,5 +6,6 @@ export * from './DistrictMap';
 export * from './ElevationCrossSection';
 export * from './ExecutiveHeroBanner';
 export * from './MapGestureHandler';
+export * from './MapLayerControl';
 export * from './PillarFilter';
 export * from './SubFilterToolbar';
