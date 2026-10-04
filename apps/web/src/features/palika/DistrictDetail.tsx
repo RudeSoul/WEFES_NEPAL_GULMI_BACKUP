@@ -19,7 +19,6 @@ import { IndicatorModal, ModalKey } from './components/IndicatorModal';
 import { PalikaAgroHydrologyCalendar } from './components/PalikaAgroHydrologyCalendar';
 import { PalikaCropSuitabilityGrid } from './components/PalikaCropSuitabilityGrid';
 import { PalikaHeroHeader } from './components/PalikaHeroHeader';
-import { PalikaBenchmarkingWidget } from './PalikaBenchmarkingWidget';
 
 export interface DistrictDetailProps {
   district: District;
@@ -139,8 +138,6 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
           climateDataset={climateDataset}
           onOpenSoilModal={() => setOpenModal('soil')}
         />
-
-        <PalikaBenchmarkingWidget currentPalika={activePalika} />
       </div>
 
       {/* Interactive Palika Spatial Map */}
