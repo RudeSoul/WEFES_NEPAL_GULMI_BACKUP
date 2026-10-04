@@ -1011,11 +1011,11 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
   soil_sampling_grid: {
     id: 'soil_sampling_grid',
     pillar: 'ecosystem',
-    title: 'NARC 81-Point Ground Soil Survey Grid',
-    subtitle: 'Field Empirical Composite Classification',
+    title: 'NARC 100m Geospatial Soil Survey Grid',
+    subtitle: 'High-Resolution Empirical Classification (37,800+ Cells)',
     unit: 'Agronomic Class',
     legendType: 'domain_thresholds',
-    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_points_81.json',
+    dataSourceCitation: 'data/real/land_and_soil/gulmi_soil_data.nc',
     confidence: 'REAL',
     thresholds: [
       {
