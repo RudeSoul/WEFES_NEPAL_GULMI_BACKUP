@@ -4,14 +4,16 @@
 // Citations: Ministry of Agriculture and Livestock Development (MoALD); NARC Soil Science; Funk et al. (2015); Allen et al. (1998)
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { ArrowLeft, ArrowUp } from 'lucide-react';
 
 import { db } from '@wefes/database';
-import { ClimateDataset, Crop, District } from '@wefes/shared-types';
+import { Crop, District } from '@wefes/shared-types';
 import { arimaForecast, extractAnnualRainfallSeries } from '@wefes/wefes-engine';
 
-import { fetchGeoJson } from '../../services/dataClient';
+import { ROUTES } from '../../routes/paths';
+import { useNexusStore } from '../../store';
 import { DistrictDetailMap } from '../map/DistrictDetailMap';
 
 import { IndicatorModal, ModalKey } from './components/IndicatorModal';
@@ -21,39 +23,54 @@ import { PalikaHeroHeader } from './components/PalikaHeroHeader';
 
 import { DISTRICT_PALIKAS, DistrictPalika } from '@/data/districtPalikaAssets';
 
-export interface DistrictDetailProps {
-  district: District;
-  initialPalikaName?: string;
-  onSelectPalika?: (palikaName: string) => void;
-  onSelectCrop: (crop: Crop) => void;
-  onBackToMap: () => void;
-  climateDataset?: ClimateDataset | null;
-}
+export const DistrictDetail: React.FC = () => {
+  const navigate = useNavigate();
+  const { palikaName: urlPalikaParam } = useParams<{ palikaName?: string }>();
 
-export const DistrictDetail: React.FC<DistrictDetailProps> = ({
-  district,
-  initialPalikaName,
-  onSelectPalika,
-  onSelectCrop,
-  onBackToMap,
-  climateDataset: initialClimateDataset,
-}) => {
-  const [cropSpectrumMode, setCropSpectrumMode] = useState<'verified' | 'all'>('verified');
-  const [activePalikaName, setActivePalikaNameState] = useState<string>(initialPalikaName || 'Resunga');
+  // --- Zustand Nexus Store Integrations ---
+  const storeDistrict = useNexusStore((s) => s.selectedDistrict);
+  const storePalikaName = useNexusStore((s) => s.selectedPalikaName);
+  const setStorePalikaName = useNexusStore((s) => s.setSelectedPalikaName);
+  const selectedMapCropId = useNexusStore((s) => s.selectedMapCropId);
+  const openAnalysisModal = useNexusStore((s) => s.openAnalysisModal);
+  const climateDataset = useNexusStore((s) => s.climateDataset);
+  const fetchClimateDataset = useNexusStore((s) => s.fetchClimateDataset);
 
-  const setActivePalikaName = useCallback(
-    (pName: string) => {
-      setActivePalikaNameState(pName);
-      if (onSelectPalika) onSelectPalika(pName);
-    },
-    [onSelectPalika]
+  // Resolved District (Store > Database Fallback)
+  const district: District = useMemo(
+    () => storeDistrict || db.getDistrictById('gulmi') || ({} as District),
+    [storeDistrict]
   );
 
+  const [cropSpectrumMode, setCropSpectrumMode] = useState<'verified' | 'all'>('verified');
+
+  // URL param takes precedence on mount/route change, fallback to store or Resunga
+  const activePalikaName = useMemo(() => {
+    if (urlPalikaParam) return decodeURIComponent(urlPalikaParam);
+    return storePalikaName || 'Resunga';
+  }, [urlPalikaParam, storePalikaName]);
+
+  // Synchronize store when URL palika changes
   useEffect(() => {
-    if (initialPalikaName) {
-      setActivePalikaName(initialPalikaName);
+    if (urlPalikaParam) {
+      const decoded = decodeURIComponent(urlPalikaParam);
+      if (decoded !== storePalikaName) {
+        setStorePalikaName(decoded);
+      }
     }
-  }, [initialPalikaName, setActivePalikaName]);
+  }, [urlPalikaParam, storePalikaName, setStorePalikaName]);
+
+  const handleSelectPalika = useCallback(
+    (pName: string) => {
+      setStorePalikaName(pName);
+      navigate(`/palikas/${encodeURIComponent(pName)}`);
+    },
+    [navigate, setStorePalikaName]
+  );
+
+  const handleBackToMap = useCallback(() => {
+    navigate(ROUTES.MAP);
+  }, [navigate]);
 
   const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
   const activePalika: DistrictPalika =
@@ -73,37 +90,43 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   );
 
   const verifiedDistrictCrops = useMemo(
-    () => db.getDistrictCrops(district.id, palikaContext),
+    () => (district.id ? db.getDistrictCrops(district.id, palikaContext) : []),
     [district.id, palikaContext]
   );
   const allDistrictCrops = useMemo(
-    () => db.getAllDistrictCrops(district.id, palikaContext),
+    () => (district.id ? db.getAllDistrictCrops(district.id, palikaContext) : []),
     [district.id, palikaContext]
   );
   const displayedDistrictCrops = cropSpectrumMode === 'verified' ? verifiedDistrictCrops : allDistrictCrops;
 
   const [activeHoverCrop, setActiveHoverCrop] = useState<Crop | null>(displayedDistrictCrops[0]?.crop || null);
-  const [climateDataset, setClimateDataset] = useState<ClimateDataset | null>(initialClimateDataset || null);
-  const [openModal, setOpenModal] = useState<ModalKey>(null);
 
   useEffect(() => {
-    if (initialClimateDataset) {
-      setClimateDataset(initialClimateDataset);
-      return;
+    if (!climateDataset) {
+      fetchClimateDataset();
     }
-    fetchGeoJson<ClimateDataset>('gulmi-climate-monthly.json')
-      .then((data) => setClimateDataset(data))
-      .catch(() => null);
-  }, [initialClimateDataset]);
+  }, [climateDataset, fetchClimateDataset]);
+
+  const [openModal, setOpenModal] = useState<ModalKey>(null);
 
   useEffect(() => {
     if (displayedDistrictCrops && displayedDistrictCrops.length > 0) {
       const exists = displayedDistrictCrops.some((c) => c.crop.id === activeHoverCrop?.id);
       if (!exists) {
-        setActiveHoverCrop(displayedDistrictCrops[0].crop);
+        const cropFromStore = selectedMapCropId
+          ? displayedDistrictCrops.find((c) => c.crop.id === selectedMapCropId)?.crop
+          : null;
+        setActiveHoverCrop(cropFromStore || displayedDistrictCrops[0].crop);
       }
     }
-  }, [displayedDistrictCrops, activeHoverCrop]);
+  }, [displayedDistrictCrops, activeHoverCrop, selectedMapCropId]);
+
+  const handleSelectCrop = useCallback(
+    (crop: Crop) => {
+      openAnalysisModal(crop);
+    },
+    [openAnalysisModal]
+  );
 
   const activeSuitability =
     displayedDistrictCrops.find((c) => c.crop.id === activeHoverCrop?.id)?.suitability ||
@@ -150,8 +173,8 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
           district={district}
           activePalika={activePalika}
           gulmiPalikas={gulmiPalikas}
-          onSelectPalika={setActivePalikaName}
-          onBackToMap={onBackToMap}
+          onSelectPalika={handleSelectPalika}
+          onBackToMap={handleBackToMap}
         />
 
         <PalikaAgroHydrologyCalendar
@@ -165,10 +188,10 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
       <DistrictDetailMap
         district={district}
         selectedPalikaName={activePalika.name}
-        onSelectPalika={setActivePalikaName}
+        onSelectPalika={handleSelectPalika}
         distClimatology={distClimatology}
         rainfallARIMA={rainfallARIMA}
-        onSelectCrop={onSelectCrop}
+        onSelectCrop={handleSelectCrop}
       />
 
       {/* Crop Suitability & Telemetry Grid */}
@@ -184,13 +207,13 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
         setActiveHoverCrop={setActiveHoverCrop}
         activeSuitability={activeSuitability}
         radarData={radarData}
-        onSelectCrop={onSelectCrop}
+        onSelectCrop={handleSelectCrop}
       />
 
       {/* Bottom Quick Navigation */}
       <div className="flex items-center justify-between p-4 bg-slate-50/90 rounded-2xl border border-slate-200">
         <button
-          onClick={onBackToMap}
+          onClick={handleBackToMap}
           className="text-xs text-slate-800 hover:text-slate-950 font-bold flex items-center gap-1.5 transition-colors cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
         >
           <ArrowLeft className="w-4 h-4 text-emerald-600" />

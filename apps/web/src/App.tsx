@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { Navigate, Route, Routes, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 
-import { ClimateDataset, Crop, District } from '@wefes/shared-types';
+import { District } from '@wefes/shared-types';
 
 import { Header, InputModal } from './components/common';
 import { DistrictMap } from './features/map';
@@ -13,42 +13,6 @@ import { ScenarioSimulator } from './features/simulator';
 import { ROUTES } from './routes/paths';
 import { useNexusStore } from './store';
 
-function PalikaRouteWrapper({
-  district,
-  selectedPalikaName,
-  onSelectPalika,
-  onSelectCrop,
-  onBackToMap,
-  climateDataset,
-}: {
-  district: District;
-  selectedPalikaName: string | null;
-  onSelectPalika: (pName: string) => void;
-  onSelectCrop: (crop: Crop) => void;
-  onBackToMap: () => void;
-  climateDataset: ClimateDataset | null;
-}) {
-  const { palikaName } = useParams<{ palikaName?: string }>();
-  const effectivePalikaName = palikaName ? decodeURIComponent(palikaName) : selectedPalikaName || 'Resunga';
-
-  useEffect(() => {
-    if (palikaName && decodeURIComponent(palikaName) !== selectedPalikaName) {
-      onSelectPalika(decodeURIComponent(palikaName));
-    }
-  }, [palikaName, selectedPalikaName, onSelectPalika]);
-
-  return (
-    <DistrictDetail
-      district={district}
-      initialPalikaName={effectivePalikaName}
-      onSelectPalika={onSelectPalika}
-      onSelectCrop={onSelectCrop}
-      onBackToMap={onBackToMap}
-      climateDataset={climateDataset}
-    />
-  );
-}
-
 export function App() {
   const navigate = useNavigate();
 
@@ -56,10 +20,7 @@ export function App() {
   const selectedDistrict = useNexusStore((s) => s.selectedDistrict);
   const setSelectedDistrict = useNexusStore((s) => s.setSelectedDistrict);
   const selectedCrop = useNexusStore((s) => s.selectedCrop);
-  const setSelectedCrop = useNexusStore((s) => s.setSelectedCrop);
-  const setIsInputModalOpen = useNexusStore((s) => s.setIsInputModalOpen);
   const analysisOutput = useNexusStore((s) => s.analysisOutput);
-  const climateDataset = useNexusStore((s) => s.climateDataset);
   const fetchClimateDataset = useNexusStore((s) => s.fetchClimateDataset);
   const selectedPalikaName = useNexusStore((s) => s.selectedPalikaName);
   const setSelectedPalikaName = useNexusStore((s) => s.setSelectedPalikaName);
@@ -74,11 +35,6 @@ export function App() {
     const pName = palikaName || 'Resunga';
     setSelectedPalikaName(pName);
     navigate(`/palikas/${encodeURIComponent(pName)}`);
-  };
-
-  const handleSelectCropFromMatrix = (crop: Crop) => {
-    setSelectedCrop(crop);
-    setIsInputModalOpen(true);
   };
 
   const handleRunAnalysis = () => {
@@ -96,38 +52,12 @@ export function App() {
 
           <Route
             path={ROUTES.PALIKAS}
-            element={
-              selectedDistrict ? (
-                <PalikaRouteWrapper
-                  district={selectedDistrict}
-                  selectedPalikaName={selectedPalikaName}
-                  onSelectPalika={setSelectedPalikaName}
-                  onSelectCrop={handleSelectCropFromMatrix}
-                  onBackToMap={() => navigate(ROUTES.MAP)}
-                  climateDataset={climateDataset}
-                />
-              ) : (
-                <Navigate to={ROUTES.MAP} replace />
-              )
-            }
+            element={selectedDistrict ? <DistrictDetail /> : <Navigate to={ROUTES.MAP} replace />}
           />
 
           <Route
             path={ROUTES.PALIKA_DETAIL}
-            element={
-              selectedDistrict ? (
-                <PalikaRouteWrapper
-                  district={selectedDistrict}
-                  selectedPalikaName={selectedPalikaName}
-                  onSelectPalika={setSelectedPalikaName}
-                  onSelectCrop={handleSelectCropFromMatrix}
-                  onBackToMap={() => navigate(ROUTES.MAP)}
-                  climateDataset={climateDataset}
-                />
-              ) : (
-                <Navigate to={ROUTES.MAP} replace />
-              )
-            }
+            element={selectedDistrict ? <DistrictDetail /> : <Navigate to={ROUTES.MAP} replace />}
           />
 
           <Route
