@@ -51,18 +51,6 @@ export async function fetchGeoJson<T = any>(filename: string): Promise<T> {
   return response.json();
 }
 
-export function getDataUrl(endpoint: string): string {
-  const cleanPath = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
-  const baseUrl = DATA_BASE_URL || '/data';
-  return `${baseUrl.replace(/\/$/, '')}/${cleanPath}`;
-}
-
-export function getGeoJsonUrl(filename: string): string {
-  const cleanName = filename.startsWith('/') ? filename.slice(1) : filename;
-  const baseUrl = GEOJSON_BASE_URL || '/geojson';
-  return `${baseUrl.replace(/\/$/, '')}/${cleanName}`;
-}
-
 export function getTileUrl(filename: string): string {
   const cleanName = filename.startsWith('/') ? filename.slice(1) : filename;
   const baseUrl = TILES_BASE_URL || '/tiles';
