@@ -89,6 +89,14 @@
   cursor: pointer;
 }
 
+.leaflet-interactive:focus,
+.leaflet-interactive:focus-visible,
+.leaflet-container path:focus,
+.leaflet-container path:focus-visible,
+.leaflet-container svg:focus {
+  outline: none !important;
+}
+
 .leaflet-interactive:active {
   filter: brightness(0.9) saturate(1.2);
 }
