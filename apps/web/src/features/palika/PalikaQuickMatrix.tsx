@@ -2,7 +2,7 @@ import React from 'react';
 
 import { CloudRain, Mountain } from 'lucide-react';
 
-import { DISTRICT_PALIKAS, DistrictPalika, GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
+import { DISTRICT_PALIKAS, DistrictPalika, GULMI_PALIKA_NEPALI } from '@/data/districtPalikaAssets';
 
 interface PalikaQuickMatrixProps {
   onSelectPalika: (palikaName: string) => void;

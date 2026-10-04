@@ -8,6 +8,8 @@ import { Crop, CropSuitability, District } from '@wefes/shared-types';
 import { CropComparativeAnalysis } from '../CropComparativeAnalysis';
 import { FeasibilityMatrix } from '../FeasibilityMatrix';
 
+import { DistrictPalika } from '@/data/districtPalikaAssets';
+
 export interface DistrictCropItem {
   crop: Crop;
   suitability: CropSuitability;
@@ -22,6 +24,7 @@ export interface RadarCropMetric {
 
 interface PalikaCropSuitabilityGridProps {
   district: District;
+  activePalika?: DistrictPalika;
   displayedDistrictCrops: DistrictCropItem[];
   verifiedDistrictCrops: DistrictCropItem[];
   allDistrictCrops: DistrictCropItem[];
@@ -36,6 +39,7 @@ interface PalikaCropSuitabilityGridProps {
 
 export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps> = ({
   district,
+  activePalika,
   displayedDistrictCrops,
   verifiedDistrictCrops,
   allDistrictCrops,
@@ -66,8 +70,8 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
             </div>
             <p className="text-xs text-slate-500 mt-1 font-sans">
               {cropSpectrumMode === 'verified'
-                ? `Cultivars for ${district.name} (${district.climateZone || district.ecoZone}).`
-                : `All crops evaluated across ${district.name}.`}
+                ? `Cultivars for ${activePalika ? `${activePalika.name}, ` : ''}${district.name} (${activePalika ? `${activePalika.elevation}m masl • ${activePalika.avgTempC}°C` : district.climateZone || district.ecoZone}).`
+                : `All crops evaluated across ${activePalika?.name || district.name}.`}
             </p>
           </div>
 
@@ -365,6 +369,7 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
               {activeHoverCrop && activeSuitability && (
                 <FeasibilityMatrix
                   district={district}
+                  activePalika={activePalika}
                   crop={activeHoverCrop}
                   suitabilityScore={activeSuitability.suitabilityScore}
                 />
@@ -377,6 +382,7 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
           <div className="hidden lg:block">
             <CropComparativeAnalysis
               district={district}
+              activePalika={activePalika}
               crops={displayedDistrictCrops}
               selectedCropId={activeHoverCrop?.id || displayedDistrictCrops[0]?.crop.id || 'rice'}
             />

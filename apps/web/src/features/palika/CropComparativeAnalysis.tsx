@@ -14,8 +14,11 @@ import {
 
 import { Crop, CropSuitability, District } from '@wefes/shared-types';
 
+import { DistrictPalika } from '@/data/districtPalikaAssets';
+
 interface CropComparativeAnalysisProps {
   district: District;
+  activePalika?: DistrictPalika;
   crops: { crop: Crop; suitability: CropSuitability }[];
   selectedCropId: string;
 }
@@ -24,6 +27,7 @@ const CROP_COLORS = ['#06b6d4', '#10b981', '#f59e0b', '#8b5cf6'];
 
 export const CropComparativeAnalysis: React.FC<CropComparativeAnalysisProps> = ({
   district,
+  activePalika,
   crops,
   selectedCropId,
 }) => {
@@ -58,10 +62,12 @@ export const CropComparativeAnalysis: React.FC<CropComparativeAnalysisProps> = (
     <div className="glass-panel p-6 rounded-2xl border border-slate-200 shadow-sm bg-white/95 space-y-4 animate-fade-in-up">
       <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 font-outfit">
         <Sparkles className="w-4 h-4 text-emerald-600" />
-        Comparative Crop Analysis — {district.name}
+        Comparative Crop Analysis — {activePalika ? `${activePalika.name}, ` : ''}
+        {district.name}
       </h3>
       <p className="text-xs text-slate-500">
-        Side-by-side WEFES suitability comparison of your selected crop vs. top alternatives for this district.
+        Side-by-side WEFES suitability comparison of your selected crop vs. top alternatives for{' '}
+        {activePalika ? activePalika.name : 'this district'}.
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

@@ -4,7 +4,7 @@ import { ArrowLeft, MapPin, Mountain } from 'lucide-react';
 
 import { District } from '@wefes/shared-types';
 
-import { DistrictPalika, GULMI_PALIKA_NEPALI } from '../../../data/districtPalikaAssets';
+import { DistrictPalika, GULMI_PALIKA_NEPALI } from '@/data/districtPalikaAssets';
 
 interface PalikaHeroHeaderProps {
   district: District;

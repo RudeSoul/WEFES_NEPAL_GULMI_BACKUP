@@ -6,8 +6,9 @@ import React from 'react';
 
 import { ArrowRight, CloudRain, Compass, Mountain, Sparkles, Sprout, Thermometer } from 'lucide-react';
 
-import { DISTRICT_PALIKAS, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
 import { getPalikaMicroClimate } from '../../utils/climateDownscaling';
+
+import { DISTRICT_PALIKAS, PalikaFeasibleCrop } from '@/data/districtPalikaAssets';
 
 interface PalikaHoverCardProps {
   palikaProp: {
