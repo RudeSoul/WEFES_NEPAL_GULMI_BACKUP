@@ -1,9 +1,9 @@
 // [DATA PROVENANCE]
-// Data Source: data/formulas/analytical_methodologies.json
+// Data Source: apps/web/src/features/map/subfilters (SUBFILTER_METHODOLOGIES)
 // Classification: CALCULATED & BASELINE METHODOLOGIES
 // Citations: DHM, MoALD, NARC, ICIMOD, DOED, NEA, CBS, NASA POWER, Survey Department Nepal
 
-import methodologiesData from '@data/formulas/analytical_methodologies.json';
+import { SUBFILTER_METHODOLOGIES } from '@/features/map/subfilters';
 
 export interface LocalizedString {
   en: string;
@@ -52,8 +52,6 @@ export interface ResolvedCalculationMethodology {
   currentStat: string;
 }
 
-const ANALYTICAL_METHODOLOGIES = methodologiesData.methodologies as Record<string, RawMethodologyEntry>;
-
 export interface ResolveMethodologyParams {
   selectedPillar: string;
   subFilters: Record<string, string>;
@@ -101,13 +99,18 @@ export function resolveCalculationMethodology(params: ResolveMethodologyParams):
     const ecoSub = subFilters.ecoSubFilter || 'soil_ph';
     if (ecoSub === 'soil_ph') key = 'soil_ph';
     else if (ecoSub === 'soil_om') key = 'soil_om';
+    else if (ecoSub === 'soil_nitrogen') key = 'soil_nitrogen';
+    else if (ecoSub === 'soil_phosphorus') key = 'soil_phosphorus';
+    else if (ecoSub === 'soil_potassium') key = 'soil_potassium';
+    else if (ecoSub === 'elevation_zones') key = 'elevation_zones';
+    else if (ecoSub === 'agroforestry_belt') key = 'agroforestry_belt';
   } else if (selectedPillar === 'socioeconomics') {
     const sSub = subFilters.socioSubFilter || 'local_governance';
     if (sSub === 'local_governance') key = 'local_governance';
     else if (sSub === 'agri_landholding' || sSub === 'landholding') key = 'agri_landholding';
   }
 
-  const raw = ANALYTICAL_METHODOLOGIES[key] || ANALYTICAL_METHODOLOGIES['default'];
+  const raw = SUBFILTER_METHODOLOGIES[key] || SUBFILTER_METHODOLOGIES['default'];
   const activeCrop = (lang === 'np' ? cropNameNepali : cropName) || (lang === 'np' ? 'बाली' : 'Crop');
 
   const waterSeason = subFilters.waterSeason || 'cycle';

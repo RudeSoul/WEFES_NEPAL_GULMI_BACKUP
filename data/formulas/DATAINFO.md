@@ -7,7 +7,7 @@
 
 ## 2. Directory Contents
 - `coefficients.json`: Core engineering coefficients, weighting matrices, and physical factors (water stress, solar GHI thresholds, erosion factors).
-- `analytical_methodologies.json`: Mathematical formulations, governing equations, parameter constraints, scientific provenance, and institutional citations for all 5 WEFES nexus pillars.
+- Subfilter Analytical Methodologies: Modularized directly into component-level files under `apps/web/src/features/map/subfilters/` (`SUBFILTER_METHODOLOGIES` registry).
 
 ## 3. Provenance & Official Citations
 - **DHM Nepal**: Department of Hydrology and Meteorology (Gauging Network, River Discharges).

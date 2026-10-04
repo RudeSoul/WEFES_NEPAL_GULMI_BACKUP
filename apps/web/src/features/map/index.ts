@@ -8,4 +8,5 @@ export * from './ExecutiveHeroBanner';
 export * from './MapGestureHandler';
 export * from './MapLayerControl';
 export * from './PillarFilter';
+export * from './subfilters';
 export * from './SubFilterToolbar';
