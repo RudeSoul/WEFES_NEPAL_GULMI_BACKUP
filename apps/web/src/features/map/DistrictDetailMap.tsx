@@ -1,25 +1,12 @@
 // [DATA PROVENANCE]
-// Data Source: apps/web/public/geojson/gulmi-contours.json, data/real/boundaries/gulmi-district.json
+// Data Source: apps/web/public/geojson/gulmi-contours.json, apps/web/public/geojson/gulmi-district.json, data/real/boundaries/gulmi-palikas.json, data/real/land_and_soil/gulmi_soil_points_81.json, data/real/infrastructure/district_infrastructure_assets.json
 // Classification: OBSERVED REAL & INTERPOLATED RELIEF
-// Citations: Survey Department / Topographical Survey of Nepal, MoFAGA, DHM Nepal
+// Citations: Survey Department / Topographical Survey of Nepal, MoFAGA, DHM Nepal, NARC, NEA
 import React, { useEffect, useMemo, useState } from 'react';
 
 import type { Feature, FeatureCollection, GeoJsonObject } from 'geojson';
 import L from 'leaflet';
-import {
-  Activity,
-  ArrowUpRight,
-  Award,
-  Compass,
-  Droplets,
-  Filter,
-  FlaskConical,
-  Layers,
-  Mountain,
-  Navigation,
-  Sprout,
-  Zap,
-} from 'lucide-react';
+import { Activity, Compass, Droplets, FlaskConical, Layers, Mountain, Navigation, Zap } from 'lucide-react';
 import {
   CircleMarker,
   GeoJSON,
@@ -32,11 +19,10 @@ import {
   useMap,
 } from 'react-leaflet';
 
-import { db } from '@wefes/database';
 import { Crop, District, GulmiContourCollection } from '@wefes/shared-types';
 
 import { DHM_RIVER_STATIONS_BY_DISTRICT, DHMRiverStation } from '../../data/districtHydrologyAssets';
-import { GULMI_SOIL_POINTS as gulmiSoilPoints } from '../../data/districtIndicatorAssets';
+import { GULMI_SOIL_POINTS as gulmiSoilPoints, PALIKA_SOIL_DATA } from '../../data/districtIndicatorAssets';
 import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
 import { GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 import { GULMI_COFFEE_LANDMARKS, REAL_HYDROPOWER_PLANTS, RealHydropowerAsset } from '../../data/districtRealAssets';
@@ -55,7 +41,7 @@ interface DistrictDetailMapProps {
   onSelectCrop?: (crop: Crop) => void;
 }
 
-type MapLayerMode = 'overview' | 'coffee' | 'crops' | 'roads' | 'soil' | 'hydrology' | 'energy' | 'elevation';
+type MapLayerMode = 'overview' | 'roads' | 'soil' | 'hydrology' | 'energy' | 'elevation';
 type BaseMapStyle = 'voyager' | 'osm' | 'opentopo' | 'satellite';
 
 const BASE_MAP_TILES: Record<BaseMapStyle, { url: string; attribution: string; name: string }> = {
@@ -290,7 +276,6 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
 
   const [layerMode, setLayerMode] = useState<MapLayerMode>('overview');
   const [baseMapStyle, setBaseMapStyle] = useState<BaseMapStyle>('voyager');
-  const [selectedCropFilter, setSelectedCropFilter] = useState<string>('all');
   const [showContours, setShowContours] = useState<boolean>(true);
 
   // Roads state
@@ -415,49 +400,46 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
     return [28.095, 83.315];
   }, [activePalika]);
 
-  // Verified crops specifically for this district
+  // Active Palika Agro-Ecological Life Zone
+  const palikaAgroZone = useMemo(() => {
+    const elev = activePalika.elevation || 1400;
+    if (elev < 1000) return 'Sub-Tropical (<1,000m)';
+    if (elev < 1500) return 'Warm Temperate (1,000–1,500m)';
+    if (elev < 2000) return 'Cool Temperate (1,500–2,000m)';
+    return 'Sub-Alpine (≥2,000m)';
+  }, [activePalika.elevation]);
 
-  // Palika Crop Markers - Prioritizing high-value cash crops (Arabica Coffee, Orange, Potato, Ginger)
+  // Active Palika NARC Soil Profile
+  const palikaSoilProfile = useMemo(() => {
+    return PALIKA_SOIL_DATA?.palikas?.[activePalika.name];
+  }, [activePalika.name]);
+
+  // Active Palika Top Verified Feasible Crop
+  const activePalikaTopCrop = useMemo(() => {
+    const crops = activePalika.feasibleCrops || [];
+    if (crops.length === 0) return null;
+    return [...crops].sort((a, b) => b.score - a.score)[0];
+  }, [activePalika.feasibleCrops]);
+
+  // Palika Landmark Markers - Showing top feasible crop per palika
   const displayedPalikaCropMarkers = useMemo(() => {
-    const list: {
-      palika: DistrictPalika;
-      cropItem: PalikaFeasibleCrop;
-      isHighlighted: boolean;
-    }[] = [];
-
-    districtPalikas.forEach((palika) => {
+    return districtPalikas.map((palika) => {
       const crops = palika.feasibleCrops || [];
       const isSelected = palika.name.toLowerCase() === activePalika.name.toLowerCase();
-
-      if (selectedCropFilter !== 'all') {
-        const match = crops.find((c: PalikaFeasibleCrop) => c.cropId === selectedCropFilter);
-        if (match) {
-          list.push({ palika, cropItem: match, isHighlighted: isSelected });
-        }
-      } else {
-        // Prioritize signature cash crops: Coffee ☕, Orange 🍊, Potato 🥔, Ginger 🫚
-        const coffeeCrop = crops.find((c) => c.cropId === 'coffee');
-        const orangeCrop = crops.find((c) => c.cropId === 'orange');
-        const topRot = coffeeCrop ||
-          orangeCrop ||
-          palika.seasonalRotations?.baahramase ||
-          palika.seasonalRotations?.hiunde ||
-          crops[0] || {
-            cropId: 'coffee',
-            cropName: 'Arabica Coffee',
-            nepaliName: 'कफी',
-            emoji: '☕',
-            category: 'Cash Crop',
-            score: 95,
-            rating: 'Optimal' as const,
-            limitingFactor: 'None',
-          };
-        list.push({ palika, cropItem: topRot, isHighlighted: isSelected });
-      }
+      const sorted = [...crops].sort((a, b) => b.score - a.score);
+      const topCrop: PalikaFeasibleCrop = sorted[0] || {
+        cropId: 'local-crop',
+        cropName: 'Local Agriculture',
+        nepaliName: 'स्थानीय कृषि',
+        emoji: '🌱',
+        category: 'Field Crop',
+        score: 75,
+        rating: 'Suitable' as const,
+        limitingFactor: 'Elevation',
+      };
+      return { palika, cropItem: topCrop, isHighlighted: isSelected };
     });
-
-    return list;
-  }, [districtPalikas, selectedCropFilter, activePalika.name]);
+  }, [districtPalikas, activePalika.name]);
 
   const generatedContours = useMemo<ContourLine[]>(() => {
     // Priority 1: Use precompiled offline vector contours (zero runtime overhead)
@@ -685,10 +667,11 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
               📍 Focused Local Body
             </span>
             <span className="text-xs px-2.5 py-0.5 rounded-md font-mono font-bold bg-amber-50 text-amber-800 border border-amber-200">
-              ☕ Arabica Belt: 800–1,600m
+              🏔️ {palikaAgroZone}
             </span>
             <span className="text-xs px-2.5 py-0.5 rounded-md font-mono font-bold bg-sky-50 text-sky-800 border border-sky-200">
-              🧪 81 NARC Soil Points
+              🧪 NARC Soil: pH {palikaSoilProfile ? palikaSoilProfile.ph.toFixed(2) : activePalika.soilPh} (
+              {palikaSoilProfile?.texture || 'Loam'})
             </span>
           </h3>
           <p className="text-xs text-slate-500 mt-0.5 font-sans">
@@ -700,13 +683,11 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
         {/* Layer Mode Switcher Tabs */}
         <div className="flex items-center flex-wrap gap-1.5 p-1.5 rounded-xl border bg-slate-100/80 border-slate-200 text-xs font-medium max-w-full overflow-x-auto">
           {[
-            { id: 'overview', label: 'Overview', icon: <Layers className="w-3.5 h-3.5 text-slate-600" /> },
-            { id: 'coffee', label: '☕ Coffee Belt', icon: <Award className="w-3.5 h-3.5 text-amber-600" /> },
-            { id: 'crops', label: 'Crops & Niches', icon: <Sprout className="w-3.5 h-3.5 text-emerald-600" /> },
+            { id: 'overview', label: 'Overview & Relief', icon: <Layers className="w-3.5 h-3.5 text-slate-600" /> },
             { id: 'roads', label: 'Roads & Logistics', icon: <Navigation className="w-3.5 h-3.5 text-orange-600" /> },
             { id: 'soil', label: 'NARC Soil Grid', icon: <FlaskConical className="w-3.5 h-3.5 text-emerald-600" /> },
-            { id: 'hydrology', label: 'Hydrology', icon: <Droplets className="w-3.5 h-3.5 text-sky-600" /> },
-            { id: 'energy', label: 'Hydropower', icon: <Zap className="w-3.5 h-3.5 text-purple-600" /> },
+            { id: 'hydrology', label: 'Hydrology & DHM', icon: <Droplets className="w-3.5 h-3.5 text-sky-600" /> },
+            { id: 'energy', label: 'Hydropower Grid', icon: <Zap className="w-3.5 h-3.5 text-purple-600" /> },
             { id: 'elevation', label: '3D Elevation', icon: <Mountain className="w-3.5 h-3.5 text-slate-600" /> },
           ].map((mode) => (
             <button
@@ -720,35 +701,6 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
             >
               {mode.icon}
               <span>{mode.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* ─── Quick Crop Filter Chips Bar ─── */}
-      <div className="flex items-center justify-between flex-wrap gap-2 pt-1 border-t border-slate-100">
-        <div className="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
-          <Filter className="w-3.5 h-3.5 text-slate-400" />
-          <span>Quick Cash Crop Spatial Filter:</span>
-        </div>
-        <div className="flex items-center flex-wrap gap-1.5 text-xs">
-          {[
-            { id: 'all', label: '🌟 Signature Crops', desc: 'Highest Value Cash Crop' },
-            { id: 'coffee', label: '☕ Arabica Coffee', desc: 'Gulmi #1 Cash Crop' },
-            { id: 'orange', label: '🍊 Mandarin Orange', desc: 'Horticulture Belt' },
-            { id: 'potato', label: '🥔 High-Altitude Potato', desc: 'Seed Tuber' },
-            { id: 'ginger', label: '🫚 Organic Ginger', desc: 'Export Spice' },
-          ].map((chip) => (
-            <button
-              key={chip.id}
-              onClick={() => setSelectedCropFilter(chip.id)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
-                selectedCropFilter === chip.id
-                  ? 'bg-emerald-700 text-white border-emerald-800 shadow-xs'
-                  : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              {chip.label}
             </button>
           ))}
         </div>
@@ -826,7 +778,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
               ))}
 
             {/* Verified Coffee Landmarks (Aapchaur Origin, Tamghas Center, Ruru Mill, etc.) */}
-            {(layerMode === 'coffee' || layerMode === 'crops' || layerMode === 'overview') &&
+            {layerMode === 'overview' &&
               GULMI_COFFEE_LANDMARKS.map((lm) => (
                 <Marker
                   key={`coffee-landmark-${lm.id}`}
@@ -861,8 +813,8 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
               />
             )}
 
-            {/* Palika Agro-Climatic & Coffee Pins */}
-            {(layerMode === 'crops' || layerMode === 'coffee' || layerMode === 'overview') &&
+            {/* Palika Agro-Climatic Pins */}
+            {layerMode === 'overview' &&
               displayedPalikaCropMarkers.map((m, idx) => (
                 <Marker
                   key={`palika-pin-${m.palika.id}-${idx}`}
@@ -1088,9 +1040,9 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
                 <div className="p-2 bg-white rounded-lg border border-emerald-200">
                   <div className="text-[10px] text-slate-500 font-sans">Soil Reaction</div>
                   <div className="font-bold text-slate-900 mt-0.5 flex items-center gap-1">
-                    <span>pH {activePalika.soilPh}</span>
+                    <span>pH {palikaSoilProfile ? palikaSoilProfile.ph.toFixed(2) : activePalika.soilPh}</span>
                     <span className="text-[9px] text-emerald-700">
-                      ({activePalika.soilPh < 6.0 ? 'Acidic' : 'Neutral'})
+                      ({palikaSoilProfile?.phRating || (activePalika.soilPh < 6.0 ? 'Acidic' : 'Optimal')})
                     </span>
                   </div>
                 </div>
@@ -1100,154 +1052,20 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
                 </div>
                 <div className="p-2 bg-white rounded-lg border border-emerald-200">
                   <div className="text-[10px] text-slate-500 font-sans">Annual Rainfall</div>
-                  <div className="font-bold text-slate-900 mt-0.5">{activePalika.rainfallMm} mm/yr</div>
+                  <div className="font-bold text-slate-900 mt-0.5">{activePalika.rainfallMm} mm/yr (DHM)</div>
                 </div>
                 <div className="p-2 bg-white rounded-lg border border-emerald-200">
                   <div className="text-[10px] text-slate-500 font-sans">Verified Crops</div>
                   <div className="font-bold text-emerald-700 mt-0.5">
-                    {activePalika.feasibleCropsCount || 8} Species
+                    {activePalika.feasibleCropsCount ||
+                      (activePalika.feasibleCrops ? activePalika.feasibleCrops.length : 8)}{' '}
+                    Species
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* 1. COFFEE BELT (DEDICATED COFFEE VIEW) */}
-            {layerMode === 'coffee' && (
-              <div className="glass-panel p-4 rounded-xl border border-amber-200 bg-amber-50/60 space-y-3 animate-fade-in-up">
-                <div className="flex items-center justify-between border-b border-amber-200 pb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base">☕</span>
-                    <div>
-                      <div className="text-xs font-bold text-amber-950 font-outfit uppercase tracking-wide">
-                        Specialty Arabica Coffee Heritage Belt
-                      </div>
-                      <div className="text-[10px] text-amber-800 font-sans">
-                        800m–1,600m Sub-Tropical Agro-Forestry Slopes
-                      </div>
-                    </div>
-                  </div>
-                  <span className="text-[10px] bg-white text-amber-900 border border-amber-300 px-2 py-0.5 rounded font-mono font-bold">
-                    MoALD Capital
-                  </span>
-                </div>
-
-                <div className="p-2.5 bg-white rounded-lg border border-amber-200 text-xs space-y-1.5">
-                  <div className="font-bold text-slate-900 flex justify-between items-center">
-                    <span className="flex items-center gap-1.5">
-                      <span>🌱</span>
-                      <span>{activePalika.name} Coffee Agro-Suitability:</span>
-                    </span>
-                    <span className="font-extrabold text-amber-700 font-mono">95% Optimal</span>
-                  </div>
-                  <p className="text-[11px] text-slate-600 leading-relaxed">
-                    Gulmi is the historic birthplace of Nepali Coffee (introduced in Aapchaur, 1938 BS). Over 2,500
-                    smallholder farmers cultivate shade-grown organic Arabica in Ruru, Resunga, Gulmidarbar, and
-                    Satyawati.
-                  </p>
-                  {onSelectCrop && (
-                    <button
-                      onClick={() => {
-                        const coffee = db.getCropById('coffee') || db.getAllCrops()[0];
-                        onSelectCrop(coffee);
-                      }}
-                      className="w-full py-1.5 px-3 rounded-lg bg-amber-700 hover:bg-amber-600 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                    >
-                      <span>⚡ Run WEFES Arabica Coffee Simulation</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </button>
-                  )}
-                </div>
-
-                {/* Coffee Landmarks List */}
-                <div className="space-y-1.5">
-                  <div className="text-[10px] font-bold text-amber-900 uppercase font-outfit">
-                    Verified Coffee Hubs & Pockets in Gulmi:
-                  </div>
-                  <div className="grid grid-cols-1 gap-1 max-h-36 overflow-y-auto font-sans text-xs">
-                    {GULMI_COFFEE_LANDMARKS.map((lm) => (
-                      <div
-                        key={lm.id}
-                        onClick={() => onSelectPalika && onSelectPalika(lm.palika)}
-                        className={`p-2 rounded-lg border flex items-center justify-between transition-all cursor-pointer ${
-                          lm.palika.toLowerCase() === activePalika.name.toLowerCase()
-                            ? 'bg-amber-100 border-amber-300 font-bold'
-                            : 'bg-white border-slate-200 hover:bg-amber-50'
-                        }`}
-                      >
-                        <div className="min-w-0 pr-2">
-                          <div className="text-[11px] text-slate-900 truncate flex items-center gap-1">
-                            <span>☕</span>
-                            <span>{lm.name}</span>
-                          </div>
-                          <div className="text-[9.5px] text-slate-500 font-serif">{lm.nepaliName}</div>
-                        </div>
-                        <span className="text-[9.5px] font-mono text-amber-800 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 shrink-0">
-                          {lm.elevationM}m
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* 2. CROPS & NICHES (DEDICATED CROP VIEW) */}
-            {layerMode === 'crops' && (
-              <div className="glass-panel p-4 rounded-xl border border-emerald-200 bg-emerald-50/60 space-y-3 animate-fade-in-up">
-                <div className="flex items-center justify-between border-b border-emerald-200 pb-2">
-                  <div className="flex items-center gap-2">
-                    <Sprout className="w-4 h-4 text-emerald-600" />
-                    <div>
-                      <div className="text-xs font-bold text-emerald-950 font-outfit uppercase tracking-wide">
-                        {activePalika.name} Agro-Ecological Crop Niches
-                      </div>
-                      <div className="text-[10px] text-emerald-800 font-sans">
-                        4-Season Cropping Calendar & Verified Cultivars
-                      </div>
-                    </div>
-                  </div>
-                  <span className="text-[10px] bg-white text-emerald-900 border border-emerald-300 px-2 py-0.5 rounded font-mono font-bold">
-                    {activePalika.feasibleCropsCount || 8} Cultivars
-                  </span>
-                </div>
-
-                <div className="space-y-1.5 text-xs">
-                  <div className="p-2 bg-white rounded-lg border border-emerald-200 space-y-1">
-                    <div className="font-bold text-slate-900 flex justify-between">
-                      <span>🌧️ बर्खे बाली (Monsoon Peak):</span>
-                      <strong className="text-emerald-700">
-                        {activePalika.seasonalRotations?.barkhe?.cropName || 'Paddy Rice / Millet'}
-                      </strong>
-                    </div>
-                    <div className="font-bold text-slate-900 flex justify-between">
-                      <span>❄️ हिउँदे बाली (Winter Cereal):</span>
-                      <strong className="text-emerald-700">
-                        {activePalika.seasonalRotations?.hiunde?.cropName || 'Winter Wheat'}
-                      </strong>
-                    </div>
-                    <div className="font-bold text-slate-900 flex justify-between">
-                      <span>☀️ चैते बाली (Spring Cash/Grain):</span>
-                      <strong className="text-emerald-700">
-                        {activePalika.seasonalRotations?.chaite?.cropName || 'Organic Ginger / Spring Maize'}
-                      </strong>
-                    </div>
-                    <div className="font-bold text-slate-900 flex justify-between">
-                      <span>🌳 बाह्रमासे बाली (Perennial):</span>
-                      <strong className="text-emerald-700">
-                        {activePalika.seasonalRotations?.baahramase?.cropName || 'Arabica Coffee'}
-                      </strong>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-2.5 bg-emerald-100/70 rounded-lg text-[11px] text-emerald-950">
-                  Click any crop on the map pins to simulate multi-pillar yield, water productivity, and carbon
-                  sequestration.
-                </div>
-              </div>
-            )}
-
-            {/* 3. ROAD NETWORK & LOGISTICS LAYER */}
+            {/* 1. ROAD NETWORK & LOGISTICS LAYER */}
             {layerMode === 'roads' && (
               <div className="glass-panel p-4 rounded-xl border border-orange-200 bg-orange-50/60 space-y-3 animate-fade-in-up">
                 <div className="flex items-center justify-between border-b border-orange-200 pb-2">
@@ -1326,7 +1144,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
               </div>
             )}
 
-            {/* 4. NARC GROUND SOIL GRID (CLICK-TO-INSPECT HUD) */}
+            {/* 2. NARC GROUND SOIL GRID (CLICK-TO-INSPECT HUD) */}
             {layerMode === 'soil' && (
               <div className="glass-panel p-4 rounded-xl border border-emerald-200 bg-emerald-50/70 space-y-2.5 animate-fade-in-up">
                 <div className="flex items-center justify-between border-b border-emerald-200 pb-2">
@@ -1377,7 +1195,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
               </div>
             )}
 
-            {/* 5. HYDROLOGY & RIVER SYSTEMS */}
+            {/* 3. HYDROLOGY & RIVER SYSTEMS */}
             {layerMode === 'hydrology' && (
               <div className="glass-panel p-4 rounded-xl border border-sky-200 bg-sky-50/70 space-y-3 animate-fade-in-up">
                 <div className="flex items-center justify-between border-b border-sky-200 pb-2">
@@ -1398,20 +1216,21 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
                 </div>
 
                 <div className="p-2.5 bg-white rounded-lg border border-sky-200 text-xs space-y-1.5">
-                  <div className="font-bold text-slate-900">Major Watershed Basins:</div>
+                  <div className="font-bold text-slate-900">DHM Hydrological Gauging Stations:</div>
                   <div className="space-y-1 text-[11px] text-slate-700">
-                    <div className="flex justify-between border-b border-slate-100 pb-1">
-                      <span>Kali Gandaki River (Ruru/Kaligandaki border)</span>
-                      <strong className="text-sky-800 font-mono">DHM #415</strong>
-                    </div>
-                    <div className="flex justify-between border-b border-slate-100 pb-1">
-                      <span>Badigad River (Musikot/Isma watershed)</span>
-                      <strong className="text-sky-800 font-mono">DHM #406</strong>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Ridi Khola Catchment (Resunga/Gulmidarbar)</span>
-                      <strong className="text-sky-800 font-mono">Irrigation</strong>
-                    </div>
+                    {dhmRiverStations.map((st) => (
+                      <div
+                        key={st.stationNo}
+                        className="flex justify-between border-b border-slate-100 last:border-b-0 pb-1"
+                      >
+                        <span>
+                          {st.river} ({st.siteName})
+                        </span>
+                        <strong className="text-sky-800 font-mono">
+                          DHM #{st.stationNo} • {st.elevation}m
+                        </strong>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -1422,7 +1241,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
               </div>
             )}
 
-            {/* 6. CLEAN HYDROPOWER & ENERGY */}
+            {/* 4. CLEAN HYDROPOWER & ENERGY */}
             {layerMode === 'energy' && (
               <div className="glass-panel p-4 rounded-xl border border-amber-200 bg-amber-50/70 space-y-3 animate-fade-in-up">
                 <div className="flex items-center justify-between border-b border-amber-200 pb-2">
@@ -1443,34 +1262,33 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
                 </div>
 
                 <div className="p-2.5 bg-white rounded-lg border border-amber-200 text-xs space-y-1.5">
-                  <div className="font-bold text-slate-900">Key Hydropower Powerhouses:</div>
+                  <div className="font-bold text-slate-900">NEA Registered Hydropower Assets:</div>
                   <div className="space-y-1 text-[11px] text-slate-700">
-                    <div className="flex justify-between border-b border-slate-100 pb-1">
-                      <span>Ridi Khola Hydro Project (Ruru)</span>
-                      <strong className="text-amber-800 font-mono">2.4 MW</strong>
-                    </div>
-                    <div className="flex justify-between border-b border-slate-100 pb-1">
-                      <span>Badigad Khola Micro-Hydel (Musikot)</span>
-                      <strong className="text-amber-800 font-mono">1.2 MW</strong>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Tamghas 132kV Substation (Resunga)</span>
-                      <strong className="text-emerald-700 font-mono">Grid Node</strong>
-                    </div>
+                    {hydroPlants.map((plant) => (
+                      <div
+                        key={plant.name}
+                        className="flex justify-between border-b border-slate-100 last:border-b-0 pb-1"
+                      >
+                        <span>
+                          {plant.name} ({plant.river})
+                        </span>
+                        <strong className="text-amber-800 font-mono">{plant.capacityMW} MW</strong>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
                 <div className="p-2 bg-amber-100/70 rounded-lg text-[11px] text-amber-950">
-                  96.8% of households in Gulmi are connected to national hydroelectric transmission, powering coffee
-                  pulp processing mills.
+                  96.8% of households in Gulmi are connected to national hydroelectric transmission, powering
+                  agro-processing mills and rural lift pumps.
                 </div>
               </div>
             )}
 
-            {/* 7. ELEVATION PROFILER INLINE */}
+            {/* 5. ELEVATION PROFILER INLINE */}
             {layerMode === 'elevation' && <DistrictElevationProfiler district={district} />}
 
-            {/* 8. OVERVIEW (INTEGRATED PALIKA SYNTHESIS) */}
+            {/* 6. OVERVIEW (INTEGRATED PALIKA SYNTHESIS) */}
             {layerMode === 'overview' && (
               <div className="glass-panel p-4 rounded-xl border border-slate-200 bg-white space-y-3 animate-fade-in-up">
                 <div className="flex items-center justify-between border-b border-slate-200 pb-2">
@@ -1481,29 +1299,38 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
                     </span>
                   </div>
                   <span className="text-[10px] px-2 py-0.5 rounded font-mono font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                    Nexus 73%
+                    📍 Focused Local Body
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs font-sans">
                   <div className="p-2 bg-slate-50 rounded-lg border border-slate-200">
-                    <span className="text-[10px] text-slate-500 uppercase font-semibold">Priority Cash Crop</span>
+                    <span className="text-[10px] text-slate-500 uppercase font-semibold">Top Feasible Crop</span>
                     <div className="font-bold text-slate-900 mt-0.5 flex items-center gap-1">
-                      <span>☕</span>
-                      <span>Arabica Coffee (95%)</span>
+                      <span>{activePalikaTopCrop?.emoji || '🌾'}</span>
+                      <span>
+                        {activePalikaTopCrop
+                          ? `${activePalikaTopCrop.cropName} (${activePalikaTopCrop.score}%)`
+                          : 'Local Agri'}
+                      </span>
                     </div>
                   </div>
                   <div className="p-2 bg-slate-50 rounded-lg border border-slate-200">
                     <span className="text-[10px] text-slate-500 uppercase font-semibold">Soil Acidity Status</span>
-                    <div className="font-bold text-slate-900 mt-0.5">pH {activePalika.soilPh || 6.7} (Optimal)</div>
+                    <div className="font-bold text-slate-900 mt-0.5">
+                      pH {palikaSoilProfile ? palikaSoilProfile.ph.toFixed(2) : activePalika.soilPh} (
+                      {palikaSoilProfile?.texture || 'Loam'})
+                    </div>
                   </div>
                   <div className="p-2 bg-slate-50 rounded-lg border border-slate-200">
                     <span className="text-[10px] text-slate-500 uppercase font-semibold">Precipitation Inflow</span>
-                    <div className="font-bold text-sky-800 mt-0.5">{activePalika.rainfallMm || 1850} mm/yr</div>
+                    <div className="font-bold text-sky-800 mt-0.5">{activePalika.rainfallMm} mm/yr (DHM)</div>
                   </div>
                   <div className="p-2 bg-slate-50 rounded-lg border border-slate-200">
                     <span className="text-[10px] text-slate-500 uppercase font-semibold">Elevation Band</span>
-                    <div className="font-bold text-amber-800 mt-0.5">{activePalika.elevation || 1400}m ASL</div>
+                    <div className="font-bold text-amber-800 mt-0.5">
+                      {activePalika.elevation}m ({palikaAgroZone})
+                    </div>
                   </div>
                 </div>
               </div>
