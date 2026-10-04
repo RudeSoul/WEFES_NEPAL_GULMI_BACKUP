@@ -48,15 +48,18 @@ import { computeExportTraceability } from '@wefes/wefes-engine';
 import { computeDevelopmentPartnerAlignment } from '@wefes/wefes-engine';
 import { computeAgronomicStandards } from '@wefes/wefes-engine';
 
-import { AquacultureMetricsChart } from '../../components/charts/AquacultureMetricsChart';
-import { CircularSankeyFlow } from '../../components/charts/CircularSankeyFlow';
-import { DonorNetworkGraph } from '../../components/charts/DonorNetworkGraph';
-import { FinancialDcfChart } from '../../components/charts/FinancialDcfChart';
-import { NexusRadarSpider } from '../../components/charts/NexusRadarSpider';
-import { PhenologyTimelineChart } from '../../components/charts/PhenologyTimelineChart';
-import { QueftsNutrientGauge } from '../../components/charts/QueftsNutrientGauge';
-import { SentinelNdviChart } from '../../components/charts/SentinelNdviChart';
-import { SunburstWaterCarbon } from '../../components/charts/SunburstWaterCarbon';
+import {
+  AquacultureMetricsChart,
+  CircularSankeyFlow,
+  DonorNetworkGraph,
+  FinancialDcfChart,
+  HeatStressThermalChart,
+  NexusRadarSpider,
+  PhenologyTimelineChart,
+  QueftsNutrientGauge,
+  SentinelNdviChart,
+  SunburstWaterCarbon,
+} from '../../components/charts';
 
 import { CircularBioeconomyCockpit } from './CircularBioeconomyCockpit';
 import { PalikaFertilizerCockpit } from './PalikaFertilizerCockpit';
@@ -2023,6 +2026,13 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
                     ))}
                   </div>
                 </div>
+
+                <HeatStressThermalChart
+                  districtName={output.districtName}
+                  criticalThresholdTempC={heatStress.criticalLethalTemperatureCelsius}
+                  floweringSterilityRiskPct={heatStress.projectedYieldCollapsePct}
+                  recommendedMitigationAction={heatStress.biophysicalMechanism}
+                />
               </div>
             </div>
           )}

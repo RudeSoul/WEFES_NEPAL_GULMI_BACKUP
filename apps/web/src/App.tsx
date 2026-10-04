@@ -4,6 +4,7 @@ import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { District } from '@wefes/shared-types';
 
 import { Header, InputModal } from './components/common';
+import { initializeRemoteIndicatorData } from './data/districtIndicatorAssets';
 import { DistrictMap } from './features/map';
 import { AnalysisDashboard } from './features/nexus';
 import { DistrictDetail } from './features/palika';
@@ -24,9 +25,10 @@ export function App() {
   const selectedPalikaName = useNexusStore((s) => s.selectedPalikaName);
   const setSelectedPalikaName = useNexusStore((s) => s.setSelectedPalikaName);
 
-  // Pre-fetch the 39-year MERRA-2 gridded monthly climate dataset via store action
+  // Pre-fetch climate dataset and remote indicators on bootstrap
   useEffect(() => {
     fetchClimateDataset();
+    initializeRemoteIndicatorData();
   }, [fetchClimateDataset]);
 
   const handleSelectDistrictFromMap = (district: District, palikaName?: string) => {
