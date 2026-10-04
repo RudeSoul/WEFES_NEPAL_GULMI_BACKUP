@@ -4,6 +4,8 @@ import { Mountain, Waves } from 'lucide-react';
 
 import { DeepNexusAnalysis } from '@wefes/wefes-engine';
 
+import { Latex } from '@/components/common';
+
 interface RusleSpringsTabProps {
   deep: DeepNexusAnalysis;
 }
@@ -22,7 +24,9 @@ export const RusleSpringsTab: React.FC<RusleSpringsTabProps> = ({ deep }) => {
               <h4 className="text-xs font-bold text-emerald-950 font-outfit">
                 RUSLE Empirical Mountain Slope & Topsoil Loss Engine
               </h4>
-              <span className="text-[10px] text-emerald-800 font-mono">A = R × K × LS × C × P</span>
+              <span className="text-[10px] text-emerald-800 font-mono">
+                <Latex math="A = R \cdot K \cdot LS \cdot C \cdot P" />
+              </span>
             </div>
           </div>
           <span className="text-[10px] bg-white text-emerald-950 border border-emerald-300 px-2 py-0.5 rounded-md font-mono font-bold">
@@ -58,10 +62,12 @@ export const RusleSpringsTab: React.FC<RusleSpringsTabProps> = ({ deep }) => {
         </div>
 
         <p className="text-[11px] text-emerald-900/90 font-sans leading-relaxed">
-          <strong>Agronomic Mechanism:</strong> With a canopy cover factor of $C = {rusle.cropCoverC}$, root
-          architecture and vegetative intercept significantly dissipate monsoon raindrop kinetic energy ($R ={' '}
-          {rusle.rainfallErosivityR}$), preventing approximately <strong>{rusle.topsoilPreservedTons} tons/ha</strong>{' '}
-          of nutrient-rich organic topsoil from washing into river siltation.
+          <Latex>
+            <strong>Agronomic Mechanism:</strong> With a canopy cover factor of $C = {rusle.cropCoverC}$, root
+            architecture and vegetative intercept significantly dissipate monsoon raindrop kinetic energy ($R ={' '}
+            {rusle.rainfallErosivityR}$), preventing approximately <strong>{rusle.topsoilPreservedTons} tons/ha</strong>{' '}
+            of nutrient-rich organic topsoil from washing into river siltation.
+          </Latex>
         </p>
       </div>
 

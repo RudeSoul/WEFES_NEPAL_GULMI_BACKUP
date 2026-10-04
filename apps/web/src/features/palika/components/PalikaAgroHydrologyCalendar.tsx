@@ -40,6 +40,7 @@ import {
 
 import { ClimateDataset } from '@wefes/shared-types';
 
+import { Latex } from '@/components/common';
 import {
   MonthAgroHydrology,
   PALIKA_AGRO_HYDROLOGY_DATA,
@@ -428,25 +429,27 @@ export const PalikaAgroHydrologyCalendar: React.FC<SeasonalAgroHydrologyProps> =
             )}
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            {activeTab === 'solar_sizing' ? (
-              <>
-                <strong>Stage 3:</strong> Multi-energy river-lift pump sizing, monthly gross water demand ($m^3$), and
-                energy optimization for <strong>{activePalika.name}</strong> ({elevation_m}m ASL · PVOUT:{' '}
-                {pvoutKwhPerKwp} kWh/kWp/day · Grid: {sizingSummary?.gridProfile?.electrificationRatePct ?? 90}%).
-              </>
-            ) : activeTab === 'soil' ? (
-              <>
-                <strong>Stage 2:</strong> Sequential root-zone soil water balance, moisture carry-over ($S_t$), and
-                allowable depletion threshold for <strong>{activePalika.name}</strong> ({elevation_m}m ASL ·{' '}
-                {soil_lithology}).
-              </>
-            ) : (
-              <>
-                <strong>Stage 1:</strong> Area-weighted precipitation baseline ($P$), representative composite crop
-                evapotranspiration ($ET_c$), and net irrigation requirement for <strong>{activePalika.name}</strong> (
-                {elevation_m}m ASL · {soil_lithology}).
-              </>
-            )}
+            <Latex>
+              {activeTab === 'solar_sizing' ? (
+                <>
+                  <strong>Stage 3:</strong> Multi-energy river-lift pump sizing, monthly gross water demand ($m^3$), and
+                  energy optimization for <strong>{activePalika.name}</strong> ({elevation_m}m ASL · PVOUT:{' '}
+                  {pvoutKwhPerKwp} kWh/kWp/day · Grid: {sizingSummary?.gridProfile?.electrificationRatePct ?? 90}%).
+                </>
+              ) : activeTab === 'soil' ? (
+                <>
+                  <strong>Stage 2:</strong> Sequential root-zone soil water balance, moisture carry-over ($S_t$), and
+                  allowable depletion threshold for <strong>{activePalika.name}</strong> ({elevation_m}m ASL ·{' '}
+                  {soil_lithology}).
+                </>
+              ) : (
+                <>
+                  <strong>Stage 1:</strong> Area-weighted precipitation baseline ($P$), representative composite crop
+                  evapotranspiration ($ET_c$), and net irrigation requirement for <strong>{activePalika.name}</strong> (
+                  {elevation_m}m ASL · {soil_lithology}).
+                </>
+              )}
+            </Latex>
           </p>
         </div>
 
