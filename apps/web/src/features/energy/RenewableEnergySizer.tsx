@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { Droplets, Flame, Sun, Zap } from 'lucide-react';
 
+import { Latex } from '../../components/common';
 import { DISTRICT_PALIKAS } from '../../data/districtPalikaAssets';
 
 interface RenewableEnergySizerProps {
@@ -216,7 +217,11 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({ lang
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-purple-50/50 p-3 rounded-xl border border-purple-200">
             <div>
               <label className="text-[11px] font-bold text-slate-800 block mb-1 flex items-center justify-between">
-                <span>Design Stream Discharge ($Q$):</span>
+                <span>
+                  Design Stream Discharge (
+                  <Latex math="Q" />
+                  ):
+                </span>
                 <span className="text-purple-800 font-mono font-bold bg-purple-100 px-2 py-0.5 rounded">
                   {streamFlowLps} L/s
                 </span>
@@ -239,7 +244,10 @@ export const RenewableEnergySizer: React.FC<RenewableEnergySizerProps> = ({ lang
 
             <div>
               <label className="text-[11px] font-bold text-slate-800 block mb-1 flex items-center justify-between">
-                <span>Gross Hydraulic Head ($H$):</span>
+                <span>
+                  Gross Hydraulic Head (<Latex math="H" />
+                  ):
+                </span>
                 <span className="text-purple-800 font-mono font-bold bg-purple-100 px-2 py-0.5 rounded">
                   {hydraulicHeadM} Meters
                 </span>

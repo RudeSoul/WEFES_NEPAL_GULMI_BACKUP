@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
 import { AlertTriangle, CloudRain, Droplets, Gauge, Mountain, ShieldCheck, TrendingUp, Waves } from 'lucide-react';
+
+import { Latex } from '../../components/common';
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 interface MicroWatershedSimulatorProps {
@@ -179,7 +181,7 @@ export const MicroWatershedSimulator: React.FC<MicroWatershedSimulatorProps> = (
           <div className="flex items-center justify-between text-xs text-sky-900 font-semibold mb-1">
             <span className="flex items-center gap-1.5">
               <Droplets className="w-4 h-4 text-sky-600" />
-              Estimated Discharge ($Q$)
+              Estimated Discharge (<Latex math="Q" />)
             </span>
             <span className="text-[10px] bg-sky-200/80 text-sky-900 px-1.5 py-0.5 rounded font-mono font-bold">
               m³/sec
@@ -190,8 +192,9 @@ export const MicroWatershedSimulator: React.FC<MicroWatershedSimulatorProps> = (
             <span className="text-sm font-sans font-bold text-sky-700">m³/s</span>
           </div>
           <p className="text-[10px] text-sky-800 mt-1 font-sans">
-            Base dry-season flow: <strong>{activeBasin.baseFlowM3s} m³/s</strong> • Runoff coefficient ($C$):{' '}
-            <strong>{activeBasin.runoffCoefficient}</strong>
+            Base dry-season flow: <strong>{activeBasin.baseFlowM3s} m³/s</strong> • Runoff coefficient (
+            <Latex math="C" />
+            ): <strong>{activeBasin.runoffCoefficient}</strong>
           </p>
           {isFloodSurge && (
             <div className="mt-2 text-[10px] bg-amber-100 border border-amber-300 text-amber-900 px-2 py-1 rounded-md flex items-center gap-1 font-semibold animate-pulse">
