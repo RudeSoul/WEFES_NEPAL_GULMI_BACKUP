@@ -132,13 +132,40 @@ export const SpatialSoilSurfaceOverlay: React.FC<SpatialSoilSurfaceOverlayProps>
                 ? 'soil_potassium'
                 : 'soil_ph';
 
-    const cacheKey = `${activeKey}_${geoData ? 'clipped' : 'raw'}`;
+    const geoId = (() => {
+      if (!geoData) return 'raw';
+      const anyG = geoData as {
+        properties?: { name?: string; id?: string; DISTRICT?: string; fullName?: string };
+        id?: string | number;
+        features?: Array<{ properties?: { name?: string; id?: string } }>;
+      };
+      const name =
+        anyG.properties?.name ||
+        anyG.properties?.fullName ||
+        anyG.properties?.DISTRICT ||
+        anyG.properties?.id ||
+        anyG.id;
+      if (name) return String(name).toLowerCase().trim().replace(/\s+/g, '_');
+      if (Array.isArray(anyG.features)) {
+        if (anyG.features.length === 1 && anyG.features[0]?.properties?.name) {
+          return String(anyG.features[0].properties.name).toLowerCase().trim().replace(/\s+/g, '_');
+        }
+        return `collection_${anyG.features.length}`;
+      }
+      return 'clipped';
+    })();
+
+    const cacheKey = `${activeKey}_${geoId}`;
     const cached = soilCacheMap.get(cacheKey);
     if (cached) {
       setDataUrl(cached.url);
       setBounds(cached.bounds);
       return;
     }
+
+    // Reset overlay immediately so previous palika raster is not displayed while loading
+    setDataUrl(null);
+    setBounds(null);
 
     let isMounted = true;
 
