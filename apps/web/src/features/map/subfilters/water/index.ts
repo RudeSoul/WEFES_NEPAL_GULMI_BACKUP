@@ -17,21 +17,6 @@ import { springshedVulnerabilityMethodology } from './springshedVulnerability';
 
 import type { RawMethodologyEntry } from '@/data/districtCalculationAssets';
 
-export {
-  annualPrecipitationMethodology,
-  catchmentsMethodology,
-  dhmStationMethodology,
-  drySeasonPrecipitationMethodology,
-  flowAccumulationMethodology,
-  flowDirectionMethodology,
-  irrigationPotentialMethodology,
-  merraRainfallMethodology,
-  monsoonPrecipitationMethodology,
-  riverBasinsMethodology,
-  riversStreamsMethodology,
-  springshedVulnerabilityMethodology,
-};
-
 export const waterMethodologies: Record<string, RawMethodologyEntry> = {
   merra_rainfall: merraRainfallMethodology,
   annual_precipitation: annualPrecipitationMethodology,

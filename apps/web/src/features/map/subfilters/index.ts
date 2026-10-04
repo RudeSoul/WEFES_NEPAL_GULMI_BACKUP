@@ -11,13 +11,6 @@ import { waterMethodologies } from './water';
 
 import type { RawMethodologyEntry } from '@/data/districtCalculationAssets';
 
-export * from './ecosystem';
-export * from './energy';
-export * from './food';
-export * from './nexus';
-export * from './socioeconomics';
-export * from './water';
-
 export const SUBFILTER_METHODOLOGIES: Record<string, RawMethodologyEntry> = {
   ...waterMethodologies,
   ...foodMethodologies,

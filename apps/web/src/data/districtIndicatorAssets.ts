@@ -12,7 +12,6 @@ import palikaGridRaw from '@data/calculated/indicators/gulmi_palika_grid.json';
 import palikaLandholdingRaw from '@data/calculated/indicators/gulmi_palika_landholding.json';
 import palikaSoilRaw from '@data/calculated/indicators/gulmi_palika_soil.json';
 import palikaTransitRaw from '@data/calculated/indicators/gulmi_palika_transit.json';
-import soilPointsRaw from '@data/real/land_and_soil/gulmi_soil_points_81.json';
 
 import { fetchDataset } from '../services/dataClient';
 
@@ -162,7 +161,7 @@ export const PALIKA_SOIL_DATA = palikaSoilRaw as unknown as {
   palikas: Record<string, PalikaSoilProfile>;
 };
 
-export const PALIKA_TRANSIT_DATA = palikaTransitRaw as unknown as {
+const PALIKA_TRANSIT_DATA = palikaTransitRaw as unknown as {
   palikas: Record<string, Record<string, unknown>>;
 };
 
@@ -179,16 +178,6 @@ export const GULMI_GHI_GRID = ghiGridRaw as unknown as {
   maxVal: number;
   grid: (number | null)[][];
 };
-
-export const GULMI_SOIL_POINTS = soilPointsRaw as unknown as Array<{
-  lat: number;
-  lon: number;
-  nitrogen: number;
-  phosphorus: number;
-  potassium: number;
-  ph: number;
-  soilType: string;
-}>;
 
 export interface MonthAgroHydrology {
   month_num: number;

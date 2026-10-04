@@ -49,15 +49,6 @@ export interface DistrictPalika {
   [key: string]: unknown;
 }
 
-export const PALIKA_GEO_CENTROIDS: Record<string, { lat: number; lng: number }> =
-  (rawPalikaData.palikas.gulmi as unknown as Array<{ name: string; coordinates: [number, number] }>).reduce(
-    (acc: Record<string, { lat: number; lng: number }>, palika) => {
-      acc[palika.name] = { lat: palika.coordinates[0], lng: palika.coordinates[1] };
-      return acc;
-    },
-    {}
-  );
-
 const { _provenance, ...palikaCentroidsMap } = palikaCentroidsData as unknown as Record<
   string,
   { lat: number; lng: number; nepali: string }

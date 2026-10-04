@@ -82,7 +82,7 @@ export function parseDhmStationsMap(features: DhmStationFeature[]): Record<strin
 let cachedDhmStationsMap: Record<string, PalikaDhmStationInfo> | null = null;
 let dhmStationsPromise: Promise<Record<string, PalikaDhmStationInfo>> | null = null;
 
-export async function fetchDhmStationsMap(): Promise<Record<string, PalikaDhmStationInfo>> {
+async function fetchDhmStationsMap(): Promise<Record<string, PalikaDhmStationInfo>> {
   if (cachedDhmStationsMap) {
     return cachedDhmStationsMap;
   }
@@ -99,11 +99,6 @@ export async function fetchDhmStationsMap(): Promise<Record<string, PalikaDhmSta
     })();
   }
   return dhmStationsPromise;
-}
-
-export function setCachedDhmStationsMap(map: Record<string, PalikaDhmStationInfo> | null): void {
-  cachedDhmStationsMap = map;
-  dhmStationsPromise = null;
 }
 
 export interface UsePalikaChoroplethParams {

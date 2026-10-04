@@ -12,16 +12,6 @@ import { soilPotassiumMethodology } from './soilPotassium';
 
 import type { RawMethodologyEntry } from '@/data/districtCalculationAssets';
 
-export {
-  agroforestryBeltMethodology,
-  elevationZonesMethodology,
-  soilNitrogenMethodology,
-  soilOmMethodology,
-  soilPhMethodology,
-  soilPhosphorusMethodology,
-  soilPotassiumMethodology,
-};
-
 export const ecosystemMethodologies: Record<string, RawMethodologyEntry> = {
   soil_ph: soilPhMethodology,
   soil_om: soilOmMethodology,

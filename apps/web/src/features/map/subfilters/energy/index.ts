@@ -9,8 +9,6 @@ import { solarIrradianceMethodology } from './solarIrradiance';
 
 import type { RawMethodologyEntry } from '@/data/districtCalculationAssets';
 
-export { cleanCookingBiomassMethodology, gridReachMethodology, hydroCorridorMethodology, solarIrradianceMethodology };
-
 export const energyMethodologies: Record<string, RawMethodologyEntry> = {
   hydro_corridor: hydroCorridorMethodology,
   solar_irradiance: solarIrradianceMethodology,

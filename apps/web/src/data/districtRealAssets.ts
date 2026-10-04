@@ -5,11 +5,6 @@
 
 import rawAssets from '@data/real/infrastructure/district_infrastructure_assets.json';
 
-export interface DistrictLandmarks {
-  peak: { name: string; elevation: number; lat: number; lon: number };
-  valley: { name: string; elevation: number; lat: number; lon: number };
-}
-
 export interface RealHydropowerAsset {
   name: string;
   capacityMW: number;
@@ -18,15 +13,6 @@ export interface RealHydropowerAsset {
   river: string;
   owner: string;
   commissioned: string;
-}
-
-export interface RealCropPocket {
-  cropName: string;
-  emoji: string;
-  locationName: string;
-  lat: number;
-  lon: number;
-  elevationM: number;
 }
 
 export interface CoffeeLandmark {
@@ -41,15 +27,9 @@ export interface CoffeeLandmark {
   significance: string;
 }
 
-export const DISTRICT_LANDMARKS: Record<string, DistrictLandmarks> =
-  rawAssets.districtLandmarks as Record<string, DistrictLandmarks>;
-
 export const REAL_HYDROPOWER_PLANTS: Record<string, RealHydropowerAsset[]> =
   rawAssets.hydropowerPlants as Record<string, RealHydropowerAsset[]>;
 
 export const GULMI_COFFEE_LANDMARKS: CoffeeLandmark[] =
   rawAssets.coffeeLandmarks as CoffeeLandmark[];
-
-export const GULMI_CROP_POCKETS: Record<string, RealCropPocket[]> =
-  ((rawAssets as unknown as { cropPockets?: Record<string, RealCropPocket[]> }).cropPockets || {}) as Record<string, RealCropPocket[]>;
 

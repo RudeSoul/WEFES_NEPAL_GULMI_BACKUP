@@ -10,14 +10,6 @@ import { singleCropMethodology } from './singleCrop';
 
 import type { RawMethodologyEntry } from '@/data/districtCalculationAssets';
 
-export {
-  allCropsMethodology,
-  cerealIndexMethodology,
-  cropWaterStressMethodology,
-  landTypologyMethodology,
-  singleCropMethodology,
-};
-
 export const foodMethodologies: Record<string, RawMethodologyEntry> = {
   single_crop: singleCropMethodology,
   crop_water_stress: cropWaterStressMethodology,

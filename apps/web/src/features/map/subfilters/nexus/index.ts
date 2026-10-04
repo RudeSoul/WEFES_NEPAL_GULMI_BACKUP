@@ -7,8 +7,6 @@ import { defaultMethodology } from './default';
 
 import type { RawMethodologyEntry } from '@/data/districtCalculationAssets';
 
-export { agroHydrologyWaterBalanceMethodology, defaultMethodology };
-
 export const nexusMethodologies: Record<string, RawMethodologyEntry> = {
   agro_hydrology_water_balance: agroHydrologyWaterBalanceMethodology,
   default: defaultMethodology,
