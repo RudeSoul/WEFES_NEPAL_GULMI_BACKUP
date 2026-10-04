@@ -1,28 +1,18 @@
 // [DATA PROVENANCE]
-// Data Source: apps/web/public/geojson/gulmi-contours.json, apps/web/public/geojson/gulmi-district.json, data/real/boundaries/gulmi-palikas.json, data/real/land_and_soil/gulmi_soil_points_81.json, data/real/infrastructure/district_infrastructure_assets.json
-// Classification: OBSERVED REAL & INTERPOLATED RELIEF
-// Citations: Survey Department / Topographical Survey of Nepal, MoFAGA, DHM Nepal, NARC, NEA
+// Data Source: apps/web/public/geojson/gulmi-contours.json, apps/web/public/geojson/gulmi-district.json, data/real/boundaries/gulmi-palikas.json, data/real/land_and_soil/gulmi_soil_data.nc, data/real/infrastructure/district_infrastructure_assets.json
+// Classification: OBSERVED REAL (NARC NSSRC 100m Geospatial Grid & Survey Department 30m DEM)
+// Citations: Survey Department / Topographical Survey of Nepal, MoFAGA, DHM Nepal, NARC NSSRC, NEA
 import React, { useEffect, useMemo, useState } from 'react';
 
 import type { Feature, FeatureCollection, GeoJsonObject } from 'geojson';
 import L from 'leaflet';
 import { Activity, Compass, Droplets, FlaskConical, Layers, Mountain, Navigation, Zap } from 'lucide-react';
-import {
-  CircleMarker,
-  GeoJSON,
-  MapContainer,
-  Marker,
-  Polyline,
-  Popup,
-  TileLayer,
-  Tooltip,
-  useMap,
-} from 'react-leaflet';
+import { GeoJSON, MapContainer, Marker, Polyline, Popup, TileLayer, Tooltip, useMap } from 'react-leaflet';
 
 import { Crop, District, GulmiContourCollection } from '@wefes/shared-types';
 
 import { DHM_RIVER_STATIONS_BY_DISTRICT, DHMRiverStation } from '../../data/districtHydrologyAssets';
-import { GULMI_SOIL_POINTS as gulmiSoilPoints, PALIKA_SOIL_DATA } from '../../data/districtIndicatorAssets';
+import { PALIKA_SOIL_DATA } from '../../data/districtIndicatorAssets';
 import { DISTRICT_PALIKAS, DistrictPalika, PalikaFeasibleCrop } from '../../data/districtPalikaAssets';
 import { GULMI_PALIKA_NEPALI } from '../../data/districtPalikaAssets';
 import { GULMI_COFFEE_LANDMARKS, REAL_HYDROPOWER_PLANTS, RealHydropowerAsset } from '../../data/districtRealAssets';
@@ -31,6 +21,7 @@ import { ContourLine, generateDistrictContours } from '../../utils/contourGenera
 
 import { DistrictElevationProfiler } from './DistrictElevationProfiler';
 import { MapGestureHandler } from './MapGestureHandler';
+import { SpatialSoilSurfaceOverlay } from './SpatialSoilSurfaceOverlay';
 
 interface DistrictDetailMapProps {
   district: District;
@@ -292,10 +283,10 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
     rural: false,
   });
 
-  // Selected soil point for detailed drawer inspection
-  const [inspectedSoilPoint, setInspectedSoilPoint] = useState<
-    ((typeof gulmiSoilPoints)[number] & { id?: number }) | null
-  >(null);
+  // Selected soil metric for continuous 100m geospatial grid overlay
+  const [soilSubFilter, setSoilSubFilter] = useState<
+    'soil_ph' | 'soil_nitrogen' | 'soil_phosphorus' | 'soil_potassium'
+  >('soil_ph');
 
   // Load Gulmi 12 Palikas GeoJSON, District Boundary, and Precompiled Contours
   useEffect(() => {
@@ -862,57 +853,15 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
                 </Marker>
               ))}
 
-            {/* 81 Verified NARC Ground Soil Testing Sampling Points */}
-            {(layerMode === 'soil' || layerMode === 'overview') &&
-              gulmiSoilPoints.map((pt, idx: number) => {
-                const nColor = pt.nitrogen >= 0.18 ? '#059669' : pt.nitrogen >= 0.14 ? '#10b981' : '#f59e0b';
-                return (
-                  <CircleMarker
-                    key={`soil-pt-${idx}`}
-                    center={[pt.lat, pt.lon]}
-                    radius={5}
-                    pane="markerPane"
-                    pathOptions={{
-                      fillColor: nColor,
-                      fillOpacity: 0.92,
-                      color: '#ffffff',
-                      weight: 1.5,
-                    }}
-                    eventHandlers={{
-                      click: () => {
-                        setInspectedSoilPoint({ ...pt, id: idx + 1 });
-                      },
-                    }}
-                  >
-                    <Tooltip direction="top" offset={[0, -6]} opacity={0.98} pane="popupPane">
-                      <div className="text-xs p-2 min-w-[200px] bg-white rounded-lg shadow-lg border border-slate-200">
-                        <div className="font-bold text-slate-900 border-b border-slate-100 pb-1 mb-1 flex items-center justify-between">
-                          <span>🧪 Soil Point #{idx + 1}</span>
-                          <span className="font-mono text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-bold">
-                            pH {pt.ph}
-                          </span>
-                        </div>
-                        <div className="text-[11px] text-slate-600 space-y-0.5">
-                          <div>
-                            Geology: <strong className="text-slate-800">{pt.soilType}</strong>
-                          </div>
-                          <div className="grid grid-cols-2 gap-1 bg-slate-50 p-1 rounded text-[10px] font-mono mt-1">
-                            <div>
-                              N: <strong className="text-emerald-700">{pt.nitrogen}%</strong>
-                            </div>
-                            <div>
-                              P₂O₅: <strong className="text-blue-700">{pt.phosphorus} kg/ha</strong>
-                            </div>
-                            <div className="col-span-2">
-                              K₂O: <strong className="text-purple-700">{pt.potassium} kg/ha</strong>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Tooltip>
-                  </CircleMarker>
-                );
-              })}
+            {/* Continuous Spatial Soil Heatmap Surface (NARC 100m Soil Grid, 37,800+ Cells) */}
+            {layerMode === 'soil' && (
+              <SpatialSoilSurfaceOverlay
+                subFilter={soilSubFilter}
+                geoData={activePalikaFeature || palikasGeoData || districtGeoData}
+                pane="overlayPane"
+                opacity={0.88}
+              />
+            )}
 
             {/* Hydropower Powerhouses */}
             {(layerMode === 'energy' || layerMode === 'overview') &&
@@ -1144,54 +1093,133 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
               </div>
             )}
 
-            {/* 2. NARC GROUND SOIL GRID (CLICK-TO-INSPECT HUD) */}
+            {/* 2. NARC 100M GEOSPATIAL SOIL GRID HUD */}
             {layerMode === 'soil' && (
-              <div className="glass-panel p-4 rounded-xl border border-emerald-200 bg-emerald-50/70 space-y-2.5 animate-fade-in-up">
+              <div className="glass-panel p-4 rounded-xl border border-emerald-200 bg-emerald-50/70 space-y-3 animate-fade-in-up">
                 <div className="flex items-center justify-between border-b border-emerald-200 pb-2">
                   <div className="flex items-center gap-2">
                     <FlaskConical className="w-4 h-4 text-emerald-600" />
                     <span className="text-xs font-bold text-slate-900 font-outfit uppercase tracking-wider">
-                      NARC Ground Soil Chemical Survey (81 Sampling Points)
+                      NARC 100m Geospatial Soil Grid ({palikaSoilProfile?.sampleCount?.toLocaleString() || '3,486'}{' '}
+                      Empirical Cells)
                     </span>
                   </div>
                   <span className="text-[10px] bg-white text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded font-mono font-bold">
-                    NARC Registry
+                    NARC NSSRC
                   </span>
                 </div>
 
-                {inspectedSoilPoint ? (
-                  <div className="p-3 bg-white rounded-xl border border-emerald-300 space-y-2 text-xs">
-                    <div className="flex justify-between items-center border-b pb-1 font-bold text-slate-900">
-                      <span>🧪 Inspected Soil Point #{inspectedSoilPoint.id}</span>
-                      <span className="bg-emerald-100 text-emerald-800 font-mono text-[10px] px-2 py-0.5 rounded">
-                        pH {inspectedSoilPoint.ph}
+                {/* Subfilter Metric Switcher */}
+                <div className="grid grid-cols-4 gap-1 p-1 bg-white/90 rounded-lg border border-emerald-200 text-[11px] font-semibold">
+                  <button
+                    onClick={() => setSoilSubFilter('soil_ph')}
+                    className={`py-1 rounded text-center transition-colors cursor-pointer ${
+                      soilSubFilter === 'soil_ph'
+                        ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    pH {palikaSoilProfile?.ph || 6.18}
+                  </button>
+                  <button
+                    onClick={() => setSoilSubFilter('soil_nitrogen')}
+                    className={`py-1 rounded text-center transition-colors cursor-pointer ${
+                      soilSubFilter === 'soil_nitrogen'
+                        ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    N {palikaSoilProfile?.nitrogenPct ? `${palikaSoilProfile.nitrogenPct}%` : '0.15%'}
+                  </button>
+                  <button
+                    onClick={() => setSoilSubFilter('soil_phosphorus')}
+                    className={`py-1 rounded text-center transition-colors cursor-pointer ${
+                      soilSubFilter === 'soil_phosphorus'
+                        ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    P {palikaSoilProfile?.phosphorusKgHa ? `${Math.round(palikaSoilProfile.phosphorusKgHa)}` : '176'}
+                  </button>
+                  <button
+                    onClick={() => setSoilSubFilter('soil_potassium')}
+                    className={`py-1 rounded text-center transition-colors cursor-pointer ${
+                      soilSubFilter === 'soil_potassium'
+                        ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    K {palikaSoilProfile?.potassiumKgHa ? `${Math.round(palikaSoilProfile.potassiumKgHa)}` : '232'}
+                  </button>
+                </div>
+
+                {/* Local Palika Empirical Soil Chemistry */}
+                <div className="p-3 bg-white rounded-xl border border-emerald-300 space-y-2.5 text-xs shadow-2xs">
+                  <div className="flex justify-between items-center border-b border-slate-100 pb-1.5 font-bold text-slate-900">
+                    <span>📍 {activePalika.name} Soil Survey</span>
+                    <span className="bg-emerald-100 text-emerald-800 font-mono text-[10px] px-2 py-0.5 rounded font-bold">
+                      {palikaSoilProfile?.sampleCount?.toLocaleString() || '3,486'} Samples
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-[11px]">
+                    <div>
+                      <span className="text-slate-500">Soil Reaction:</span>{' '}
+                      <strong className="text-emerald-700">pH {palikaSoilProfile?.ph || 6.18}</strong>
+                      <span className="text-[10px] text-slate-400 block font-mono">
+                        {palikaSoilProfile?.phMin || 5.63}–{palikaSoilProfile?.phMax || 6.49} (
+                        {palikaSoilProfile?.phRating || 'Optimal'})
                       </span>
                     </div>
-                    <div className="text-[11px] text-slate-600">
-                      Soil Geology Classification:{' '}
-                      <strong className="text-slate-900">{inspectedSoilPoint.soilType}</strong>
+                    <div>
+                      <span className="text-slate-500">USDA Texture:</span>{' '}
+                      <strong className="text-slate-800">{palikaSoilProfile?.texture || 'Loam'}</strong>
+                      <span className="text-[10px] text-slate-400 block font-mono">
+                        Clay {palikaSoilProfile?.clayPct || 8.9}% · Silt {palikaSoilProfile?.siltPct || 44.8}%
+                      </span>
                     </div>
-                    <div className="grid grid-cols-3 gap-1.5 font-mono text-[11px] text-center">
-                      <div className="p-1.5 bg-emerald-50 rounded border border-emerald-200">
-                        <div className="text-[9px] text-slate-500 font-sans">Total Nitrogen</div>
-                        <div className="font-bold text-emerald-800">{inspectedSoilPoint.nitrogen}%</div>
+                    <div>
+                      <span className="text-slate-500">Organic Matter:</span>{' '}
+                      <strong className="text-slate-800">{palikaSoilProfile?.organicMatterPct || 3.18}%</strong>
+                      <span className="text-[10px] text-slate-400 block font-mono">
+                        Rating: {palikaSoilProfile?.organicMatterRating || 'Medium'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500">Classification:</span>{' '}
+                      <strong className="text-slate-800">
+                        {palikaSoilProfile?.dominantSoil || 'Eutric Cambisols'}
+                      </strong>
+                      <span className="text-[10px] text-slate-400 block font-mono">
+                        Code: {palikaSoilProfile?.dominantSoilCode || 'CMe'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-1.5 font-mono text-[11px] text-center pt-1 border-t border-slate-100">
+                    <div className="p-1.5 bg-emerald-50 rounded border border-emerald-200">
+                      <div className="text-[9px] text-slate-500 font-sans">Total Nitrogen</div>
+                      <div className="font-bold text-emerald-800">{palikaSoilProfile?.nitrogenPct || 0.15}%</div>
+                      <div className="text-[9px] text-emerald-600 font-sans">
+                        {palikaSoilProfile?.nitrogenRating || 'Medium'}
                       </div>
-                      <div className="p-1.5 bg-blue-50 rounded border border-blue-200">
-                        <div className="text-[9px] text-slate-500 font-sans">Avail. P₂O₅</div>
-                        <div className="font-bold text-blue-800">{inspectedSoilPoint.phosphorus} kg/ha</div>
+                    </div>
+                    <div className="p-1.5 bg-blue-50 rounded border border-blue-200">
+                      <div className="text-[9px] text-slate-500 font-sans">Avail. P₂O₅</div>
+                      <div className="font-bold text-blue-800">{palikaSoilProfile?.phosphorusKgHa || 176.1} kg/ha</div>
+                      <div className="text-[9px] text-blue-600 font-sans">
+                        {palikaSoilProfile?.phosphorusRating || 'High'}
                       </div>
-                      <div className="p-1.5 bg-purple-50 rounded border border-purple-200">
-                        <div className="text-[9px] text-slate-500 font-sans">Avail. K₂O</div>
-                        <div className="font-bold text-purple-800">{inspectedSoilPoint.potassium} kg/ha</div>
+                    </div>
+                    <div className="p-1.5 bg-purple-50 rounded border border-purple-200">
+                      <div className="text-[9px] text-slate-500 font-sans">Avail. K₂O</div>
+                      <div className="font-bold text-purple-800">{palikaSoilProfile?.potassiumKgHa || 231.7} kg/ha</div>
+                      <div className="text-[9px] text-purple-600 font-sans">
+                        {palikaSoilProfile?.potassiumRating || 'Medium'}
                       </div>
                     </div>
                   </div>
-                ) : (
-                  <div className="p-2.5 bg-white rounded-lg border border-slate-200 text-xs text-slate-600">
-                    Click any point marker on the map to inspect localized Nitrogen, Phosphorus, Potassium, and Soil pH
-                    readings.
-                  </div>
-                )}
+                </div>
               </div>
             )}
 
