@@ -549,18 +549,14 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
 
     const pName = props.name || 'Palika';
     const nepName = props.nepaliName || GULMI_PALIKA_NEPALI[pName] || '';
+    const isSelected = pName.toLowerCase().includes(activePalika.name.toLowerCase());
 
     layer.on({
-      click: () => {
-        if (onSelectPalika) {
-          onSelectPalika(pName);
-        }
-      },
       mouseover: (e) => {
         const target = e.target;
         target.setStyle({
-          fillOpacity: 0.45,
-          weight: 3,
+          fillOpacity: isSelected ? 0.45 : 0.2,
+          weight: isSelected ? 3.5 : 2,
         });
       },
       mouseout: (e) => {
@@ -573,7 +569,9 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
       `
       <div style="font-family: system-ui, sans-serif; font-size: 11px; padding: 2px;">
         <strong>${pName}</strong> ${nepName ? `(${nepName})` : ''}
-        <div style="font-size: 9.5px; color: #475569;">Click to inspect dossier</div>
+        <div style="font-size: 9.5px; color: ${isSelected ? '#059669' : '#64748b'}; font-weight: ${isSelected ? '600' : 'normal'};">
+          ${isSelected ? '📍 Active Focused Palika' : 'Adjacent Palika (Spatial Context)'}
+        </div>
       </div>
     `,
       { sticky: true, direction: 'top', opacity: 0.95 }
@@ -811,11 +809,6 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
                   key={`palika-pin-${m.palika.id}-${idx}`}
                   position={[m.palika.coordinates[0], m.palika.coordinates[1]]}
                   icon={createPalikaPinIcon(m.cropItem.emoji, m.palika.name, m.cropItem.score, m.isHighlighted)}
-                  eventHandlers={{
-                    click: () => {
-                      if (onSelectPalika) onSelectPalika(m.palika.name);
-                    },
-                  }}
                 >
                   <Popup className="custom-popup" autoPan={false}>
                     <div className="p-2.5 space-y-1.5 text-xs font-sans min-w-[210px]">
@@ -854,10 +847,10 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
               ))}
 
             {/* Continuous Spatial Soil Heatmap Surface (NARC 100m Soil Grid, 37,800+ Cells) */}
-            {layerMode === 'soil' && (
+            {layerMode === 'soil' && activePalikaFeature && (
               <SpatialSoilSurfaceOverlay
                 subFilter={soilSubFilter}
-                geoData={activePalikaFeature || palikasGeoData || districtGeoData}
+                geoData={activePalikaFeature}
                 pane="overlayPane"
                 opacity={0.88}
               />
