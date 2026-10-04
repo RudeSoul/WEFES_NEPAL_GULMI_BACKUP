@@ -11,6 +11,8 @@
     "prepare": "git config core.hooksPath .githooks",
     "lint": "pnpm exec turbo run lint",
     "lint:fix": "pnpm exec turbo run lint:fix",
+    "knip": "knip",
+    "knip:report": "knip --reporter compact --no-exit-code",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "clean": "pnpm exec turbo run clean"
@@ -19,16 +21,14 @@
     "@eslint/js": "^9.20.0",
     "eslint": "^9.20.1",
     "eslint-config-prettier": "^10.0.1",
+    "knip": "^6.32.2",
     "prettier": "^3.4.2",
     "turbo": "^2.4.0",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.24.0"
   },
-  "packageManager": "pnpm@10.12.4",
+  "packageManager": "pnpm@12.9.0",
   "engines": {
     "node": ">=18.0.0"
-  },
-  "dependencies": {
-    "knip": "^6.32.2"
   }
 }
