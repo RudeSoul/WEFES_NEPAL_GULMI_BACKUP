@@ -396,8 +396,7 @@ simulation.generate_latex_report("${districtName.toLowerCase()}_report.tex")`;
                     </span>
                     <span className="text-emerald-800 text-[11px] font-sans">
                       <Latex>
-                        $\mathrm{ET}_c = {penmanKc} \times \mathrm{ET}_0(\alpha = {penmanAlbedo})$ → Recalculated live
-                        in WebAssembly memory
+                        {`$\\mathrm{ET}_c = ${penmanKc} \\times \\mathrm{ET}_0(\\alpha = ${penmanAlbedo})$ → Recalculated live in WebAssembly memory`}
                       </Latex>
                     </span>
                   </div>
