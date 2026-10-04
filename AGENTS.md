@@ -94,7 +94,7 @@ When working on maps, subfilters, legends, or analytics, **NEVER search or grep 
 - **Choropleth Join Hook**: `apps/web/src/hooks/usePalikaChoropleth.ts` (Zero hardcoding; joins palika GeoJSON with calculation metrics).
 - **SubFilter Toolbar UI**: `apps/web/src/features/map/SubFilterToolbar.tsx` (Dropdowns for subfilters and timescale selectors).
 - **District Map Component**: `apps/web/src/features/map/DistrictMap.tsx` (Leaflet rendering, legend display, layer briefing).
-- **Layer Briefing & Methodologies**: `apps/web/src/data/districtCalculationAssets.ts` and `data/formulas/analytical_methodologies.json`.
+- **Layer Briefing & Methodologies**: `apps/web/src/data/districtCalculationAssets.ts` and `apps/web/src/features/map/subfilters` (`SUBFILTER_METHODOLOGIES`).
 - **Crop Suitability & Water Stress Assets**: `apps/web/src/data/cropSuitabilityAssets.ts`.
 - **Legend Type Contracts**: `packages/shared-types/src/legend-contracts.ts`.
 
