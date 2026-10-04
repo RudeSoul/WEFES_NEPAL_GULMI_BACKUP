@@ -68,6 +68,8 @@ import { SpatialSettlementDensityOverlay } from './SpatialSettlementDensityOverl
 import { SpatialSoilSurfaceOverlay } from './SpatialSoilSurfaceOverlay';
 import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
 
+import { Latex } from '@/components/common';
+
 // Fix Leaflet default marker icon
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -504,7 +506,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
         if (roads) setNationalRoads(roads);
         if (rivers) setGulmiRivers(rivers);
         if (hydroAssets?.type === 'FeatureCollection' && Array.isArray(hydroAssets.features)) {
-          setHydrologyStations(hydroAssets.features);
+          setHydrologyStations(hydroAssets.features as Feature<Point, DhmStationProperties>[]);
         }
         setGeoLoading(false);
       })
@@ -740,7 +742,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
     });
 
     const updateDirection = (e: L.LeafletMouseEvent) => {
-      const tooltip = (layer as any).getTooltip?.();
+      const tooltip = layer.getTooltip?.();
       if (!tooltip) return;
       const y = e.containerPoint?.y;
       if (y === undefined) return;
@@ -943,7 +945,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
   };
 
   // [DATA PROVENANCE & CALCULATION METHODOLOGY LOADER]
-  // Loaded from data/formulas/analytical_methodologies.json (Strict Rule 5 Zero-Hardcoding Compliance)
+  // Loaded from SUBFILTER_METHODOLOGIES (apps/web/src/features/map/subfilters)
   const currentCropId = selectedMapCropId || subFilters.crop || 'coffee';
   const validatedCrop = VALIDATED_CROPS[currentCropId];
   const activeCropName =
@@ -2146,7 +2148,9 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                     : 'Mathematical & Analytical Model:'}
               </div>
               <div className="bg-slate-50/80 border border-slate-200/70 rounded-lg p-2.5 font-mono text-xs shadow-2xs space-y-1.5">
-                <div className="font-semibold text-slate-900 break-words leading-snug">{activeCalc.formula}</div>
+                <div className="font-semibold text-slate-900 break-words leading-snug text-center text-base">
+                  <Latex>{activeCalc.formula}</Latex>
+                </div>
                 {activeCalc.parameter && (
                   <div className="text-[10px] text-slate-500 font-sans border-t border-slate-200/60 pt-1 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />
@@ -2160,11 +2164,11 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
                     <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider font-outfit">
                       {lang === 'np' ? 'संकेत विवरण (Symbols):' : 'Variable Definitions:'}
                     </div>
-                    <div className="grid grid-cols-1 gap-1 text-[10.5px] font-sans">
+                    <div className="grid grid-cols-1 gap-1 text-xs font-sans">
                       {activeCalc.variables.map((v, i) => (
                         <div key={i} className="flex items-baseline gap-1.5 text-slate-600">
-                          <span className="font-mono font-bold text-slate-800 bg-white border border-slate-200 px-1 py-0.2 rounded text-[10px] shrink-0">
-                            {v.symbol}
+                          <span className="font-mono font-bold text-slate-800 bg-white border border-slate-200 text-sm px-1 py-0.2 rounded shrink-0">
+                            <Latex>{v.symbol}</Latex>
                           </span>
                           <span className="text-slate-300 text-[10px]">=</span>
                           <span className="leading-tight text-slate-600">{v.definition}</span>

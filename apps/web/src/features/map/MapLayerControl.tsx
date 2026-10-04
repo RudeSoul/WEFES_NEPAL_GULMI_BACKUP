@@ -1,5 +1,5 @@
 // [DATA PROVENANCE]
-// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/agriculture/crop_requirement.json, data/formulas/analytical_methodologies.json
+// Data Source: data/real/boundaries/gulmi-palikas.json, data/real/agriculture/crop_requirement.json, apps/web/src/features/map/subfilters (SUBFILTER_METHODOLOGIES)
 // Classification: OBSERVED REAL & EMPIRICAL SCIENTIFIC SURFACES
 // Citations: Survey Department Nepal, DHM, NARC, MoALD, DOED, NEA, ICIMOD, FAO ECOCROP, NASA POWER
 
