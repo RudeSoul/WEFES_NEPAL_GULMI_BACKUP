@@ -17,7 +17,7 @@ export interface CalculateHarvestImpactInput {
   transportMode?: 'tractor_trailer' | 'light_mini_truck' | 'heavy_diesel_truck' | 'gravity_ropeway';
 }
 
-export class NexusEngineService {
+class NexusEngineService {
   public calculateHarvest(input: CalculateHarvestImpactInput): WEFESOutput {
     const district = db.getDistrictById(input.districtId) || db.getDistrictById('gulmi');
     if (!district) {

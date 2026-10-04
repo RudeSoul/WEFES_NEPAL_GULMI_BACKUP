@@ -1,7 +1,7 @@
 import { db } from '@wefes/database';
 import type { Crop } from '@wefes/shared-types';
 
-export class AgronomySoilService {
+class AgronomySoilService {
   public getAllCrops(): Crop[] {
     return db.getAllCrops();
   }

@@ -202,5 +202,3 @@ export const SubFilterToolbar: React.FC = () => {
     </div>
   );
 };
-
-export default SubFilterToolbar;

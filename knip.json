@@ -17,7 +17,7 @@
       "project": ["src/**/*.ts"]
     },
     "packages/database": {
-      "entry": ["src/index.ts", "src/seed.ts"],
+      "entry": ["src/index.ts"],
       "project": ["src/**/*.ts"]
     },
     "engines/nexus": {

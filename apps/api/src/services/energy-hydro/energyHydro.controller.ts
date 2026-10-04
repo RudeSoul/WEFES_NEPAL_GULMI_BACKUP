@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { energyHydroService } from './energyHydro.service';
 
-export class EnergyHydroController {
+class EnergyHydroController {
   public getHydropower(req: Request, res: Response, next: NextFunction) {
     try {
       const data = energyHydroService.getHydropowerProfile(req.params.districtId || 'gulmi');

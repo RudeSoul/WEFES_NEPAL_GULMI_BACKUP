@@ -12,7 +12,7 @@ export interface ClimateMonthlyData {
   [key: string]: unknown;
 }
 
-export class GisClimateService {
+class GisClimateService {
   private geojsonDir: string;
   private cache: Map<string, unknown> = new Map();
 

@@ -82,5 +82,3 @@ export const PillarFilter: React.FC<PillarFilterProps> = ({ selectedPillar, onSe
     </div>
   );
 };
-
-export default PillarFilter;

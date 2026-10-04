@@ -2231,5 +2231,3 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
     </div>
   );
 };
-
-export default DistrictMap;

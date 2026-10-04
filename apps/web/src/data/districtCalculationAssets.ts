@@ -52,7 +52,7 @@ export interface ResolvedCalculationMethodology {
   currentStat: string;
 }
 
-export const ANALYTICAL_METHODOLOGIES = methodologiesData.methodologies as Record<string, RawMethodologyEntry>;
+const ANALYTICAL_METHODOLOGIES = methodologiesData.methodologies as Record<string, RawMethodologyEntry>;
 
 export interface ResolveMethodologyParams {
   selectedPillar: string;

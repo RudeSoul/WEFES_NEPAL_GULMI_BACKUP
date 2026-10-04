@@ -505,5 +505,3 @@ export const DistrictHoverCard: React.FC<DistrictHoverCardProps> = ({
     </div>
   );
 };
-
-export default DistrictHoverCard;

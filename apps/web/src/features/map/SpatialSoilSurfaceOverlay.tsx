@@ -275,5 +275,3 @@ export const SpatialSoilSurfaceOverlay: React.FC<SpatialSoilSurfaceOverlayProps>
 
   return <ImageOverlay bounds={bounds} url={dataUrl} opacity={opacity} pane={pane} zIndex={330} />;
 };
-
-export default SpatialSoilSurfaceOverlay;

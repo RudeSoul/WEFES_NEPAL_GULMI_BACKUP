@@ -175,5 +175,3 @@ export const ClimateTimeController: React.FC<ClimateTimeControllerProps> = ({
     </div>
   );
 };
-
-export default ClimateTimeController;

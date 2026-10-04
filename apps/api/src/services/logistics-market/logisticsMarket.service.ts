@@ -1,6 +1,6 @@
 import { db, getPalikaLogisticsRoute, NEPAL_CUSTOMS_BORDER_PORTS } from '@wefes/database';
 
-export class LogisticsMarketService {
+class LogisticsMarketService {
   public getPalikaRoute(districtId: string = 'gulmi', palikaName?: string) {
     return getPalikaLogisticsRoute(districtId, palikaName);
   }

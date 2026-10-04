@@ -208,5 +208,3 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
     </div>
   );
 };
-
-export default DistrictDetail;
