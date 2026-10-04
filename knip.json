@@ -1,11 +1,14 @@
 {
   "$schema": "https://unpkg.com/knip@5/overview/knip.json",
+  "rules": {
+    "types": "off"
+  },
   "workspaces": {
     ".": {
       "entry": ["scripts/update-coffee-data.js"]
     },
     "apps/web": {
-      "entry": ["src/main.tsx"],
+      "entry": ["src/main.tsx", "src/features/map/SubFilterToolbar.tsx"],
       "project": ["src/**/*.{ts,tsx}"]
     },
     "apps/api": {
@@ -18,7 +21,8 @@
     },
     "packages/database": {
       "entry": ["src/index.ts"],
-      "project": ["src/**/*.ts"]
+      "project": ["src/**/*.ts"],
+      "ignoreDependencies": ["@prisma/client"]
     },
     "engines/nexus": {
       "entry": ["src/index.ts"],

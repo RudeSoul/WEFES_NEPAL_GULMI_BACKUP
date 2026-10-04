@@ -208,9 +208,6 @@ importers:
       express:
         specifier: ^4.19.2
         version: 4.22.2(supports-color@7.2.0)
-      zod:
-        specifier: ^3.23.8
-        version: 3.25.76
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17
@@ -288,9 +285,6 @@ importers:
       '@types/geojson':
         specifier: ^7946.0.16
         version: 7946.0.16
-      '@types/katex':
-        specifier: ^0.16.8
-        version: 0.16.8
       '@types/leaflet':
         specifier: ^1.9.12
         version: 1.9.22
@@ -1539,9 +1533,6 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
-
-  '@types/katex@0.16.8':
-    resolution: {integrity: sha512-trgaNyfU+Xh2Tc+ABIb44a5AYUpicB3uwirOioeOkNPPbmgRNtcWyDeeFRzjPZENO9Vq8gvVqfhaaXWLlevVwg==}
 
   '@types/leaflet@1.9.22':
     resolution: {integrity: sha512-h3lhECYEKDasG7LFHu+GiHqAvsgLuQvlJvVZzJDGONo3sEL+wUOqSFLnwkZlK0qVxnxbuGFW8iBlJNYs5wgndA==}
@@ -4020,8 +4011,6 @@ snapshots:
   '@types/http-errors@2.0.5': {}
 
   '@types/json-schema@7.0.15': {}
-
-  '@types/katex@0.16.8': {}
 
   '@types/leaflet@1.9.22':
     dependencies:
