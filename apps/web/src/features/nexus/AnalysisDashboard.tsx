@@ -18,13 +18,12 @@ import {
 } from 'lucide-react';
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts';
 
-import { WEFESOutput } from '@wefes/shared-types';
+import { useNexusStore } from '../../store';
 
 import { FactorDetailModal } from './FactorDetailModal';
 import { NexusScientificModal } from './NexusScientificModal';
 
-interface AnalysisDashboardProps {
-  output: WEFESOutput;
+export interface AnalysisDashboardProps {
   onOpenSimulator: () => void;
   onOpenDossier?: () => void;
   onBackToDistrict?: () => void;
@@ -32,14 +31,32 @@ interface AnalysisDashboardProps {
 }
 
 export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
-  output,
   onOpenSimulator,
   onOpenDossier,
   onBackToDistrict,
   onBackToMap,
 }) => {
+  const output = useNexusStore((s) => s.analysisOutput);
   const [selectedFactorKey, setSelectedFactorKey] = useState<string | null>(null);
   const [isScientificModalOpen, setIsScientificModalOpen] = useState(false);
+
+  if (!output) {
+    return (
+      <div className="p-8 text-center bg-white rounded-xl border border-slate-200">
+        <p className="text-slate-600 font-medium mb-4">
+          No active analysis loaded. Please select a Palika and crop to run analysis.
+        </p>
+        {onBackToMap && (
+          <button
+            onClick={onBackToMap}
+            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer"
+          >
+            Go to District Map
+          </button>
+        )}
+      </div>
+    );
+  }
 
   const radarData = [
     { pillar: 'Water (Resource)', score: 100 - output.water.waterStressIndex },

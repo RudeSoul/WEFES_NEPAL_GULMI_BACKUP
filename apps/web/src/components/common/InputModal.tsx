@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { ArrowRight, Calculator, Scale, Sparkles, Sprout, X } from 'lucide-react';
 
 import { CropUnit } from '@wefes/shared-types';
-import { UNIT_CONVERSIONS } from '@wefes/wefes-engine';
 import { calculateHarvestImpact } from '@wefes/wefes-engine';
+import { UNIT_CONVERSIONS } from '@wefes/wefes-engine';
 
 import { useNexusStore } from '../../store';
 
@@ -21,6 +21,12 @@ export const InputModal: React.FC<InputModalProps> = ({ onRunAnalysis }) => {
 
   const [quantity, setQuantity] = useState<number>(1000);
   const [unit, setUnit] = useState<CropUnit>(crop?.defaultUnit ?? 'kg');
+
+  useEffect(() => {
+    if (crop?.defaultUnit) {
+      setUnit(crop.defaultUnit);
+    }
+  }, [crop]);
 
   if (!isOpen || !district || !crop) return null;
 

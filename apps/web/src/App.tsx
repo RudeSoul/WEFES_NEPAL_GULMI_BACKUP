@@ -19,7 +19,6 @@ export function App() {
   // Zustand Store Selectors
   const selectedDistrict = useNexusStore((s) => s.selectedDistrict);
   const setSelectedDistrict = useNexusStore((s) => s.setSelectedDistrict);
-  const selectedCrop = useNexusStore((s) => s.selectedCrop);
   const analysisOutput = useNexusStore((s) => s.analysisOutput);
   const fetchClimateDataset = useNexusStore((s) => s.fetchClimateDataset);
   const selectedPalikaName = useNexusStore((s) => s.selectedPalikaName);
@@ -63,29 +62,14 @@ export function App() {
           <Route
             path={ROUTES.ANALYSIS}
             element={
-              analysisOutput ? (
-                <AnalysisDashboard
-                  output={analysisOutput}
-                  onOpenSimulator={() => navigate(ROUTES.SIMULATOR)}
-                  onOpenDossier={() => navigate(ROUTES.DOSSIER)}
-                  onBackToDistrict={() =>
-                    navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS)
-                  }
-                  onBackToMap={() => navigate(ROUTES.MAP)}
-                />
-              ) : (
-                <div className="p-8 text-center bg-white rounded-xl border border-slate-200">
-                  <p className="text-slate-600 font-medium mb-4">
-                    No active analysis loaded. Please select a Palika and crop to run analysis.
-                  </p>
-                  <button
-                    onClick={() => navigate(ROUTES.MAP)}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-colors"
-                  >
-                    Go to District Map
-                  </button>
-                </div>
-              )
+              <AnalysisDashboard
+                onOpenSimulator={() => navigate(ROUTES.SIMULATOR)}
+                onOpenDossier={() => navigate(ROUTES.DOSSIER)}
+                onBackToDistrict={() =>
+                  navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS)
+                }
+                onBackToMap={() => navigate(ROUTES.MAP)}
+              />
             }
           />
 
@@ -154,7 +138,7 @@ export function App() {
         </Routes>
       </main>
 
-      {selectedDistrict && selectedCrop && <InputModal onRunAnalysis={handleRunAnalysis} />}
+      <InputModal onRunAnalysis={handleRunAnalysis} />
 
       <footer className="border-t border-slate-200 bg-white py-4 px-4 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
