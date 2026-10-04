@@ -11,7 +11,6 @@ import { db } from '@wefes/database';
 import { ClimateDataset, Crop, District } from '@wefes/shared-types';
 import { arimaForecast, extractAnnualRainfallSeries } from '@wefes/wefes-engine';
 
-import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
 import { fetchGeoJson } from '../../services/dataClient';
 import { DistrictDetailMap } from '../map/DistrictDetailMap';
 
@@ -19,6 +18,8 @@ import { IndicatorModal, ModalKey } from './components/IndicatorModal';
 import { PalikaAgroHydrologyCalendar } from './components/PalikaAgroHydrologyCalendar';
 import { PalikaCropSuitabilityGrid } from './components/PalikaCropSuitabilityGrid';
 import { PalikaHeroHeader } from './components/PalikaHeroHeader';
+
+import { DISTRICT_PALIKAS, DistrictPalika } from '@/data/districtPalikaAssets';
 
 export interface DistrictDetailProps {
   district: District;
@@ -38,14 +39,6 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
   climateDataset: initialClimateDataset,
 }) => {
   const [cropSpectrumMode, setCropSpectrumMode] = useState<'verified' | 'all'>('verified');
-
-  const verifiedDistrictCrops = useMemo(() => db.getDistrictCrops(district.id), [district.id]);
-  const allDistrictCrops = useMemo(() => db.getAllDistrictCrops(district.id), [district.id]);
-  const displayedDistrictCrops = cropSpectrumMode === 'verified' ? verifiedDistrictCrops : allDistrictCrops;
-
-  const [activeHoverCrop, setActiveHoverCrop] = useState<Crop | null>(displayedDistrictCrops[0]?.crop || null);
-  const [climateDataset, setClimateDataset] = useState<ClimateDataset | null>(initialClimateDataset || null);
-  const [openModal, setOpenModal] = useState<ModalKey>(null);
   const [activePalikaName, setActivePalikaNameState] = useState<string>(initialPalikaName || 'Resunga');
 
   const setActivePalikaName = useCallback(
@@ -55,6 +48,43 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
     },
     [onSelectPalika]
   );
+
+  useEffect(() => {
+    if (initialPalikaName) {
+      setActivePalikaName(initialPalikaName);
+    }
+  }, [initialPalikaName, setActivePalikaName]);
+
+  const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
+  const activePalika: DistrictPalika =
+    gulmiPalikas.find((p) => p.name.toLowerCase() === activePalikaName.toLowerCase()) ||
+    gulmiPalikas[0] ||
+    ({} as DistrictPalika);
+
+  const palikaContext = useMemo(
+    () => ({
+      name: activePalika.name,
+      elevation: activePalika.elevation,
+      avgTempC: activePalika.avgTempC,
+      rainfallMm: activePalika.rainfallMm,
+      soilPh: activePalika.soilPh,
+    }),
+    [activePalika.name, activePalika.elevation, activePalika.avgTempC, activePalika.rainfallMm, activePalika.soilPh]
+  );
+
+  const verifiedDistrictCrops = useMemo(
+    () => db.getDistrictCrops(district.id, palikaContext),
+    [district.id, palikaContext]
+  );
+  const allDistrictCrops = useMemo(
+    () => db.getAllDistrictCrops(district.id, palikaContext),
+    [district.id, palikaContext]
+  );
+  const displayedDistrictCrops = cropSpectrumMode === 'verified' ? verifiedDistrictCrops : allDistrictCrops;
+
+  const [activeHoverCrop, setActiveHoverCrop] = useState<Crop | null>(displayedDistrictCrops[0]?.crop || null);
+  const [climateDataset, setClimateDataset] = useState<ClimateDataset | null>(initialClimateDataset || null);
+  const [openModal, setOpenModal] = useState<ModalKey>(null);
 
   useEffect(() => {
     if (initialClimateDataset) {
@@ -68,21 +98,12 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
 
   useEffect(() => {
     if (displayedDistrictCrops && displayedDistrictCrops.length > 0) {
-      setActiveHoverCrop(displayedDistrictCrops[0].crop);
+      const exists = displayedDistrictCrops.some((c) => c.crop.id === activeHoverCrop?.id);
+      if (!exists) {
+        setActiveHoverCrop(displayedDistrictCrops[0].crop);
+      }
     }
-  }, [displayedDistrictCrops]);
-
-  useEffect(() => {
-    if (initialPalikaName) {
-      setActivePalikaName(initialPalikaName);
-    }
-  }, [initialPalikaName, setActivePalikaName]);
-
-  const gulmiPalikas = DISTRICT_PALIKAS['gulmi'] || [];
-  const activePalika: DistrictPalika =
-    gulmiPalikas.find((p) => p.name.toLowerCase() === activePalikaName.toLowerCase()) ||
-    gulmiPalikas[0] ||
-    ({} as DistrictPalika);
+  }, [displayedDistrictCrops, activeHoverCrop]);
 
   const activeSuitability =
     displayedDistrictCrops.find((c) => c.crop.id === activeHoverCrop?.id)?.suitability ||
@@ -153,6 +174,7 @@ export const DistrictDetail: React.FC<DistrictDetailProps> = ({
       {/* Crop Suitability & Telemetry Grid */}
       <PalikaCropSuitabilityGrid
         district={district}
+        activePalika={activePalika}
         displayedDistrictCrops={displayedDistrictCrops}
         verifiedDistrictCrops={verifiedDistrictCrops}
         allDistrictCrops={allDistrictCrops}

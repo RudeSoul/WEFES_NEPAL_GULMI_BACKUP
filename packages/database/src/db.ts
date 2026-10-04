@@ -1,6 +1,6 @@
 import { District, Crop, CropSuitability } from '@wefes/shared-types';
 import { DISTRICTS_SEED_DATA, CROPS_SEED_DATA } from './seed-data';
-import { computeCropSuitability } from '@wefes/wefes-engine';
+import { computeCropSuitability, PalikaContext } from '@wefes/wefes-engine';
 
 /**
  * Map from crop ID to the keyword patterns that match it
@@ -95,8 +95,13 @@ export class WEFESDatabase {
   /**
    * Returns crops with suitability scores, filtered to only feasible crops
    * for the district based on the Nepal_District_Crops_Feasibility.csv data.
+   * If palikaContext is provided, suitability is dynamically computed for that palika's
+   * biophysical micro-climate and sorted descending by suitability score.
    */
-  public getDistrictCrops(districtId: string): { crop: Crop; suitability: CropSuitability }[] {
+  public getDistrictCrops(
+    districtId: string,
+    palikaContext?: PalikaContext
+  ): { crop: Crop; suitability: CropSuitability }[] {
     const district = this.getDistrictById(districtId);
     if (!district) return [];
 
@@ -104,22 +109,29 @@ export class WEFESDatabase {
       .filter((crop) => isCropFeasibleInDistrict(crop, district))
       .map((crop) => ({
         crop,
-        suitability: computeCropSuitability(district, crop),
-      }));
+        suitability: computeCropSuitability(district, crop, palikaContext),
+      }))
+      .sort((a, b) => b.suitability.suitabilityScore - a.suitability.suitabilityScore);
   }
 
   /**
    * Returns ALL crops with suitability (including unfeasible ones marked down).
+   * Sorted descending by suitability score.
    */
-  public getAllDistrictCrops(districtId: string): { crop: Crop; suitability: CropSuitability; isFeasible: boolean }[] {
+  public getAllDistrictCrops(
+    districtId: string,
+    palikaContext?: PalikaContext
+  ): { crop: Crop; suitability: CropSuitability; isFeasible: boolean }[] {
     const district = this.getDistrictById(districtId);
     if (!district) return [];
 
-    return this.crops.map((crop) => ({
-      crop,
-      suitability: computeCropSuitability(district, crop),
-      isFeasible: isCropFeasibleInDistrict(crop, district),
-    }));
+    return this.crops
+      .map((crop) => ({
+        crop,
+        suitability: computeCropSuitability(district, crop, palikaContext),
+        isFeasible: isCropFeasibleInDistrict(crop, district),
+      }))
+      .sort((a, b) => b.suitability.suitabilityScore - a.suitability.suitabilityScore);
   }
 
   public getGeoJSON(): DistrictGeoJSONCollection {

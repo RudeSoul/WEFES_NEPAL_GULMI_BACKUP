@@ -48,8 +48,8 @@ import {
   PALIKA_LANDHOLDING_DATA,
   PALIKA_SOIL_DATA,
   PalikaAgroHydrologyProfile,
-} from '../../../data/districtIndicatorAssets';
-import { DistrictPalika } from '../../../data/districtPalikaAssets';
+} from '@/data/districtIndicatorAssets';
+import { DistrictPalika } from '@/data/districtPalikaAssets';
 
 interface SeasonalAgroHydrologyProps {
   activePalika: DistrictPalika;

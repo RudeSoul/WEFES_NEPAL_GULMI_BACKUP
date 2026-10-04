@@ -549,6 +549,14 @@ export function calculateTransferFactor(
   return 0.4;
 }
 
+export interface PalikaContext {
+  name?: string;
+  elevation?: number;
+  avgTempC?: number;
+  rainfallMm?: number;
+  soilPh?: number;
+}
+
 /**
  * FAO Land Evaluation & AHP Framework Multi-Criteria Suitability Evaluator
  *
@@ -557,7 +565,7 @@ export function calculateTransferFactor(
  * 2. AHP Weighted Biophysical Composite Base
  * 3. FAO Non-Compensatory Limiting Factor Gate (Liebig Threshold Penalty)
  */
-export function evaluateCropFeasibilityMatrix(district: District, crop: Crop) {
+export function evaluateCropFeasibilityMatrix(district: District, crop: Crop, palikaContext?: PalikaContext) {
   const env = CROP_AGRO_ENVELOPES[crop.id] || {
     altMin: 60,
     altOptMin: 100,
@@ -602,32 +610,42 @@ export function evaluateCropFeasibilityMatrix(district: District, crop: Crop) {
     }
   }
 
-  const overlapMin = Math.max(dMinElev, env.altMin);
-  const overlapMax = Math.min(dMaxElev, env.altMax);
-  const hasOverlap = overlapMax >= overlapMin;
+  let effectiveElev: number;
+  let phiElev: number;
 
-  let effectiveElev = (dMinElev + dMaxElev) / 2;
-  let phiElev = 0.3;
-
-  if (hasOverlap) {
-    const targetOpt = (env.altOptMin + env.altOptMax) / 2;
-    effectiveElev = Math.max(overlapMin, Math.min(overlapMax, targetOpt));
+  if (palikaContext?.elevation !== undefined) {
+    effectiveElev = palikaContext.elevation;
     phiElev = calculateTransferFactor(effectiveElev, env.altMin, env.altOptMin, env.altOptMax, env.altMax);
   } else {
-    if (dMinElev > env.altMax) {
-      const distAbove = dMinElev - env.altMax;
-      phiElev = Math.max(0.1, 0.35 - (distAbove / 2000) * 0.25);
+    const overlapMin = Math.max(dMinElev, env.altMin);
+    const overlapMax = Math.min(dMaxElev, env.altMax);
+    const hasOverlap = overlapMax >= overlapMin;
+
+    effectiveElev = (dMinElev + dMaxElev) / 2;
+    phiElev = 0.3;
+
+    if (hasOverlap) {
+      const targetOpt = (env.altOptMin + env.altOptMax) / 2;
+      effectiveElev = Math.max(overlapMin, Math.min(overlapMax, targetOpt));
+      phiElev = calculateTransferFactor(effectiveElev, env.altMin, env.altOptMin, env.altOptMax, env.altMax);
     } else {
-      const distBelow = env.altMin - dMaxElev;
-      phiElev = Math.max(0.1, 0.35 - (distBelow / 1000) * 0.25);
+      if (dMinElev > env.altMax) {
+        const distAbove = dMinElev - env.altMax;
+        phiElev = Math.max(0.1, 0.35 - (distAbove / 2000) * 0.25);
+      } else {
+        const distBelow = env.altMin - dMaxElev;
+        phiElev = Math.max(0.1, 0.35 - (distBelow / 1000) * 0.25);
+      }
     }
   }
 
   // 2. Climate & Soil Metrics
   const avgTemp =
-    district.avgTempC ?? (district.ecoZone === 'Terai' ? 24.5 : district.ecoZone === 'Mountain' ? 10.5 : 18.0);
-  const avgRainfall = district.avgRainfallMm ?? 1500;
-  const soilPh = district.baseSoilPh ?? 6.2;
+    palikaContext?.avgTempC ??
+    district.avgTempC ??
+    (district.ecoZone === 'Terai' ? 24.5 : district.ecoZone === 'Mountain' ? 10.5 : 18.0);
+  const avgRainfall = palikaContext?.rainfallMm ?? district.avgRainfallMm ?? 1500;
+  const soilPh = palikaContext?.soilPh ?? district.baseSoilPh ?? 6.2;
   const solarRad = district.solarRadiationKwh ?? 4.8;
   const laborWage = district.laborRateNprPerDay ?? 750;
 
@@ -691,13 +709,15 @@ export function evaluateCropFeasibilityMatrix(district: District, crop: Crop) {
     dRain: avgRainfall,
     dMinElev,
     dMaxElev,
+    effectiveElev,
+    palikaName: palikaContext?.name,
     dLabor: laborWage,
     solarRad,
   };
 }
 
-export function computeCropSuitability(district: District, crop: Crop): CropSuitability {
-  const result = evaluateCropFeasibilityMatrix(district, crop);
+export function computeCropSuitability(district: District, crop: Crop, palikaContext?: PalikaContext): CropSuitability {
+  const result = evaluateCropFeasibilityMatrix(district, crop, palikaContext);
 
   // Determine limiting factor
   let limitingFactor = 'None';

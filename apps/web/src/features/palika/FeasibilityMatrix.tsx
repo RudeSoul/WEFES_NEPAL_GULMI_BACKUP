@@ -5,8 +5,11 @@ import { Award, DollarSign, Droplets, Layers, Mountain, Sparkles, Thermometer } 
 import { Crop, District } from '@wefes/shared-types';
 import { evaluateCropFeasibilityMatrix } from '@wefes/wefes-engine';
 
+import { DistrictPalika } from '@/data/districtPalikaAssets';
+
 interface FeasibilityMatrixProps {
   district: District;
+  activePalika?: DistrictPalika;
   crop: Crop;
   suitabilityScore?: number;
 }
@@ -47,11 +50,27 @@ function getScoreBadge(score: number): { label: string; color: string; badgeClas
   };
 }
 
-export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, crop, suitabilityScore }) => {
+export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({
+  district,
+  activePalika,
+  crop,
+  suitabilityScore,
+}) => {
+  const palikaContext = useMemo(() => {
+    if (!activePalika) return undefined;
+    return {
+      name: activePalika.name,
+      elevation: activePalika.elevation,
+      avgTempC: activePalika.avgTempC,
+      rainfallMm: activePalika.rainfallMm,
+      soilPh: activePalika.soilPh,
+    };
+  }, [activePalika]);
+
   // Direct evaluation via FAO Land Evaluation & AHP Framework
   const evalResult = useMemo(() => {
-    return evaluateCropFeasibilityMatrix(district, crop);
-  }, [district, crop]);
+    return evaluateCropFeasibilityMatrix(district, crop, palikaContext);
+  }, [district, crop, palikaContext]);
 
   const displayScore = suitabilityScore ?? evalResult.finalSuitabilityScore;
 
@@ -94,7 +113,7 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
         score: evalResult.elevScore,
         description: 'Altitude belt overlap across district territory',
         unit: 'm',
-        value: `${evalResult.dMinElev}–${evalResult.dMaxElev}m`,
+        value: activePalika ? `${activePalika.elevation}m masl` : `${evalResult.dMinElev}–${evalResult.dMaxElev}m`,
         ideal: `${evalResult.env.altOptMin}–${evalResult.env.altOptMax}m`,
       },
       {
@@ -108,7 +127,7 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
         ideal: `High Margin (NPR ${crop.marketValuePerUnit}/${crop.baseUnitName})`,
       },
     ];
-  }, [evalResult, crop]);
+  }, [evalResult, crop, activePalika]);
 
   return (
     <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/90 space-y-4 shadow-xs">
@@ -121,7 +140,10 @@ export const FeasibilityMatrix: React.FC<FeasibilityMatrixProps> = ({ district, 
           <div>
             <h4 className="text-sm font-bold text-slate-900 font-outfit">FAO Land Evaluation & AHP Matrix</h4>
             <p className="text-xs text-slate-500 font-sans mt-0.5">
-              Parametric agro-ecological suitability in <strong className="text-slate-800">{district.name}</strong>
+              Parametric agro-ecological suitability in{' '}
+              <strong className="text-slate-800">
+                {activePalika ? `${activePalika.name}, ${district.name}` : district.name}
+              </strong>
             </p>
           </div>
         </div>

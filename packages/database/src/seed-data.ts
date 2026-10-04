@@ -4,7 +4,7 @@ import districtsRaw from './districts.json';
 export const CROPS_SEED_DATA: Crop[] = [
   {
     id: 'coffee',
-    name: 'Coffee (Arabica / Robusta)',
+    name: 'Arabica Coffee',
     nepaliName: 'कफी',
     category: 'Cash Crop / Agroforestry',
     supportedUnits: ['kg', 'bag', 'metric_ton'],

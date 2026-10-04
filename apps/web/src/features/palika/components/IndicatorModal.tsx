@@ -34,8 +34,8 @@ import {
 import { ClimateDataset, District, MonthlyClimatePoint } from '@wefes/shared-types';
 import { ARIMAResult } from '@wefes/wefes-engine';
 
-import { PALIKA_AGRO_HYDROLOGY_DATA, PALIKA_SOIL_DATA } from '../../../data/districtIndicatorAssets';
-import { DistrictPalika } from '../../../data/districtPalikaAssets';
+import { PALIKA_AGRO_HYDROLOGY_DATA, PALIKA_SOIL_DATA } from '@/data/districtIndicatorAssets';
+import { DistrictPalika } from '@/data/districtPalikaAssets';
 
 export type ModalKey = 'rainfall' | 'elevation' | 'soil' | 'temp' | 'solar' | 'labor' | null;
 
