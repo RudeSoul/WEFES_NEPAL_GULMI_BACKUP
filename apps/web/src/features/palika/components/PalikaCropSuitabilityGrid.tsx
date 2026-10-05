@@ -251,7 +251,7 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
         {/* ========================================================================= */}
         {/* LEFT PANE (4 Cols / 35%): Master Crop Decision List */}
         {/* ========================================================================= */}
-        <div className="lg:col-span-4 space-y-4">
+        <div className="lg:col-span-4 lg:sticky lg:top-20 space-y-4 self-start">
           <div className="glass-panel p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm bg-white/95 space-y-4">
             {/* Header */}
             <div className="pb-1 border-b border-slate-100">
@@ -272,7 +272,7 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
             </div>
 
             {/* Scrollable Ranked Crop Feed */}
-            <div className="max-h-[680px] overflow-y-auto pr-1 space-y-2.5 custom-scrollbar">
+            <div className="max-h-[calc(100vh-14rem)] overflow-y-auto pr-1 space-y-2.5 custom-scrollbar">
               {displayedDistrictCrops.length === 0 ? (
                 <div className="py-8 text-center text-xs text-slate-400">No cultivars available for this palika.</div>
               ) : (
