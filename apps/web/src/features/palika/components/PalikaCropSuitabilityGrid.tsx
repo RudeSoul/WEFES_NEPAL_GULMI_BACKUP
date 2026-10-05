@@ -110,6 +110,13 @@ const CROP_BOTTLENECK_ADVISORY: Record<string, { constraint: string; diagnosis: 
   },
 };
 
+// Domain-grounded pillar performance tier styling
+const getPillarPerformanceBadge = (score: number) => {
+  if (score >= 80) return { label: 'Strong', badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-200' };
+  if (score >= 60) return { label: 'Moderate', badgeClass: 'bg-teal-50 text-teal-800 border-teal-200' };
+  return { label: '⚠️ Watch', badgeClass: 'bg-amber-50 text-amber-800 border-amber-200' };
+};
+
 export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps> = ({
   district,
   activePalika,
@@ -146,6 +153,144 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
     if (!currentCrop) return null;
     return evaluateCropFeasibilityMatrix(district, currentCrop, palikaContext);
   }, [district, currentCrop, palikaContext]);
+
+  // Dynamic Biophysical Evaluation (Zero Hardcoding)
+  const biophysicalMetrics = useMemo(() => {
+    if (!evalResult) return null;
+
+    const { env, dPh, dTemp, dRain, effectiveElev, soilScore, waterScore, thermalScore, elevScore } = evalResult;
+
+    // 1. Soil Reaction (pH)
+    let soilStatus = 'Optimal pH · No Liming Needed';
+    let soilColor = 'text-emerald-700';
+    let soilBadgeBg = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+    let soilBarColor = 'bg-emerald-500';
+
+    if (dPh < env.phMin) {
+      soilStatus = `Severe Acidity Barrier (pH < ${env.phMin})`;
+      soilColor = 'text-rose-700';
+      soilBadgeBg = 'bg-rose-50 text-rose-800 border-rose-200';
+      soilBarColor = 'bg-rose-500';
+    } else if (dPh > env.phMax) {
+      soilStatus = `Alkaline Limitation (pH > ${env.phMax})`;
+      soilColor = 'text-rose-700';
+      soilBadgeBg = 'bg-rose-50 text-rose-800 border-rose-200';
+      soilBarColor = 'bg-rose-500';
+    } else if (dPh < env.phOptMin) {
+      soilStatus = 'Acidic Stress · Liming Recommended';
+      soilColor = 'text-amber-700';
+      soilBadgeBg = 'bg-amber-50 text-amber-800 border-amber-200';
+      soilBarColor = 'bg-amber-500';
+    } else if (dPh > env.phOptMax) {
+      soilStatus = 'Slightly Alkaline · Organic Amendment';
+      soilColor = 'text-amber-700';
+      soilBadgeBg = 'bg-amber-50 text-amber-800 border-amber-200';
+      soilBarColor = 'bg-amber-500';
+    }
+
+    // 2. Moisture & Rainfall
+    let waterStatus = 'Optimal Precipitation Envelope';
+    let waterColor = 'text-sky-700';
+    let waterBadgeBg = 'bg-sky-50 text-sky-800 border-sky-200';
+    let waterBarColor = 'bg-sky-500';
+
+    if (dRain < env.rainMin) {
+      waterStatus = `Severe Moisture Deficit (< ${env.rainMin}mm)`;
+      waterColor = 'text-rose-700';
+      waterBadgeBg = 'bg-rose-50 text-rose-800 border-rose-200';
+      waterBarColor = 'bg-rose-500';
+    } else if (dRain > env.rainMax) {
+      waterStatus = `Excess Waterlogging Risk (> ${env.rainMax}mm)`;
+      waterColor = 'text-rose-700';
+      waterBadgeBg = 'bg-rose-50 text-rose-800 border-rose-200';
+      waterBarColor = 'bg-rose-500';
+    } else if (dRain < env.rainOptMin) {
+      waterStatus = 'Moisture Deficit · Supplemental Irrigation';
+      waterColor = 'text-amber-700';
+      waterBadgeBg = 'bg-amber-50 text-amber-800 border-amber-200';
+      waterBarColor = 'bg-amber-500';
+    } else if (dRain > env.rainOptMax) {
+      waterStatus = 'High Monsoon Moisture · Good Drainage Needed';
+      waterColor = 'text-teal-700';
+      waterBadgeBg = 'bg-teal-50 text-teal-800 border-teal-200';
+      waterBarColor = 'bg-teal-500';
+    }
+
+    // 3. Thermal Envelope
+    let thermalStatus = 'Ideal Thermal Envelope · No Frost Risk';
+    let thermalColor = 'text-emerald-700';
+    let thermalBadgeBg = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+    let thermalBarColor = 'bg-emerald-500';
+
+    if (dTemp < env.tempMin) {
+      thermalStatus = `Severe Frost / Cold Mortality (< ${env.tempMin}°C)`;
+      thermalColor = 'text-rose-700';
+      thermalBadgeBg = 'bg-rose-50 text-rose-800 border-rose-200';
+      thermalBarColor = 'bg-rose-500';
+    } else if (dTemp > env.tempMax) {
+      thermalStatus = `Excess Heat Stress Barrier (> ${env.tempMax}°C)`;
+      thermalColor = 'text-rose-700';
+      thermalBadgeBg = 'bg-rose-50 text-rose-800 border-rose-200';
+      thermalBarColor = 'bg-rose-500';
+    } else if (dTemp < env.tempOptMin) {
+      thermalStatus = 'Cooler than Ideal · Winter Chill Limitation';
+      thermalColor = 'text-amber-700';
+      thermalBadgeBg = 'bg-amber-50 text-amber-800 border-amber-200';
+      thermalBarColor = 'bg-amber-500';
+    } else if (dTemp > env.tempOptMax) {
+      thermalStatus = 'Warmer than Ideal · High Evapotranspiration';
+      thermalColor = 'text-amber-700';
+      thermalBadgeBg = 'bg-amber-50 text-amber-800 border-amber-200';
+      thermalBarColor = 'bg-amber-500';
+    }
+
+    // 4. Elevation Belt
+    let elevStatus = 'Prime Agro-Ecological Mid-Hill Belt';
+    let elevColor = 'text-indigo-700';
+    let elevBadgeBg = 'bg-indigo-50 text-indigo-800 border-indigo-200';
+    let elevBarColor = 'bg-indigo-500';
+
+    if (effectiveElev < env.altMin) {
+      elevStatus = `Below Altitude Threshold (< ${env.altMin}m)`;
+      elevColor = 'text-rose-700';
+      elevBadgeBg = 'bg-rose-50 text-rose-800 border-rose-200';
+      elevBarColor = 'bg-rose-500';
+    } else if (effectiveElev > env.altMax) {
+      elevStatus = `Above Altitude Ceiling (> ${env.altMax}m masl)`;
+      elevColor = 'text-rose-700';
+      elevBadgeBg = 'bg-rose-50 text-rose-800 border-rose-200';
+      elevBarColor = 'bg-rose-500';
+    } else if (effectiveElev < env.altOptMin) {
+      elevStatus = 'Sub-optimal Foothill Pocket';
+      elevColor = 'text-amber-700';
+      elevBadgeBg = 'bg-amber-50 text-amber-800 border-amber-200';
+      elevBarColor = 'bg-amber-500';
+    } else if (effectiveElev > env.altOptMax) {
+      elevStatus = 'Highland Fringe · Microclimate Dependent';
+      elevColor = 'text-amber-700';
+      elevBadgeBg = 'bg-amber-50 text-amber-800 border-amber-200';
+      elevBarColor = 'bg-amber-500';
+    }
+
+    return {
+      soil: { status: soilStatus, color: soilColor, badgeBg: soilBadgeBg, barColor: soilBarColor, score: soilScore },
+      water: {
+        status: waterStatus,
+        color: waterColor,
+        badgeBg: waterBadgeBg,
+        barColor: waterBarColor,
+        score: waterScore,
+      },
+      thermal: {
+        status: thermalStatus,
+        color: thermalColor,
+        badgeBg: thermalBadgeBg,
+        barColor: thermalBarColor,
+        score: thermalScore,
+      },
+      elev: { status: elevStatus, color: elevColor, badgeBg: elevBadgeBg, barColor: elevBarColor, score: elevScore },
+    };
+  }, [evalResult]);
 
   // Determine overall score styling
   const score = currentSuitability?.suitabilityScore ?? evalResult?.finalSuitabilityScore ?? 0;
@@ -488,21 +633,33 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     <Sparkles className="w-4 h-4 text-emerald-600" />
                     <span className="text-xs font-bold text-slate-900">Soil Reaction (pH)</span>
                   </div>
-                  <span className="text-xs font-mono font-bold text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200">
-                    {evalResult?.dPh ?? 6.2} pH
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-mono text-slate-500">
+                      Local: <strong className="text-slate-800 font-bold">{evalResult?.dPh ?? 6.2} pH</strong>
+                    </span>
+                    <span
+                      className={`text-xs font-mono font-extrabold px-2 py-0.5 rounded border shadow-2xs ${biophysicalMetrics?.soil.badgeBg ?? 'bg-emerald-50 text-emerald-800 border-emerald-200'}`}
+                    >
+                      {biophysicalMetrics?.soil.score ?? 98}% Match
+                    </span>
+                  </div>
                 </div>
                 <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="h-full bg-emerald-500 rounded-full"
-                    style={{ width: `${evalResult?.soilScore ?? 98}%` }}
+                    className={`h-full rounded-full transition-all duration-300 ${biophysicalMetrics?.soil.barColor ?? 'bg-emerald-500'}`}
+                    style={{ width: `${biophysicalMetrics?.soil.score ?? 98}%` }}
                   />
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
                   <span>
-                    Ideal: {evalResult?.env.phOptMin}–{evalResult?.env.phOptMax} pH
+                    Crop Ideal:{' '}
+                    <strong className="text-slate-700">
+                      {evalResult?.env.phOptMin}–{evalResult?.env.phOptMax} pH
+                    </strong>
                   </span>
-                  <span className="font-bold text-emerald-700">Optimal · No Liming Needed</span>
+                  <span className={`font-bold ${biophysicalMetrics?.soil.color ?? 'text-emerald-700'}`}>
+                    {biophysicalMetrics?.soil.status ?? 'Optimal · No Liming Needed'}
+                  </span>
                 </div>
               </div>
 
@@ -513,21 +670,33 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     <Droplets className="w-4 h-4 text-sky-600" />
                     <span className="text-xs font-bold text-slate-900">Moisture & Rainfall</span>
                   </div>
-                  <span className="text-xs font-mono font-bold text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200">
-                    {evalResult?.dRain ?? 1890} mm/yr
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-mono text-slate-500">
+                      Local: <strong className="text-slate-800 font-bold">{evalResult?.dRain ?? 1890} mm/yr</strong>
+                    </span>
+                    <span
+                      className={`text-xs font-mono font-extrabold px-2 py-0.5 rounded border shadow-2xs ${biophysicalMetrics?.water.badgeBg ?? 'bg-sky-50 text-sky-800 border-sky-200'}`}
+                    >
+                      {biophysicalMetrics?.water.score ?? 98}% Match
+                    </span>
+                  </div>
                 </div>
                 <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="h-full bg-sky-500 rounded-full"
-                    style={{ width: `${evalResult?.waterScore ?? 98}%` }}
+                    className={`h-full rounded-full transition-all duration-300 ${biophysicalMetrics?.water.barColor ?? 'bg-sky-500'}`}
+                    style={{ width: `${biophysicalMetrics?.water.score ?? 98}%` }}
                   />
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
                   <span>
-                    Ideal: {evalResult?.env.rainOptMin}–{evalResult?.env.rainOptMax} mm
+                    Crop Ideal:{' '}
+                    <strong className="text-slate-700">
+                      {evalResult?.env.rainOptMin}–{evalResult?.env.rainOptMax} mm
+                    </strong>
                   </span>
-                  <span className="font-bold text-sky-700">Zero Moisture Deficit</span>
+                  <span className={`font-bold ${biophysicalMetrics?.water.color ?? 'text-sky-700'}`}>
+                    {biophysicalMetrics?.water.status ?? 'Optimal Precipitation'}
+                  </span>
                 </div>
               </div>
 
@@ -538,21 +707,33 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     <Thermometer className="w-4 h-4 text-amber-600" />
                     <span className="text-xs font-bold text-slate-900">Thermal Envelope</span>
                   </div>
-                  <span className="text-xs font-mono font-bold text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200">
-                    {evalResult?.dTemp ?? 18.4}°C
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-mono text-slate-500">
+                      Local: <strong className="text-slate-800 font-bold">{evalResult?.dTemp ?? 18.4}°C</strong>
+                    </span>
+                    <span
+                      className={`text-xs font-mono font-extrabold px-2 py-0.5 rounded border shadow-2xs ${biophysicalMetrics?.thermal.badgeBg ?? 'bg-emerald-50 text-emerald-800 border-emerald-200'}`}
+                    >
+                      {biophysicalMetrics?.thermal.score ?? 98}% Match
+                    </span>
+                  </div>
                 </div>
                 <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="h-full bg-amber-500 rounded-full"
-                    style={{ width: `${evalResult?.thermalScore ?? 98}%` }}
+                    className={`h-full rounded-full transition-all duration-300 ${biophysicalMetrics?.thermal.barColor ?? 'bg-emerald-500'}`}
+                    style={{ width: `${biophysicalMetrics?.thermal.score ?? 98}%` }}
                   />
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
                   <span>
-                    Ideal: {evalResult?.env.tempOptMin}–{evalResult?.env.tempOptMax}°C
+                    Crop Ideal:{' '}
+                    <strong className="text-slate-700">
+                      {evalResult?.env.tempOptMin}–{evalResult?.env.tempOptMax}°C
+                    </strong>
                   </span>
-                  <span className="font-bold text-amber-700">No Frost Risk</span>
+                  <span className={`font-bold ${biophysicalMetrics?.thermal.color ?? 'text-amber-700'}`}>
+                    {biophysicalMetrics?.thermal.status ?? 'Optimal Temperature'}
+                  </span>
                 </div>
               </div>
 
@@ -563,21 +744,34 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     <Mountain className="w-4 h-4 text-indigo-600" />
                     <span className="text-xs font-bold text-slate-900">Elevation & Relief</span>
                   </div>
-                  <span className="text-xs font-mono font-bold text-slate-800 bg-white px-2 py-0.5 rounded border border-slate-200">
-                    {evalResult?.effectiveElev ?? 1510}m masl
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-mono text-slate-500">
+                      Local:{' '}
+                      <strong className="text-slate-800 font-bold">{evalResult?.effectiveElev ?? 1510}m masl</strong>
+                    </span>
+                    <span
+                      className={`text-xs font-mono font-extrabold px-2 py-0.5 rounded border shadow-2xs ${biophysicalMetrics?.elev.badgeBg ?? 'bg-indigo-50 text-indigo-800 border-indigo-200'}`}
+                    >
+                      {biophysicalMetrics?.elev.score ?? 94}% Match
+                    </span>
+                  </div>
                 </div>
                 <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="h-full bg-indigo-500 rounded-full"
-                    style={{ width: `${evalResult?.elevScore ?? 94}%` }}
+                    className={`h-full rounded-full transition-all duration-300 ${biophysicalMetrics?.elev.barColor ?? 'bg-indigo-500'}`}
+                    style={{ width: `${biophysicalMetrics?.elev.score ?? 94}%` }}
                   />
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-slate-500">
                   <span>
-                    Ideal: {evalResult?.env.altOptMin}–{evalResult?.env.altOptMax}m
+                    Crop Ideal:{' '}
+                    <strong className="text-slate-700">
+                      {evalResult?.env.altOptMin}–{evalResult?.env.altOptMax}m
+                    </strong>
                   </span>
-                  <span className="font-bold text-indigo-700">Prime Mid-Hill Specialty Belt</span>
+                  <span className={`font-bold ${biophysicalMetrics?.elev.color ?? 'text-indigo-700'}`}>
+                    {biophysicalMetrics?.elev.status ?? 'Optimal Elevation'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -684,8 +878,11 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     </div>
                   </div>
                   <div className="text-right flex items-center gap-2 shrink-0">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
-                      {currentSuitability?.pillarScores.water ?? 98}/100 · Strong
+                    <span
+                      className={`text-xs font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.water ?? 98).badgeClass}`}
+                    >
+                      {currentSuitability?.pillarScores.water ?? 98}/100 ·{' '}
+                      {getPillarPerformanceBadge(currentSuitability?.pillarScores.water ?? 98).label}
                     </span>
                   </div>
                 </div>
@@ -712,8 +909,11 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     </div>
                   </div>
                   <div className="text-right flex items-center gap-2 shrink-0">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200">
-                      {currentSuitability?.pillarScores.energy ?? 61}/100 · ⚠️ Watch
+                    <span
+                      className={`text-xs font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.energy ?? 61).badgeClass}`}
+                    >
+                      {currentSuitability?.pillarScores.energy ?? 61}/100 ·{' '}
+                      {getPillarPerformanceBadge(currentSuitability?.pillarScores.energy ?? 61).label}
                     </span>
                   </div>
                 </div>
@@ -740,8 +940,11 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     </div>
                   </div>
                   <div className="text-right flex items-center gap-2 shrink-0">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
-                      {currentSuitability?.pillarScores.food ?? 98}/100 · Strong
+                    <span
+                      className={`text-xs font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.food ?? 98).badgeClass}`}
+                    >
+                      {currentSuitability?.pillarScores.food ?? 98}/100 ·{' '}
+                      {getPillarPerformanceBadge(currentSuitability?.pillarScores.food ?? 98).label}
                     </span>
                   </div>
                 </div>
@@ -754,7 +957,13 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     </span>
                     <div>
                       <div className="text-xs font-bold text-slate-900">🌲 Ecosystem & Carbon</div>
-                      <div className="text-[10.5px] text-slate-500">Agroforestry shade canopy</div>
+                      <div className="text-[10.5px] text-slate-500">
+                        {currentCrop?.category === 'Cash Crop / Agroforestry'
+                          ? 'Agroforestry shade canopy & soil carbon'
+                          : currentCrop?.category === 'Staple Cereal Crop'
+                            ? 'Arable field rotation & crop residue'
+                            : 'Horticultural canopy coverage'}
+                      </div>
                     </div>
                   </div>
                   <div className="flex-1 max-w-[280px] hidden sm:block">
@@ -766,8 +975,11 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     </div>
                   </div>
                   <div className="text-right flex items-center gap-2 shrink-0">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
-                      {currentSuitability?.pillarScores.ecosystem ?? 94}/100 · Strong
+                    <span
+                      className={`text-xs font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.ecosystem ?? 94).badgeClass}`}
+                    >
+                      {currentSuitability?.pillarScores.ecosystem ?? 94}/100 ·{' '}
+                      {getPillarPerformanceBadge(currentSuitability?.pillarScores.ecosystem ?? 94).label}
                     </span>
                   </div>
                 </div>
@@ -794,8 +1006,11 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                     </div>
                   </div>
                   <div className="text-right flex items-center gap-2 shrink-0">
-                    <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
-                      {currentSuitability?.pillarScores.socioeconomics ?? 95}/100 · Strong
+                    <span
+                      className={`text-xs font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.socioeconomics ?? 95).badgeClass}`}
+                    >
+                      {currentSuitability?.pillarScores.socioeconomics ?? 95}/100 ·{' '}
+                      {getPillarPerformanceBadge(currentSuitability?.pillarScores.socioeconomics ?? 95).label}
                     </span>
                   </div>
                 </div>
