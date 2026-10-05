@@ -42,8 +42,6 @@ export const DistrictDetail: React.FC = () => {
     [storeDistrict]
   );
 
-  const [cropSpectrumMode, setCropSpectrumMode] = useState<'verified' | 'all'>('verified');
-
   // URL param takes precedence on mount/route change, fallback to store or Resunga
   const activePalikaName = useMemo(() => {
     if (urlPalikaParam) return decodeURIComponent(urlPalikaParam);
@@ -89,15 +87,10 @@ export const DistrictDetail: React.FC = () => {
     [activePalika.name, activePalika.elevation, activePalika.avgTempC, activePalika.rainfallMm, activePalika.soilPh]
   );
 
-  const verifiedDistrictCrops = useMemo(
+  const displayedDistrictCrops = useMemo(
     () => (district.id ? db.getDistrictCrops(district.id, palikaContext) : []),
     [district.id, palikaContext]
   );
-  const allDistrictCrops = useMemo(
-    () => (district.id ? db.getAllDistrictCrops(district.id, palikaContext) : []),
-    [district.id, palikaContext]
-  );
-  const displayedDistrictCrops = cropSpectrumMode === 'verified' ? verifiedDistrictCrops : allDistrictCrops;
 
   const [activeHoverCrop, setActiveHoverCrop] = useState<Crop | null>(displayedDistrictCrops[0]?.crop || null);
 
@@ -199,10 +192,6 @@ export const DistrictDetail: React.FC = () => {
         district={district}
         activePalika={activePalika}
         displayedDistrictCrops={displayedDistrictCrops}
-        verifiedDistrictCrops={verifiedDistrictCrops}
-        allDistrictCrops={allDistrictCrops}
-        cropSpectrumMode={cropSpectrumMode}
-        setCropSpectrumMode={setCropSpectrumMode}
         activeHoverCrop={activeHoverCrop}
         setActiveHoverCrop={setActiveHoverCrop}
         activeSuitability={activeSuitability}
