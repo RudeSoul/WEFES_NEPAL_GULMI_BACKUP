@@ -6,7 +6,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { ArrowLeft, ArrowUp } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 import { db } from '@wefes/database';
 import { Crop, District } from '@wefes/shared-types';
@@ -207,14 +207,6 @@ export const DistrictDetail: React.FC = () => {
         >
           <ArrowLeft className="w-4 h-4 text-emerald-600" />
           <span>Back to National Interactive Map</span>
-        </button>
-
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
-        >
-          <ArrowUp className="w-4 h-4 text-slate-500" />
-          <span>Scroll to Top</span>
         </button>
       </div>
     </div>
