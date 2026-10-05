@@ -614,7 +614,7 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                   className="py-2.5 px-4 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs hover:shadow-sm flex items-center justify-center gap-2 cursor-pointer shrink-0 self-stretch sm:self-auto"
                 >
                   <Sparkles className="w-4 h-4 text-emerald-200" />
-                  <span>Simulate Impacts</span>
+                  <span>Run Nexus Engine</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
