@@ -36,9 +36,6 @@ export const Header: React.FC = () => {
               <h1 className="text-base sm:text-lg font-bold tracking-tight text-slate-900 font-outfit">
                 WEFES NEXUS · GULMI
               </h1>
-              <span className="bg-emerald-100 text-emerald-900 border border-emerald-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded-md">
-                गुल्मी जिल्ला
-              </span>
               <span className="hidden sm:inline-flex bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-medium px-2 py-0.5 rounded-md">
                 Lumbini Province • Hill Zone
               </span>
