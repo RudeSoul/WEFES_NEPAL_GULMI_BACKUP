@@ -838,14 +838,21 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
             {/* Side-by-Side: Spider Radar Chart + Compact Pillar Metrics */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
               {/* Left Column: Spider Radar View */}
-              <div className="lg:col-span-5 h-[270px] w-full flex items-center justify-center p-2 bg-slate-50/80 rounded-xl border border-slate-200/80">
+              <div className="lg:col-span-5 h-[270px] w-full flex items-center justify-center p-2 bg-slate-50/80 rounded-xl border border-slate-200/80 overflow-visible">
                 <ResponsiveContainer width="100%" height={260}>
-                  <RadarChart data={activeRadarData} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
+                  <RadarChart
+                    cx="50%"
+                    cy="50%"
+                    outerRadius="50%"
+                    data={activeRadarData}
+                    margin={{ top: 12, right: 28, bottom: 12, left: 28 }}
+                    style={{ overflow: 'visible' }}
+                  >
                     <PolarGrid stroke="#cbd5e1" strokeDasharray="3 3" />
                     <PolarAngleAxis
                       dataKey="pillar"
                       stroke="#475569"
-                      tick={{ fill: '#334155', fontSize: 11, fontWeight: 700 }}
+                      tick={{ fill: '#334155', fontSize: 10, fontWeight: 700 }}
                     />
                     <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#cbd5e1" tick={false} />
                     <Radar
