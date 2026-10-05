@@ -128,7 +128,6 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
   onSelectCrop,
 }) => {
   const [showComparison, setShowComparison] = useState(false);
-  const [showRadar, setShowRadar] = useState(false);
 
   // Ensure an active crop is always selected
   const currentCrop = activeHoverCrop || displayedDistrictCrops[0]?.crop;
@@ -136,6 +135,20 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
     activeSuitability ||
     displayedDistrictCrops.find((c) => c.crop.id === currentCrop?.id)?.suitability ||
     displayedDistrictCrops[0]?.suitability;
+
+  // Active Radar Metric Data derived dynamically from current suitability
+  const activeRadarData = useMemo(() => {
+    if (currentSuitability) {
+      return [
+        { pillar: 'Water', score: currentSuitability.pillarScores.water, fullMark: 100 },
+        { pillar: 'Energy', score: currentSuitability.pillarScores.energy, fullMark: 100 },
+        { pillar: 'Food', score: currentSuitability.pillarScores.food, fullMark: 100 },
+        { pillar: 'Ecosystem', score: currentSuitability.pillarScores.ecosystem, fullMark: 100 },
+        { pillar: 'Livelihood', score: currentSuitability.pillarScores.socioeconomics, fullMark: 100 },
+      ];
+    }
+    return radarData;
+  }, [currentSuitability, radarData]);
 
   // Evaluate biophysical parameters dynamically
   const palikaContext = useMemo(() => {
@@ -817,29 +830,32 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                   Sustainability Profile · WEFES 5-Pillars Performance
                 </h3>
               </div>
-
-              <button
-                onClick={() => setShowRadar(!showRadar)}
-                className="text-xs font-semibold text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
-              >
-                <span>{showRadar ? 'Show Bar View' : 'Show Spider Radar View'}</span>
-                <ChevronRight className="w-3 h-3" />
-              </button>
+              <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-md border border-slate-200">
+                Multi-Pillar Synergy Index
+              </span>
             </div>
 
-            {/* Radar View (Expandable) */}
-            {showRadar ? (
-              <div className="h-[250px] w-full flex items-center justify-center p-2 bg-slate-50 rounded-xl border border-slate-200 animate-fade-in-up">
-                <ResponsiveContainer width="100%" height={240}>
-                  <RadarChart data={radarData}>
-                    <PolarGrid stroke="#cbd5e1" />
+            {/* Side-by-Side: Spider Radar Chart + Compact Pillar Metrics */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+              {/* Left Column: Spider Radar View */}
+              <div className="lg:col-span-5 h-[270px] w-full flex items-center justify-center p-2 bg-slate-50/80 rounded-xl border border-slate-200/80">
+                <ResponsiveContainer width="100%" height={260}>
+                  <RadarChart data={activeRadarData} margin={{ top: 10, right: 20, bottom: 10, left: 20 }}>
+                    <PolarGrid stroke="#cbd5e1" strokeDasharray="3 3" />
                     <PolarAngleAxis
                       dataKey="pillar"
                       stroke="#475569"
                       tick={{ fill: '#334155', fontSize: 11, fontWeight: 700 }}
                     />
-                    <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#cbd5e1" />
-                    <Radar name="Pillar Score" dataKey="score" stroke="#0284c7" fill="#0284c7" fillOpacity={0.35} />
+                    <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#cbd5e1" tick={false} />
+                    <Radar
+                      name="Pillar Score"
+                      dataKey="score"
+                      stroke="#0284c7"
+                      fill="#0284c7"
+                      fillOpacity={0.35}
+                      dot={{ r: 3, fill: '#0284c7' }}
+                    />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: '#ffffff',
@@ -853,33 +869,31 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                   </RadarChart>
                 </ResponsiveContainer>
               </div>
-            ) : (
-              /* Highly Readable Horizontal Bar Telemetry (Default) */
-              <div className="space-y-2.5">
+
+              {/* Right Column: Compact 5-Pillar Telemetry */}
+              <div className="lg:col-span-7 space-y-2">
                 {/* 1. Water */}
-                <div className="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-[170px]">
-                    <span className="p-1.5 rounded-lg bg-sky-50 text-sky-700">
+                <div className="p-2.5 bg-slate-50/60 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="p-1.5 rounded-lg bg-sky-50 text-sky-700 shrink-0">
                       <Droplets className="w-4 h-4" />
                     </span>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900">💧 Water Footprint</div>
-                      <div className="text-[10.5px] text-slate-500">
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-slate-900 truncate">💧 Water Footprint</div>
+                      <div className="text-[10.5px] text-slate-500 truncate">
                         {currentCrop?.waterFootprintPerUnit ?? 'Moderate'} L/kg demand
                       </div>
                     </div>
                   </div>
-                  <div className="flex-1 max-w-[280px] hidden sm:block">
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="w-16 sm:w-20 bg-slate-200/80 rounded-full h-1.5 overflow-hidden hidden sm:block">
                       <div
                         className="h-full bg-sky-500 rounded-full"
                         style={{ width: `${currentSuitability?.pillarScores.water ?? 98}%` }}
                       />
                     </div>
-                  </div>
-                  <div className="text-right flex items-center gap-2 shrink-0">
                     <span
-                      className={`text-xs font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.water ?? 98).badgeClass}`}
+                      className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.water ?? 98).badgeClass}`}
                     >
                       {currentSuitability?.pillarScores.water ?? 98}/100 ·{' '}
                       {getPillarPerformanceBadge(currentSuitability?.pillarScores.water ?? 98).label}
@@ -888,29 +902,27 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                 </div>
 
                 {/* 2. Energy */}
-                <div className="p-3 bg-white rounded-xl border border-amber-200 shadow-2xs flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-[170px]">
-                    <span className="p-1.5 rounded-lg bg-amber-50 text-amber-700">
+                <div className="p-2.5 bg-slate-50/60 hover:bg-slate-50 rounded-xl border border-amber-200/80 transition-colors flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="p-1.5 rounded-lg bg-amber-50 text-amber-700 shrink-0">
                       <Zap className="w-4 h-4" />
                     </span>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900">⚡ Processing Energy</div>
-                      <div className="text-[10.5px] text-slate-500">
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-slate-900 truncate">⚡ Processing Energy</div>
+                      <div className="text-[10.5px] text-slate-500 truncate">
                         {currentCrop?.energyReqPerUnit ?? '0.4'} kWh/kg post-harvest
                       </div>
                     </div>
                   </div>
-                  <div className="flex-1 max-w-[280px] hidden sm:block">
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="w-16 sm:w-20 bg-slate-200/80 rounded-full h-1.5 overflow-hidden hidden sm:block">
                       <div
                         className="h-full bg-amber-500 rounded-full"
                         style={{ width: `${currentSuitability?.pillarScores.energy ?? 61}%` }}
                       />
                     </div>
-                  </div>
-                  <div className="text-right flex items-center gap-2 shrink-0">
                     <span
-                      className={`text-xs font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.energy ?? 61).badgeClass}`}
+                      className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.energy ?? 61).badgeClass}`}
                     >
                       {currentSuitability?.pillarScores.energy ?? 61}/100 ·{' '}
                       {getPillarPerformanceBadge(currentSuitability?.pillarScores.energy ?? 61).label}
@@ -919,29 +931,27 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                 </div>
 
                 {/* 3. Food */}
-                <div className="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-[170px]">
-                    <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
+                <div className="p-2.5 bg-slate-50/60 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 shrink-0">
                       <Wheat className="w-4 h-4" />
                     </span>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900">🌾 Food & Nutrition</div>
-                      <div className="text-[10.5px] text-slate-500">
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-slate-900 truncate">🌾 Food & Nutrition</div>
+                      <div className="text-[10.5px] text-slate-500 truncate">
                         {currentCrop?.caloriesPerUnit ?? 'High'} kcal/kg exchange value
                       </div>
                     </div>
                   </div>
-                  <div className="flex-1 max-w-[280px] hidden sm:block">
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="w-16 sm:w-20 bg-slate-200/80 rounded-full h-1.5 overflow-hidden hidden sm:block">
                       <div
                         className="h-full bg-emerald-500 rounded-full"
                         style={{ width: `${currentSuitability?.pillarScores.food ?? 98}%` }}
                       />
                     </div>
-                  </div>
-                  <div className="text-right flex items-center gap-2 shrink-0">
                     <span
-                      className={`text-xs font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.food ?? 98).badgeClass}`}
+                      className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.food ?? 98).badgeClass}`}
                     >
                       {currentSuitability?.pillarScores.food ?? 98}/100 ·{' '}
                       {getPillarPerformanceBadge(currentSuitability?.pillarScores.food ?? 98).label}
@@ -950,33 +960,31 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                 </div>
 
                 {/* 4. Ecosystem */}
-                <div className="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-[170px]">
-                    <span className="p-1.5 rounded-lg bg-teal-50 text-teal-700">
+                <div className="p-2.5 bg-slate-50/60 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="p-1.5 rounded-lg bg-teal-50 text-teal-700 shrink-0">
                       <Trees className="w-4 h-4" />
                     </span>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900">🌲 Ecosystem & Carbon</div>
-                      <div className="text-[10.5px] text-slate-500">
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-slate-900 truncate">🌲 Ecosystem & Carbon</div>
+                      <div className="text-[10.5px] text-slate-500 truncate">
                         {currentCrop?.category === 'Cash Crop / Agroforestry'
-                          ? 'Agroforestry shade canopy & soil carbon'
+                          ? 'Agroforestry shade canopy & carbon'
                           : currentCrop?.category === 'Staple Cereal Crop'
                             ? 'Arable field rotation & crop residue'
                             : 'Horticultural canopy coverage'}
                       </div>
                     </div>
                   </div>
-                  <div className="flex-1 max-w-[280px] hidden sm:block">
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="w-16 sm:w-20 bg-slate-200/80 rounded-full h-1.5 overflow-hidden hidden sm:block">
                       <div
                         className="h-full bg-teal-500 rounded-full"
                         style={{ width: `${currentSuitability?.pillarScores.ecosystem ?? 94}%` }}
                       />
                     </div>
-                  </div>
-                  <div className="text-right flex items-center gap-2 shrink-0">
                     <span
-                      className={`text-xs font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.ecosystem ?? 94).badgeClass}`}
+                      className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.ecosystem ?? 94).badgeClass}`}
                     >
                       {currentSuitability?.pillarScores.ecosystem ?? 94}/100 ·{' '}
                       {getPillarPerformanceBadge(currentSuitability?.pillarScores.ecosystem ?? 94).label}
@@ -985,29 +993,27 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                 </div>
 
                 {/* 5. Socioeconomics */}
-                <div className="p-3 bg-white rounded-xl border border-slate-200 shadow-2xs flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-[170px]">
-                    <span className="p-1.5 rounded-lg bg-purple-50 text-purple-700">
+                <div className="p-2.5 bg-slate-50/60 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="p-1.5 rounded-lg bg-purple-50 text-purple-700 shrink-0">
                       <Users className="w-4 h-4" />
                     </span>
-                    <div>
-                      <div className="text-xs font-bold text-slate-900">🏛️ Smallholder Livelihood</div>
-                      <div className="text-[10.5px] text-slate-500">
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-slate-900 truncate">🏛️ Smallholder Livelihood</div>
+                      <div className="text-[10.5px] text-slate-500 truncate">
                         Labor: {currentCrop?.laborDaysPerUnit ?? 2.5} days/unit
                       </div>
                     </div>
                   </div>
-                  <div className="flex-1 max-w-[280px] hidden sm:block">
-                    <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="w-16 sm:w-20 bg-slate-200/80 rounded-full h-1.5 overflow-hidden hidden sm:block">
                       <div
                         className="h-full bg-purple-500 rounded-full"
                         style={{ width: `${currentSuitability?.pillarScores.socioeconomics ?? 95}%` }}
                       />
                     </div>
-                  </div>
-                  <div className="text-right flex items-center gap-2 shrink-0">
                     <span
-                      className={`text-xs font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.socioeconomics ?? 95).badgeClass}`}
+                      className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.socioeconomics ?? 95).badgeClass}`}
                     >
                       {currentSuitability?.pillarScores.socioeconomics ?? 95}/100 ·{' '}
                       {getPillarPerformanceBadge(currentSuitability?.pillarScores.socioeconomics ?? 95).label}
@@ -1015,7 +1021,7 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                   </div>
                 </div>
               </div>
-            )}
+            </div>
           </div>
 
           {/* ───────────────────────────────────────────────────────────────────────── */}
