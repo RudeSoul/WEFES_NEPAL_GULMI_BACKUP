@@ -4,7 +4,6 @@ import {
   Activity,
   ArrowLeft,
   ArrowRight,
-  ArrowUp,
   ArrowUpRight,
   Coins,
   Droplets,
@@ -602,7 +601,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
       </div>
 
       {/* Bottom Quick Navigation Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 bg-slate-50/90 rounded-2xl border border-slate-200">
+      <div className="flex items-center justify-between gap-3 p-4 bg-slate-50/90 rounded-2xl border border-slate-200">
         <div className="flex items-center gap-2">
           {onBackToDistrict && (
             <button
@@ -622,14 +621,6 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
             </button>
           )}
         </div>
-
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
-        >
-          <ArrowUp className="w-4 h-4 text-slate-500" />
-          <span>Scroll to Top</span>
-        </button>
       </div>
 
       {/* Factor Detail Modal */}

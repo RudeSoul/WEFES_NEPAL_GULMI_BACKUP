@@ -20,7 +20,6 @@ import {
   Sprout,
   Thermometer,
   Trees,
-  TrendingUp,
   Users,
   Wheat,
   Zap,
@@ -591,20 +590,33 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                 </div>
               </div>
 
-              {/* Dominant Decision Score Card */}
-              <div className="flex items-center gap-3 bg-slate-50 px-4 py-2.5 rounded-2xl border border-slate-200 shrink-0 shadow-2xs">
-                <div className="text-right">
-                  <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider font-outfit">
-                    Suitability Score
+              <div className="flex items-center gap-3 shrink-0 flex-wrap sm:flex-nowrap">
+                {/* Dominant Decision Score Card */}
+                <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-2xl border border-slate-200 shrink-0 shadow-2xs">
+                  <div className="text-right">
+                    <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider font-outfit">
+                      Suitability Score
+                    </div>
+                    <div className={`text-2xl font-black font-mono ${scoreColorClass}`}>{score}/100</div>
                   </div>
-                  <div className={`text-2xl font-black font-mono ${scoreColorClass}`}>{score}/100</div>
+                  <div className="flex flex-col items-start gap-1">
+                    <span className={`text-xs px-2.5 py-0.5 rounded-md font-bold border ${scoreBadgeClass}`}>
+                      {faoClassBadge}
+                    </span>
+                    <span className="text-[9.5px] text-slate-500 font-mono">FAO Framework</span>
+                  </div>
                 </div>
-                <div className="flex flex-col items-start gap-1">
-                  <span className={`text-xs px-2.5 py-0.5 rounded-md font-bold border ${scoreBadgeClass}`}>
-                    {faoClassBadge}
-                  </span>
-                  <span className="text-[9.5px] text-slate-500 font-mono">FAO Framework</span>
-                </div>
+
+                {/* Direct Simulation Action Button */}
+                <button
+                  onClick={() => currentCrop && onSelectCrop(currentCrop)}
+                  title={`Simulate climate and price shocks for ${currentCrop?.name}`}
+                  className="py-2.5 px-4 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs hover:shadow-sm flex items-center justify-center gap-2 cursor-pointer shrink-0 self-stretch sm:self-auto"
+                >
+                  <Sparkles className="w-4 h-4 text-emerald-200" />
+                  <span>Simulate Impacts</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
 
@@ -794,26 +806,30 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
           {/* STEP 3: ⚠️ PRIMARY BOTTLENECK TO WATCH (Liebig Law of the Minimum) */}
           {/* ───────────────────────────────────────────────────────────────────────── */}
           {bottleneck && (
-            <div className="p-5 rounded-2xl bg-amber-50/80 border border-amber-300 shadow-xs space-y-2.5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-amber-900">
-                  <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
-                  <h4 className="text-xs font-bold uppercase tracking-wider font-outfit">
-                    Key Constraint Detected (Liebig Minimum): {bottleneck.constraint}
-                  </h4>
-                </div>
-                <span className="text-[10px] font-mono font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded border border-amber-300">
-                  Watch Factor
-                </span>
-              </div>
+            <div className="px-3.5 py-2.5 rounded-xl bg-amber-50/80 border border-amber-200/90 text-xs shadow-2xs">
+              <div className="flex items-start gap-2.5">
+                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="font-bold text-[11px] uppercase tracking-wider font-outfit text-amber-950">
+                        Liebig Limiting Factor:
+                      </span>
+                      <span className="font-semibold text-amber-900 bg-amber-100/90 px-2 py-0.5 rounded text-[11px] border border-amber-200">
+                        {bottleneck.constraint}
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono font-bold bg-amber-100/70 text-amber-800 px-1.5 py-0.5 rounded border border-amber-200">
+                      Watch Factor
+                    </span>
+                  </div>
 
-              <p className="text-xs text-amber-950 leading-relaxed font-sans">{bottleneck.diagnosis}</p>
+                  <p className="text-[11px] text-amber-900/80 leading-snug font-sans">{bottleneck.diagnosis}</p>
 
-              <div className="p-3 bg-white/90 rounded-xl border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
-                <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                <div>
-                  <strong>Municipal Planning Action: </strong>
-                  <span>{bottleneck.recommendation}</span>
+                  <p className="text-[11.5px] text-amber-950 leading-relaxed font-sans pt-0.5 border-t border-amber-200/60">
+                    <strong className="text-amber-950 font-semibold">Action: </strong>
+                    <span>{bottleneck.recommendation}</span>
+                  </p>
                 </div>
               </div>
             </div>
@@ -835,24 +851,23 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
               </span>
             </div>
 
-            {/* Side-by-Side: Spider Radar Chart + Compact Pillar Metrics */}
+            {/* Side-by-Side: Balanced Spider Radar (6 cols) + Pillar Telemetry (6 cols) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-              {/* Left Column: Spider Radar View */}
-              <div className="lg:col-span-5 h-[270px] w-full flex items-center justify-center p-2 bg-slate-50/80 rounded-xl border border-slate-200/80 overflow-visible">
-                <ResponsiveContainer width="100%" height={260}>
+              {/* Left Column: Spider Radar View (Balanced 6 cols) */}
+              <div className="lg:col-span-6 h-[290px] w-full flex items-center justify-center p-2 bg-slate-50/70 rounded-xl border border-slate-200/80">
+                <ResponsiveContainer width="100%" height={280}>
                   <RadarChart
                     cx="50%"
                     cy="50%"
-                    outerRadius="50%"
+                    outerRadius="62%"
                     data={activeRadarData}
-                    margin={{ top: 12, right: 28, bottom: 12, left: 28 }}
-                    style={{ overflow: 'visible' }}
+                    margin={{ top: 12, right: 30, bottom: 12, left: 30 }}
                   >
                     <PolarGrid stroke="#cbd5e1" strokeDasharray="3 3" />
                     <PolarAngleAxis
                       dataKey="pillar"
                       stroke="#475569"
-                      tick={{ fill: '#334155', fontSize: 10, fontWeight: 700 }}
+                      tick={{ fill: '#334155', fontSize: 11, fontWeight: 700 }}
                     />
                     <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#cbd5e1" tick={false} />
                     <Radar
@@ -861,7 +876,7 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                       stroke="#0284c7"
                       fill="#0284c7"
                       fillOpacity={0.35}
-                      dot={{ r: 3, fill: '#0284c7' }}
+                      dot={{ r: 3.5, fill: '#0284c7' }}
                     />
                     <Tooltip
                       contentStyle={{
@@ -877,231 +892,167 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                 </ResponsiveContainer>
               </div>
 
-              {/* Right Column: Compact 5-Pillar Telemetry */}
-              <div className="lg:col-span-7 space-y-2">
+              {/* Right Column: 5-Pillar Metric Breakdown with Progress Line Visualization (6 cols) */}
+              <div className="lg:col-span-6 space-y-2">
                 {/* 1. Water */}
-                <div className="p-2.5 bg-slate-50/60 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-0">
+                <div className="px-3 py-2 bg-slate-50/70 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-[140px] sm:min-w-[155px] shrink-0">
                     <span className="p-1.5 rounded-lg bg-sky-50 text-sky-700 shrink-0">
                       <Droplets className="w-4 h-4" />
                     </span>
-                    <div className="min-w-0">
-                      <div className="text-xs font-bold text-slate-900 truncate">💧 Water Footprint</div>
-                      <div className="text-[10.5px] text-slate-500 truncate">
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 leading-tight">Water Footprint</div>
+                      <div className="text-[10px] text-slate-500">
                         {currentCrop?.waterFootprintPerUnit ?? 'Moderate'} L/kg demand
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <div className="w-16 sm:w-20 bg-slate-200/80 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                  <div className="flex-1 min-w-[50px] max-w-[120px] mx-2 hidden sm:block">
+                    <div className="w-full bg-slate-200/90 rounded-full h-1.5 overflow-hidden border border-slate-200">
                       <div
-                        className="h-full bg-sky-500 rounded-full"
+                        className="h-full bg-sky-500 rounded-full transition-all duration-300"
                         style={{ width: `${currentSuitability?.pillarScores.water ?? 98}%` }}
                       />
                     </div>
-                    <span
-                      className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.water ?? 98).badgeClass}`}
-                    >
-                      {currentSuitability?.pillarScores.water ?? 98}/100 ·{' '}
-                      {getPillarPerformanceBadge(currentSuitability?.pillarScores.water ?? 98).label}
-                    </span>
                   </div>
+                  <span
+                    className={`text-[10.5px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${getPillarPerformanceBadge(currentSuitability?.pillarScores.water ?? 98).badgeClass}`}
+                  >
+                    {currentSuitability?.pillarScores.water ?? 98}/100 ·{' '}
+                    {getPillarPerformanceBadge(currentSuitability?.pillarScores.water ?? 98).label}
+                  </span>
                 </div>
 
                 {/* 2. Energy */}
-                <div className="p-2.5 bg-slate-50/60 hover:bg-slate-50 rounded-xl border border-amber-200/80 transition-colors flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-0">
+                <div className="px-3 py-2 bg-slate-50/70 hover:bg-slate-50 rounded-xl border border-amber-200/70 transition-colors flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-[140px] sm:min-w-[155px] shrink-0">
                     <span className="p-1.5 rounded-lg bg-amber-50 text-amber-700 shrink-0">
                       <Zap className="w-4 h-4" />
                     </span>
-                    <div className="min-w-0">
-                      <div className="text-xs font-bold text-slate-900 truncate">⚡ Processing Energy</div>
-                      <div className="text-[10.5px] text-slate-500 truncate">
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 leading-tight">Processing Energy</div>
+                      <div className="text-[10px] text-slate-500">
                         {currentCrop?.energyReqPerUnit ?? '0.4'} kWh/kg post-harvest
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <div className="w-16 sm:w-20 bg-slate-200/80 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                  <div className="flex-1 min-w-[50px] max-w-[120px] mx-2 hidden sm:block">
+                    <div className="w-full bg-slate-200/90 rounded-full h-1.5 overflow-hidden border border-slate-200">
                       <div
-                        className="h-full bg-amber-500 rounded-full"
+                        className="h-full bg-amber-500 rounded-full transition-all duration-300"
                         style={{ width: `${currentSuitability?.pillarScores.energy ?? 61}%` }}
                       />
                     </div>
-                    <span
-                      className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.energy ?? 61).badgeClass}`}
-                    >
-                      {currentSuitability?.pillarScores.energy ?? 61}/100 ·{' '}
-                      {getPillarPerformanceBadge(currentSuitability?.pillarScores.energy ?? 61).label}
-                    </span>
                   </div>
+                  <span
+                    className={`text-[10.5px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${getPillarPerformanceBadge(currentSuitability?.pillarScores.energy ?? 61).badgeClass}`}
+                  >
+                    {currentSuitability?.pillarScores.energy ?? 61}/100 ·{' '}
+                    {getPillarPerformanceBadge(currentSuitability?.pillarScores.energy ?? 61).label}
+                  </span>
                 </div>
 
                 {/* 3. Food */}
-                <div className="p-2.5 bg-slate-50/60 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-0">
+                <div className="px-3 py-2 bg-slate-50/70 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-[140px] sm:min-w-[155px] shrink-0">
                     <span className="p-1.5 rounded-lg bg-emerald-50 text-emerald-700 shrink-0">
                       <Wheat className="w-4 h-4" />
                     </span>
-                    <div className="min-w-0">
-                      <div className="text-xs font-bold text-slate-900 truncate">🌾 Food & Nutrition</div>
-                      <div className="text-[10.5px] text-slate-500 truncate">
-                        {currentCrop?.caloriesPerUnit ?? 'High'} kcal/kg exchange value
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 leading-tight">Food & Nutrition</div>
+                      <div className="text-[10px] text-slate-500">
+                        {currentCrop?.caloriesPerUnit ?? 'High'} kcal/kg exchange
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <div className="w-16 sm:w-20 bg-slate-200/80 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                  <div className="flex-1 min-w-[50px] max-w-[120px] mx-2 hidden sm:block">
+                    <div className="w-full bg-slate-200/90 rounded-full h-1.5 overflow-hidden border border-slate-200">
                       <div
-                        className="h-full bg-emerald-500 rounded-full"
+                        className="h-full bg-emerald-500 rounded-full transition-all duration-300"
                         style={{ width: `${currentSuitability?.pillarScores.food ?? 98}%` }}
                       />
                     </div>
-                    <span
-                      className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.food ?? 98).badgeClass}`}
-                    >
-                      {currentSuitability?.pillarScores.food ?? 98}/100 ·{' '}
-                      {getPillarPerformanceBadge(currentSuitability?.pillarScores.food ?? 98).label}
-                    </span>
                   </div>
+                  <span
+                    className={`text-[10.5px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${getPillarPerformanceBadge(currentSuitability?.pillarScores.food ?? 98).badgeClass}`}
+                  >
+                    {currentSuitability?.pillarScores.food ?? 98}/100 ·{' '}
+                    {getPillarPerformanceBadge(currentSuitability?.pillarScores.food ?? 98).label}
+                  </span>
                 </div>
 
                 {/* 4. Ecosystem */}
-                <div className="p-2.5 bg-slate-50/60 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-0">
+                <div className="px-3 py-2 bg-slate-50/70 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-[140px] sm:min-w-[155px] shrink-0">
                     <span className="p-1.5 rounded-lg bg-teal-50 text-teal-700 shrink-0">
                       <Trees className="w-4 h-4" />
                     </span>
-                    <div className="min-w-0">
-                      <div className="text-xs font-bold text-slate-900 truncate">🌲 Ecosystem & Carbon</div>
-                      <div className="text-[10.5px] text-slate-500 truncate">
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 leading-tight">Ecosystem & Carbon</div>
+                      <div className="text-[10px] text-slate-500">
                         {currentCrop?.category === 'Cash Crop / Agroforestry'
-                          ? 'Agroforestry shade canopy & carbon'
+                          ? 'Agroforestry shade canopy'
                           : currentCrop?.category === 'Staple Cereal Crop'
-                            ? 'Arable field rotation & crop residue'
-                            : 'Horticultural canopy coverage'}
+                            ? 'Arable field rotation'
+                            : 'Horticultural canopy'}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <div className="w-16 sm:w-20 bg-slate-200/80 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                  <div className="flex-1 min-w-[50px] max-w-[120px] mx-2 hidden sm:block">
+                    <div className="w-full bg-slate-200/90 rounded-full h-1.5 overflow-hidden border border-slate-200">
                       <div
-                        className="h-full bg-teal-500 rounded-full"
+                        className="h-full bg-teal-500 rounded-full transition-all duration-300"
                         style={{ width: `${currentSuitability?.pillarScores.ecosystem ?? 94}%` }}
                       />
                     </div>
-                    <span
-                      className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.ecosystem ?? 94).badgeClass}`}
-                    >
-                      {currentSuitability?.pillarScores.ecosystem ?? 94}/100 ·{' '}
-                      {getPillarPerformanceBadge(currentSuitability?.pillarScores.ecosystem ?? 94).label}
-                    </span>
                   </div>
+                  <span
+                    className={`text-[10.5px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${getPillarPerformanceBadge(currentSuitability?.pillarScores.ecosystem ?? 94).badgeClass}`}
+                  >
+                    {currentSuitability?.pillarScores.ecosystem ?? 94}/100 ·{' '}
+                    {getPillarPerformanceBadge(currentSuitability?.pillarScores.ecosystem ?? 94).label}
+                  </span>
                 </div>
 
                 {/* 5. Socioeconomics */}
-                <div className="p-2.5 bg-slate-50/60 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5 min-w-0">
+                <div className="px-3 py-2 bg-slate-50/70 hover:bg-slate-50 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-[140px] sm:min-w-[155px] shrink-0">
                     <span className="p-1.5 rounded-lg bg-purple-50 text-purple-700 shrink-0">
                       <Users className="w-4 h-4" />
                     </span>
-                    <div className="min-w-0">
-                      <div className="text-xs font-bold text-slate-900 truncate">🏛️ Smallholder Livelihood</div>
-                      <div className="text-[10.5px] text-slate-500 truncate">
-                        Labor: {currentCrop?.laborDaysPerUnit ?? 2.5} days/unit
+                    <div>
+                      <div className="text-xs font-bold text-slate-900 leading-tight">Smallholder Livelihood</div>
+                      <div className="text-[10px] text-slate-500">
+                        {currentCrop?.marketValuePerUnit ? (
+                          <span>
+                            Farmgate:{' '}
+                            <strong className="text-slate-800 font-mono font-bold">
+                              NPR {currentCrop.marketValuePerUnit}
+                            </strong>
+                            /{currentCrop.baseUnitName || 'kg'}
+                          </span>
+                        ) : (
+                          'Cooperative market returns'
+                        )}
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <div className="w-16 sm:w-20 bg-slate-200/80 rounded-full h-1.5 overflow-hidden hidden sm:block">
+                  <div className="flex-1 min-w-[50px] max-w-[120px] mx-2 hidden sm:block">
+                    <div className="w-full bg-slate-200/90 rounded-full h-1.5 overflow-hidden border border-slate-200">
                       <div
-                        className="h-full bg-purple-500 rounded-full"
+                        className="h-full bg-purple-500 rounded-full transition-all duration-300"
                         style={{ width: `${currentSuitability?.pillarScores.socioeconomics ?? 95}%` }}
                       />
                     </div>
-                    <span
-                      className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${getPillarPerformanceBadge(currentSuitability?.pillarScores.socioeconomics ?? 95).badgeClass}`}
-                    >
-                      {currentSuitability?.pillarScores.socioeconomics ?? 95}/100 ·{' '}
-                      {getPillarPerformanceBadge(currentSuitability?.pillarScores.socioeconomics ?? 95).label}
-                    </span>
                   </div>
+                  <span
+                    className={`text-[10.5px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${getPillarPerformanceBadge(currentSuitability?.pillarScores.socioeconomics ?? 95).badgeClass}`}
+                  >
+                    {currentSuitability?.pillarScores.socioeconomics ?? 95}/100 ·{' '}
+                    {getPillarPerformanceBadge(currentSuitability?.pillarScores.socioeconomics ?? 95).label}
+                  </span>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* ───────────────────────────────────────────────────────────────────────── */}
-          {/* STEP 5: LOCAL MARKET OUTLOOK & LOGISTICS */}
-          {/* ───────────────────────────────────────────────────────────────────────── */}
-          <div className="glass-panel p-5 rounded-2xl border border-slate-200 shadow-sm bg-white/95 space-y-3.5">
-            <div className="flex items-center gap-2 border-b border-slate-100 pb-2">
-              <TrendingUp className="w-4 h-4 text-emerald-600" />
-              <h3 className="text-sm font-bold text-slate-900 font-outfit uppercase tracking-wider">
-                Farmgate Economics & Trade Corridor
-              </h3>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                <div className="text-[11px] text-slate-500 font-sans">Farmgate Benchmark</div>
-                <div className="text-base font-bold font-mono text-slate-900 mt-0.5">
-                  NPR {currentCrop?.marketValuePerUnit}
-                  <span className="text-xs font-normal text-slate-500"> / {currentCrop?.baseUnitName}</span>
-                </div>
-                <div className="text-[10px] text-slate-400 mt-1">Cooperative collection rate</div>
-              </div>
-
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                <div className="text-[11px] text-slate-500 font-sans">Field Labor Intensity</div>
-                <div className="text-base font-bold font-mono text-slate-900 mt-0.5">
-                  {currentCrop?.laborDaysPerUnit ?? 2.5}
-                  <span className="text-xs font-normal text-slate-500"> person-days/unit</span>
-                </div>
-                <div className="text-[10px] text-slate-400 mt-1">
-                  Wage: NPR {district.agriLaborMarketRateAvgNpr || 850}/day
-                </div>
-              </div>
-
-              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                <div className="text-[11px] text-slate-500 font-sans">Agronomic Calendar</div>
-                <div className="text-sm font-bold text-slate-900 mt-0.5 truncate">
-                  {currentCrop?.seasonMonthsNepali || currentCrop?.seasonLabelNepali || 'वर्षभरि'}
-                </div>
-                <div className="text-[10px] text-emerald-700 font-medium mt-1">Optimal planting window</div>
-              </div>
-            </div>
-
-            <p className="text-xs text-slate-600 leading-relaxed font-sans bg-slate-50 p-3 rounded-xl border border-slate-200/80">
-              Produce from <strong>{activePalika ? `${activePalika.name}` : district.name}</strong> connects directly
-              via the Gulmi–Ridi–Butwal Strategic Highway (3.5 to 5 hours travel time) to regional wholesale centers and
-              Bhairahawa customs export terminals.
-            </p>
-          </div>
-
-          {/* ───────────────────────────────────────────────────────────────────────── */}
-          {/* STEP 6: CONTEXTUAL SIMULATION & ACTION DOCK */}
-          {/* ───────────────────────────────────────────────────────────────────────── */}
-          <div className="p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white shadow-md flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="space-y-1 text-center sm:text-left">
-              <div className="text-sm font-bold font-outfit text-emerald-300 flex items-center justify-center sm:justify-start gap-1.5">
-                <Sparkles className="w-4 h-4 text-emerald-400" />
-                <span>Ready to Test This Decision Under Climate & Price Shocks?</span>
-              </div>
-              <p className="text-xs text-slate-300 max-w-xl">
-                Simulate how {currentCrop?.name} yields, water stress, and farm revenue respond if monsoon rainfall
-                drops by 20% or market prices fluctuate.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2.5 shrink-0 w-full sm:w-auto">
-              <button
-                onClick={() => currentCrop && onSelectCrop(currentCrop)}
-                className="w-full sm:w-auto py-2.5 px-5 rounded-xl font-bold text-xs bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <span>Simulate Nexus for {currentCrop?.name}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
             </div>
           </div>
         </div>

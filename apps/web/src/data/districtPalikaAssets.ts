@@ -60,25 +60,29 @@ export const DISTRICT_PALIKAS: Record<string, DistrictPalika[]> =
   rawPalikaData.palikas as unknown as Record<string, DistrictPalika[]>;
 
 export const GULMI_PALIKA_NEPALI: Record<string, string> = {
-  ...(
-    (boundaryData as unknown as { features?: Array<{ properties?: { name?: string; nepaliName?: string } }> }).features || []
-  ).reduce((acc: Record<string, string>, f) => {
-    if (f.properties?.name) {
-      acc[f.properties.name] = f.properties.nepaliName || f.properties.name;
-    }
-    return acc;
-  }, {}),
   ...Object.entries(palikaCentroidsData as unknown as Record<string, { nepali?: string }>).reduce(
     (acc: Record<string, string>, [k, v]) => {
       if (k !== '_provenance' && v?.nepali) {
-        acc[k] = v.nepali.includes('गाउँपालिका') || v.nepali.includes('नगरपालिका')
-          ? v.nepali
-          : `${v.nepali} गाउँपालिका`;
+        if (v.nepali.includes('गाउँपालिका') || v.nepali.includes('नगरपालिका')) {
+          acc[k] = v.nepali;
+        } else if (k === 'Resunga' || k === 'Musikot') {
+          acc[k] = `${v.nepali} नगरपालिका`;
+        } else {
+          acc[k] = `${v.nepali} गाउँपालिका`;
+        }
       }
       return acc;
     },
     {}
   ),
+  ...(
+    (boundaryData as unknown as { features?: Array<{ properties?: { name?: string; nepaliName?: string } }> }).features || []
+  ).reduce((acc: Record<string, string>, f) => {
+    if (f.properties?.name && f.properties?.nepaliName) {
+      acc[f.properties.name] = f.properties.nepaliName;
+    }
+    return acc;
+  }, {}),
 };
 
 export interface HydroPalikaSummaryItem {

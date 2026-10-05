@@ -19,7 +19,6 @@ import { GULMI_COFFEE_LANDMARKS, REAL_HYDROPOWER_PLANTS, RealHydropowerAsset } f
 import { fetchGeoJson } from '../../services/dataClient';
 import { ContourLine, generateDistrictContours } from '../../utils/contourGenerator';
 
-import { DistrictElevationProfiler } from './DistrictElevationProfiler';
 import { MapGestureHandler } from './MapGestureHandler';
 import { SpatialSoilSurfaceOverlay } from './SpatialSoilSurfaceOverlay';
 
@@ -32,7 +31,7 @@ interface DistrictDetailMapProps {
   onSelectCrop?: (crop: Crop) => void;
 }
 
-type MapLayerMode = 'overview' | 'roads' | 'soil' | 'hydrology' | 'energy' | 'elevation';
+type MapLayerMode = 'overview' | 'roads' | 'soil' | 'hydrology' | 'energy';
 type BaseMapStyle = 'voyager' | 'osm' | 'opentopo' | 'satellite';
 
 const BASE_MAP_TILES: Record<BaseMapStyle, { url: string; attribution: string; name: string }> = {
@@ -677,7 +676,6 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
             { id: 'soil', label: 'NARC Soil Grid', icon: <FlaskConical className="w-3.5 h-3.5 text-emerald-600" /> },
             { id: 'hydrology', label: 'Hydrology & DHM', icon: <Droplets className="w-3.5 h-3.5 text-sky-600" /> },
             { id: 'energy', label: 'Hydropower Grid', icon: <Zap className="w-3.5 h-3.5 text-purple-600" /> },
-            { id: 'elevation', label: '3D Elevation', icon: <Mountain className="w-3.5 h-3.5 text-slate-600" /> },
           ].map((mode) => (
             <button
               key={mode.id}
@@ -1306,10 +1304,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
               </div>
             )}
 
-            {/* 5. ELEVATION PROFILER INLINE */}
-            {layerMode === 'elevation' && <DistrictElevationProfiler district={district} />}
-
-            {/* 6. OVERVIEW (INTEGRATED PALIKA SYNTHESIS) */}
+            {/* 5. OVERVIEW (INTEGRATED PALIKA SYNTHESIS) */}
             {layerMode === 'overview' && (
               <div className="glass-panel p-4 rounded-xl border border-slate-200 bg-white space-y-3 animate-fade-in-up">
                 <div className="flex items-center justify-between border-b border-slate-200 pb-2">
