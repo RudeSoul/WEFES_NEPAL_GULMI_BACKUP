@@ -8,7 +8,7 @@
     "sync:data": "python3 scripts/sync_web_assets.py",
     "test": "pnpm check:data && pnpm exec turbo run test",
     "check:data": "python3 scripts/verify_data_integrity.py",
-    "prepare": "git config core.hooksPath .githooks",
+    "prepare": "test -d .git && git config core.hooksPath .githooks || exit 0",
     "lint": "pnpm exec turbo run lint",
     "lint:fix": "pnpm exec turbo run lint:fix",
     "knip": "knip",

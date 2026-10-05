@@ -53,3 +53,4 @@ Desktop.ini
 
 # --- Large Raw GIS Datasets (>40MB) ---
 data/real/boundaries/gulmi_buildings.geojson
+.vercel
