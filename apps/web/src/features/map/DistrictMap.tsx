@@ -12,6 +12,7 @@
 // Classification: OBSERVED REAL & CALCULATED BASELINES
 // Citations: Ministry of Federal Affairs and General Administration (MoFAGA), DHM Nepal, Survey Department of Nepal, HydroSHEDS / HydroRIVERS / HydroBASINS (WWF/USGS)
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import type { Feature, GeoJsonObject, Point } from 'geojson';
 import L from 'leaflet';
@@ -44,7 +45,7 @@ import {
 import { CircleMarker, GeoJSON, MapContainer, Marker, TileLayer, Tooltip, useMap, ZoomControl } from 'react-leaflet';
 
 import { db } from '@wefes/database';
-import { District, SUBFILTER_LEGENDS, WEFESPillar } from '@wefes/shared-types';
+import { SUBFILTER_LEGENDS, WEFESPillar } from '@wefes/shared-types';
 
 import { DynamicLegend } from '../../components/legend/DynamicLegend';
 import { VALIDATED_CROPS } from '../../data/cropSuitabilityAssets';
@@ -351,18 +352,22 @@ interface PalikaHoverData {
   [key: string]: unknown;
 }
 
-interface DistrictMapProps {
-  onSelectDistrict: (district: District, palikaName?: string) => void;
-}
-
-export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) => {
+export const DistrictMap: React.FC = () => {
+  const navigate = useNavigate();
   const climateDataset = useNexusStore((s) => s.climateDataset);
   const storeFetchClimate = useNexusStore((s) => s.fetchClimateDataset);
   const selectedDistrict = useNexusStore((s) => s.selectedDistrict);
+  const setSelectedPalikaName = useNexusStore((s) => s.setSelectedPalikaName);
   const selectedPillar = useNexusStore((s) => s.selectedPillar);
   const setSelectedPillar = useNexusStore((s) => s.setSelectedPillar);
   const selectedMapCropId = useNexusStore((s) => s.selectedMapCropId);
   const subFilters = useNexusStore((s) => s.subFilters);
+
+  const onSelectDistrict = (palikaName?: string) => {
+    const pName = palikaName || 'Resunga';
+    setSelectedPalikaName(pName);
+    navigate(`/palikas/${encodeURIComponent(pName)}`);
+  };
 
   const [geoData, setGeoData] = useState<GeoJsonObject | null>(null);
   const [geoLoading, setGeoLoading] = useState(true);
@@ -794,8 +799,7 @@ export const DistrictMap: React.FC<DistrictMapProps> = ({ onSelectDistrict }) =>
 
     layer.on({
       click: () => {
-        const gulmiDistrict = db.getDistrictById('gulmi');
-        if (gulmiDistrict) onSelectDistrict(gulmiDistrict, props.name);
+        onSelectDistrict(props.name);
       },
       mouseover: (e: L.LeafletMouseEvent) => {
         e.target.setStyle({

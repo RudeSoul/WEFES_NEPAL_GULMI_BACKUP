@@ -21,7 +21,6 @@ export interface NexusState {
   selectedDistrict: District | null;
   selectedPalikaName: string | null;
   hoveredPalikaName: string | null;
-  setSelectedDistrict: (district: District | null) => void;
   setSelectedPalikaName: (name: string | null) => void;
   setHoveredPalikaName: (name: string | null) => void;
 
@@ -107,7 +106,6 @@ export const useNexusStore = create<NexusState>()(
       selectedPalikaName: 'Resunga',
       hoveredPalikaName: null,
 
-      setSelectedDistrict: (district) => set({ selectedDistrict: district }),
       setSelectedPalikaName: (name) => set({ selectedPalikaName: name }),
       setHoveredPalikaName: (name) => set({ hoveredPalikaName: name }),
 

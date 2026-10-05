@@ -7,16 +7,17 @@ import { Crop, District, FertilizerImpactProfile, WEFESOutput } from '@wefes/sha
 import { calculateFertilizerNexusImpact } from '@wefes/wefes-engine';
 
 import { DISTRICT_PALIKAS, DistrictPalika } from '../../data/districtPalikaAssets';
+import { useNexusStore } from '../../store';
 
-interface PalikaFertilizerCockpitProps {
-  output: WEFESOutput;
-  onOrganicSubstitutionChange?: (pct: number) => void;
-}
+export const PalikaFertilizerCockpit: React.FC = (props) => {
+  const output = useNexusStore((s) => s.analysisOutput);
 
-export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = ({
-  output,
-  onOrganicSubstitutionChange,
-}) => {
+  if (!output) return null;
+
+  return <PalikaFertilizerCockpitContent {...props} output={output} />;
+};
+
+const PalikaFertilizerCockpitContent: React.FC<{ output: WEFESOutput }> = ({ output }) => {
   // Retrieve district & crop entities
   const district: District = useMemo(() => {
     return (
@@ -95,9 +96,6 @@ export const PalikaFertilizerCockpit: React.FC<PalikaFertilizerCockpitProps> = (
 
   const handleOrganicSlider = (val: number) => {
     setOrganicSubstitutionPct(val);
-    if (onOrganicSubstitutionChange) {
-      onOrganicSubstitutionChange(val);
-    }
   };
 
   return (

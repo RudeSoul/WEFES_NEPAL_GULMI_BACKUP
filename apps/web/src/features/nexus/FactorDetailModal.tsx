@@ -13,11 +13,10 @@ import {
   YAxis,
 } from 'recharts';
 
-import { WEFESOutput } from '@wefes/shared-types';
+import { useNexusStore } from '../../store';
 
 interface FactorDetailModalProps {
   factorKey: string;
-  output: WEFESOutput;
   onClose: () => void;
 }
 
@@ -124,11 +123,12 @@ const FACTOR_META: Record<string, FactorMeta> = {
   },
 };
 
-export const FactorDetailModal: React.FC<FactorDetailModalProps> = ({ factorKey, output, onClose }) => {
+export const FactorDetailModal: React.FC<FactorDetailModalProps> = ({ factorKey, onClose }) => {
+  const output = useNexusStore((s) => s.analysisOutput);
   const meta = FACTOR_META[factorKey];
   const [sliderVal, setSliderVal] = useState(0);
 
-  if (!meta) return null;
+  if (!meta || !output) return null;
 
   const getBaseValue = () => {
     switch (factorKey) {

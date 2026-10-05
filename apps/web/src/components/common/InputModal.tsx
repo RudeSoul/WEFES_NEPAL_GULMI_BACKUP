@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { ArrowRight, Calculator, Scale, Sparkles, Sprout, X } from 'lucide-react';
 
@@ -6,13 +7,11 @@ import { CropUnit } from '@wefes/shared-types';
 import { calculateHarvestImpact } from '@wefes/wefes-engine';
 import { UNIT_CONVERSIONS } from '@wefes/wefes-engine';
 
+import { ROUTES } from '../../routes/paths';
 import { useNexusStore } from '../../store';
 
-interface InputModalProps {
-  onRunAnalysis?: () => void;
-}
-
-export const InputModal: React.FC<InputModalProps> = ({ onRunAnalysis }) => {
+export const InputModal: React.FC = () => {
+  const navigate = useNavigate();
   const district = useNexusStore((s) => s.selectedDistrict);
   const crop = useNexusStore((s) => s.selectedCrop);
   const isOpen = useNexusStore((s) => s.isInputModalOpen);
@@ -52,7 +51,7 @@ export const InputModal: React.FC<InputModalProps> = ({ onRunAnalysis }) => {
     if (quantity <= 0) return;
     const result = calculateHarvestImpact(district, crop, quantity, unit);
     setAnalysisOutput(result);
-    onRunAnalysis?.();
+    navigate(ROUTES.ANALYSIS);
     onClose();
   };
 

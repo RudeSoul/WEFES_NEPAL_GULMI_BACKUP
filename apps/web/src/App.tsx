@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
-
-import { District } from '@wefes/shared-types';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 import { Header, InputModal } from './components/common';
 import { initializeRemoteIndicatorData } from './data/districtIndicatorAssets';
@@ -15,15 +13,8 @@ import { ROUTES } from './routes/paths';
 import { useNexusStore } from './store';
 
 export function App() {
-  const navigate = useNavigate();
-
   // Zustand Store Selectors
-  const selectedDistrict = useNexusStore((s) => s.selectedDistrict);
-  const setSelectedDistrict = useNexusStore((s) => s.setSelectedDistrict);
-  const analysisOutput = useNexusStore((s) => s.analysisOutput);
   const fetchClimateDataset = useNexusStore((s) => s.fetchClimateDataset);
-  const selectedPalikaName = useNexusStore((s) => s.selectedPalikaName);
-  const setSelectedPalikaName = useNexusStore((s) => s.setSelectedPalikaName);
 
   // Pre-fetch climate dataset and remote indicators on bootstrap
   useEffect(() => {
@@ -31,122 +22,31 @@ export function App() {
     initializeRemoteIndicatorData();
   }, [fetchClimateDataset]);
 
-  const handleSelectDistrictFromMap = (district: District, palikaName?: string) => {
-    setSelectedDistrict(district);
-    const pName = palikaName || 'Resunga';
-    setSelectedPalikaName(pName);
-    navigate(`/palikas/${encodeURIComponent(pName)}`);
-  };
-
-  const handleRunAnalysis = () => {
-    navigate(ROUTES.ANALYSIS);
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans antialiased selection:bg-emerald-100 selection:text-emerald-900">
       <Header />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
         <Routes>
-          <Route path={ROUTES.HOME} element={<DistrictMap onSelectDistrict={handleSelectDistrictFromMap} />} />
-          <Route path={ROUTES.MAP} element={<DistrictMap onSelectDistrict={handleSelectDistrictFromMap} />} />
-
-          <Route
-            path={ROUTES.PALIKAS}
-            element={selectedDistrict ? <DistrictDetail /> : <Navigate to={ROUTES.MAP} replace />}
-          />
-
-          <Route
-            path={ROUTES.PALIKA_DETAIL}
-            element={selectedDistrict ? <DistrictDetail /> : <Navigate to={ROUTES.MAP} replace />}
-          />
-
-          <Route
-            path={ROUTES.ANALYSIS}
-            element={
-              <AnalysisDashboard
-                onOpenSimulator={() => navigate(ROUTES.SIMULATOR)}
-                onOpenDossier={() => navigate(ROUTES.DOSSIER)}
-                onBackToDistrict={() =>
-                  navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS)
-                }
-                onBackToMap={() => navigate(ROUTES.MAP)}
-              />
-            }
-          />
-
-          <Route
-            path={ROUTES.SIMULATOR}
-            element={
-              analysisOutput ? (
-                <ScenarioSimulator
-                  baselineOutput={analysisOutput}
-                  onBackToAnalysis={() => navigate(ROUTES.ANALYSIS)}
-                  onBackToDistrict={() =>
-                    navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS)
-                  }
-                  onBackToMap={() => navigate(ROUTES.MAP)}
-                />
-              ) : (
-                <div className="p-8 text-center bg-white rounded-xl border border-slate-200">
-                  <p className="text-slate-600 font-medium mb-4">
-                    Scenario Simulator requires an initial analysis baseline. Start from the map or a Palika profile.
-                  </p>
-                  <button
-                    onClick={() => navigate(ROUTES.MAP)}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-colors"
-                  >
-                    Go to District Map
-                  </button>
-                </div>
-              )
-            }
-          />
-
-          <Route
-            path={ROUTES.DOSSIER}
-            element={
-              analysisOutput ? (
-                <ScientificDossierScreen
-                  output={analysisOutput}
-                  onBackToAnalysis={() => navigate(ROUTES.ANALYSIS)}
-                  onBackToDistrict={() =>
-                    navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS)
-                  }
-                  onBackToMap={() => navigate(ROUTES.MAP)}
-                  onOpenSimulator={() => navigate(ROUTES.SIMULATOR)}
-                  onOpenResearchSandbox={() => navigate(ROUTES.RESEARCH_SANDBOX)}
-                />
-              ) : (
-                <Navigate to={ROUTES.MAP} replace />
-              )
-            }
-          />
-
-          <Route
-            path={ROUTES.RESEARCH_SANDBOX}
-            element={
-              <ResearchSandboxScreen
-                output={analysisOutput}
-                onBackToAnalysis={() => navigate(analysisOutput ? ROUTES.ANALYSIS : ROUTES.MAP)}
-                onBackToMap={() => navigate(ROUTES.MAP)}
-                onBackToDossier={analysisOutput ? () => navigate(ROUTES.DOSSIER) : undefined}
-              />
-            }
-          />
+          <Route path={ROUTES.HOME} element={<DistrictMap />} />
+          <Route path={ROUTES.MAP} element={<DistrictMap />} />
+          <Route path={ROUTES.PALIKAS} element={<DistrictDetail />} />
+          <Route path={ROUTES.PALIKA_DETAIL} element={<DistrictDetail />} />
+          <Route path={ROUTES.ANALYSIS} element={<AnalysisDashboard />} />
+          <Route path={ROUTES.SIMULATOR} element={<ScenarioSimulator />} />
+          <Route path={ROUTES.DOSSIER} element={<ScientificDossierScreen />} />
+          <Route path={ROUTES.RESEARCH_SANDBOX} element={<ResearchSandboxScreen />} />
 
           {/* Fallback route */}
           <Route path="*" element={<Navigate to={ROUTES.MAP} replace />} />
         </Routes>
       </main>
 
-      <InputModal onRunAnalysis={handleRunAnalysis} />
+      <InputModal />
 
       <footer className="border-t border-slate-200 bg-white py-4 px-4 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="font-semibold text-slate-700">
-            WEFES Nexus · Gulmi District (गुल्मी जिल्ला) • Lumbini Province, Nepal
-          </span>
+          <span className="font-semibold text-slate-700">WEFES Nexus · Gulmi District • Lumbini Province, Nepal</span>
           <span className="text-[11px] text-slate-500 font-mono">
             Water · Energy · Food · Ecosystem · Socioeconomics
           </span>

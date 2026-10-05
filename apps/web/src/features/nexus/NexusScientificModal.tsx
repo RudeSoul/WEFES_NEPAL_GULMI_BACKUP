@@ -6,6 +6,8 @@ import { Award, Printer, Scale, X } from 'lucide-react';
 import { WEFESOutput } from '@wefes/shared-types';
 import { computeDeepNexusAnalysis, simulateSensitivity } from '@wefes/wefes-engine';
 
+import { useNexusStore } from '../../store';
+
 import { GesiTab } from './components/scientific-modal/GesiTab';
 import { InterventionsTab } from './components/scientific-modal/InterventionsTab';
 import { MathTab } from './components/scientific-modal/MathTab';
@@ -15,14 +17,25 @@ import { SensitivityTab } from './components/scientific-modal/SensitivityTab';
 import { ShadowSdgTab } from './components/scientific-modal/ShadowSdgTab';
 
 interface NexusScientificModalProps {
-  output: WEFESOutput;
   isOpen: boolean;
   onClose: () => void;
 }
 
 type TabType = 'math' | 'sensitivity' | 'rusle_springs' | 'gesi' | 'phenology_import' | 'shadow_sdg' | 'interventions';
 
-export const NexusScientificModal: React.FC<NexusScientificModalProps> = ({ output, isOpen, onClose }) => {
+export const NexusScientificModal: React.FC<NexusScientificModalProps> = ({ isOpen, onClose }) => {
+  const output = useNexusStore((s) => s.analysisOutput) as WEFESOutput;
+
+  if (!isOpen || !output) return null;
+
+  return <NexusScientificModalContent isOpen={isOpen} onClose={onClose} output={output} />;
+};
+
+const NexusScientificModalContent: React.FC<NexusScientificModalProps & { output: WEFESOutput }> = ({
+  isOpen,
+  onClose,
+  output,
+}) => {
   const [activeTab, setActiveTab] = useState<TabType>('math');
 
   // Live Sensitivity Sliders State
@@ -67,8 +80,6 @@ export const NexusScientificModal: React.FC<NexusScientificModalProps> = ({ outp
   const handlePrintDossier = () => {
     window.print();
   };
-
-  if (!isOpen) return null;
 
   return createPortal(
     <div

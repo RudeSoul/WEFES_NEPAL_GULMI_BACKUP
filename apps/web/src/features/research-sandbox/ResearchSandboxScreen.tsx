@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   ArrowLeft,
@@ -14,23 +15,18 @@ import {
   UploadCloud,
 } from 'lucide-react';
 
-import { WEFESOutput } from '@wefes/shared-types';
+import { ROUTES } from '../../routes/paths';
+import { useNexusStore } from '../../store';
 
 import { Latex } from '@/components/common';
 
-interface ResearchSandboxScreenProps {
-  output?: WEFESOutput | null;
-  onBackToAnalysis: () => void;
-  onBackToMap: () => void;
-  onBackToDossier?: () => void;
-}
+export const ResearchSandboxScreen: React.FC = () => {
+  const navigate = useNavigate();
+  const output = useNexusStore((s) => s.analysisOutput);
 
-export const ResearchSandboxScreen: React.FC<ResearchSandboxScreenProps> = ({
-  output,
-  onBackToAnalysis,
-  onBackToMap,
-  onBackToDossier,
-}) => {
+  const onBackToAnalysis = () => navigate(output ? ROUTES.ANALYSIS : ROUTES.MAP);
+  const onBackToMap = () => navigate(ROUTES.MAP);
+  const onBackToDossier = output ? () => navigate(ROUTES.DOSSIER) : undefined;
   const [activeTab, setActiveTab] = useState<'formulas' | 'ingestion' | 'monte_carlo' | 'python_sdk' | 'partnership'>(
     'formulas'
   );

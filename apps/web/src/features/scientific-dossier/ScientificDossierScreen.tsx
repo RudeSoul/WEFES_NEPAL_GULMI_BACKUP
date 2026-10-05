@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import {
   Activity,
@@ -60,20 +61,13 @@ import {
   SentinelNdviChart,
   SunburstWaterCarbon,
 } from '../../components/charts';
+import { ROUTES } from '../../routes/paths';
+import { useNexusStore } from '../../store';
 
 import { CircularBioeconomyCockpit } from './CircularBioeconomyCockpit';
 import { PalikaFertilizerCockpit } from './PalikaFertilizerCockpit';
 
 import { Latex } from '@/components/common';
-
-interface ScientificDossierScreenProps {
-  output: WEFESOutput;
-  onBackToAnalysis: () => void;
-  onBackToDistrict: () => void;
-  onBackToMap: () => void;
-  onOpenSimulator: () => void;
-  onOpenResearchSandbox?: () => void;
-}
 
 type MasterDomainType = 'climate_finance' | 'precision_agronomy' | 'value_chain_satellite' | 'policy_gesi_pad';
 
@@ -264,14 +258,31 @@ const DOMAIN_SUBMODULES: Record<MasterDomainType, SubModuleItem[]> = {
   ],
 };
 
-export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = ({
-  output,
-  onBackToAnalysis,
-  onBackToDistrict,
-  onBackToMap,
-  onOpenSimulator,
-  onOpenResearchSandbox,
-}) => {
+interface ScientificDossierContentProps {
+  output: WEFESOutput;
+}
+
+export const ScientificDossierScreen: React.FC = () => {
+  const activeOutput = useNexusStore((s) => s.analysisOutput);
+
+  if (!activeOutput) {
+    return <Navigate to={ROUTES.MAP} replace />;
+  }
+
+  return <ScientificDossierContent output={activeOutput} />;
+};
+
+const ScientificDossierContent: React.FC<ScientificDossierContentProps> = ({ output }) => {
+  const navigate = useNavigate();
+  const selectedPalikaName = useNexusStore((s) => s.selectedPalikaName);
+
+  const onBackToAnalysis = () => navigate(ROUTES.ANALYSIS);
+  const onBackToDistrict = () =>
+    navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS);
+  const onBackToMap = () => navigate(ROUTES.MAP);
+  const onOpenSimulator = () => navigate(ROUTES.SIMULATOR);
+  const onOpenResearchSandbox = () => navigate(ROUTES.RESEARCH_SANDBOX);
+
   const [activeDomain, setActiveDomain] = useState<MasterDomainType>('precision_agronomy');
   const [subTab, setSubTab] = useState<string>('narc_varieties');
   const [showCircularCockpit, setShowCircularCockpit] = useState<boolean>(false);
@@ -492,17 +503,15 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
               <span>Scenario Simulator ↗</span>
             </button>
 
-            {onOpenResearchSandbox && (
-              <button
-                onClick={onOpenResearchSandbox}
-                className="px-4 py-2.5 bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer font-outfit"
-                title="Open Research & Formula Modeling Sandbox (Version 2.0 Preview)"
-              >
-                <FlaskConical className="w-4 h-4 text-purple-700" />
-                <span>Formula Sandbox</span>
-                <span className="text-[9px] font-mono bg-purple-200 text-purple-900 px-1.5 py-0.2 rounded">v2.0</span>
-              </button>
-            )}
+            <button
+              onClick={onOpenResearchSandbox}
+              className="px-4 py-2.5 bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200 font-bold rounded-xl text-xs flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer font-outfit"
+              title="Open Research & Formula Modeling Sandbox (Version 2.0 Preview)"
+            >
+              <FlaskConical className="w-4 h-4 text-purple-700" />
+              <span>Formula Sandbox</span>
+              <span className="text-[9px] font-mono bg-purple-200 text-purple-900 px-1.5 py-0.2 rounded">v2.0</span>
+            </button>
 
             <div className="flex items-center gap-3 bg-emerald-50 p-2.5 px-3.5 rounded-2xl border border-emerald-200 shadow-2xs">
               <div className="text-right">
@@ -674,7 +683,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
 
         {showCircularCockpit && (
           <div className="animate-fade-in-up">
-            <CircularBioeconomyCockpit districtName={output.districtName} cropName={output.cropName} />
+            <CircularBioeconomyCockpit />
           </div>
         )}
       </div>
@@ -1537,7 +1546,7 @@ export const ScientificDossierScreen: React.FC<ScientificDossierScreenProps> = (
               />
 
               {/* Full Interactive Palika Fertilizer & Spatial Logistics Cockpit */}
-              <PalikaFertilizerCockpit output={output} />
+              <PalikaFertilizerCockpit />
 
               {/* QUEFTS Nutrient Diagnostic Meter if not empirical_only */}
               {studyViewMode !== 'empirical_only' && (

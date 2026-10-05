@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   ArrowDownRight,
@@ -13,15 +14,11 @@ import {
   Zap,
 } from 'lucide-react';
 
-import { ScenarioParameters, WEFESOutput } from '@wefes/shared-types';
+import { ScenarioParameters } from '@wefes/shared-types';
 import { simulateScenario } from '@wefes/wefes-engine';
 
-interface ScenarioSimulatorProps {
-  baselineOutput: WEFESOutput;
-  onBackToAnalysis?: () => void;
-  onBackToDistrict?: () => void;
-  onBackToMap?: () => void;
-}
+import { ROUTES } from '../../routes/paths';
+import { useNexusStore } from '../../store';
 
 const DEFAULT_PARAMS: ScenarioParameters = {
   // Climate & Water
@@ -51,16 +48,22 @@ const DEFAULT_PARAMS: ScenarioParameters = {
   exportTaxSubsidyRate: 0,
 };
 
-export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
-  baselineOutput,
-  onBackToAnalysis,
-  onBackToDistrict,
-  onBackToMap,
-}) => {
+export const ScenarioSimulator: React.FC = () => {
+  const navigate = useNavigate();
+  const baselineOutput = useNexusStore((s) => s.analysisOutput);
+  const selectedPalikaName = useNexusStore((s) => s.selectedPalikaName);
+
+  const onBackToAnalysis = () => navigate(ROUTES.ANALYSIS);
+  const onBackToDistrict = () =>
+    navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS);
+  const onBackToMap = () => navigate(ROUTES.MAP);
+
   const initialParams = React.useMemo<ScenarioParameters>(
     () => ({
       ...DEFAULT_PARAMS,
-      renewableEnergyShare: Math.round(100 - baselineOutput.energy.fossilSharePercent),
+      renewableEnergyShare: baselineOutput
+        ? Math.round(100 - baselineOutput.energy.fossilSharePercent)
+        : DEFAULT_PARAMS.renewableEnergyShare,
     }),
     [baselineOutput]
   );
@@ -68,9 +71,25 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
   const [parameters, setParameters] = useState<ScenarioParameters>(initialParams);
   const [activeTab, setActiveTab] = useState<'climate' | 'energy' | 'agronomic' | 'socio'>('climate');
 
-  React.useEffect(() => {
+  useEffect(() => {
     setParameters(initialParams);
   }, [initialParams]);
+
+  if (!baselineOutput) {
+    return (
+      <div className="p-8 text-center bg-white rounded-xl border border-slate-200">
+        <p className="text-slate-600 font-medium mb-4">
+          Scenario Simulator requires an initial analysis baseline. Start from the map or a Palika profile.
+        </p>
+        <button
+          onClick={onBackToMap}
+          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer"
+        >
+          Go to District Map
+        </button>
+      </div>
+    );
+  }
 
   const scenarioResult = simulateScenario(baselineOutput, parameters);
   const { simulated, differentials } = scenarioResult;
@@ -89,37 +108,27 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
       <div className="glass-panel p-6 rounded-2xl border border-slate-200 shadow-sm bg-white/95 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            {onBackToAnalysis && (
-              <button
-                onClick={onBackToAnalysis}
-                className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-semibold transition-colors cursor-pointer"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                Back to Analysis Report
-              </button>
-            )}
-            {onBackToDistrict && (
-              <>
-                <span className="text-slate-300">•</span>
-                <button
-                  onClick={onBackToDistrict}
-                  className="text-xs text-slate-500 hover:text-slate-800 font-semibold transition-colors cursor-pointer"
-                >
-                  {baselineOutput.districtName} District
-                </button>
-              </>
-            )}
-            {onBackToMap && (
-              <>
-                <span className="text-slate-300">•</span>
-                <button
-                  onClick={onBackToMap}
-                  className="text-xs text-slate-500 hover:text-slate-800 font-semibold transition-colors cursor-pointer"
-                >
-                  National Map
-                </button>
-              </>
-            )}
+            <button
+              onClick={onBackToAnalysis}
+              className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-semibold transition-colors cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Back to Analysis Report
+            </button>
+            <span className="text-slate-300">•</span>
+            <button
+              onClick={onBackToDistrict}
+              className="text-xs text-slate-500 hover:text-slate-800 font-semibold transition-colors cursor-pointer"
+            >
+              {baselineOutput.districtName} District
+            </button>
+            <span className="text-slate-300">•</span>
+            <button
+              onClick={onBackToMap}
+              className="text-xs text-slate-500 hover:text-slate-800 font-semibold transition-colors cursor-pointer"
+            >
+              National Map
+            </button>
           </div>
           <div className="flex items-center space-x-2 text-xs text-slate-500 font-semibold mb-1">
             <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-600" />
@@ -758,31 +767,25 @@ export const ScenarioSimulator: React.FC<ScenarioSimulatorProps> = ({
       {/* Bottom Quick Navigation Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 bg-slate-50/90 rounded-2xl border border-slate-200">
         <div className="flex items-center gap-2 flex-wrap">
-          {onBackToAnalysis && (
-            <button
-              onClick={onBackToAnalysis}
-              className="text-xs text-slate-800 hover:text-slate-950 font-bold flex items-center gap-1.5 transition-colors cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
-            >
-              <ArrowLeft className="w-4 h-4 text-emerald-600" />
-              <span>Back to Analysis Report</span>
-            </button>
-          )}
-          {onBackToDistrict && (
-            <button
-              onClick={onBackToDistrict}
-              className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1 transition-colors cursor-pointer bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
-            >
-              <span>{baselineOutput.districtName} District</span>
-            </button>
-          )}
-          {onBackToMap && (
-            <button
-              onClick={onBackToMap}
-              className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1 transition-colors cursor-pointer bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
-            >
-              <span>National Map</span>
-            </button>
-          )}
+          <button
+            onClick={onBackToAnalysis}
+            className="text-xs text-slate-800 hover:text-slate-950 font-bold flex items-center gap-1.5 transition-colors cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
+          >
+            <ArrowLeft className="w-4 h-4 text-emerald-600" />
+            <span>Back to Analysis Report</span>
+          </button>
+          <button
+            onClick={onBackToDistrict}
+            className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1 transition-colors cursor-pointer bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
+          >
+            <span>{baselineOutput.districtName} District</span>
+          </button>
+          <button
+            onClick={onBackToMap}
+            className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1 transition-colors cursor-pointer bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
+          >
+            <span>National Map</span>
+          </button>
         </div>
 
         <button

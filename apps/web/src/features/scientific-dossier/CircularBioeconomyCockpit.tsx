@@ -4,12 +4,13 @@ import { ChevronDown, ChevronUp, Download, Fish, Flame, Landmark, Milk, RefreshC
 
 import { CircularBioeconomyInput, CircularBioeconomyResult, computeCircularBioeconomy } from '@wefes/wefes-engine';
 
-interface CircularBioeconomyCockpitProps {
-  districtName: string;
-  cropName: string;
-}
+import { useNexusStore } from '../../store';
 
-export const CircularBioeconomyCockpit: React.FC<CircularBioeconomyCockpitProps> = ({ districtName, cropName }) => {
+export const CircularBioeconomyCockpit: React.FC = () => {
+  const storeOutput = useNexusStore((s) => s.analysisOutput);
+
+  const districtName = storeOutput?.districtName || 'Gulmi';
+  const cropName = storeOutput?.cropName || 'Coffee';
   // Interactive Slider States
   const [cropLandHa, setCropLandHa] = useState<number>(2.0);
   const [dairyHerdSize, setDairyHerdSize] = useState<number>(4);

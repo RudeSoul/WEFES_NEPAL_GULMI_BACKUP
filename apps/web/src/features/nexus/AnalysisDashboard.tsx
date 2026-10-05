@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Activity,
@@ -17,27 +18,25 @@ import {
 } from 'lucide-react';
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts';
 
+import { ROUTES } from '../../routes/paths';
 import { useNexusStore } from '../../store';
 
 import { FactorDetailModal } from './FactorDetailModal';
 import { NexusScientificModal } from './NexusScientificModal';
 
-export interface AnalysisDashboardProps {
-  onOpenSimulator: () => void;
-  onOpenDossier?: () => void;
-  onBackToDistrict?: () => void;
-  onBackToMap?: () => void;
-}
-
-export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
-  onOpenSimulator,
-  onOpenDossier,
-  onBackToDistrict,
-  onBackToMap,
-}) => {
+export const AnalysisDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const output = useNexusStore((s) => s.analysisOutput);
+  const selectedPalikaName = useNexusStore((s) => s.selectedPalikaName);
+
+  const onOpenSimulator = () => navigate(ROUTES.SIMULATOR);
+  const onOpenDossier = () => navigate(ROUTES.DOSSIER);
+  const onBackToDistrict = () =>
+    navigate(selectedPalikaName ? `/palikas/${encodeURIComponent(selectedPalikaName)}` : ROUTES.PALIKAS);
+  const onBackToMap = () => navigate(ROUTES.MAP);
+
   const [selectedFactorKey, setSelectedFactorKey] = useState<string | null>(null);
-  const [isScientificModalOpen, setIsScientificModalOpen] = useState(false);
+  const [isScientificModalOpen, setIsScientificModalOpen] = useState(true);
 
   if (!output) {
     return (
@@ -45,14 +44,12 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
         <p className="text-slate-600 font-medium mb-4">
           No active analysis loaded. Please select a Palika and crop to run analysis.
         </p>
-        {onBackToMap && (
-          <button
-            onClick={onBackToMap}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer"
-          >
-            Go to District Map
-          </button>
-        )}
+        <button
+          onClick={onBackToMap}
+          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer"
+        >
+          Go to District Map
+        </button>
       </div>
     );
   }
@@ -77,26 +74,20 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
       <div className="glass-panel p-6 rounded-2xl border border-slate-200 shadow-sm bg-white/95 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            {onBackToDistrict && (
-              <button
-                onClick={onBackToDistrict}
-                className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-semibold transition-colors cursor-pointer"
-              >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                Back to {output.districtName} District
-              </button>
-            )}
-            {onBackToMap && (
-              <>
-                <span className="text-slate-300">•</span>
-                <button
-                  onClick={onBackToMap}
-                  className="text-xs text-slate-500 hover:text-slate-800 font-semibold transition-colors cursor-pointer"
-                >
-                  National Map
-                </button>
-              </>
-            )}
+            <button
+              onClick={onBackToDistrict}
+              className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-semibold transition-colors cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Back to {output.districtName} District
+            </button>
+            <span className="text-slate-300">•</span>
+            <button
+              onClick={onBackToMap}
+              className="text-xs text-slate-500 hover:text-slate-800 font-semibold transition-colors cursor-pointer"
+            >
+              National Map
+            </button>
           </div>
           <div className="flex items-center space-x-2 text-xs text-slate-500 font-semibold mb-1">
             <Activity className="w-3.5 h-3.5 text-emerald-600" />
@@ -116,10 +107,7 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
 
         {/* Interactive Overall Nexus Balance & Scientific Justification Badge */}
         <button
-          onClick={() => {
-            if (onOpenDossier) onOpenDossier();
-            else setIsScientificModalOpen(true);
-          }}
+          onClick={onOpenDossier}
           className="flex items-center gap-4 bg-emerald-50 hover:bg-emerald-100/70 p-3.5 px-4 rounded-2xl border border-emerald-300 hover:border-emerald-400 shadow-2xs hover:shadow-md transition-all cursor-pointer text-left group relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-emerald-400"
         >
           <div className="text-right">
@@ -603,37 +591,29 @@ export const AnalysisDashboard: React.FC<AnalysisDashboardProps> = ({
       {/* Bottom Quick Navigation Bar */}
       <div className="flex items-center justify-between gap-3 p-4 bg-slate-50/90 rounded-2xl border border-slate-200">
         <div className="flex items-center gap-2">
-          {onBackToDistrict && (
-            <button
-              onClick={onBackToDistrict}
-              className="text-xs text-slate-800 hover:text-slate-950 font-bold flex items-center gap-1.5 transition-colors cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
-            >
-              <ArrowLeft className="w-4 h-4 text-emerald-600" />
-              <span>Back to {output.districtName} District</span>
-            </button>
-          )}
-          {onBackToMap && (
-            <button
-              onClick={onBackToMap}
-              className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1 transition-colors cursor-pointer bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
-            >
-              <span>National Map</span>
-            </button>
-          )}
+          <button
+            onClick={onBackToDistrict}
+            className="text-xs text-slate-800 hover:text-slate-950 font-bold flex items-center gap-1.5 transition-colors cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
+          >
+            <ArrowLeft className="w-4 h-4 text-emerald-600" />
+            <span>Back to {output.districtName} District</span>
+          </button>
+          <button
+            onClick={onBackToMap}
+            className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1 transition-colors cursor-pointer bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
+          >
+            <span>National Map</span>
+          </button>
         </div>
       </div>
 
       {/* Factor Detail Modal */}
       {selectedFactorKey && (
-        <FactorDetailModal factorKey={selectedFactorKey} output={output} onClose={() => setSelectedFactorKey(null)} />
+        <FactorDetailModal factorKey={selectedFactorKey} onClose={() => setSelectedFactorKey(null)} />
       )}
 
       {/* WEFES Deep Scientific & Mathematical Proof Modal */}
-      <NexusScientificModal
-        output={output}
-        isOpen={isScientificModalOpen}
-        onClose={() => setIsScientificModalOpen(false)}
-      />
+      <NexusScientificModal isOpen={isScientificModalOpen} onClose={() => setIsScientificModalOpen(false)} />
     </div>
   );
 };
