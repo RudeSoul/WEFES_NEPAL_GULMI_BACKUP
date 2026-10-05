@@ -16,7 +16,6 @@ import {
   Layers,
   Leaf,
   Mountain,
-  Search,
   Sparkles,
   Sprout,
   Thermometer,
@@ -51,10 +50,6 @@ interface PalikaCropSuitabilityGridProps {
   district: District;
   activePalika?: DistrictPalika;
   displayedDistrictCrops: DistrictCropItem[];
-  verifiedDistrictCrops: DistrictCropItem[];
-  allDistrictCrops: DistrictCropItem[];
-  cropSpectrumMode: 'verified' | 'all';
-  setCropSpectrumMode: (mode: 'verified' | 'all') => void;
   activeHoverCrop: Crop | null;
   setActiveHoverCrop: (crop: Crop) => void;
   activeSuitability?: CropSuitability | null;
@@ -119,44 +114,17 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
   district,
   activePalika,
   displayedDistrictCrops,
-  verifiedDistrictCrops,
-  allDistrictCrops,
-  cropSpectrumMode,
-  setCropSpectrumMode,
   activeHoverCrop,
   setActiveHoverCrop,
   activeSuitability,
   radarData,
   onSelectCrop,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showComparison, setShowComparison] = useState(false);
   const [showRadar, setShowRadar] = useState(false);
 
-  // Extract unique categories for quick filter chips
-  const categories = useMemo(() => {
-    const set = new Set<string>();
-    displayedDistrictCrops.forEach(({ crop }) => {
-      if (crop.category) set.add(crop.category);
-    });
-    return Array.from(set);
-  }, [displayedDistrictCrops]);
-
-  // Filter crops based on search query and category
-  const filteredCrops = useMemo(() => {
-    return displayedDistrictCrops.filter(({ crop }) => {
-      const matchesSearch =
-        searchQuery === '' ||
-        crop.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (crop.nepaliName && crop.nepaliName.includes(searchQuery));
-      const matchesCategory = selectedCategory === 'all' || crop.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    });
-  }, [displayedDistrictCrops, searchQuery, selectedCategory]);
-
   // Ensure an active crop is always selected
-  const currentCrop = activeHoverCrop || filteredCrops[0]?.crop || displayedDistrictCrops[0]?.crop;
+  const currentCrop = activeHoverCrop || displayedDistrictCrops[0]?.crop;
   const currentSuitability =
     activeSuitability ||
     displayedDistrictCrops.find((c) => c.crop.id === currentCrop?.id)?.suitability ||
@@ -286,102 +254,29 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
         <div className="lg:col-span-4 space-y-4">
           <div className="glass-panel p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm bg-white/95 space-y-4">
             {/* Header */}
-            <div>
+            <div className="pb-1 border-b border-slate-100">
               <div className="flex items-center justify-between gap-2">
                 <h3 className="text-base font-bold text-slate-900 flex items-center gap-2 font-outfit">
                   <Sprout className="w-5 h-5 text-emerald-600 shrink-0" />
-                  <span>Crop Suitability Matrix</span>
+                  <span>Ranked Agro-Cultivars</span>
                 </h3>
-                <span className="text-xs font-mono font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
-                  {filteredCrops.length} crops
+                <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                  {displayedDistrictCrops.length} crops
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-1 font-sans">
-                {cropSpectrumMode === 'verified'
-                  ? `Ranked cultivars for ${activePalika ? `${activePalika.name}` : district.name} (${activePalika?.elevation || '1,510'}m • ${activePalika?.avgTempC || '18.4'}°C)`
-                  : `All crops evaluated across ${activePalika?.name || district.name}.`}
+                Ranked cultivars for {activePalika ? `${activePalika.name}` : district.name} (
+                {activePalika?.elevation || '1,510'}m • {activePalika?.avgTempC || '18.4'}°C • pH{' '}
+                {activePalika?.soilPh || '5.8'})
               </p>
             </div>
 
-            {/* Mode Toggle: Recommended vs All */}
-            <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 border border-slate-200 text-xs">
-              <button
-                onClick={() => setCropSpectrumMode('verified')}
-                className={`py-1.5 px-2 rounded-lg font-semibold text-center transition-all cursor-pointer ${
-                  cropSpectrumMode === 'verified'
-                    ? 'bg-white text-emerald-800 shadow-xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                ⭐ सिफारिस ({verifiedDistrictCrops.length})
-              </button>
-              <button
-                onClick={() => setCropSpectrumMode('all')}
-                className={`py-1.5 px-2 rounded-lg font-semibold text-center transition-all cursor-pointer ${
-                  cropSpectrumMode === 'all'
-                    ? 'bg-white text-emerald-800 shadow-xs font-bold'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                🌐 सम्पूर्ण ({allDistrictCrops.length})
-              </button>
-            </div>
-
-            {/* Search Input */}
-            <div className="relative">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search crop by name or नेपाली..."
-                className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all text-slate-800 placeholder-slate-400"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-2 text-xs text-slate-400 hover:text-slate-600 cursor-pointer"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-
-            {/* Category Filter Chips */}
-            {categories.length > 1 && (
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 custom-scrollbar text-[11px]">
-                <button
-                  onClick={() => setSelectedCategory('all')}
-                  className={`px-2 py-0.5 rounded-full font-medium shrink-0 transition-colors cursor-pointer ${
-                    selectedCategory === 'all'
-                      ? 'bg-emerald-600 text-white font-bold'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  All
-                </button>
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat === selectedCategory ? 'all' : cat)}
-                    className={`px-2 py-0.5 rounded-full font-medium shrink-0 transition-colors cursor-pointer ${
-                      selectedCategory === cat
-                        ? 'bg-emerald-600 text-white font-bold'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            )}
-
             {/* Scrollable Ranked Crop Feed */}
-            <div className="max-h-[640px] overflow-y-auto pr-1 space-y-2.5 custom-scrollbar">
-              {filteredCrops.length === 0 ? (
-                <div className="py-8 text-center text-xs text-slate-400">No cultivars match your search filter.</div>
+            <div className="max-h-[680px] overflow-y-auto pr-1 space-y-2.5 custom-scrollbar">
+              {displayedDistrictCrops.length === 0 ? (
+                <div className="py-8 text-center text-xs text-slate-400">No cultivars available for this palika.</div>
               ) : (
-                filteredCrops.map(({ crop, suitability }: DistrictCropItem, index: number) => {
+                displayedDistrictCrops.map(({ crop, suitability }: DistrictCropItem, index: number) => {
                   const isSelected = currentCrop?.id === crop.id;
                   const itemScore = suitability.suitabilityScore;
 
