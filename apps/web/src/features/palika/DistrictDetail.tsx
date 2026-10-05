@@ -163,7 +163,6 @@ export const DistrictDetail: React.FC = () => {
       {/* Top Header Card */}
       <div className="glass-panel p-6 rounded-2xl relative overflow-hidden border border-slate-200 shadow-sm bg-white/95 space-y-5">
         <PalikaHeroHeader
-          district={district}
           activePalika={activePalika}
           gulmiPalikas={gulmiPalikas}
           onSelectPalika={handleSelectPalika}
