@@ -1193,7 +1193,6 @@ export function computePalikaChoropleth({
           )?.[1];
 
         const subName = matchedGrid?.substationName || 'Unmapped Substation';
-        const subNp = matchedGrid?.substationNepali || 'अवर्गीकृत सबस्टेसन';
         const hubVolt = matchedGrid?.hubVoltage || 'N/A';
         const capMva = matchedGrid?.capacityMVA ?? 0;
         const tierKey = matchedGrid?.tierKey || 'unmapped';
@@ -1226,7 +1225,6 @@ export function computePalikaChoropleth({
           color,
           tooltipHtml: `<div style="color: ${color}; font-size: 10px; margin-top: 2px;">
                             ⚡ Servicing Substation: <strong>${subName}</strong>
-                            <div style="font-size: 9px; opacity: 0.85;">(${subNp})</div>
                             <div style="color: #0f172a; font-size: 9.5px; margin-top: 2px;">
                                🔌 <strong>${hubVolt}</strong> • Transformer: <strong>${capMva} MVA</strong>
                             </div>
