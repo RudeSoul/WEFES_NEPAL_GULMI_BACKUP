@@ -36,7 +36,7 @@ export const AnalysisDashboard: React.FC = () => {
   const onBackToMap = () => navigate(ROUTES.MAP);
 
   const [selectedFactorKey, setSelectedFactorKey] = useState<string | null>(null);
-  const [isScientificModalOpen, setIsScientificModalOpen] = useState(true);
+  const [isScientificModalOpen, setIsScientificModalOpen] = useState(false);
 
   if (!output) {
     return (
