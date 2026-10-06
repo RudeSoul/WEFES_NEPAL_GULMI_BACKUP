@@ -9,7 +9,7 @@ import L from 'leaflet';
 import { Activity, Compass, Droplets, FlaskConical, Layers, Mountain, Navigation, Zap } from 'lucide-react';
 import { GeoJSON, MapContainer, Marker, Polyline, Popup, TileLayer, Tooltip, useMap } from 'react-leaflet';
 
-import { Crop, District, GulmiContourCollection } from '@wefes/shared-types';
+import { District, GulmiContourCollection } from '@wefes/shared-types';
 
 import { DHM_RIVER_STATIONS_BY_DISTRICT, DHMRiverStation } from '../../data/districtHydrologyAssets';
 import { PALIKA_SOIL_DATA } from '../../data/districtIndicatorAssets';
@@ -25,10 +25,8 @@ import { SpatialSoilSurfaceOverlay } from './SpatialSoilSurfaceOverlay';
 interface DistrictDetailMapProps {
   district: District;
   selectedPalikaName?: string;
-  onSelectPalika?: (palikaName: string) => void;
   distClimatology?: unknown;
   rainfallARIMA?: unknown;
-  onSelectCrop?: (crop: Crop) => void;
 }
 
 type MapLayerMode = 'overview' | 'roads' | 'soil' | 'hydrology' | 'energy';
@@ -253,12 +251,7 @@ const createHydroPinIcon = (mw: number) => {
   });
 };
 
-export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
-  district,
-  selectedPalikaName = 'Resunga',
-  onSelectPalika,
-  onSelectCrop,
-}) => {
+export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({ district, selectedPalikaName = 'Resunga' }) => {
   const [districtGeoData, setDistrictGeoData] = useState<Feature | null>(null);
   const [palikasGeoData, setPalikasGeoData] = useState<FeatureCollection | null>(null);
   const [contoursGeoData, setContoursGeoData] = useState<GulmiContourCollection | null>(null);
@@ -293,9 +286,9 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
     setLoading(true);
 
     Promise.all([
-      fetchGeoJson('gulmi-palikas.json').catch(() => null),
-      fetchGeoJson('gulmi-district.json').catch(() => null),
-      fetchGeoJson('gulmi-contours.json').catch(() => null),
+      fetchGeoJson<FeatureCollection>('gulmi-palikas.json').catch(() => null),
+      fetchGeoJson<FeatureCollection>('gulmi-district.json').catch(() => null),
+      fetchGeoJson<GulmiContourCollection>('gulmi-contours.json').catch(() => null),
     ]).then(([palikasData, districtData, contoursData]) => {
       if (!isMounted) return;
 
@@ -331,7 +324,7 @@ export const DistrictDetailMap: React.FC<DistrictDetailMapProps> = ({
     let isMounted = true;
 
     const distId = district.id.toLowerCase();
-    fetchGeoJson(`roads/${distId}.json`)
+    fetchGeoJson<FeatureCollection>(`roads/${distId}.json`)
       .then((data) => {
         if (!isMounted) return;
         setDistrictRoadsData(data);

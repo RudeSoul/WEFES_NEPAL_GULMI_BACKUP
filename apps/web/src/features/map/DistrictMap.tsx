@@ -14,7 +14,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import type { Feature, GeoJsonObject, Point } from 'geojson';
+import type { Feature, FeatureCollection, GeoJsonObject, Point } from 'geojson';
 import L from 'leaflet';
 import {
   Building2,
@@ -90,7 +90,7 @@ const GULMI_BOUNDS: [[number, number], [number, number]] = [
   [28.271, 83.608],
 ];
 
-function createPalikaLabelIcon(name: string, nepali: string, isHovered: boolean) {
+function createPalikaLabelIcon(name: string, _nepali: string, isHovered: boolean) {
   return L.divIcon({
     className: 'custom-palika-label',
     html: `
@@ -111,7 +111,6 @@ function createPalikaLabelIcon(name: string, nepali: string, isHovered: boolean)
           0 0 8px #ffffff;
       ">
         <div style="font-weight: 800; font-size: 11.5px; line-height: 1.15; letter-spacing: -0.01em;">${name}</div>
-        <div style="font-size: 9.5px; font-weight: 700; opacity: 0.85; color: ${isHovered ? '#047857' : '#334155'};">${nepali}</div>
       </div>
     `,
     iconSize: [0, 0],
@@ -499,11 +498,11 @@ export const DistrictMap: React.FC = () => {
 
   useEffect(() => {
     Promise.all([
-      fetchGeoJson('gulmi-district.json').catch(() => null),
-      fetchGeoJson('gulmi-palikas.json').catch(() => null),
-      fetchGeoJson('roads/gulmi.json').catch(() => null),
-      fetchGeoJson('gulmi-dhm-stations.json').catch(() => null),
-      fetchGeoJson('gulmi-rivers.json').catch(() => null),
+      fetchGeoJson<FeatureCollection>('gulmi-district.json').catch(() => null),
+      fetchGeoJson<FeatureCollection>('gulmi-palikas.json').catch(() => null),
+      fetchGeoJson<FeatureCollection>('roads/gulmi.json').catch(() => null),
+      fetchGeoJson<FeatureCollection>('gulmi-dhm-stations.json').catch(() => null),
+      fetchGeoJson<FeatureCollection>('gulmi-rivers.json').catch(() => null),
     ])
       .then(([geo, palikas, roads, hydroAssets, rivers]) => {
         if (geo) setGeoData(geo);
@@ -616,7 +615,7 @@ export const DistrictMap: React.FC = () => {
   useEffect(() => {
     if (isHydroCorridorActive && !hydroReachesData && !hydroReachesLoading) {
       setHydroReachesLoading(true);
-      fetchGeoJson('hydro_potential_reaches.geojson')
+      fetchGeoJson<FeatureCollection>('hydro_potential_reaches.geojson')
         .then((data) => {
           if (data?.type === 'FeatureCollection') {
             setHydroReachesData(data);
@@ -634,7 +633,7 @@ export const DistrictMap: React.FC = () => {
   useEffect(() => {
     const isContourActive = showContours || basemap === 'terrain';
     if (isContourActive && !contoursData) {
-      fetchGeoJson('gulmi-contours.json')
+      fetchGeoJson<FeatureCollection>('gulmi-contours.json')
         .then((data) => {
           if (data) setContoursData(data);
         })
@@ -645,7 +644,7 @@ export const DistrictMap: React.FC = () => {
   // Lazy-load Watershed Catchments only when subfilter is active
   useEffect(() => {
     if (isCatchmentsActive && !catchmentsData) {
-      fetchGeoJson('catchments_l10.geojson')
+      fetchGeoJson<FeatureCollection>('catchments_l10.geojson')
         .then((data) => {
           if (data) setCatchmentsData(data);
         })
@@ -656,7 +655,7 @@ export const DistrictMap: React.FC = () => {
   // Lazy-load Detailed Rivers & Streams only when subfilter is active
   useEffect(() => {
     if (isRiversStreamsActive && !riversStreamsData) {
-      fetchGeoJson('rivers_streams.geojson')
+      fetchGeoJson<FeatureCollection>('rivers_streams.geojson')
         .then((data) => {
           if (data) setRiversStreamsData(data);
         })
@@ -983,10 +982,7 @@ export const DistrictMap: React.FC = () => {
                 </span>
               </h2>
               <span className="text-xs bg-emerald-100 text-emerald-900 border border-emerald-300 px-2.5 py-0.5 rounded-md font-mono font-bold">
-                गुल्मी • 12 Palikas
-              </span>
-              <span className="text-xs bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-md font-mono">
-                Lumbini Province
+                12 Palikas
               </span>
               {geoLoading && (
                 <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-md animate-pulse font-mono">

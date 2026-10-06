@@ -1,10 +1,12 @@
 import React from 'react';
 
 import { Building2, CloudRain, Sprout, Trees, Zap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { useNexusStore } from '../../store';
 
 export const SubFilterToolbar: React.FC = () => {
+  const { t } = useTranslation();
   const selectedPillar = useNexusStore((s) => s.selectedPillar);
   const subFilters = useNexusStore((s) => s.subFilters);
   const setSubFilters = useNexusStore((s) => s.setSubFilters);
@@ -24,7 +26,7 @@ export const SubFilterToolbar: React.FC = () => {
           <>
             <div className="flex items-center gap-1.5 text-xs text-slate-700 font-medium">
               <CloudRain className="w-3.5 h-3.5 text-sky-600" />
-              <span>Hydrological Layer:</span>
+              <span>{t('subfilters.water.label')}</span>
             </div>
             <select
               name="waterSubFilter"
@@ -32,27 +34,23 @@ export const SubFilterToolbar: React.FC = () => {
               value={subFilters.waterSubFilter || 'merra_rainfall'}
               onChange={handleChange}
             >
-              <optgroup label="🌧️ Precipitation & Watersheds">
-                <option value="annual_precipitation">🌧️ Observed Annual Precipitation (CHIRPS Gridded High-Res)</option>
-                <option value="monsoon_precipitation">⛈️ Monsoon Season Rainfall (June–September Total)</option>
-                <option value="dry_season_precipitation">❄️ Dry Season Rainfall (October–May Total)</option>
-                <option value="merra_rainfall">🌧️ Dynamic Monthly Rainfall (MERRA-2 Topographic Downscaling)</option>
-                <option value="river_basins">🌊 Gandaki Basin Drainage Corridors (Kali Gandaki, Badigad, Ridi)</option>
-                <option value="dhm_station">💧 DHM Hydro-Meteorological Stations</option>
+              <optgroup label={t('subfilters.water.group_precipitation')}>
+                <option value="annual_precipitation">🌧️ {t('subfilters.water.annual_precipitation')}</option>
+                <option value="monsoon_precipitation">⛈️ {t('subfilters.water.monsoon_precipitation')}</option>
+                <option value="dry_season_precipitation">❄️ {t('subfilters.water.dry_season_precipitation')}</option>
+                <option value="merra_rainfall">🌧️ {t('subfilters.water.merra_rainfall')}</option>
+                <option value="river_basins">🌊 {t('subfilters.water.river_basins')}</option>
+                <option value="dhm_station">💧 {t('subfilters.water.dhm_station')}</option>
               </optgroup>
-              <optgroup label="🌊 HydroSHEDS Basin & Drainage Modeling">
-                <option value="catchments">🏔️ Catchments (HydroBASINS Level 10 Watershed Basins)</option>
-                <option value="rivers_streams">
-                  🌊 Rivers & Stream Drainage Network (HydroRIVERS Strahler Orders)
-                </option>
-                <option value="flow_accumulation">💧 Surface Flow Accumulation Grid (Upslope Drainage Tiers)</option>
-                <option value="flow_direction">🧭 D8 Flow Direction Raster (8-Direction Flow Paths)</option>
+              <optgroup label={t('subfilters.water.group_hydrosheds')}>
+                <option value="catchments">🏔️ {t('subfilters.water.catchments')}</option>
+                <option value="rivers_streams">🌊 {t('subfilters.water.rivers_streams')}</option>
+                <option value="flow_accumulation">💧 {t('subfilters.water.flow_accumulation')}</option>
+                <option value="flow_direction">🧭 {t('subfilters.water.flow_direction')}</option>
               </optgroup>
-              <optgroup label="⛰️ Terrain Water Security">
-                <option value="spring_vulnerability">
-                  🏔️ Watershed Spring Depletion Vulnerability (मुहान सुक्ने जोखिम)
-                </option>
-                <option value="irrigation_potential">🌾 River Lift Irrigation Potential (Riverbed Flats)</option>
+              <optgroup label={t('subfilters.water.group_terrain')}>
+                <option value="spring_vulnerability">🏔️ {t('subfilters.water.spring_vulnerability')}</option>
+                <option value="irrigation_potential">🌾 {t('subfilters.water.irrigation_potential')}</option>
               </optgroup>
             </select>
           </>
@@ -64,27 +62,27 @@ export const SubFilterToolbar: React.FC = () => {
           <>
             <div className="flex items-center gap-1.5 text-xs text-slate-700 font-medium">
               <Sprout className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Food Analysis:</span>
+              <span>{t('subfilters.food.label')}</span>
             </div>
             <select name="foodMode" className={selectClass} value={foodMode} onChange={handleChange}>
-              <option value="single_crop">🌱 Crop Suitability (Agro-Climatic Fit)</option>
-              <option value="crop_water_stress">💧 Crop Water & Moisture Stress</option>
-              <option value="land_typology">🌾 Land Typology & Terraces (Khet vs Bari)</option>
+              <option value="single_crop">🌱 {t('subfilters.food.single_crop')}</option>
+              <option value="crop_water_stress">💧 {t('subfilters.food.crop_water_stress')}</option>
+              <option value="land_typology">🌾 {t('subfilters.food.land_typology')}</option>
             </select>
 
             {(foodMode === 'single_crop' || foodMode === 'crop_water_stress') && (
               <select name="crop" className={selectClass} value={subFilters.crop || 'coffee'} onChange={handleChange}>
-                <optgroup label="☕ Cash & Horticultural Crops">
-                  <option value="coffee">☕ Arabica Coffee (कफी)</option>
-                  <option value="large_cardamom">🌿 Large Cardamom (अलैंची)</option>
-                  <option value="tomato">🍅 Fresh Market Tomato (गोलभेंडा)</option>
-                  <option value="apple">🍎 High-Hill Apple (स्याउ)</option>
+                <optgroup label={t('subfilters.food.cash_crops_group')}>
+                  <option value="coffee">☕ {t('subfilters.food.crops.coffee')}</option>
+                  <option value="large_cardamom">🌿 {t('subfilters.food.crops.large_cardamom')}</option>
+                  <option value="tomato">🍅 {t('subfilters.food.crops.tomato')}</option>
+                  <option value="apple">🍎 {t('subfilters.food.crops.apple')}</option>
                 </optgroup>
-                <optgroup label="🌾 Cereals & Staple Crops">
-                  <option value="maize">🌽 Mid-Hill Maize (मकै)</option>
-                  <option value="rice">🌾 Monsoon Paddy Rice (धान)</option>
-                  <option value="wheat">🌾 Winter Wheat (गहुँ)</option>
-                  <option value="finger_millet">🌾 Finger Millet / Kodo (कोदो)</option>
+                <optgroup label={t('subfilters.food.cereals_group')}>
+                  <option value="maize">🌽 {t('subfilters.food.crops.maize')}</option>
+                  <option value="rice">🌾 {t('subfilters.food.crops.rice')}</option>
+                  <option value="wheat">🌾 {t('subfilters.food.crops.wheat')}</option>
+                  <option value="finger_millet">🌾 {t('subfilters.food.crops.finger_millet')}</option>
                 </optgroup>
               </select>
             )}
@@ -95,12 +93,12 @@ export const SubFilterToolbar: React.FC = () => {
                 className={selectClass}
                 value={subFilters.waterSeason || 'cycle'}
                 onChange={handleChange}
-                title="Select Moisture Evaluation Period"
+                title={t('subfilters.food.select_period_title')}
               >
-                <option value="cycle">🌱 Full Growing Cycle (Crop Lifecycle Deficit)</option>
-                <option value="winter_dry">❄️ Winter Dry Period (Nov–Feb Deficit)</option>
-                <option value="pre_monsoon">☀️ Pre-Monsoon Dry Spell (Mar–May Deficit)</option>
-                <option value="monsoon_wet">🌊 Monsoon Wet Period (Jun–Sep Surplus)</option>
+                <option value="cycle">🌱 {t('subfilters.food.seasons.cycle')}</option>
+                <option value="winter_dry">❄️ {t('subfilters.food.seasons.winter_dry')}</option>
+                <option value="pre_monsoon">☀️ {t('subfilters.food.seasons.pre_monsoon')}</option>
+                <option value="monsoon_wet">🌊 {t('subfilters.food.seasons.monsoon_wet')}</option>
               </select>
             )}
 
@@ -111,9 +109,9 @@ export const SubFilterToolbar: React.FC = () => {
                 value={subFilters.landMetric || 'khet_pct'}
                 onChange={handleChange}
               >
-                <option value="khet_pct">🌊 Lowland Irrigated Terraces (Khet %)</option>
-                <option value="bari_pct">⛰️ Sloping Rainfed Terraces (Bari %)</option>
-                <option value="parcel_density">🧩 Average Parcels per Holding</option>
+                <option value="khet_pct">🌊 {t('subfilters.food.land_metrics.khet_pct')}</option>
+                <option value="bari_pct">⛰️ {t('subfilters.food.land_metrics.bari_pct')}</option>
+                <option value="parcel_density">🧩 {t('subfilters.food.land_metrics.parcel_density')}</option>
               </select>
             )}
           </>
@@ -125,7 +123,7 @@ export const SubFilterToolbar: React.FC = () => {
           <>
             <div className="flex items-center gap-1.5 text-xs text-slate-700 font-medium">
               <Trees className="w-3.5 h-3.5 text-teal-600" />
-              <span>Ecosystem & Soil Domain:</span>
+              <span>{t('subfilters.ecosystem.label')}</span>
             </div>
             <select
               name="ecoSubFilter"
@@ -133,15 +131,15 @@ export const SubFilterToolbar: React.FC = () => {
               value={subFilters.ecoSubFilter || 'soil_ph'}
               onChange={handleChange}
             >
-              <optgroup label="🧪 Soil Geology & Chemistry">
-                <option value="soil_ph">🧪 Soil pH & Liming Need (Acidic Ridge vs Neutral Valley)</option>
-                <option value="soil_nitrogen">🌱 Soil Available Nitrogen (NARC Soil Fertility Grid)</option>
-                <option value="soil_phosphorus">🌱 NARC Soil Phosphorus (P₂O₅)</option>
-                <option value="soil_potassium">🌱 NARC Soil Potassium (K₂O)</option>
+              <optgroup label={t('subfilters.ecosystem.group_soil')}>
+                <option value="soil_ph">🧪 {t('subfilters.ecosystem.soil_ph')}</option>
+                <option value="soil_nitrogen">🌱 {t('subfilters.ecosystem.soil_nitrogen')}</option>
+                <option value="soil_phosphorus">🌱 {t('subfilters.ecosystem.soil_phosphorus')}</option>
+                <option value="soil_potassium">🌱 {t('subfilters.ecosystem.soil_potassium')}</option>
               </optgroup>
-              <optgroup label="🏔️ Topography & Flora">
-                <option value="elevation_zones">🏔️ Topographic Elevation Tiers & Agro-Ecological Zones</option>
-                <option value="agroforestry_belt">🌲 Community Forestry & Pine/Sal Agroforestry Belt</option>
+              <optgroup label={t('subfilters.ecosystem.group_topography')}>
+                <option value="elevation_zones">🏔️ {t('subfilters.ecosystem.elevation_zones')}</option>
+                <option value="agroforestry_belt">🌲 {t('subfilters.ecosystem.agroforestry_belt')}</option>
               </optgroup>
             </select>
           </>
@@ -152,7 +150,7 @@ export const SubFilterToolbar: React.FC = () => {
           <>
             <div className="flex items-center gap-1.5 text-xs text-slate-700 font-medium">
               <Zap className="w-3.5 h-3.5 text-amber-600" />
-              <span>Renewable Energy Domain:</span>
+              <span>{t('subfilters.energy.label')}</span>
             </div>
             <select
               name="energySubFilter"
@@ -160,12 +158,10 @@ export const SubFilterToolbar: React.FC = () => {
               value={subFilters.energySubFilter || 'hydro_corridor'}
               onChange={handleChange}
             >
-              <option value="hydro_corridor">⚡ Run-of-River & Micro-Hydro Corridors (Kali Gandaki, Badigad)</option>
-              <option value="solar_irradiance">☀️ Solar PV Potential & Tilt (PVOUT & OPTA • Global Solar Atlas)</option>
-              <option value="clean_cooking_biomass">
-                🪵 Clean Cooking & Firewood Reliance (Census 2021 • NSO Nepal)
-              </option>
-              <option value="grid_electrification">🔌 NEA Substation Grid Reach</option>
+              <option value="hydro_corridor">⚡ {t('subfilters.energy.hydro_corridor')}</option>
+              <option value="solar_irradiance">☀️ {t('subfilters.energy.solar_irradiance')}</option>
+              <option value="clean_cooking_biomass">🪵 {t('subfilters.energy.clean_cooking_biomass')}</option>
+              <option value="grid_electrification">🔌 {t('subfilters.energy.grid_electrification')}</option>
             </select>
           </>
         );
@@ -175,7 +171,7 @@ export const SubFilterToolbar: React.FC = () => {
           <>
             <div className="flex items-center gap-1.5 text-xs text-slate-700 font-medium">
               <Building2 className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Governance & Infrastructure:</span>
+              <span>{t('subfilters.socioeconomics.label')}</span>
             </div>
             <select
               name="socioSubFilter"
@@ -183,10 +179,8 @@ export const SubFilterToolbar: React.FC = () => {
               value={subFilters.socioSubFilter || 'local_governance'}
               onChange={handleChange}
             >
-              <option value="local_governance">
-                🏛️ Local Governance Classification (Municipalities & Rural Palikas)
-              </option>
-              <option value="agri_landholding">🚜 Average Agricultural Landholding per Household</option>
+              <option value="local_governance">🏛️ {t('subfilters.socioeconomics.local_governance')}</option>
+              <option value="agri_landholding">🚜 {t('subfilters.socioeconomics.agri_landholding')}</option>
             </select>
           </>
         );

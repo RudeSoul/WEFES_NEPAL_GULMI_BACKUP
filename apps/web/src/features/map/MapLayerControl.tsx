@@ -284,7 +284,7 @@ export const MapLayerControl: React.FC<MapLayerControlProps> = ({ onResetCamera,
   );
 
   // Get active surface information
-  const { currentOptions, activeSurfaceId, activeSurfaceTitle, activeIcon } = useMemo(() => {
+  const { activeSurfaceId, activeSurfaceTitle, activeIcon } = useMemo(() => {
     switch (selectedPillar) {
       case 'water': {
         const id = subFilters.waterSubFilter || 'merra_rainfall';
