@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
+  Calculator,
   Coins,
   Droplets,
   Info,
@@ -100,31 +101,61 @@ export const AnalysisDashboard: React.FC = () => {
             Harvest Target:{' '}
             <strong className="text-slate-800">
               {output.inputQuantity.toLocaleString()} {output.inputUnit}
-            </strong>{' '}
-            ({output.baseQuantity.toLocaleString()} {output.baseUnit})
+            </strong>
+            {output.inputUnit !== output.baseUnit && (
+              <span className="text-slate-400 font-normal">
+                {' '}
+                ({output.baseQuantity.toLocaleString()} {output.baseUnit})
+              </span>
+            )}
           </p>
         </div>
 
-        {/* Interactive Overall Nexus Balance & Scientific Justification Badge */}
-        <button
-          onClick={onOpenDossier}
-          className="flex items-center gap-4 bg-emerald-50 hover:bg-emerald-100/70 p-3.5 px-4 rounded-2xl border border-emerald-300 hover:border-emerald-400 shadow-2xs hover:shadow-md transition-all cursor-pointer text-left group relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-emerald-400"
-        >
-          <div className="text-right">
-            <div className="flex items-center justify-end gap-1 text-[10px] text-emerald-800 font-bold uppercase tracking-wider">
-              <span>Nexus Balance Score</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+        {/* Quick Inspector & Full Scientific Dossier Navigation */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          {/* Quick Scientific Proof & Math Inspector Modal Trigger */}
+          <button
+            type="button"
+            onClick={() => setIsScientificModalOpen(true)}
+            className="flex items-center gap-2.5 bg-white hover:bg-slate-50/90 text-slate-700 hover:text-emerald-950 px-3 py-2 rounded-xl border border-slate-200 hover:border-emerald-300 shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+            title="Inspect Mathematical Proof, JRC Equations & Live Numerical Substitution"
+          >
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center text-emerald-700 transition-colors shrink-0">
+              <Calculator className="w-4 h-4" />
             </div>
-            <div className="text-xs font-bold text-emerald-950 mt-0.5">{output.nexusRating}</div>
-            <span className="text-[9px] text-emerald-700 font-sans font-medium flex items-center justify-end gap-1 mt-0.5">
-              <span>Inspect Deep Science & Policy Dossier ↗</span>
-            </span>
-          </div>
+            <div className="text-left">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-emerald-700 transition-colors leading-none">
+                Inspect Math
+              </div>
+              <div className="text-xs font-bold text-slate-800 group-hover:text-emerald-950 mt-0.5 leading-tight">
+                Scientific Proof
+              </div>
+            </div>
+          </button>
 
-          <div className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-600 group-hover:bg-emerald-700 transition-colors font-extrabold text-xl text-white shadow-sm font-outfit shrink-0">
-            {output.nexusBalanceIndex}
-          </div>
-        </button>
+          {/* Interactive Overall Nexus Balance & Navigate to Full Dossier */}
+          <button
+            type="button"
+            onClick={onOpenDossier}
+            className="flex items-center gap-3.5 bg-emerald-50 hover:bg-emerald-100/80 p-2.5 pl-3.5 rounded-xl border border-emerald-300 hover:border-emerald-400 shadow-2xs hover:shadow-xs transition-all cursor-pointer text-left group focus:outline-none focus:ring-2 focus:ring-emerald-400"
+            title="Navigate to Full Scientific & Decision Dossier"
+          >
+            <div className="text-right">
+              <div className="flex items-center justify-end gap-1 text-[10px] text-emerald-800 font-bold uppercase tracking-wider leading-none">
+                <span>Nexus Balance</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+              <div className="text-xs font-bold text-emerald-950 mt-1 leading-snug">{output.nexusRating}</div>
+              <span className="text-[10px] text-emerald-700 font-medium leading-none block mt-0.5">
+                Full Policy Dossier
+              </span>
+            </div>
+
+            <div className="relative flex items-center justify-center w-11 h-11 rounded-lg bg-emerald-600 group-hover:bg-emerald-700 transition-colors font-extrabold text-xl text-white shadow-2xs font-outfit shrink-0">
+              {output.nexusBalanceIndex}
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* ── BIOPHYSICAL FEASIBILITY BANNER ─────────────────────────────────────── */}
