@@ -18,6 +18,7 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer, Tooltip } from 'recharts';
 
 import { ROUTES } from '../../routes/paths';
@@ -27,6 +28,7 @@ import { FactorDetailModal } from './FactorDetailModal';
 import { NexusScientificModal } from './NexusScientificModal';
 
 export const AnalysisDashboard: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const output = useNexusStore((s) => s.analysisOutput);
   const selectedPalikaName = useNexusStore((s) => s.selectedPalikaName);
@@ -43,26 +45,24 @@ export const AnalysisDashboard: React.FC = () => {
   if (!output) {
     return (
       <div className="p-8 text-center bg-white rounded-xl border border-slate-200">
-        <p className="text-slate-600 font-medium mb-4">
-          No active analysis loaded. Please select a Palika and crop to run analysis.
-        </p>
+        <p className="text-slate-600 font-medium mb-4">{t('analysis.no_analysis')}</p>
         <button
           onClick={onBackToMap}
           className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer"
         >
-          Go to District Map
+          {t('analysis.go_to_map')}
         </button>
       </div>
     );
   }
 
   const radarData = [
-    { pillar: 'Water (Resource)', score: 100 - output.water.waterStressIndex },
-    { pillar: 'Energy (Clean)', score: 100 - output.energy.fossilSharePercent },
-    { pillar: 'Food (Security)', score: output.food.foodSecurityIndex },
-    { pillar: 'Ecosystem (Health)', score: output.ecosystem.ecoHealthScore },
+    { pillar: t('analysis.water_resource'), score: 100 - output.water.waterStressIndex },
+    { pillar: t('analysis.energy_clean'), score: 100 - output.energy.fossilSharePercent },
+    { pillar: t('analysis.food_security'), score: output.food.foodSecurityIndex },
+    { pillar: t('analysis.ecosystem_health'), score: output.ecosystem.ecoHealthScore },
     {
-      pillar: 'Socioeconomics (Return)',
+      pillar: t('analysis.socio_return'),
       score: Math.min(
         100,
         Math.round((output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100)
@@ -83,14 +83,14 @@ export const AnalysisDashboard: React.FC = () => {
               className="hover:text-emerald-700 flex items-center gap-1 transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5 text-slate-400" />
-              <span>{output.districtName} District</span>
+              <span>{t('common.back_to_district', { district: output.districtName })}</span>
             </button>
             <span className="text-slate-300">/</span>
             <button
               onClick={onBackToMap}
               className="hover:text-emerald-700 transition-colors cursor-pointer text-slate-400"
             >
-              National Map
+              {t('common.back_to_map')}
             </button>
             <span className="text-slate-300">/</span>
             <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/80">
@@ -102,10 +102,10 @@ export const AnalysisDashboard: React.FC = () => {
           {/* Title & Harvest Target Pill */}
           <div className="flex flex-wrap items-center gap-3">
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-outfit">
-              {output.cropName} in {output.districtName}
+              {t('analysis.crop_in_district', { crop: output.cropName, district: output.districtName })}
             </h2>
             <div className="inline-flex items-center gap-1.5 text-xs bg-slate-100/90 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200/80 font-medium">
-              <span className="text-slate-400 font-normal">Harvest Target:</span>
+              <span className="text-slate-400 font-normal">{t('analysis.harvest_target')}</span>
               <strong className="text-slate-900 font-bold">
                 {output.inputQuantity.toLocaleString()} {output.inputUnit}
               </strong>
@@ -643,7 +643,7 @@ export const AnalysisDashboard: React.FC = () => {
           onClick={onOpenSimulator}
           className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm px-6 py-3 rounded-xl flex items-center gap-2 shadow-sm hover:shadow-md transition-all shrink-0 cursor-pointer"
         >
-          <span>Launch Scenario Simulator</span>
+          <span>{t('analysis.open_simulator')}</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
@@ -656,13 +656,13 @@ export const AnalysisDashboard: React.FC = () => {
             className="text-xs text-slate-800 hover:text-slate-950 font-bold flex items-center gap-1.5 transition-colors cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
           >
             <ArrowLeft className="w-4 h-4 text-emerald-600" />
-            <span>Back to {output.districtName} District</span>
+            <span>{t('common.back_to_district', { district: output.districtName })}</span>
           </button>
           <button
             onClick={onBackToMap}
             className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1 transition-colors cursor-pointer bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
           >
-            <span>National Map</span>
+            <span>{t('common.back_to_map')}</span>
           </button>
         </div>
       </div>

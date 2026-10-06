@@ -13,6 +13,7 @@ import {
   Sprout,
   Zap,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { ScenarioParameters } from '@wefes/shared-types';
 import { simulateScenario } from '@wefes/wefes-engine';
@@ -49,6 +50,7 @@ const DEFAULT_PARAMS: ScenarioParameters = {
 };
 
 export const ScenarioSimulator: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const baselineOutput = useNexusStore((s) => s.analysisOutput);
   const selectedPalikaName = useNexusStore((s) => s.selectedPalikaName);
@@ -78,14 +80,12 @@ export const ScenarioSimulator: React.FC = () => {
   if (!baselineOutput) {
     return (
       <div className="p-8 text-center bg-white rounded-xl border border-slate-200">
-        <p className="text-slate-600 font-medium mb-4">
-          Scenario Simulator requires an initial analysis baseline. Start from the map or a Palika profile.
-        </p>
+        <p className="text-slate-600 font-medium mb-4">{t('simulator.require_baseline')}</p>
         <button
           onClick={onBackToMap}
           className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer"
         >
-          Go to District Map
+          {t('simulator.go_to_map')}
         </button>
       </div>
     );
@@ -113,34 +113,38 @@ export const ScenarioSimulator: React.FC = () => {
               className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-semibold transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              Back to Analysis Report
+              <span>{t('common.back_to_analysis')}</span>
             </button>
             <span className="text-slate-300">•</span>
             <button
               onClick={onBackToDistrict}
               className="text-xs text-slate-500 hover:text-slate-800 font-semibold transition-colors cursor-pointer"
             >
-              {baselineOutput.districtName} District
+              <span>
+                {t('common.back_to_district', {
+                  district: baselineOutput.districtName,
+                })}
+              </span>
             </button>
             <span className="text-slate-300">•</span>
             <button
               onClick={onBackToMap}
               className="text-xs text-slate-500 hover:text-slate-800 font-semibold transition-colors cursor-pointer"
             >
-              National Map
+              <span>{t('common.back_to_map')}</span>
             </button>
           </div>
           <div className="flex items-center space-x-2 text-xs text-slate-500 font-semibold mb-1">
             <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-600" />
-            <span>EXPANDED MULTI-SECTOR REAL-TIME SCENARIO SIMULATOR</span>
+            <span>{t('simulator.title')}</span>
           </div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-outfit">
-            Simulating {baselineOutput.cropName} in {baselineOutput.districtName}
+            {t('simulator.simulating_title', {
+              crop: baselineOutput.cropName,
+              district: baselineOutput.districtName,
+            })}
           </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            16 real-world climate, technological, ecological & market levers recalculating WEFES trade-offs in real
-            time.
-          </p>
+          <p className="text-xs text-slate-500 mt-1">{t('simulator.subtitle')}</p>
         </div>
 
         <button
@@ -148,7 +152,7 @@ export const ScenarioSimulator: React.FC = () => {
           className="px-3.5 py-2 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0 cursor-pointer shadow-2xs"
         >
           <RefreshCw className="w-3.5 h-3.5 text-slate-500" />
-          <span>Reset Levers</span>
+          <span>{t('simulator.reset_levers')}</span>
         </button>
       </div>
 
@@ -159,10 +163,26 @@ export const ScenarioSimulator: React.FC = () => {
           {/* Tab Selector */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-medium">
             {[
-              { id: 'climate', label: 'Climate & Water', icon: <Droplets className="w-3.5 h-3.5 text-sky-600" /> },
-              { id: 'energy', label: 'Energy System', icon: <Zap className="w-3.5 h-3.5 text-amber-600" /> },
-              { id: 'agronomic', label: 'Agronomy & Eco', icon: <Sprout className="w-3.5 h-3.5 text-emerald-600" /> },
-              { id: 'socio', label: 'Socio & Market', icon: <Coins className="w-3.5 h-3.5 text-purple-600" /> },
+              {
+                id: 'climate',
+                label: t('simulator.climate_tab'),
+                icon: <Droplets className="w-3.5 h-3.5 text-sky-600" />,
+              },
+              {
+                id: 'energy',
+                label: t('simulator.energy_tab'),
+                icon: <Zap className="w-3.5 h-3.5 text-amber-600" />,
+              },
+              {
+                id: 'agronomic',
+                label: t('simulator.agronomic_tab'),
+                icon: <Sprout className="w-3.5 h-3.5 text-emerald-600" />,
+              },
+              {
+                id: 'socio',
+                label: t('simulator.socio_tab'),
+                icon: <Coins className="w-3.5 h-3.5 text-purple-600" />,
+              },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -772,19 +792,23 @@ export const ScenarioSimulator: React.FC = () => {
             className="text-xs text-slate-800 hover:text-slate-950 font-bold flex items-center gap-1.5 transition-colors cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
           >
             <ArrowLeft className="w-4 h-4 text-emerald-600" />
-            <span>Back to Analysis Report</span>
+            <span>{t('common.back_to_analysis')}</span>
           </button>
           <button
             onClick={onBackToDistrict}
             className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1 transition-colors cursor-pointer bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
           >
-            <span>{baselineOutput.districtName} District</span>
+            <span>
+              {t('common.back_to_district', {
+                district: baselineOutput.districtName,
+              })}
+            </span>
           </button>
           <button
             onClick={onBackToMap}
             className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1 transition-colors cursor-pointer bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
           >
-            <span>National Map</span>
+            <span>{t('common.back_to_map')}</span>
           </button>
         </div>
 
@@ -793,7 +817,7 @@ export const ScenarioSimulator: React.FC = () => {
           className="text-xs text-slate-600 hover:text-slate-900 font-semibold flex items-center gap-1.5 transition-colors cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
         >
           <ArrowUp className="w-4 h-4 text-slate-500" />
-          <span>Scroll to Top</span>
+          <span>{t('common.scroll_to_top')}</span>
         </button>
       </div>
     </div>

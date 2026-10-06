@@ -161,20 +161,6 @@ export const IndicatorModal: React.FC<IndicatorModalProps> = ({
       }
     }
 
-    const NEP_MONTHS = [
-      'माघ',
-      'फागुन',
-      'चैत',
-      'वैशाख',
-      'जेठ',
-      'असार',
-      'साउन',
-      'भदौ',
-      'असोज',
-      'कात्तिक',
-      'मंसिर',
-      'पुस',
-    ];
     const ENG_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const MONTHLY_WEIGHTS = [0.012, 0.018, 0.028, 0.048, 0.098, 0.225, 0.295, 0.235, 0.115, 0.022, 0.008, 0.008];
 
@@ -187,8 +173,7 @@ export const IndicatorModal: React.FC<IndicatorModalProps> = ({
 
       return {
         month: m,
-        nepali: NEP_MONTHS[idx],
-        label: `${m} (${NEP_MONTHS[idx]})`,
+        label: m,
         districtBaseline: distBase,
         palikaRain: palikaMonthly,
         forecast: palikaMonthly,
@@ -196,12 +181,12 @@ export const IndicatorModal: React.FC<IndicatorModalProps> = ({
         upper,
         season:
           idx >= 5 && idx <= 8
-            ? 'Monsoon (वर्षा)'
+            ? 'Monsoon'
             : idx >= 2 && idx <= 4
-              ? 'Pre-Monsoon (वसन्त)'
+              ? 'Pre-Monsoon'
               : idx >= 9 && idx <= 10
-                ? 'Post-Monsoon (शरद)'
-                : 'Winter (हिउँद)',
+                ? 'Post-Monsoon'
+                : 'Winter',
       };
     });
 
@@ -258,7 +243,7 @@ export const IndicatorModal: React.FC<IndicatorModalProps> = ({
               Monsoon Inflow Concentration
             </div>
             <div className="text-sm font-bold text-slate-900 mt-1 font-mono">78.4% (Asar – Asoj)</div>
-            <div className="text-[10px] text-slate-500">Peak: 540 mm/mo (July / साउन)</div>
+            <div className="text-[10px] text-slate-500">Peak: 540 mm/mo (July)</div>
           </div>
         </div>
 
@@ -279,7 +264,7 @@ export const IndicatorModal: React.FC<IndicatorModalProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              📅 Annual Trend (वार्षिक)
+              📅 Annual Trend
             </button>
             <button
               onClick={() => setRainfallTimeframe('monthly')}
@@ -289,7 +274,7 @@ export const IndicatorModal: React.FC<IndicatorModalProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              📆 Monthly Cycle (मासिक चक्र)
+              📆 Monthly Cycle
             </button>
           </div>
         </div>

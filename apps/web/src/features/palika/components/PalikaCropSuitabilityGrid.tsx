@@ -455,14 +455,13 @@ export const PalikaCropSuitabilityGrid: React.FC<PalikaCropSuitabilityGridProps>
                   }
 
                   const seasonLabel =
-                    crop.seasonLabelNepali ||
-                    (crop.season === 'barkhe'
-                      ? '🌧️ बर्खे'
+                    crop.season === 'barkhe'
+                      ? '🌧️ Barkhe (Summer)'
                       : crop.season === 'hiunde'
-                        ? '❄️ हिउँदे'
+                        ? '❄️ Hiunde (Winter)'
                         : crop.season === 'chaite'
-                          ? '☀️ चैते'
-                          : '🌳 बाह्रमासे');
+                          ? '☀️ Chaite (Spring)'
+                          : '🌳 All-Season';
 
                   return (
                     <div

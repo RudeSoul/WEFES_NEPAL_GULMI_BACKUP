@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { ArrowLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { db } from '@wefes/database';
 import { Crop, District } from '@wefes/shared-types';
@@ -24,6 +25,7 @@ import { PalikaHeroHeader } from './components/PalikaHeroHeader';
 import { DISTRICT_PALIKAS, DistrictPalika } from '@/data/districtPalikaAssets';
 
 export const DistrictDetail: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { palikaName: urlPalikaParam } = useParams<{ palikaName?: string }>();
 
@@ -180,10 +182,8 @@ export const DistrictDetail: React.FC = () => {
       <DistrictDetailMap
         district={district}
         selectedPalikaName={activePalika.name}
-        onSelectPalika={handleSelectPalika}
         distClimatology={distClimatology}
         rainfallARIMA={rainfallARIMA}
-        onSelectCrop={handleSelectCrop}
       />
 
       {/* Crop Suitability & Telemetry Grid */}
@@ -205,7 +205,7 @@ export const DistrictDetail: React.FC = () => {
           className="text-xs text-slate-800 hover:text-slate-950 font-bold flex items-center gap-1.5 transition-colors cursor-pointer bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-xs hover:shadow-sm"
         >
           <ArrowLeft className="w-4 h-4 text-emerald-600" />
-          <span>Back to National Interactive Map</span>
+          <span>{t('common.back_to_map_interactive')}</span>
         </button>
       </div>
     </div>
