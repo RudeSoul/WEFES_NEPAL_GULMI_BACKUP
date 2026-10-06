@@ -9,6 +9,7 @@ import {
   Calculator,
   Coins,
   Droplets,
+  FileText,
   Info,
   Scale,
   SlidersHorizontal,
@@ -73,87 +74,86 @@ export const AnalysisDashboard: React.FC = () => {
     <div className="space-y-6 animate-fade-in-up">
       {/* Top Header Card */}
       <div className="glass-panel p-6 rounded-2xl border border-slate-200 shadow-sm bg-white/95 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
+        {/* Left Column: Navigation, Title & Crop Specs */}
+        <div className="space-y-1.5">
+          {/* Breadcrumbs & Domain Tag */}
+          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
             <button
               onClick={onBackToDistrict}
-              className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-semibold transition-colors cursor-pointer"
+              className="hover:text-emerald-700 flex items-center gap-1 transition-colors cursor-pointer"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              Back to {output.districtName} District
+              <ArrowLeft className="w-3.5 h-3.5 text-slate-400" />
+              <span>{output.districtName} District</span>
             </button>
-            <span className="text-slate-300">•</span>
+            <span className="text-slate-300">/</span>
             <button
               onClick={onBackToMap}
-              className="text-xs text-slate-500 hover:text-slate-800 font-semibold transition-colors cursor-pointer"
+              className="hover:text-emerald-700 transition-colors cursor-pointer text-slate-400"
             >
               National Map
             </button>
+            <span className="text-slate-300">/</span>
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/80">
+              <Activity className="w-3 h-3 text-emerald-600" />
+              <span>5-Pillar Nexus Analysis</span>
+            </span>
           </div>
-          <div className="flex items-center space-x-2 text-xs text-slate-500 font-semibold mb-1">
-            <Activity className="w-3.5 h-3.5 text-emerald-600" />
-            <span>WEFES 5-PILLAR NEXUS ANALYSIS REPORT</span>
+
+          {/* Title & Harvest Target Pill */}
+          <div className="flex flex-wrap items-center gap-3">
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-outfit">
+              {output.cropName} in {output.districtName}
+            </h2>
+            <div className="inline-flex items-center gap-1.5 text-xs bg-slate-100/90 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200/80 font-medium">
+              <span className="text-slate-400 font-normal">Harvest Target:</span>
+              <strong className="text-slate-900 font-bold">
+                {output.inputQuantity.toLocaleString()} {output.inputUnit}
+              </strong>
+              {output.inputUnit !== output.baseUnit && (
+                <span className="text-slate-500 text-[11px]">
+                  ({output.baseQuantity.toLocaleString()} {output.baseUnit})
+                </span>
+              )}
+            </div>
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight font-outfit">
-            {output.cropName} in {output.districtName} District
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
-            Harvest Target:{' '}
-            <strong className="text-slate-800">
-              {output.inputQuantity.toLocaleString()} {output.inputUnit}
-            </strong>
-            {output.inputUnit !== output.baseUnit && (
-              <span className="text-slate-400 font-normal">
-                {' '}
-                ({output.baseQuantity.toLocaleString()} {output.baseUnit})
-              </span>
-            )}
-          </p>
         </div>
 
-        {/* Quick Inspector & Full Scientific Dossier Navigation */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-          {/* Quick Scientific Proof & Math Inspector Modal Trigger */}
+        {/* Right Section: Streamlined Toolbar (Unified 40px Height) */}
+        <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto shrink-0">
+          {/* Score & Rating Pill */}
+          <div className="h-10 flex items-center gap-2.5 bg-slate-50/90 border border-slate-200 rounded-xl px-3 shadow-2xs">
+            <div className="flex items-center justify-center h-6 min-w-6 px-1.5 rounded-md bg-emerald-600 text-white font-extrabold text-xs font-outfit shadow-2xs">
+              {output.nexusBalanceIndex}
+            </div>
+            <div className="flex items-center gap-1.5 text-xs">
+              <span className="font-bold text-slate-900">{output.nexusRating}</span>
+              <span className="text-[11px] font-semibold text-slate-400">({output.nexusBalanceIndex}/100)</span>
+            </div>
+          </div>
+
+          <div className="hidden sm:block h-5 w-px bg-slate-200 mx-0.5" />
+
+          {/* Action: Quick Math Modal */}
           <button
             type="button"
             onClick={() => setIsScientificModalOpen(true)}
-            className="flex items-center gap-2.5 bg-white hover:bg-slate-50/90 text-slate-700 hover:text-emerald-950 px-3 py-2 rounded-xl border border-slate-200 hover:border-emerald-300 shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
-            title="Inspect Mathematical Proof, JRC Equations & Live Numerical Substitution"
+            className="h-10 flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 px-3.5 rounded-xl border border-slate-200 hover:border-slate-300 shadow-2xs hover:shadow-xs transition-all cursor-pointer font-semibold text-xs group"
+            title="Inspect live mathematical equations and numerical substitution"
           >
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center text-emerald-700 transition-colors shrink-0">
-              <Calculator className="w-4 h-4" />
-            </div>
-            <div className="text-left">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-emerald-700 transition-colors leading-none">
-                Inspect Math
-              </div>
-              <div className="text-xs font-bold text-slate-800 group-hover:text-emerald-950 mt-0.5 leading-tight">
-                Scientific Proof
-              </div>
-            </div>
+            <Calculator className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform" />
+            <span>Inspect Math</span>
           </button>
 
-          {/* Interactive Overall Nexus Balance & Navigate to Full Dossier */}
+          {/* Action: Navigate to Full Policy Dossier */}
           <button
             type="button"
             onClick={onOpenDossier}
-            className="flex items-center gap-3.5 bg-emerald-50 hover:bg-emerald-100/80 p-2.5 pl-3.5 rounded-xl border border-emerald-300 hover:border-emerald-400 shadow-2xs hover:shadow-xs transition-all cursor-pointer text-left group focus:outline-none focus:ring-2 focus:ring-emerald-400"
-            title="Navigate to Full Scientific & Decision Dossier"
+            className="h-10 flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 rounded-xl border border-emerald-600 hover:border-emerald-700 shadow-2xs hover:shadow-xs transition-all cursor-pointer font-semibold text-xs group"
+            title="Open the complete multi-sector policy dossier"
           >
-            <div className="text-right">
-              <div className="flex items-center justify-end gap-1 text-[10px] text-emerald-800 font-bold uppercase tracking-wider leading-none">
-                <span>Nexus Balance</span>
-                <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </div>
-              <div className="text-xs font-bold text-emerald-950 mt-1 leading-snug">{output.nexusRating}</div>
-              <span className="text-[10px] text-emerald-700 font-medium leading-none block mt-0.5">
-                Full Policy Dossier
-              </span>
-            </div>
-
-            <div className="relative flex items-center justify-center w-11 h-11 rounded-lg bg-emerald-600 group-hover:bg-emerald-700 transition-colors font-extrabold text-xl text-white shadow-2xs font-outfit shrink-0">
-              {output.nexusBalanceIndex}
-            </div>
+            <FileText className="w-3.5 h-3.5 text-emerald-100 group-hover:scale-110 transition-transform" />
+            <span>Policy Dossier</span>
+            <ArrowUpRight className="w-3.5 h-3.5 text-emerald-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </button>
         </div>
       </div>
