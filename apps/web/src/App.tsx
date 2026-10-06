@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
+import { useTranslation } from 'react-i18next';
+
 import { Header, InputModal } from './components/common';
 import { initializeRemoteIndicatorData } from './data/districtIndicatorAssets';
 import { DistrictMap } from './features/map';
@@ -13,6 +15,7 @@ import { ROUTES } from './routes/paths';
 import { useNexusStore } from './store';
 
 export function App() {
+  const { t } = useTranslation();
   // Zustand Store Selectors
   const fetchClimateDataset = useNexusStore((s) => s.fetchClimateDataset);
 
@@ -46,10 +49,8 @@ export function App() {
 
       <footer className="border-t border-slate-200 bg-white py-4 px-4 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="font-semibold text-slate-700">WEFES Nexus · Gulmi District • Lumbini Province, Nepal</span>
-          <span className="text-[11px] text-slate-500 font-mono">
-            Water · Energy · Food · Ecosystem · Socioeconomics
-          </span>
+          <span className="font-semibold text-slate-700">{t('footer.title')}</span>
+          <span className="text-[11px] text-slate-500 font-mono">{t('footer.pillars')}</span>
         </div>
       </footer>
     </div>
