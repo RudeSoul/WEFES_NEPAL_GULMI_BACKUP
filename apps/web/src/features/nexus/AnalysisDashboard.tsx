@@ -226,10 +226,13 @@ export const AnalysisDashboard: React.FC = () => {
       )}
       {/* ─────────────────────────────────────────────────────────────────────── */}
 
-      <div className="flex items-center justify-between text-xs text-slate-500 px-1">
+      <div className="flex items-center justify-between text-xs text-slate-500 px-0.5">
         <span className="flex items-center gap-1.5 font-medium text-slate-600">
           <Info className="w-3.5 h-3.5 text-emerald-600" />
-          Click any KPI factor card below to view 10-year predictive impact & micro-scenario controls.
+          <span>Click any factor card to inspect 10-year predictive impact & micro-scenarios</span>
+        </span>
+        <span className="hidden sm:inline-block text-[11px] font-semibold text-slate-400">
+          6 Multi-Pillar Dimensions
         </span>
       </div>
 
@@ -238,113 +241,135 @@ export const AnalysisDashboard: React.FC = () => {
         {/* Water KPI */}
         <div
           onClick={() => setSelectedFactorKey('water')}
-          className="p-4 rounded-xl border border-sky-200/90 bg-sky-50/70 hover:bg-sky-50 hover:border-sky-300 cursor-pointer transition-all elevation-hover group shadow-2xs"
+          className="p-3.5 rounded-2xl border border-slate-200/90 bg-white hover:border-sky-300 hover:shadow-md cursor-pointer transition-all group flex flex-col justify-between shadow-2xs relative"
         >
-          <div className="flex items-center justify-between text-sky-700 mb-2">
-            <Droplets className="w-4 h-4" />
-            <span className="text-[10px] bg-white border border-sky-200 text-sky-800 px-2 py-0.5 rounded-md font-mono font-semibold">
-              {output.water.rating}
-            </span>
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                <Droplets className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] bg-sky-50 text-sky-700 border border-sky-200/80 px-2 py-0.5 rounded-md font-semibold tracking-tight">
+                {output.water.rating.replace(/ Water Stress/i, '')}
+              </span>
+            </div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
+              <span>Water Stress</span>
+              <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-sky-500" />
+            </div>
+            <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
+              {output.water.waterStressIndex} <span className="text-xs font-semibold text-slate-400">/ 100</span>
+            </div>
           </div>
-          <div className="text-xs text-slate-600 font-semibold uppercase flex items-center justify-between">
-            <span>Water Stress</span>
-            <Info className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-sky-600" />
-          </div>
-          <div className="text-lg font-extrabold text-sky-950 mt-1 font-mono">
-            {output.water.waterStressIndex} <span className="text-xs font-normal text-slate-500">/ 100</span>
-          </div>
-          <div className="text-[11px] text-slate-500 mt-1 font-mono">
-            ({output.water.consumptionLiters.toLocaleString()} L)
+          <div className="text-[11px] text-slate-500 font-medium mt-2 pt-2 border-t border-slate-100">
+            {output.water.consumptionLiters.toLocaleString()} L total
           </div>
         </div>
 
         {/* Energy KPI */}
         <div
           onClick={() => setSelectedFactorKey('energy')}
-          className="p-4 rounded-xl border border-amber-200/90 bg-amber-50/70 hover:bg-amber-50 hover:border-amber-300 cursor-pointer transition-all elevation-hover group shadow-2xs"
+          className="p-3.5 rounded-2xl border border-slate-200/90 bg-white hover:border-amber-300 hover:shadow-md cursor-pointer transition-all group flex flex-col justify-between shadow-2xs relative"
         >
-          <div className="flex items-center justify-between text-amber-700 mb-2">
-            <Zap className="w-4 h-4" />
-            <span className="text-[10px] bg-white border border-amber-200 text-amber-800 px-2 py-0.5 rounded-md font-mono font-semibold">
-              {output.energy.renewableKwh} kWh Clean
-            </span>
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                <Zap className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] bg-amber-50 text-amber-700 border border-amber-200/80 px-2 py-0.5 rounded-md font-semibold tracking-tight">
+                {Math.round(100 - output.energy.fossilSharePercent)}% Clean
+              </span>
+            </div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
+              <span>Energy Load</span>
+              <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-amber-500" />
+            </div>
+            <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
+              {output.energy.loadKwh.toLocaleString()} <span className="text-xs font-semibold text-slate-400">kWh</span>
+            </div>
           </div>
-          <div className="text-xs text-slate-600 font-semibold uppercase flex items-center justify-between">
-            <span>Energy Load</span>
-            <Info className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-amber-600" />
+          <div className="text-[11px] text-slate-500 font-medium mt-2 pt-2 border-t border-slate-100">
+            {output.energy.fossilSharePercent}% Grid draw
           </div>
-          <div className="text-lg font-extrabold text-amber-950 mt-1 font-mono">
-            {output.energy.loadKwh.toLocaleString()} <span className="text-xs font-normal text-slate-500">kWh</span>
-          </div>
-          <div className="text-[11px] text-slate-500 mt-1 font-mono">({output.energy.fossilSharePercent}% Grid)</div>
         </div>
 
         {/* Food KPI */}
         <div
           onClick={() => setSelectedFactorKey('food')}
-          className="p-4 rounded-xl border border-emerald-200/90 bg-emerald-50/70 hover:bg-emerald-50 hover:border-emerald-300 cursor-pointer transition-all elevation-hover group shadow-2xs"
+          className="p-3.5 rounded-2xl border border-slate-200/90 bg-white hover:border-emerald-300 hover:shadow-md cursor-pointer transition-all group flex flex-col justify-between shadow-2xs relative"
         >
-          <div className="flex items-center justify-between text-emerald-700 mb-2">
-            <Sprout className="w-4 h-4" />
-            <span className="text-[10px] bg-white border border-emerald-200 text-emerald-800 px-2 py-0.5 rounded-md font-mono font-semibold">
-              {output.food.foodSecurityIndex}/100
-            </span>
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                <Sprout className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2 py-0.5 rounded-md font-semibold tracking-tight">
+                Score {output.food.foodSecurityIndex}
+              </span>
+            </div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
+              <span>Yield Biomass</span>
+              <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-emerald-500" />
+            </div>
+            <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
+              {output.food.yieldKg.toLocaleString()} <span className="text-xs font-semibold text-slate-400">kg</span>
+            </div>
           </div>
-          <div className="text-xs text-slate-600 font-semibold uppercase flex items-center justify-between">
-            <span>Yield Biomass</span>
-            <Info className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-emerald-600" />
-          </div>
-          <div className="text-lg font-extrabold text-emerald-950 mt-1 font-mono">
-            {output.food.yieldKg.toLocaleString()} <span className="text-xs font-normal text-slate-500">kg</span>
-          </div>
-          <div className="text-[11px] text-slate-500 mt-1 font-mono">
-            {output.food.nutritionalKcal.toLocaleString()} kcal
+          <div className="text-[11px] text-slate-500 font-medium mt-2 pt-2 border-t border-slate-100">
+            {output.food.nutritionalKcal.toLocaleString()} kcal caloric
           </div>
         </div>
 
         {/* Ecosystem KPI */}
         <div
           onClick={() => setSelectedFactorKey('ecosystem')}
-          className="p-4 rounded-xl border border-teal-200/90 bg-teal-50/70 hover:bg-teal-50 hover:border-teal-300 cursor-pointer transition-all elevation-hover group shadow-2xs"
+          className="p-3.5 rounded-2xl border border-slate-200/90 bg-white hover:border-teal-300 hover:shadow-md cursor-pointer transition-all group flex flex-col justify-between shadow-2xs relative"
         >
-          <div className="flex items-center justify-between text-teal-700 mb-2">
-            <Trees className="w-4 h-4" />
-            <span className="text-[10px] bg-white border border-teal-200 text-teal-800 px-2 py-0.5 rounded-md font-mono font-semibold">
-              {output.ecosystem.ecoHealthScore}/100
-            </span>
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+                <Trees className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] bg-teal-50 text-teal-700 border border-teal-200/80 px-2 py-0.5 rounded-md font-semibold tracking-tight">
+                Health {output.ecosystem.ecoHealthScore}
+              </span>
+            </div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
+              <span>Carbon Offset</span>
+              <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-teal-500" />
+            </div>
+            <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
+              {output.ecosystem.carbonOffsetKgCo2.toLocaleString()}{' '}
+              <span className="text-xs font-semibold text-slate-400">kg</span>
+            </div>
           </div>
-          <div className="text-xs text-slate-600 font-semibold uppercase flex items-center justify-between">
-            <span>Carbon Offset</span>
-            <Info className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-teal-600" />
-          </div>
-          <div className="text-lg font-extrabold text-teal-950 mt-1 font-mono">
-            {output.ecosystem.carbonOffsetKgCo2.toLocaleString()}{' '}
-            <span className="text-xs font-normal text-slate-500">kg</span>
-          </div>
-          <div className="text-[11px] text-slate-500 mt-1 font-mono">
-            Erosion: {output.ecosystem.erosionMitigationIndex}
+          <div className="text-[11px] text-slate-500 font-medium mt-2 pt-2 border-t border-slate-100">
+            Erosion score: {output.ecosystem.erosionMitigationIndex}
           </div>
         </div>
 
         {/* Net Revenue KPI */}
         <div
           onClick={() => setSelectedFactorKey('revenue')}
-          className="p-4 rounded-xl border border-purple-200/90 bg-purple-50/70 hover:bg-purple-50 hover:border-purple-300 cursor-pointer transition-all elevation-hover group shadow-2xs"
+          className="p-3.5 rounded-2xl border border-slate-200/90 bg-white hover:border-purple-300 hover:shadow-md cursor-pointer transition-all group flex flex-col justify-between shadow-2xs relative"
         >
-          <div className="flex items-center justify-between text-purple-700 mb-2">
-            <Coins className="w-4 h-4" />
-            <span className="text-[10px] bg-white border border-purple-200 text-purple-800 px-2 py-0.5 rounded-md font-mono font-semibold">
-              Net Profit
-            </span>
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                <Coins className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] bg-purple-50 text-purple-700 border border-purple-200/80 px-2 py-0.5 rounded-md font-semibold tracking-tight">
+                Net Profit
+              </span>
+            </div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
+              <span>Net Revenue</span>
+              <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-purple-500" />
+            </div>
+            <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
+              NPR {output.socioeconomics.netRevenueNpr.toLocaleString()}
+            </div>
           </div>
-          <div className="text-xs text-slate-600 font-semibold uppercase flex items-center justify-between">
-            <span>Net Revenue</span>
-            <Info className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-purple-600" />
-          </div>
-          <div className="text-lg font-extrabold text-purple-950 mt-1 font-mono">
-            NPR {output.socioeconomics.netRevenueNpr.toLocaleString()}
-          </div>
-          <div className="text-[11px] text-slate-500 mt-1 font-mono">
+          <div className="text-[11px] text-slate-500 font-medium mt-2 pt-2 border-t border-slate-100">
             Gross: NPR {output.socioeconomics.grossRevenueNpr.toLocaleString()}
           </div>
         </div>
@@ -352,24 +377,28 @@ export const AnalysisDashboard: React.FC = () => {
         {/* Jobs Created KPI */}
         <div
           onClick={() => setSelectedFactorKey('jobs')}
-          className="p-4 rounded-xl border border-indigo-200/90 bg-indigo-50/70 hover:bg-indigo-50 hover:border-indigo-300 cursor-pointer transition-all elevation-hover group shadow-2xs"
+          className="p-3.5 rounded-2xl border border-slate-200/90 bg-white hover:border-indigo-300 hover:shadow-md cursor-pointer transition-all group flex flex-col justify-between shadow-2xs relative"
         >
-          <div className="flex items-center justify-between text-indigo-700 mb-2">
-            <Users className="w-4 h-4" />
-            <span className="text-[10px] bg-white border border-indigo-200 text-indigo-800 px-2 py-0.5 rounded-md font-mono font-semibold">
-              {output.socioeconomics.laborDays} Days
-            </span>
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                <Users className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] bg-indigo-50 text-indigo-700 border border-indigo-200/80 px-2 py-0.5 rounded-md font-semibold tracking-tight">
+                {output.socioeconomics.laborDays} Days
+              </span>
+            </div>
+            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
+              <span>Jobs Created</span>
+              <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-indigo-500" />
+            </div>
+            <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
+              {output.socioeconomics.directJobsCreated}{' '}
+              <span className="text-xs font-semibold text-slate-400">Direct FTE</span>
+            </div>
           </div>
-          <div className="text-xs text-slate-600 font-semibold uppercase flex items-center justify-between">
-            <span>Jobs Created</span>
-            <Info className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-indigo-600" />
-          </div>
-          <div className="text-lg font-extrabold text-indigo-950 mt-1 font-mono">
-            {output.socioeconomics.directJobsCreated}{' '}
-            <span className="text-xs font-normal text-slate-500">Direct FTE</span>
-          </div>
-          <div className="text-[11px] text-slate-500 mt-1 font-mono">
-            +{output.socioeconomics.indirectJobsCreated} Indirect
+          <div className="text-[11px] text-slate-500 font-medium mt-2 pt-2 border-t border-slate-100">
+            +{output.socioeconomics.indirectJobsCreated} Indirect jobs
           </div>
         </div>
       </div>
