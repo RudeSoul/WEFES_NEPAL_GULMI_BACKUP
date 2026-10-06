@@ -2,11 +2,13 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Layers, MapPin, Mountain } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 import { ROUTES } from '../../routes/paths';
 import { useNexusStore } from '../../store';
 
 export const Header: React.FC = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -34,88 +36,93 @@ export const Header: React.FC = () => {
           <div>
             <div className="flex items-center space-x-2">
               <h1 className="text-base sm:text-lg font-bold tracking-tight text-slate-900 font-outfit">
-                WEFES NEXUS · GULMI
+                {t('header.title')}
               </h1>
-              <span className="hidden sm:inline-flex bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-medium px-2 py-0.5 rounded-md">
-                Lumbini Province • Hill Zone
+              <span className="hidden sm:inline-flex bg-slate-100 text-slate-700 border border-slate-200 text-xs font-medium px-2 py-0.5 rounded-md">
+                {t('header.subtitle')}
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 font-sans">
-              Integrated WEFES Nexus & Sustainable Agro-Ecological Decision Support System
-            </p>
+            <p className="text-[11px] text-slate-500 font-sans">{t('header.tagline')}</p>
           </div>
         </div>
 
-        {/* Journey Step Navigation Pills */}
-        <div className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200 text-xs overflow-x-auto max-w-full">
-          {/* Step 1: Map */}
-          <button
-            onClick={() => handleNav(ROUTES.MAP)}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-              isMapActive
-                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
-            }`}
-          >
-            <MapPin className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Map</span>
-          </button>
+        {/* Right Action Bar: Journey Navigation */}
+        <div className="flex items-center gap-2.5 flex-wrap sm:flex-nowrap">
+          {/* Journey Step Navigation Pills */}
+          <div className="flex items-center gap-1 bg-slate-100/90 p-1 rounded-xl border border-slate-200 text-xs overflow-x-auto max-w-full">
+            {/* Step 1: Map */}
+            <button
+              onClick={() => handleNav(ROUTES.MAP)}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
+                isMapActive
+                  ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+              }`}
+            >
+              <MapPin className="w-3.5 h-3.5 text-emerald-600" />
+              <span>{t('nav.map')}</span>
+            </button>
 
-          {/* Step 2: Palika Detail */}
-          <button
-            onClick={() => {
-              const palikaPath = selectedPalikaName
-                ? `/palikas/${encodeURIComponent(selectedPalikaName)}`
-                : ROUTES.PALIKAS;
-              handleNav(palikaPath);
-            }}
-            disabled={!selectedPalikaName}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${
-              isPalikaActive
-                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-                : selectedPalikaName
-                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
-                  : 'text-slate-400 opacity-60 cursor-not-allowed'
-            }`}
-            title={
-              selectedPalikaName
-                ? `View ${selectedPalikaName} Palika Details`
-                : 'Select a Palika from the map or search to view details'
-            }
-          >
-            <span>{selectedPalikaName ? `${selectedPalikaName} Palika` : '____ Palika'}</span>
-          </button>
+            {/* Step 2: Palika Detail */}
+            <button
+              onClick={() => {
+                const palikaPath = selectedPalikaName
+                  ? `/palikas/${encodeURIComponent(selectedPalikaName)}`
+                  : ROUTES.PALIKAS;
+                handleNav(palikaPath);
+              }}
+              disabled={!selectedPalikaName}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                isPalikaActive
+                  ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+                  : selectedPalikaName
+                    ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
+                    : 'text-slate-400 opacity-60 cursor-not-allowed'
+              }`}
+              title={
+                selectedPalikaName
+                  ? t('header.view_palika_details', { name: selectedPalikaName })
+                  : t('header.select_palika_prompt')
+              }
+            >
+              <span>
+                {selectedPalikaName
+                  ? t('header.palika_name', { name: selectedPalikaName })
+                  : t('header.palika_placeholder')}
+              </span>
+            </button>
 
-          {/* Step 3: Analysis */}
-          <button
-            onClick={() => handleNav(ROUTES.ANALYSIS)}
-            disabled={!selectedCropName}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${
-              isAnalysisActive
-                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-                : selectedCropName
-                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
-                  : 'text-slate-400 opacity-60 cursor-not-allowed'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5 text-blue-600" />
-            <span>Analysis</span>
-          </button>
+            {/* Step 3: Analysis */}
+            <button
+              onClick={() => handleNav(ROUTES.ANALYSIS)}
+              disabled={!selectedCropName}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                isAnalysisActive
+                  ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+                  : selectedCropName
+                    ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
+                    : 'text-slate-400 opacity-60 cursor-not-allowed'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5 text-blue-600" />
+              <span>{t('nav.analysis')}</span>
+            </button>
 
-          {/* Step 4: Simulator */}
-          <button
-            onClick={() => handleNav(ROUTES.SIMULATOR)}
-            disabled={!selectedCropName}
-            className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${
-              isSimulatorActive
-                ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
-                : selectedCropName
-                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
-                  : 'text-slate-400 opacity-60 cursor-not-allowed'
-            }`}
-          >
-            <span>Simulator</span>
-          </button>
+            {/* Step 4: Simulator */}
+            <button
+              onClick={() => handleNav(ROUTES.SIMULATOR)}
+              disabled={!selectedCropName}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-all flex items-center gap-1.5 whitespace-nowrap ${
+                isSimulatorActive
+                  ? 'bg-white text-slate-900 font-bold shadow-2xs border border-slate-200/80'
+                  : selectedCropName
+                    ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 cursor-pointer'
+                    : 'text-slate-400 opacity-60 cursor-not-allowed'
+              }`}
+            >
+              <span>{t('nav.simulator')}</span>
+            </button>
+          </div>
         </div>
       </div>
     </header>
