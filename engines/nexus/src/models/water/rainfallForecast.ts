@@ -152,7 +152,7 @@ export function arimaForecast(series: number[], startYear: number, steps: number
   };
 }
 
-/** Extract annual rainfall totals (mm/yr) from MERRA-2 climateMap. prectot = monthly total in mm. */
+/** Extract annual rainfall totals (mm/yr) from climateMap. prectot = monthly total in mm. */
 export function extractAnnualRainfallSeries(
   climateMap: Record<string, Record<string, Record<string, { prectot?: number }>>>,
   districtId: string

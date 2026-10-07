@@ -64,7 +64,6 @@ import { RiversStreamsGeoJsonLayer } from './RiversStreamsGeoJsonLayer';
 import { SpatialFlowAccumulationOverlay } from './SpatialFlowAccumulationOverlay';
 import { SpatialFlowDirectionOverlay } from './SpatialFlowDirectionOverlay';
 import { SpatialPrecipitationOverlay } from './SpatialPrecipitationOverlay';
-import { SpatialRainfallSurfaceOverlay } from './SpatialRainfallSurfaceOverlay';
 import { SpatialSettlementDensityOverlay } from './SpatialSettlementDensityOverlay';
 import { SpatialSoilSurfaceOverlay } from './SpatialSoilSurfaceOverlay';
 import { SpatialSolarSurfaceOverlay } from './SpatialSolarSurfaceOverlay';
@@ -594,8 +593,6 @@ export const DistrictMap: React.FC = () => {
     dynamicPrecipStats,
   });
 
-  const isMerraRainfallActive =
-    selectedPillar === 'water' && (subFilters.waterSubFilter || 'merra_rainfall') === 'merra_rainfall';
   const isCatchmentsActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'catchments';
   const isRiversStreamsActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'rivers_streams';
   const isFlowAccumulationActive = selectedPillar === 'water' && subFilters.waterSubFilter === 'flow_accumulation';
@@ -664,7 +661,6 @@ export const DistrictMap: React.FC = () => {
   }, [isRiversStreamsActive, riversStreamsData]);
 
   const isOverlayModeActive =
-    isMerraRainfallActive ||
     isChirpsPrecipitationActive ||
     isSolarGhiActive ||
     isFlowAccumulationActive ||
@@ -891,29 +887,7 @@ export const DistrictMap: React.FC = () => {
     }
 
     if (selectedPillar === 'water') {
-      const wSub = subFilters.waterSubFilter || 'merra_rainfall';
-      if (wSub === 'merra_rainfall') {
-        const rainfallConfig = SUBFILTER_LEGENDS['merra_rainfall'];
-        const lowMm = Math.round(currentRainMm * 0.82);
-        const highMm = Math.round(currentRainMm * 1.24);
-        return (
-          <DynamicLegend
-            config={{
-              ...rainfallConfig,
-              subtitle: `${MONTH_NAMES[CLI_MONTH - 1]} (${CLI_YEAR}) • Area Mean: ${Math.round(currentRainMm)}mm`,
-              gradient: rainfallConfig.gradient
-                ? {
-                    ...rainfallConfig.gradient,
-                    minLabel: `Subtropical Valleys (~${lowMm} mm)`,
-                    maxLabel: `Mountain Ridges (~${highMm} mm)`,
-                  }
-                : undefined,
-            }}
-            className="animate-fade-in-up"
-          />
-        );
-      }
-
+      const wSub = subFilters.waterSubFilter || 'annual_precipitation';
       const config = SUBFILTER_LEGENDS[wSub];
       if (config) {
         return <DynamicLegend config={config} className="animate-fade-in-up" />;
@@ -1483,18 +1457,6 @@ export const DistrictMap: React.FC = () => {
                     : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
               }
             />
-
-            {/* Continuous Spatial Rainfall Surface (IDW + Orographic Micro-Climate Lapse Rates) */}
-            {isMerraRainfallActive && geoData && (
-              <SpatialRainfallSurfaceOverlay
-                currentRainMm={currentRainMm}
-                currentTempC={currentTempC}
-                climateMonth={CLI_MONTH}
-                geoData={geoData}
-                bounds={GULMI_BOUNDS}
-                opacity={0.82}
-              />
-            )}
 
             {/* Continuous Spatial Solar Irradiance Surface (Global Solar Atlas 900m Empirical Grid) */}
             {isSolarGhiActive && geoData && <SpatialSolarSurfaceOverlay geoData={geoData} opacity={0.85} />}

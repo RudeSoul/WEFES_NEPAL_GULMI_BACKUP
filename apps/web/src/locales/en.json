@@ -75,7 +75,6 @@
       "annual_precipitation": "Observed Annual Precipitation (CHIRPS Gridded High-Res)",
       "monsoon_precipitation": "Monsoon Season Rainfall (June–September Total)",
       "dry_season_precipitation": "Dry Season Rainfall (October–May Total)",
-      "merra_rainfall": "Dynamic Monthly Rainfall (MERRA-2 Topographic Downscaling)",
       "river_basins": "Gandaki Basin Drainage Corridors (Kali Gandaki, Badigad, Ridi)",
       "dhm_station": "DHM Hydro-Meteorological Stations",
       "group_hydrosheds": "🌊 HydroSHEDS Basin & Drainage Modeling",

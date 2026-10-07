@@ -154,7 +154,7 @@ export const useNexusStore = create<NexusState>()(
           const data = await fetchGeoJson<ClimateDataset>('gulmi-climate-monthly.json');
           set({ climateDataset: data, isClimateLoading: false });
         } catch (err) {
-          console.warn('Gulmi MERRA-2 Climatology fetch warning:', err);
+          console.warn('Gulmi Climatology fetch warning:', err);
           set({ isClimateLoading: false });
         }
       },

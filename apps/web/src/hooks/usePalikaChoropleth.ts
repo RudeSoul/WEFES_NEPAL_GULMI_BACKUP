@@ -1,7 +1,7 @@
 // [DATA PROVENANCE]
 // Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json, data/calculated/hydro_reaches/hydro_palika_summary.json, data/real/climate/gulmi_solar_pvout_opta.geojson, data/real/infrastructure/cooking_household.geojson, data/real/infrastructure/gulmi_nea_substations.geojson, data/real/hydrology/gulmi_dhm_stations.geojson, data/real/agriculture/gulmi_agricultural_landholding.geojson, data/real/land_and_soil/gulmi_soil_data.nc, data/real/land_and_soil/gulmi_soil_points_81.json, data/calculated/indicators/gulmi_palika_chirps_precipitation.json
 // Classification: OBSERVED REAL & EMPIRICAL DOWNSCALING
-// Citations: MoALD Nepal, MoFAGA Nepal, DHM Nepal, CBS/NSO 2021 Census, NASA POWER / MERRA-2, Global Solar Atlas 2.0, Nepal Electricity Authority (NEA), NARC Soil Science Division, OpenStreetMap Contributors
+// Citations: MoALD Nepal, MoFAGA Nepal, DHM Nepal, CBS/NSO 2021 Census, NASA POWER, CHIRPS, Global Solar Atlas 2.0, Nepal Electricity Authority (NEA), NARC Soil Science Division, OpenStreetMap Contributors
 
 import { useEffect, useMemo, useState } from 'react';
 
@@ -480,7 +480,7 @@ export function computePalikaChoropleth({
       }
     }
   } else if (selectedPillar === 'water') {
-    const wSub = subFilters.waterSubFilter || 'merra_rainfall';
+    const wSub = subFilters.waterSubFilter || 'annual_precipitation';
 
     if (wSub === 'river_basins') {
       metricConfig = {
@@ -654,16 +654,18 @@ export function computePalikaChoropleth({
                           </div>`,
         };
       }
-    } else if (
-      wSub === 'annual_precipitation' ||
-      wSub === 'monsoon_precipitation' ||
-      wSub === 'dry_season_precipitation'
-    ) {
-      const isAnnual = wSub === 'annual_precipitation';
+    } else {
       const isMonsoon = wSub === 'monsoon_precipitation';
+      const isDrySeason = wSub === 'dry_season_precipitation';
+      const isAnnual = !isMonsoon && !isDrySeason;
+      const precipKey = isMonsoon
+        ? 'monsoon_precipitation'
+        : isDrySeason
+          ? 'dry_season_precipitation'
+          : 'annual_precipitation';
 
       // Check if dynamic GeoTIFF statistics were decoded in JavaScript
-      const dynamicRaster = dynamicPrecipStats ? dynamicPrecipStats[wSub] : undefined;
+      const dynamicRaster = dynamicPrecipStats ? dynamicPrecipStats[precipKey] : undefined;
 
       const unitLabel = isAnnual ? 'mm/yr' : isMonsoon ? 'mm/monsoon' : 'mm/dry';
 
@@ -682,7 +684,7 @@ export function computePalikaChoropleth({
       const maxVal = dynamicRaster?.overallMax ?? (isAnnual ? 2026 : isMonsoon ? 1560 : 181);
 
       metricConfig = {
-        metricKey: wSub,
+        metricKey: precipKey,
         pillar: 'water',
         label: isAnnual
           ? 'Observed Annual Precipitation (CHIRPS)'
@@ -729,41 +731,6 @@ export function computePalikaChoropleth({
                             <div style="color: #64748b; font-size: 9px; margin-top: 1px;">${palikaDetail}</div>
                           </div>`,
           raw: { pData, dynamicStats: dynamicRaster?.palikaStats?.[pKey] },
-        };
-      }
-    } else {
-      metricConfig = {
-        metricKey: 'downscaled_rainfall',
-        pillar: 'water',
-        label: 'Orographic Downscaled Rainfall',
-        unit: 'mm/mo',
-        min: 0.82,
-        max: 1.25,
-        colorRamp: CHOROPLETH_RAMPS.rainfall,
-      };
-
-      for (const feat of features) {
-        const props = feat.properties || {};
-        const pData = getProfile(props);
-        const pName = (props.name || '').toLowerCase();
-        const micro = getPalikaMicroClimate(pName, currentRainMm, currentTempC, climateMonth, pData?.elevation);
-        const color = computeGradientColor(micro.orographicFactor, 0.82, 1.25, CHOROPLETH_RAMPS.rainfall);
-        const orographicDiff = Math.round((micro.orographicFactor - 1) * 100);
-        const orographicStr = orographicDiff >= 0 ? `+${orographicDiff}%` : `${orographicDiff}%`;
-
-        joinedData[props.name] = {
-          id: props.id || props.name,
-          name: props.name,
-          nepaliName: props.nepaliName,
-          type: props.type,
-          areaSqKm: props.areaSqKm,
-          value: micro.monthlyRainMm,
-          formattedValue: `${micro.monthlyRainMm} mm`,
-          color,
-          tooltipHtml: `<div style="color: #0284c7; font-size: 10px; margin-top: 2px;">
-                            🌧️ Downscaled Rain: <strong>${micro.monthlyRainMm} mm/mo</strong> (${orographicStr})
-                          </div>`,
-          raw: { pData, micro },
         };
       }
     }

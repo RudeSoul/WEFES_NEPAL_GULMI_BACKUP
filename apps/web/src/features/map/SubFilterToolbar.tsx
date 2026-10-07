@@ -31,14 +31,13 @@ export const SubFilterToolbar: React.FC = () => {
             <select
               name="waterSubFilter"
               className={selectClass}
-              value={subFilters.waterSubFilter || 'merra_rainfall'}
+              value={subFilters.waterSubFilter || 'annual_precipitation'}
               onChange={handleChange}
             >
               <optgroup label={t('subfilters.water.group_precipitation')}>
                 <option value="annual_precipitation">🌧️ {t('subfilters.water.annual_precipitation')}</option>
                 <option value="monsoon_precipitation">⛈️ {t('subfilters.water.monsoon_precipitation')}</option>
                 <option value="dry_season_precipitation">❄️ {t('subfilters.water.dry_season_precipitation')}</option>
-                <option value="merra_rainfall">🌧️ {t('subfilters.water.merra_rainfall')}</option>
                 <option value="river_basins">🌊 {t('subfilters.water.river_basins')}</option>
                 <option value="dhm_station">💧 {t('subfilters.water.dhm_station')}</option>
               </optgroup>

@@ -23,10 +23,6 @@
   | `hydro_potential_reaches.geojson` | GeoJSON | Vector LineStrings with properties for Leaflet/QGIS map rendering | `reach_id` |
   | `hydro_palika_summary.json` | JSON | Aggregated viable potential (MW) and energy (GWh/yr) per Palika | `palika_name` |
 
-### `downscaled_rainfall/`
-- **Generating Engine**: Topographic lapse-rate downscaling engine
-- **Methodology**: Elevation-dependent orographic precipitation adjustment based on MERRA-2 and DHM station baselines.
-
 ### `palika_benchmarks/`
 - **Generating Engine**: `engines/nexus/`
 - **Methodology**: Multi-criteria weighted composite index across Water, Energy, Food, Ecosystem, and Social indicators.

@@ -1,7 +1,7 @@
 // [DATA PROVENANCE]
 // Data Source: data/real/boundaries/gulmi-palikas.json, data/real/municipal/palika_profiles.json
 // Classification: OBSERVED REAL & EMPIRICAL DOWNSCALING
-// Citations: MoFAGA Nepal, DHM Nepal, CBS 2021 Census, NASA POWER / MERRA-2
+// Citations: MoFAGA Nepal, DHM Nepal, CBS 2021 Census, NASA POWER
 
 export const CHOROPLETH_RAMPS = {
   blues: ['#eff6ff', '#bfdbfe', '#60a5fa', '#2563eb', '#1d4ed8', '#1e3a8a'],

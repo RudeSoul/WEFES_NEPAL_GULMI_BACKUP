@@ -46,15 +46,6 @@ export const MapLayerControl: React.FC<MapLayerControlProps> = ({ onResetCamera,
   const waterOptions: SurfaceOption[] = useMemo(
     () => [
       {
-        id: 'merra_rainfall',
-        title: 'Dynamic Monthly Rainfall',
-        nepaliTitle: 'मासिक वर्षा (MERRA-2)',
-        subtitle: 'MERRA-2 Topographic Downscaling (Live Gauge)',
-        icon: '🌧️',
-        category: 'Precipitation',
-        badge: 'Heatmap',
-      },
-      {
         id: 'annual_precipitation',
         title: 'Observed Annual Precipitation',
         nepaliTitle: 'वार्षिक वर्षा (CHIRPS)',
@@ -287,7 +278,7 @@ export const MapLayerControl: React.FC<MapLayerControlProps> = ({ onResetCamera,
   const { activeSurfaceId, activeSurfaceTitle, activeIcon } = useMemo(() => {
     switch (selectedPillar) {
       case 'water': {
-        const id = subFilters.waterSubFilter || 'merra_rainfall';
+        const id = subFilters.waterSubFilter || 'annual_precipitation';
         const match = waterOptions.find((o) => o.id === id) || waterOptions[0];
         return {
           currentOptions: waterOptions,
@@ -348,7 +339,7 @@ export const MapLayerControl: React.FC<MapLayerControlProps> = ({ onResetCamera,
       default:
         return {
           currentOptions: waterOptions,
-          activeSurfaceId: 'merra_rainfall',
+          activeSurfaceId: 'annual_precipitation',
           activeSurfaceTitle: 'Hydrological Surface',
           activeIcon: '🌧️',
         };
@@ -968,7 +959,7 @@ export const MapLayerControl: React.FC<MapLayerControlProps> = ({ onResetCamera,
                     type="button"
                     onClick={() => {
                       if (subFilters.waterSubFilter === 'rivers_streams') {
-                        setSubFilters({ waterSubFilter: 'merra_rainfall' });
+                        setSubFilters({ waterSubFilter: 'annual_precipitation' });
                       } else {
                         setSubFilters({ waterSubFilter: 'rivers_streams' });
                       }

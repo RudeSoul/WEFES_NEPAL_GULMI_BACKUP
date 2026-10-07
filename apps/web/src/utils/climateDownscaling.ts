@@ -1,7 +1,7 @@
 /**
  * Gulmi District Micro-Climatic Orographic Downscaling Model
  *
- * Downscales NASA MERRA-2 gridded monthly reanalysis (0.5° x 0.625°) to site-specific
+ * Downscales NASA POWER gridded monthly reanalysis to site-specific
  * micro-climates across Gulmi's 12 Palikas based on elevation, hypsometry, slope aspect,
  * and DHM (Department of Hydrology and Meteorology) station benchmarks.
  */

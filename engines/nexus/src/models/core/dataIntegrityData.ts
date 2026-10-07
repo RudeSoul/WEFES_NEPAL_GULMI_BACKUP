@@ -164,11 +164,11 @@ export const DATA_INTEGRITY_MATRIX: DataIntegrityEntry[] = [
     nepalDataReality:
       'DHM Nepal operates ~450 manual stations and telemetry gauges, but currently has NO public machine-readable real-time API.',
     platformMethodologyAndProxy:
-      'Utilizes NASA MERRA-2 39-year monthly reanalysis (0.5° × 0.5° resolution) + CHIRPS precipitation grids as verified open-source fallbacks.',
+      'Utilizes NASA POWER 39-year monthly climatology + CHIRPS precipitation grids as verified open-source fallbacks.',
     uncertaintyGrade: 'Calibrated Satellite Proxy',
     sovereignActionToHelpNepal:
       'DHM and MoFE should establish an Open Hydro-Met API Gateway pushing automated daily data to local municipal hubs.',
-    primarySourcesCited: ['NASA MERRA-2 GMAO', 'DHM Nepal Climatological Records', 'CHIRPS UCSB Climate Group'],
+    primarySourcesCited: ['NASA POWER GMAO', 'DHM Nepal Climatological Records', 'CHIRPS UCSB Climate Group'],
   },
   {
     domainId: 'varieties-fertilizer',

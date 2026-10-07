@@ -126,9 +126,9 @@ describe('Track B: Dynamic Palika Attribute Joining (choroplethUtils)', () => {
       const resRain = await evaluateChoropleth({
         rawGeoJson: mockGeoJson,
         selectedPillar: 'water',
-        subFilters: { waterSubFilter: 'merra_rainfall' },
+        subFilters: { waterSubFilter: 'annual_precipitation' },
       });
-      expect(resRain.metricConfig.metricKey).toBe('downscaled_rainfall');
+      expect(resRain.metricConfig.metricKey).toBe('annual_precipitation');
 
       const resIrrig = await evaluateChoropleth({
         rawGeoJson: mockGeoJson,

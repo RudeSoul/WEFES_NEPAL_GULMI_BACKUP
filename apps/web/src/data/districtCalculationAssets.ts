@@ -69,9 +69,8 @@ export function resolveCalculationMethodology(params: ResolveMethodologyParams):
   let key = 'default';
 
   if (selectedPillar === 'water') {
-    const wSub = subFilters.waterSubFilter || 'merra_rainfall';
-    if (wSub === 'merra_rainfall') key = 'merra_rainfall';
-    else if (wSub === 'annual_precipitation') key = 'annual_precipitation';
+    const wSub = subFilters.waterSubFilter || 'annual_precipitation';
+    if (wSub === 'annual_precipitation') key = 'annual_precipitation';
     else if (wSub === 'monsoon_precipitation') key = 'monsoon_precipitation';
     else if (wSub === 'dry_season_precipitation') key = 'dry_season_precipitation';
     else if (wSub === 'river_basins') key = 'river_basins';

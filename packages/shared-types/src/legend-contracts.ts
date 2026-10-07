@@ -190,24 +190,6 @@ export const SUBFILTER_LEGENDS: Record<string, SubFilterLegendConfig> = {
     ],
   },
 
-  merra_rainfall: {
-    id: 'merra_rainfall',
-    pillar: 'water',
-    title: 'Precipitation Distribution',
-    subtitle: 'Topographically Downscaled (Lapse-Rate & Ridge Uplift)',
-    unit: 'mm',
-    legendType: 'continuous_gradient',
-    dataSourceCitation: 'data/real/climate/nasa_power_10_years_full.csv',
-    confidence: 'CALCULATED',
-    gradient: {
-      minColor: '#fed7aa',
-      midColor: '#38bdf8',
-      maxColor: '#1e3a8a',
-      minLabel: 'Subtropical Low Valleys (Lower mm)',
-      maxLabel: 'High Mountain Ridges (Higher mm Uplift)',
-    },
-  },
-
   river_basins: {
     id: 'river_basins',
     pillar: 'water',
