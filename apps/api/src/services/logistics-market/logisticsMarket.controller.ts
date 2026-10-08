@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { logisticsMarketService } from './logisticsMarket.service';
 
-export class LogisticsMarketController {
+class LogisticsMarketController {
   public getPalikaRoute(req: Request, res: Response, next: NextFunction) {
     try {
       const districtId = (req.query.districtId as string) || 'gulmi';

@@ -1,6 +1,6 @@
 import { District, Crop, CropSuitability } from '@wefes/shared-types';
 import { DISTRICTS_SEED_DATA, CROPS_SEED_DATA } from './seed-data';
-import { computeCropSuitability } from '@wefes/wefes-engine';
+import { computeCropSuitability, PalikaContext } from '@wefes/wefes-engine';
 
 /**
  * Map from crop ID to the keyword patterns that match it
@@ -42,7 +42,9 @@ export function isCropFeasibleInDistrict(cropOrId: Crop | string, district: Dist
     ...(district.feasibleVegetables || []),
     ...(district.feasibleFruits || []),
     ...(district.feasibleSpicesCashCrops || []),
-  ].join(', ').toLowerCase();
+  ]
+    .join(', ')
+    .toLowerCase();
 
   if (!keywords) {
     if (typeof cropOrId !== 'string' && cropOrId.name) {
@@ -51,20 +53,35 @@ export function isCropFeasibleInDistrict(cropOrId: Crop | string, district: Dist
     return true; // Unknown crops always shown
   }
 
-  return keywords.some(kw => allFeasible.includes(kw.toLowerCase()));
+  return keywords.some((kw) => allFeasible.includes(kw.toLowerCase()));
+}
+
+export interface DistrictGeoJSONFeature {
+  type: 'Feature';
+  id: string;
+  properties: Record<string, unknown>;
+  geometry: {
+    type: 'Polygon';
+    coordinates: number[][][];
+  };
+}
+
+export interface DistrictGeoJSONCollection {
+  type: 'FeatureCollection';
+  features: DistrictGeoJSONFeature[];
 }
 
 export class WEFESDatabase {
   private districts: District[] = DISTRICTS_SEED_DATA;
   private crops: Crop[] = CROPS_SEED_DATA;
-  private cachedGeoJSON: any = null;
+  private cachedGeoJSON: DistrictGeoJSONCollection | null = null;
 
   public getAllDistricts(): District[] {
     return this.districts;
   }
 
   public getDistrictById(id: string): District | undefined {
-    return this.districts.find(d => d.id.toLowerCase() === id.toLowerCase());
+    return this.districts.find((d) => d.id.toLowerCase() === id.toLowerCase());
   }
 
   public getAllCrops(): Crop[] {
@@ -72,40 +89,52 @@ export class WEFESDatabase {
   }
 
   public getCropById(id: string): Crop | undefined {
-    return this.crops.find(c => c.id.toLowerCase() === id.toLowerCase());
+    return this.crops.find((c) => c.id.toLowerCase() === id.toLowerCase());
   }
 
   /**
    * Returns crops with suitability scores, filtered to only feasible crops
    * for the district based on the Nepal_District_Crops_Feasibility.csv data.
+   * If palikaContext is provided, suitability is dynamically computed for that palika's
+   * biophysical micro-climate and sorted descending by suitability score.
    */
-  public getDistrictCrops(districtId: string): { crop: Crop; suitability: CropSuitability }[] {
+  public getDistrictCrops(
+    districtId: string,
+    palikaContext?: PalikaContext
+  ): { crop: Crop; suitability: CropSuitability }[] {
     const district = this.getDistrictById(districtId);
     if (!district) return [];
 
     return this.crops
-      .filter(crop => isCropFeasibleInDistrict(crop, district))
-      .map(crop => ({
+      .filter((crop) => isCropFeasibleInDistrict(crop, district))
+      .map((crop) => ({
         crop,
-        suitability: computeCropSuitability(district, crop)
-      }));
+        suitability: computeCropSuitability(district, crop, palikaContext),
+      }))
+      .sort((a, b) => b.suitability.suitabilityScore - a.suitability.suitabilityScore);
   }
 
   /**
    * Returns ALL crops with suitability (including unfeasible ones marked down).
+   * Sorted descending by suitability score.
    */
-  public getAllDistrictCrops(districtId: string): { crop: Crop; suitability: CropSuitability; isFeasible: boolean }[] {
+  public getAllDistrictCrops(
+    districtId: string,
+    palikaContext?: PalikaContext
+  ): { crop: Crop; suitability: CropSuitability; isFeasible: boolean }[] {
     const district = this.getDistrictById(districtId);
     if (!district) return [];
 
-    return this.crops.map(crop => ({
-      crop,
-      suitability: computeCropSuitability(district, crop),
-      isFeasible: isCropFeasibleInDistrict(crop, district),
-    }));
+    return this.crops
+      .map((crop) => ({
+        crop,
+        suitability: computeCropSuitability(district, crop, palikaContext),
+        isFeasible: isCropFeasibleInDistrict(crop, district),
+      }))
+      .sort((a, b) => b.suitability.suitabilityScore - a.suitability.suitabilityScore);
   }
 
-  public getGeoJSON(): any {
+  public getGeoJSON(): DistrictGeoJSONCollection {
     if (this.cachedGeoJSON) {
       return this.cachedGeoJSON;
     }
@@ -113,9 +142,9 @@ export class WEFESDatabase {
     const features = this.districts.map((district, idx) => {
       const lat = district.coordinates?.lat ?? 28.0;
       const lng = district.coordinates?.lng ?? 84.0;
-      
+
       // Smooth polygon bounding box for 77 Nepal districts
-      const r = 0.18 + ((idx % 5) * 0.03);
+      const r = 0.18 + (idx % 5) * 0.03;
       const polygon = [
         [
           [lng - r * 0.9, lat - r * 0.5],
@@ -124,12 +153,12 @@ export class WEFESDatabase {
           [lng + r * 0.95, lat + r * 0.4],
           [lng + r * 0.3, lat + r * 0.9],
           [lng - r * 0.75, lat + r * 0.7],
-          [lng - r * 0.9, lat - r * 0.5]
-        ]
+          [lng - r * 0.9, lat - r * 0.5],
+        ],
       ];
 
       return {
-        type: 'Feature',
+        type: 'Feature' as const,
         id: district.id,
         properties: {
           id: district.id,
@@ -182,18 +211,19 @@ export class WEFESDatabase {
           agriLaborEcoBelt: district.agriLaborEcoBelt,
         },
         geometry: {
-          type: 'Polygon',
-          coordinates: polygon
-        }
+          type: 'Polygon' as const,
+          coordinates: polygon,
+        },
       };
     });
 
-    this.cachedGeoJSON = {
+    const geoJson: DistrictGeoJSONCollection = {
       type: 'FeatureCollection',
-      features
+      features,
     };
+    this.cachedGeoJSON = geoJson;
 
-    return this.cachedGeoJSON;
+    return geoJson;
   }
 }
 

@@ -16,11 +16,11 @@ const districtsJsonPath = path.resolve(__dirname, '../packages/database/src/dist
 const geojsonPath = path.resolve(__dirname, '../apps/web/public/geojson/nepal-districts-enriched.json');
 
 const ALIAS_MAP = {
-  'arghakhachi': 'arghakhanchi',
-  'makawanpur': 'makwanpur',
-  'sankhuwashava': 'sankhuwasabha',
-  'kavre': 'kavrepalanchok',
-  'tanahu': 'tanahun'
+  arghakhachi: 'arghakhanchi',
+  makawanpur: 'makwanpur',
+  sankhuwashava: 'sankhuwasabha',
+  kavre: 'kavrepalanchok',
+  tanahu: 'tanahun',
 };
 
 function normalize(s) {
@@ -30,11 +30,11 @@ function normalize(s) {
 
 // 1. Parse Coffee CSV
 const coffeeRaw = fs.readFileSync(coffeeCsvPath, 'utf-8');
-const lines = coffeeRaw.split('\n').filter(l => l.trim());
+const lines = coffeeRaw.split('\n').filter((l) => l.trim());
 const coffeeMap = new Map();
 
 for (let i = 1; i < lines.length; i++) {
-  const parts = lines[i].split(',').map(s => s.trim());
+  const parts = lines[i].split(',').map((s) => s.trim());
   if (parts.length < 6 || parts[1] === 'Total' || parts[1].includes('Other')) continue;
   const rawName = parts[1];
   const areaHa = parseFloat(parts[2]);
@@ -48,7 +48,7 @@ for (let i = 1; i < lines.length; i++) {
     areaHa,
     prodMt,
     yieldKgHa,
-    farmers
+    farmers,
   });
 }
 
@@ -74,7 +74,7 @@ for (const d of districts) {
     if (!d.feasibleSpicesCashCrops) {
       d.feasibleSpicesCashCrops = ['Coffee'];
     } else {
-      const hasCoffee = d.feasibleSpicesCashCrops.some(s => s.toLowerCase().includes('coffee'));
+      const hasCoffee = d.feasibleSpicesCashCrops.some((s) => s.toLowerCase().includes('coffee'));
       if (!hasCoffee) {
         d.feasibleSpicesCashCrops.push('Coffee');
       }
@@ -107,7 +107,7 @@ for (const feature of geojson.features) {
     if (!feature.properties.feasibleSpicesCashCrops) {
       feature.properties.feasibleSpicesCashCrops = ['Coffee'];
     } else {
-      const hasCoffee = feature.properties.feasibleSpicesCashCrops.some(s => s.toLowerCase().includes('coffee'));
+      const hasCoffee = feature.properties.feasibleSpicesCashCrops.some((s) => s.toLowerCase().includes('coffee'));
       if (!hasCoffee) {
         feature.properties.feasibleSpicesCashCrops = [...feature.properties.feasibleSpicesCashCrops, 'Coffee'];
       }

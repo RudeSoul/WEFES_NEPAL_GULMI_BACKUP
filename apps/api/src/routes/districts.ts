@@ -8,8 +8,9 @@ districtRouter.get('/', (req, res) => {
   try {
     const districts = db.getAllDistricts();
     res.json({ success: true, count: districts.length, data: districts });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    res.status(500).json({ success: false, error: message });
   }
 });
 
@@ -18,8 +19,9 @@ districtRouter.get('/geojson', (req, res) => {
   try {
     const geoJson = db.getGeoJSON();
     res.json(geoJson);
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    res.status(500).json({ success: false, error: message });
   }
 });
 
@@ -31,8 +33,9 @@ districtRouter.get('/:id', (req, res) => {
       return res.status(404).json({ success: false, error: `District '${req.params.id}' not found` });
     }
     res.json({ success: true, data: district });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    res.status(500).json({ success: false, error: message });
   }
 });
 
@@ -44,7 +47,8 @@ districtRouter.get('/:id/crops', (req, res) => {
       return res.status(404).json({ success: false, error: `District '${req.params.id}' not found` });
     }
     res.json({ success: true, districtId: req.params.id, count: districtCrops.length, data: districtCrops });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    res.status(500).json({ success: false, error: message });
   }
 });

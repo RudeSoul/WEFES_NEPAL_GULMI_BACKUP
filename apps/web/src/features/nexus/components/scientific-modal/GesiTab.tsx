@@ -1,6 +1,8 @@
 import React from 'react';
-import { DeepNexusAnalysis } from '@wefes/wefes-engine';
+
 import { HeartHandshake } from 'lucide-react';
+
+import { DeepNexusAnalysis } from '@wefes/wefes-engine';
 
 interface GesiTabProps {
   deep: DeepNexusAnalysis;
@@ -14,7 +16,9 @@ export const GesiTab: React.FC<GesiTabProps> = ({ deep }) => {
       <div className="p-3.5 bg-purple-50 rounded-xl border border-purple-200 text-xs text-purple-950 flex items-start gap-2">
         <HeartHandshake className="w-4 h-4 text-purple-700 shrink-0 mt-0.5" />
         <span>
-          <strong>Agrarian Feminization & Youth Outmigration Dynamics:</strong> Due to heavy male labor outmigration to foreign employment, over 70% of day-to-day farming in rural Nepal is managed by female smallholders and elderly family members. Managing labor bottlenecks is critical to prevent land abandonment (*Banjho Jameen*).
+          <strong>Agrarian Feminization & Youth Outmigration Dynamics:</strong> Due to heavy male labor outmigration to
+          foreign employment, over 70% of day-to-day farming in rural Nepal is managed by female smallholders and
+          elderly family members. Managing labor bottlenecks is critical to prevent land abandonment (*Banjho Jameen*).
         </span>
       </div>
 
@@ -38,14 +42,14 @@ export const GesiTab: React.FC<GesiTabProps> = ({ deep }) => {
 
       <div className="p-4 rounded-xl border border-purple-200 bg-white space-y-2 shadow-2xs">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-purple-950 font-outfit">Micro-Mechanization & Women Empowerment Dividend</span>
+          <span className="text-xs font-bold text-purple-950 font-outfit">
+            Micro-Mechanization & Women Empowerment Dividend
+          </span>
           <span className="text-[10px] bg-purple-100 text-purple-900 border border-purple-300 px-2 py-0.5 rounded font-mono font-bold">
             {gesi.mechanizationSuitability}
           </span>
         </div>
-        <p className="text-xs text-slate-600 leading-relaxed font-sans">
-          {gesi.womenEmpowermentDividend}
-        </p>
+        <p className="text-xs text-slate-600 leading-relaxed font-sans">{gesi.womenEmpowermentDividend}</p>
       </div>
     </div>
   );

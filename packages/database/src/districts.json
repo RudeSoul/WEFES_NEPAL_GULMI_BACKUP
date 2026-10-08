@@ -81,17 +81,7 @@
     "physiographicRegion": "Hill",
     "climateZone": "Subtropical to Mild Temperate",
     "elevationRange": "800-2000",
-    "feasibleCrops": [
-      "Paddy",
-      "Maize",
-      "Wheat",
-      "Millet",
-      "Barley",
-      "Buckwheat",
-      "Soybean",
-      "Amaranth",
-      "Potato"
-    ],
+    "feasibleCrops": ["Paddy", "Maize", "Wheat", "Millet", "Barley", "Buckwheat", "Soybean", "Amaranth", "Potato"],
     "feasibleVegetables": [
       "Tomato",
       "Cauliflower",
@@ -110,23 +100,8 @@
       "Carrot",
       "Turnip"
     ],
-    "feasibleFruits": [
-      "Orange",
-      "Lemon",
-      "Mandarin",
-      "Peach",
-      "Plum",
-      "Pear",
-      "Persimmon"
-    ],
-    "feasibleSpicesCashCrops": [
-      "Ginger",
-      "Turmeric",
-      "Cardamom",
-      "Coffee",
-      "Honey",
-      "Medicinal Herbs"
-    ],
+    "feasibleFruits": ["Orange", "Lemon", "Mandarin", "Peach", "Plum", "Pear", "Persimmon"],
+    "feasibleSpicesCashCrops": ["Ginger", "Turmeric", "Cardamom", "Coffee", "Honey", "Medicinal Herbs"],
     "feasibilityReasoning": "Western mid-hills; Tamghas area; 800-2000m; subtropical to mild temperate; significant agricultural land (30,000-40,000 ha); suitable for diverse hill crops and fruits.",
     "coffeeProductionMt": 35,
     "coffeeAreaHa": 160,
@@ -248,17 +223,7 @@
     "physiographicRegion": "Hill",
     "climateZone": "Subtropical to Mild Temperate",
     "elevationRange": "800-2000",
-    "feasibleCrops": [
-      "Paddy",
-      "Maize",
-      "Wheat",
-      "Millet",
-      "Barley",
-      "Buckwheat",
-      "Soybean",
-      "Amaranth",
-      "Potato"
-    ],
+    "feasibleCrops": ["Paddy", "Maize", "Wheat", "Millet", "Barley", "Buckwheat", "Soybean", "Amaranth", "Potato"],
     "feasibleVegetables": [
       "Tomato",
       "Cauliflower",
@@ -277,23 +242,8 @@
       "Carrot",
       "Turnip"
     ],
-    "feasibleFruits": [
-      "Orange",
-      "Lemon",
-      "Mandarin",
-      "Peach",
-      "Plum",
-      "Pear",
-      "Persimmon"
-    ],
-    "feasibleSpicesCashCrops": [
-      "Ginger",
-      "Turmeric",
-      "Cardamom",
-      "Coffee",
-      "Honey",
-      "Medicinal Herbs"
-    ],
+    "feasibleFruits": ["Orange", "Lemon", "Mandarin", "Peach", "Plum", "Pear", "Persimmon"],
+    "feasibleSpicesCashCrops": ["Ginger", "Turmeric", "Cardamom", "Coffee", "Honey", "Medicinal Herbs"],
     "feasibilityReasoning": "Western mid-hills; 800-2000m; subtropical to mild temperate; significant agricultural land; suitable for diverse hill crops; higher permanent crop area than neighboring districts.",
     "coffeeProductionMt": 29,
     "coffeeAreaHa": 131,
@@ -423,17 +373,7 @@
     "physiographicRegion": "Hill",
     "climateZone": "Subtropical to Mild Temperate",
     "elevationRange": "800-2000",
-    "feasibleCrops": [
-      "Paddy",
-      "Maize",
-      "Wheat",
-      "Millet",
-      "Barley",
-      "Buckwheat",
-      "Soybean",
-      "Amaranth",
-      "Potato"
-    ],
+    "feasibleCrops": ["Paddy", "Maize", "Wheat", "Millet", "Barley", "Buckwheat", "Soybean", "Amaranth", "Potato"],
     "feasibleVegetables": [
       "Tomato",
       "Cauliflower",
@@ -452,23 +392,8 @@
       "Carrot",
       "Turnip"
     ],
-    "feasibleFruits": [
-      "Orange",
-      "Lemon",
-      "Mandarin",
-      "Peach",
-      "Plum",
-      "Pear",
-      "Persimmon",
-      "Mango (lower areas)"
-    ],
-    "feasibleSpicesCashCrops": [
-      "Ginger (45% of provincial production)",
-      "Turmeric",
-      "Cardamom",
-      "Coffee",
-      "Honey"
-    ],
+    "feasibleFruits": ["Orange", "Lemon", "Mandarin", "Peach", "Plum", "Pear", "Persimmon", "Mango (lower areas)"],
+    "feasibleSpicesCashCrops": ["Ginger (45% of provincial production)", "Turmeric", "Cardamom", "Coffee", "Honey"],
     "feasibilityReasoning": "Western mid-hills; Tansen area; 800-2000m; highest ginger producing district in Province 5 (45% of total); subtropical to mild temperate; excellent for ginger, citrus and diverse hill crops.",
     "coffeeProductionMt": 30,
     "coffeeAreaHa": 119,
@@ -589,17 +514,7 @@
     "physiographicRegion": "Terai",
     "climateZone": "Tropical (Lower/Upper)",
     "elevationRange": "100-300",
-    "feasibleCrops": [
-      "Paddy",
-      "Maize",
-      "Wheat",
-      "Sugarcane",
-      "Lentil",
-      "Black Gram",
-      "Mustard",
-      "Sunflower",
-      "Peanut"
-    ],
+    "feasibleCrops": ["Paddy", "Maize", "Wheat", "Sugarcane", "Lentil", "Black Gram", "Mustard", "Sunflower", "Peanut"],
     "feasibleVegetables": [
       "Tomato",
       "Cauliflower",
@@ -625,24 +540,8 @@
       "Elephant Foot Yam",
       "Giant Taro"
     ],
-    "feasibleFruits": [
-      "Mango",
-      "Banana",
-      "Litchi",
-      "Jackfruit",
-      "Guava",
-      "Lemon",
-      "Sweet Lime",
-      "Pomegranate"
-    ],
-    "feasibleSpicesCashCrops": [
-      "Ginger",
-      "Turmeric",
-      "Mustard",
-      "Sunflower",
-      "Peanut",
-      "Chili"
-    ],
+    "feasibleFruits": ["Mango", "Banana", "Litchi", "Jackfruit", "Guava", "Lemon", "Sweet Lime", "Pomegranate"],
+    "feasibleSpicesCashCrops": ["Ginger", "Turmeric", "Mustard", "Sunflower", "Peanut", "Chili"],
     "feasibilityReasoning": "Western Terai; Butwal-Lumbini area; 50 commercial vegetable species documented; 15 vegetable pocket areas; highest cereal production in Province 5 (865,270 MT); excellent irrigation and market access; major agricultural hub.",
     "agriLaborRateBaselineNpr": 754,
     "agriLaborMarketRateMinNpr": 600,

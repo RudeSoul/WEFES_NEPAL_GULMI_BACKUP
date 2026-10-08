@@ -49,14 +49,14 @@ export interface District {
   nasaSolarYearly?: Record<number, number>;
 
   // Real Crop Feasibility Data (Nepal_District_Crops_Feasibility.csv)
-  physiographicRegion?: string;        // "Hill", "Mountain", "Terai", "Inner Terai", "Hill/Mountain", etc.
-  climateZone?: string;                // "Tropical", "Subtropical to Temperate", etc.
-  elevationRange?: string;             // "1000-2500", "100-300", etc.
-  feasibleCrops?: string[];            // Cereals/grains: ["Paddy", "Maize", "Wheat", ...]
-  feasibleVegetables?: string[];       // Vegetables: ["Tomato", "Cauliflower", ...]
-  feasibleFruits?: string[];           // Fruits: ["Orange", "Apple", "Mango", ...]
-  feasibleSpicesCashCrops?: string[];  // Spices & Cash: ["Tea", "Ginger", "Cardamom", ...]
-  feasibilityReasoning?: string;       // Detailed agronomic reasoning text
+  physiographicRegion?: string; // "Hill", "Mountain", "Terai", "Inner Terai", "Hill/Mountain", etc.
+  climateZone?: string; // "Tropical", "Subtropical to Temperate", etc.
+  elevationRange?: string; // "1000-2500", "100-300", etc.
+  feasibleCrops?: string[]; // Cereals/grains: ["Paddy", "Maize", "Wheat", ...]
+  feasibleVegetables?: string[]; // Vegetables: ["Tomato", "Cauliflower", ...]
+  feasibleFruits?: string[]; // Fruits: ["Orange", "Apple", "Mango", ...]
+  feasibleSpicesCashCrops?: string[]; // Spices & Cash: ["Tea", "Ginger", "Cardamom", ...]
+  feasibilityReasoning?: string; // Detailed agronomic reasoning text
 
   // Real Commercial Coffee Production Statistics (NTCDB / MoALD 2080)
   coffeeProductionMt?: number;
@@ -65,16 +65,23 @@ export interface District {
   coffeeFarmersCount?: number;
 
   // Real Agricultural Labor Rates (MoLESS / District Administration Jilla Dar Baseline & Market Surveys)
-  agriLaborRateBaselineNpr?: number;      // Official District Admin Baseline (Jilla Dar) Rate (e.g. 754, 890, 1000)
-  agriLaborMarketRateMinNpr?: number;     // Farmgate market wage lower bound (e.g. 600)
-  agriLaborMarketRateMaxNpr?: number;     // Farmgate market wage upper bound (e.g. 680)
-  agriLaborMarketRateAvgNpr?: number;     // Farmgate market wage midpoint average (e.g. 640)
-  agriLaborRateRange?: string;            // Formatted market range string (e.g. "600 - 680")
-  agriLaborEcoBelt?: string;              // "Hills", "Tarai", "Kathmandu Valley", "Mountain", "Remote Mountain", etc.
+  agriLaborRateBaselineNpr?: number; // Official District Admin Baseline (Jilla Dar) Rate (e.g. 754, 890, 1000)
+  agriLaborMarketRateMinNpr?: number; // Farmgate market wage lower bound (e.g. 600)
+  agriLaborMarketRateMaxNpr?: number; // Farmgate market wage upper bound (e.g. 680)
+  agriLaborMarketRateAvgNpr?: number; // Farmgate market wage midpoint average (e.g. 640)
+  agriLaborRateRange?: string; // Formatted market range string (e.g. "600 - 680")
+  agriLaborEcoBelt?: string; // "Hills", "Tarai", "Kathmandu Valley", "Mountain", "Remote Mountain", etc.
 
   // Real Hydrology & GLOF Hazard Data (DHM National River Gauges & Glacial Lakes)
   hydrologyStationsCount?: number;
-  hydrologyStationsList?: { stationNo: string; river: string; siteName: string; elevation: number | null; instruments: string; startDate: string }[];
+  hydrologyStationsList?: {
+    stationNo: string;
+    river: string;
+    siteName: string;
+    elevation: number | null;
+    instruments: string;
+    startDate: string;
+  }[];
   totalLakesCount?: number;
   highAltitudeLakesCount?: number;
   lakeAltitudeDistribution?: {
@@ -85,7 +92,14 @@ export interface District {
     from3000to4999m: number;
     above5000m: number;
   };
-  dangerousGlacialLakes?: { sn?: string; name: string; altitude: number; areaSqM?: number | null; hazardLevel: string; basin?: string }[];
+  dangerousGlacialLakes?: {
+    sn?: string;
+    name: string;
+    altitude: number;
+    areaSqM?: number | null;
+    hazardLevel: string;
+    basin?: string;
+  }[];
   glofRiskLevel?: string;
 
   // Real Transport Connectivity & Logistics Access (Strategic Road Network)
@@ -183,12 +197,12 @@ export interface WEFESOutput {
   nexusRating: string;
   /** Agro-ecological suitability gate — populated by calculateHarvestImpact */
   agroSuitability: {
-    suitabilityScore: number;        // 0–100, FAO/AHP biophysical score
-    suitabilityFactor: number;       // 0.0–1.0 multiplier applied to realized yield
-    faoClass: string;                // e.g. 'S1 (Highly Suitable)'
-    limitingFactor: string;          // e.g. 'Thermal Deficit' or 'None'
-    realizedQuantity: number;        // baseQuantity × suitabilityFactor
-    unrealizedQuantityPct: number;   // % of target harvest lost to unsuitability
+    suitabilityScore: number; // 0–100, FAO/AHP biophysical score
+    suitabilityFactor: number; // 0.0–1.0 multiplier applied to realized yield
+    faoClass: string; // e.g. 'S1 (Highly Suitable)'
+    limitingFactor: string; // e.g. 'Thermal Deficit' or 'None'
+    realizedQuantity: number; // baseQuantity × suitabilityFactor
+    unrealizedQuantityPct: number; // % of target harvest lost to unsuitability
     isBiophysicallyFeasible: boolean; // suitabilityScore >= 45
   };
   /** Fertilizer Nexus & Spatial Logistics Profile */
@@ -249,7 +263,10 @@ export interface FertilizerImpactProfile {
     sovereignImportForexDrainUsd: number;
     gonSubsidyBurdenNpr: number;
     farmerValueCostRatioVCR: number; // VCR = (Delta Yield Value) / (Fertilizer Cost)
-    vcrStatus: 'Optimal Investment (VCR >= 2.5)' | 'Acceptable Margin (2.0 <= VCR < 2.5)' | 'High Risk of Non-Adoption (VCR < 2.0)';
+    vcrStatus:
+      | 'Optimal Investment (VCR >= 2.5)'
+      | 'Acceptable Margin (2.0 <= VCR < 2.5)'
+      | 'High Risk of Non-Adoption (VCR < 2.0)';
   };
   // 3. Energy & Transport Work
   energy: {
@@ -280,7 +297,6 @@ export interface FertilizerImpactProfile {
   };
   logisticsRoute: PalikaLogisticsRoute;
 }
-
 
 export interface ScenarioParameters {
   // 1. Climate & Water Levers
@@ -363,3 +379,91 @@ export const ScenarioRequestSchema = z.object({
 });
 
 export type ScenarioRequest = z.infer<typeof ScenarioRequestSchema>;
+
+export * from './legend-contracts';
+
+// ==============================================================================
+// PALIKA CHOROPLETH DYNAMIC ATTRIBUTE JOINING CONTRACTS (TRACK B)
+// ==============================================================================
+
+export interface PalikaChoroplethMetricConfig {
+  metricKey: string;
+  pillar: WEFESPillar;
+  label: string;
+  unit: string;
+  min: number;
+  max: number;
+  colorRamp: string[];
+  description?: string;
+}
+
+export interface JoinedPalikaData {
+  id: string;
+  name: string;
+  nepaliName?: string;
+  type?: string;
+  areaSqKm?: number;
+  value: number;
+  formattedValue: string;
+  color: string;
+  tooltipHtml: string;
+  // Raw attributes joined from empirical & calculated datasets
+  raw?: Record<string, unknown>;
+}
+
+export interface PalikaChoroplethResult {
+  metricConfig: PalikaChoroplethMetricConfig;
+  joinedData: Record<string, JoinedPalikaData>;
+  getColor: (palikaName: string) => string;
+  getTooltipHtml: (palikaName: string) => string;
+  getValue: (palikaName: string) => number | undefined;
+}
+
+// ==============================================================================
+// TOPOGRAPHIC CONTOUR VECTOR CONTRACTS (TRACK C)
+// ==============================================================================
+
+export interface ContourFeatureProperties {
+  elevation: number;
+  isIndex: boolean;
+  color: string;
+  weight: number;
+  opacity: number;
+  lifeZone: string;
+  feasibleCrops: string[];
+  temperatureC: number;
+}
+
+export interface GulmiContourFeature {
+  type: 'Feature';
+  properties: ContourFeatureProperties;
+  geometry: {
+    type: 'LineString' | 'MultiLineString';
+    coordinates: [number, number][] | [number, number][][];
+  };
+}
+
+export interface GulmiContourCollection {
+  type: 'FeatureCollection';
+  _metadata?: {
+    title: string;
+    source: string;
+    tier: string;
+    crs: string;
+    elevationRange: string;
+    intervalMeters: number;
+  };
+  features: GulmiContourFeature[];
+}
+
+export interface MonthlyClimatePoint {
+  prectot?: number;
+  t2m?: number;
+  [key: string]: unknown;
+}
+
+export interface ClimateDataset {
+  climatologyMap?: Record<string, Record<number, MonthlyClimatePoint>>;
+  climateMap?: Record<string, Record<number, Record<number, MonthlyClimatePoint>>>;
+  [key: string]: unknown;
+}

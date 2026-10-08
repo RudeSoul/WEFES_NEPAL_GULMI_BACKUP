@@ -1,6 +1,8 @@
 import React from 'react';
+
+import { ShieldCheck, ThermometerSnowflake } from 'lucide-react';
+
 import { DeepNexusAnalysis } from '@wefes/wefes-engine';
-import { ThermometerSnowflake, ShieldCheck } from 'lucide-react';
 
 interface PhenologyImportTabProps {
   deep: DeepNexusAnalysis;
@@ -31,7 +33,9 @@ export const PhenologyImportTab: React.FC<PhenologyImportTabProps> = ({ deep }) 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 font-mono text-xs">
           <div className="bg-white p-2.5 rounded-lg border border-amber-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">Growing Degree Days (GDD)</div>
-            <div className="text-base font-extrabold text-amber-900 mt-0.5">{phenology.growingDegreeDays} <span className="text-xs font-normal text-slate-500">°C-days</span></div>
+            <div className="text-base font-extrabold text-amber-900 mt-0.5">
+              {phenology.growingDegreeDays} <span className="text-xs font-normal text-slate-500">°C-days</span>
+            </div>
           </div>
           <div className="bg-white p-2.5 rounded-lg border border-amber-200 text-center col-span-2">
             <div className="text-[10px] text-slate-500 font-sans">Optimal Thermal Altitude Band</div>
@@ -40,7 +44,8 @@ export const PhenologyImportTab: React.FC<PhenologyImportTabProps> = ({ deep }) 
         </div>
 
         <div className="text-[11px] text-amber-950 font-sans bg-white/80 p-2.5 rounded-lg border border-amber-200">
-          <strong>Climate Warming Trend:</strong> In the Hindu Kush Himalaya region, thermal bands are shifting upward at approximately +0.038°C/year ({phenology.projected2040AltitudeShift}).
+          <strong>Climate Warming Trend:</strong> In the Hindu Kush Himalaya region, thermal bands are shifting upward
+          at approximately +0.038°C/year ({phenology.projected2040AltitudeShift}).
         </div>
       </div>
 
@@ -53,7 +58,9 @@ export const PhenologyImportTab: React.FC<PhenologyImportTabProps> = ({ deep }) 
               <h4 className="text-xs font-bold text-emerald-950 font-outfit">
                 National Import Substitution & Foreign Exchange Dividend
               </h4>
-              <span className="text-[10px] text-emerald-800 font-sans">Nepal 15th Plan Food Sovereignty Contribution</span>
+              <span className="text-[10px] text-emerald-800 font-sans">
+                Nepal 15th Plan Food Sovereignty Contribution
+              </span>
             </div>
           </div>
           <span className="text-[10px] bg-white text-emerald-950 border border-emerald-300 px-2 py-0.5 rounded-md font-mono font-bold">
@@ -64,15 +71,21 @@ export const PhenologyImportTab: React.FC<PhenologyImportTabProps> = ({ deep }) 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 font-mono text-xs">
           <div className="bg-white p-2.5 rounded-lg border border-emerald-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">Agri-Import Displaced</div>
-            <div className="text-base font-extrabold text-emerald-800 mt-0.5">NPR {importSubstitution.annualImportDisplacedNpr.toLocaleString()}</div>
+            <div className="text-base font-extrabold text-emerald-800 mt-0.5">
+              NPR {importSubstitution.annualImportDisplacedNpr.toLocaleString()}
+            </div>
           </div>
           <div className="bg-white p-2.5 rounded-lg border border-emerald-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">USD Reserve Retained</div>
-            <div className="text-base font-extrabold text-blue-900 mt-0.5">${importSubstitution.foreignExchangeRetainedUsd.toLocaleString()} USD</div>
+            <div className="text-base font-extrabold text-blue-900 mt-0.5">
+              ${importSubstitution.foreignExchangeRetainedUsd.toLocaleString()} USD
+            </div>
           </div>
           <div className="bg-white p-2.5 rounded-lg border border-emerald-200 text-center col-span-2 sm:col-span-1">
             <div className="text-[10px] text-slate-500 font-sans">Food Sovereignty Score</div>
-            <div className="text-base font-extrabold text-purple-900 mt-0.5">{importSubstitution.nationalFoodSovereigntyIndex}/100</div>
+            <div className="text-base font-extrabold text-purple-900 mt-0.5">
+              {importSubstitution.nationalFoodSovereigntyIndex}/100
+            </div>
           </div>
         </div>
 

@@ -1,7 +1,9 @@
 import React from 'react';
+
+import { AlertTriangle, CheckCircle2, Cpu, Layers, Sparkles } from 'lucide-react';
+
 import { WEFESOutput } from '@wefes/shared-types';
 import { DeepNexusAnalysis } from '@wefes/wefes-engine';
-import { Cpu, CheckCircle2, Sparkles, AlertTriangle, Layers } from 'lucide-react';
 
 interface MathTabProps {
   output: WEFESOutput;
@@ -63,7 +65,9 @@ export const MathTab: React.FC<MathTabProps> = ({ output, deep }) => {
       <div className="bg-emerald-50/80 p-4 rounded-xl border border-emerald-200 space-y-3">
         <h4 className="text-xs font-bold text-emerald-950 uppercase tracking-wider font-outfit flex items-center gap-1.5">
           <CheckCircle2 className="w-4 h-4 text-emerald-700" />
-          <span>Live Numerical Substitution for {output.cropName} in {output.districtName}</span>
+          <span>
+            Live Numerical Substitution for {output.cropName} in {output.districtName}
+          </span>
         </h4>
 
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 font-mono text-xs">
@@ -75,7 +79,9 @@ export const MathTab: React.FC<MathTabProps> = ({ output, deep }) => {
           <div className="bg-white p-2.5 rounded-lg border border-emerald-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">⚡ Energy Pillar</div>
             <div className="font-bold text-amber-800 text-sm mt-0.5">{pillarScores.energy}/100</div>
-            <div className="text-[9px] text-slate-500">Renewable: {Math.round(100 - output.energy.fossilSharePercent)}%</div>
+            <div className="text-[9px] text-slate-500">
+              Renewable: {Math.round(100 - output.energy.fossilSharePercent)}%
+            </div>
           </div>
           <div className="bg-white p-2.5 rounded-lg border border-emerald-200 text-center">
             <div className="text-[10px] text-slate-500 font-sans">🌾 Food Pillar</div>
@@ -90,30 +96,58 @@ export const MathTab: React.FC<MathTabProps> = ({ output, deep }) => {
           <div className="bg-white p-2.5 rounded-lg border border-emerald-200 text-center col-span-2 sm:col-span-1">
             <div className="text-[10px] text-slate-500 font-sans">💼 Socioeconomics</div>
             <div className="font-bold text-purple-800 text-sm mt-0.5">{pillarScores.socioeconomics}/100</div>
-            <div className="text-[9px] text-slate-500">Margin: {Math.round((output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100)}%</div>
+            <div className="text-[9px] text-slate-500">
+              Margin:{' '}
+              {Math.round(
+                (output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100
+              )}
+              %
+            </div>
           </div>
         </div>
 
         <div className="bg-white p-3 rounded-lg border border-emerald-200 font-mono text-xs space-y-1.5 text-slate-800">
           <div className="flex justify-between border-b border-slate-100 pb-1">
             <span className="text-slate-600 font-sans">1. Co-benefit Output (0.40 × Φ):</span>
-            <span className="font-bold text-emerald-800">0.40 × ({output.food.foodSecurityIndex} + {output.ecosystem.ecoHealthScore})/2 = +{((output.food.foodSecurityIndex + output.ecosystem.ecoHealthScore) * 0.2).toFixed(1)} pts</span>
+            <span className="font-bold text-emerald-800">
+              0.40 × ({output.food.foodSecurityIndex} + {output.ecosystem.ecoHealthScore})/2 = +
+              {((output.food.foodSecurityIndex + output.ecosystem.ecoHealthScore) * 0.2).toFixed(1)} pts
+            </span>
           </div>
           <div className="flex justify-between border-b border-slate-100 pb-1">
             <span className="text-slate-600 font-sans">2. Economic Margin Return (0.35 × S):</span>
-            <span className="font-bold text-purple-800">0.35 × {Math.round((output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100)}% = +{(Math.round((output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100) * 0.35).toFixed(1)} pts</span>
+            <span className="font-bold text-purple-800">
+              0.35 ×{' '}
+              {Math.round(
+                (output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100
+              )}
+              % = +
+              {(
+                Math.round(
+                  (output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100
+                ) * 0.35
+              ).toFixed(1)}{' '}
+              pts
+            </span>
           </div>
           <div className="flex justify-between border-b border-slate-100 pb-1">
             <span className="text-slate-600 font-sans">3. Resource Conflict Penalty (-0.25 × Ψ):</span>
-            <span className="font-bold text-rose-700">-[0.30 × {output.water.waterStressIndex} + 0.20 × {output.energy.fossilSharePercent}] = -{(output.water.waterStressIndex * 0.3 + output.energy.fossilSharePercent * 0.2).toFixed(1)} pts</span>
+            <span className="font-bold text-rose-700">
+              -[0.30 × {output.water.waterStressIndex} + 0.20 × {output.energy.fossilSharePercent}] = -
+              {(output.water.waterStressIndex * 0.3 + output.energy.fossilSharePercent * 0.2).toFixed(1)} pts
+            </span>
           </div>
           <div className="flex justify-between border-b border-slate-100 pb-1">
             <span className="text-slate-600 font-sans">4. Shannon Entropy Equilibrium (E):</span>
-            <span className="font-bold text-blue-800">H({shannonH.toFixed(3)}) / ln(5) = {shannonEntropy} (Gini Asymmetry: {giniIndex})</span>
+            <span className="font-bold text-blue-800">
+              H({shannonH.toFixed(3)}) / ln(5) = {shannonEntropy} (Gini Asymmetry: {giniIndex})
+            </span>
           </div>
           <div className="flex justify-between pt-1 text-emerald-950 font-extrabold text-sm">
             <span className="font-sans">Final Calculated Composite Score:</span>
-            <span>{output.nexusBalanceIndex} / 100 ({systemicState.title})</span>
+            <span>
+              {output.nexusBalanceIndex} / 100 ({systemicState.title})
+            </span>
           </div>
         </div>
       </div>
@@ -148,9 +182,15 @@ export const MathTab: React.FC<MathTabProps> = ({ output, deep }) => {
                   <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900">
                     +{s.pointsContribution} pts
                   </span>
-                  <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase ${
-                    s.timeHorizon === 'short' ? 'bg-sky-100 text-sky-800' : s.timeHorizon === 'long' ? 'bg-teal-100 text-teal-800' : 'bg-purple-100 text-purple-800'
-                  }`}>
+                  <span
+                    className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase ${
+                      s.timeHorizon === 'short'
+                        ? 'bg-sky-100 text-sky-800'
+                        : s.timeHorizon === 'long'
+                          ? 'bg-teal-100 text-teal-800'
+                          : 'bg-purple-100 text-purple-800'
+                    }`}
+                  >
                     {s.timeHorizon === 'both' ? 'ST + LT' : s.timeHorizon === 'short' ? 'Short-Term' : 'Long-Term'}
                   </span>
                 </div>
@@ -175,14 +215,21 @@ export const MathTab: React.FC<MathTabProps> = ({ output, deep }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {tradeoffs.map((t) => (
-            <div key={t.id} className={`p-3 rounded-xl border shadow-2xs space-y-1.5 text-xs ${
-              t.timeHorizon === 'reversal' ? 'bg-amber-50/70 border-amber-300' : 'bg-white border-slate-200'
-            }`}>
+            <div
+              key={t.id}
+              className={`p-3 rounded-xl border shadow-2xs space-y-1.5 text-xs ${
+                t.timeHorizon === 'reversal' ? 'bg-amber-50/70 border-amber-300' : 'bg-white border-slate-200'
+              }`}
+            >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <span className={`p-1 rounded-lg shrink-0 ${
-                    t.timeHorizon === 'reversal' ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-rose-50 text-rose-700 border border-rose-200'
-                  }`}>
+                  <span
+                    className={`p-1 rounded-lg shrink-0 ${
+                      t.timeHorizon === 'reversal'
+                        ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                        : 'bg-rose-50 text-rose-700 border border-rose-200'
+                    }`}
+                  >
                     <AlertTriangle className="w-3.5 h-3.5" />
                   </span>
                   <div>
@@ -195,14 +242,22 @@ export const MathTab: React.FC<MathTabProps> = ({ output, deep }) => {
                   <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-900">
                     -{t.pointsPenalty} pts
                   </span>
-                  <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase ${
-                    t.timeHorizon === 'reversal'
-                      ? 'bg-amber-200 text-amber-900 border border-amber-400 font-black'
-                      : t.timeHorizon === 'short'
-                      ? 'bg-sky-100 text-sky-800'
-                      : 'bg-teal-100 text-teal-800'
-                  }`}>
-                    {t.timeHorizon === 'reversal' ? '⚠️ Reversal Risk' : t.timeHorizon === 'both' ? 'ST + LT' : t.timeHorizon === 'short' ? 'Short-Term' : 'Long-Term'}
+                  <span
+                    className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase ${
+                      t.timeHorizon === 'reversal'
+                        ? 'bg-amber-200 text-amber-900 border border-amber-400 font-black'
+                        : t.timeHorizon === 'short'
+                          ? 'bg-sky-100 text-sky-800'
+                          : 'bg-teal-100 text-teal-800'
+                    }`}
+                  >
+                    {t.timeHorizon === 'reversal'
+                      ? '⚠️ Reversal Risk'
+                      : t.timeHorizon === 'both'
+                        ? 'ST + LT'
+                        : t.timeHorizon === 'short'
+                          ? 'Short-Term'
+                          : 'Long-Term'}
                   </span>
                 </div>
               </div>
@@ -219,9 +274,7 @@ export const MathTab: React.FC<MathTabProps> = ({ output, deep }) => {
             <Layers className="w-4 h-4 text-indigo-600" />
             <span>Cross-Sector Coupling Matrix (Coefficients: -1.0 to +1.0)</span>
           </h4>
-          <span className="text-[10px] font-mono text-slate-500">
-            {couplingMatrix.length} Direct Interactions
-          </span>
+          <span className="text-[10px] font-mono text-slate-500">{couplingMatrix.length} Direct Interactions</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
@@ -231,9 +284,11 @@ export const MathTab: React.FC<MathTabProps> = ({ output, deep }) => {
                 <span className="font-bold text-slate-900 text-[11px]">
                   {cell.from} &rarr; {cell.to}
                 </span>
-                <span className={`font-bold px-1.5 py-0.2 rounded text-[10px] ${
-                  cell.coefficient > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
-                }`}>
+                <span
+                  className={`font-bold px-1.5 py-0.2 rounded text-[10px] ${
+                    cell.coefficient > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                  }`}
+                >
                   {cell.coefficient > 0 ? `+${cell.coefficient}` : cell.coefficient} ({cell.type})
                 </span>
               </div>

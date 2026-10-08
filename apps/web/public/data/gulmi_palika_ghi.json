@@ -1,0 +1,105 @@
+{
+  "_provenance": {
+    "source": "Global Solar Atlas 2.0 (World Bank / ESMAP / Solargis)",
+    "portal": "https://globalsolaratlas.info/download/nepal",
+    "citation": "Global Solar Atlas (World Bank/ESMAP/Solargis), clipped via QGIS for Gulmi District",
+    "units": {
+      "pvout": "kWh/kWp/day (Photovoltaic Power Potential - Specific Yield)",
+      "opta": "degrees (Optimum Tilt angle to maximize annual energy yield)"
+    },
+    "processing": "QGIS 1,462-cell raster mask extraction over Survey Dept Gulmi boundary",
+    "pointCount": 1462
+  },
+  "district": {
+    "min": 3.03,
+    "max": 4.53,
+    "mean": 4.16,
+    "opta": 29.0
+  },
+  "palikas": {
+    "Chandrakot": {
+      "min": 3.61,
+      "max": 4.52,
+      "mean": 4.18,
+      "opta": 30.0,
+      "count": 138
+    },
+    "Chatrakot": {
+      "min": 3.76,
+      "max": 4.39,
+      "mean": 4.17,
+      "opta": 28.0,
+      "count": 113
+    },
+    "Dhurkot": {
+      "min": 4.04,
+      "max": 4.45,
+      "mean": 4.24,
+      "opta": 29.0,
+      "count": 113
+    },
+    "Gulmidarbar": {
+      "min": 3.71,
+      "max": 4.38,
+      "mean": 4.14,
+      "opta": 29.0,
+      "count": 108
+    },
+    "Isma": {
+      "min": 3.91,
+      "max": 4.4,
+      "mean": 4.21,
+      "opta": 29.0,
+      "count": 104
+    },
+    "Kaligandaki": {
+      "min": 3.18,
+      "max": 4.33,
+      "mean": 3.94,
+      "opta": 29.0,
+      "count": 125
+    },
+    "Madane": {
+      "min": 4.06,
+      "max": 4.53,
+      "mean": 4.27,
+      "opta": 30.0,
+      "count": 132
+    },
+    "Malika": {
+      "min": 3.7,
+      "max": 4.43,
+      "mean": 4.18,
+      "opta": 30.0,
+      "count": 123
+    },
+    "Musikot": {
+      "min": 3.41,
+      "max": 4.49,
+      "mean": 4.11,
+      "opta": 30.0,
+      "count": 153
+    },
+    "Resunga": {
+      "min": 3.9,
+      "max": 4.51,
+      "mean": 4.2,
+      "opta": 30.0,
+      "count": 109
+    },
+    "Ruru": {
+      "min": 3.78,
+      "max": 4.38,
+      "mean": 4.12,
+      "opta": 28.0,
+      "count": 89
+    },
+    "Satyawati": {
+      "min": 3.03,
+      "max": 4.5,
+      "mean": 4.17,
+      "opta": 29.0,
+      "count": 155
+    }
+  }
+}
