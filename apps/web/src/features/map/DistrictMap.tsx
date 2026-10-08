@@ -1258,7 +1258,7 @@ export const DistrictMap: React.FC = () => {
 
       {/* 3. 5-Pillar WEFES Selector Bar */}
       <div className="glass-panel p-2 sm:p-2.5 rounded-2xl border border-slate-200/90 shadow-2xs bg-white/95 flex items-center justify-between flex-wrap gap-2 animate-fade-in">
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 overflow-x-auto overflow-y-hidden py-1 w-full sm:w-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <span className="text-xs font-bold text-slate-700 uppercase tracking-wider px-2 shrink-0 font-outfit">
             {lang === 'np' ? '५ नेक्सस स्तम्भहरू:' : '5 WEFES Pillars:'}
           </span>
@@ -1312,7 +1312,7 @@ export const DistrictMap: React.FC = () => {
                 onClick={() => setSelectedPillar(p.id as WEFESPillar)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap border ${
                   isActive
-                    ? `${p.activeBg} border-transparent shadow-xs scale-[1.02]`
+                    ? `${p.activeBg} border-transparent shadow-xs font-bold`
                     : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
                 }`}
               >
