@@ -249,19 +249,20 @@ export const AnalysisDashboard: React.FC = () => {
                 <Droplets className="w-4 h-4" />
               </div>
               <span className="text-[10px] bg-sky-50 text-sky-700 border border-sky-200/80 px-2 py-0.5 rounded-md font-semibold tracking-tight">
-                {output.water.rating.replace(/ Water Stress/i, '')}
+                {output.water.rating.replace(/ Water Stress/i, '')} Stress
               </span>
             </div>
             <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
-              <span>Water Stress</span>
+              <span>Water Demand</span>
               <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-sky-500" />
             </div>
             <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
-              {output.water.waterStressIndex} <span className="text-xs font-semibold text-slate-400">/ 100</span>
+              {output.water.consumptionLiters.toLocaleString()}{' '}
+              <span className="text-xs font-semibold text-slate-400">Liters</span>
             </div>
           </div>
           <div className="text-[11px] text-slate-500 font-medium mt-2 pt-2 border-t border-slate-100">
-            {output.water.consumptionLiters.toLocaleString()} L total
+            Stress Index: {output.water.waterStressIndex}/100 (WEI+)
           </div>
         </div>
 
@@ -280,7 +281,7 @@ export const AnalysisDashboard: React.FC = () => {
               </span>
             </div>
             <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
-              <span>Energy Load</span>
+              <span>Energy Demand</span>
               <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-amber-500" />
             </div>
             <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
@@ -288,7 +289,7 @@ export const AnalysisDashboard: React.FC = () => {
             </div>
           </div>
           <div className="text-[11px] text-slate-500 font-medium mt-2 pt-2 border-t border-slate-100">
-            {output.energy.fossilSharePercent}% Grid draw
+            {output.energy.renewableKwh.toLocaleString()} kWh Solar & Hydro
           </div>
         </div>
 
@@ -303,11 +304,11 @@ export const AnalysisDashboard: React.FC = () => {
                 <Sprout className="w-4 h-4" />
               </div>
               <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2 py-0.5 rounded-md font-semibold tracking-tight">
-                Score {output.food.foodSecurityIndex}
+                {output.agroSuitability.faoClass.split(' ')[0]} Suitability
               </span>
             </div>
             <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
-              <span>Yield Biomass</span>
+              <span>Harvest Biomass</span>
               <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-emerald-500" />
             </div>
             <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
@@ -315,7 +316,7 @@ export const AnalysisDashboard: React.FC = () => {
             </div>
           </div>
           <div className="text-[11px] text-slate-500 font-medium mt-2 pt-2 border-t border-slate-100">
-            {output.food.nutritionalKcal.toLocaleString()} kcal caloric
+            {output.food.nutritionalKcal.toLocaleString()} kcal energy
           </div>
         </div>
 
@@ -330,20 +331,20 @@ export const AnalysisDashboard: React.FC = () => {
                 <Trees className="w-4 h-4" />
               </div>
               <span className="text-[10px] bg-teal-50 text-teal-700 border border-teal-200/80 px-2 py-0.5 rounded-md font-semibold tracking-tight">
-                Health {output.ecosystem.ecoHealthScore}
+                Soil Protected
               </span>
             </div>
             <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
-              <span>Carbon Offset</span>
+              <span>Carbon & Soil</span>
               <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-teal-500" />
             </div>
             <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
               {output.ecosystem.carbonOffsetKgCo2.toLocaleString()}{' '}
-              <span className="text-xs font-semibold text-slate-400">kg</span>
+              <span className="text-xs font-semibold text-slate-400">kg CO₂</span>
             </div>
           </div>
           <div className="text-[11px] text-slate-500 font-medium mt-2 pt-2 border-t border-slate-100">
-            Erosion score: {output.ecosystem.erosionMitigationIndex}
+            Erosion Index: {output.ecosystem.erosionMitigationIndex}/100 (RUSLE)
           </div>
         </div>
 
@@ -358,11 +359,14 @@ export const AnalysisDashboard: React.FC = () => {
                 <Coins className="w-4 h-4" />
               </div>
               <span className="text-[10px] bg-purple-50 text-purple-700 border border-purple-200/80 px-2 py-0.5 rounded-md font-semibold tracking-tight">
-                Net Profit
+                {Math.round(
+                  (output.socioeconomics.netRevenueNpr / Math.max(1, output.socioeconomics.grossRevenueNpr)) * 100
+                )}
+                % Margin
               </span>
             </div>
             <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
-              <span>Net Revenue</span>
+              <span>Net Farm Profit</span>
               <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-purple-500" />
             </div>
             <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
@@ -385,11 +389,11 @@ export const AnalysisDashboard: React.FC = () => {
                 <Users className="w-4 h-4" />
               </div>
               <span className="text-[10px] bg-indigo-50 text-indigo-700 border border-indigo-200/80 px-2 py-0.5 rounded-md font-semibold tracking-tight">
-                {output.socioeconomics.laborDays} Days
+                {output.socioeconomics.laborDays} Person-Days
               </span>
             </div>
             <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center justify-between">
-              <span>Jobs Created</span>
+              <span>Labor Impact</span>
               <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity text-indigo-500" />
             </div>
             <div className="text-xl font-extrabold text-slate-900 mt-0.5 font-outfit">
@@ -398,7 +402,7 @@ export const AnalysisDashboard: React.FC = () => {
             </div>
           </div>
           <div className="text-[11px] text-slate-500 font-medium mt-2 pt-2 border-t border-slate-100">
-            +{output.socioeconomics.indirectJobsCreated} Indirect jobs
+            +{output.socioeconomics.indirectJobsCreated} Indirect supply jobs
           </div>
         </div>
       </div>

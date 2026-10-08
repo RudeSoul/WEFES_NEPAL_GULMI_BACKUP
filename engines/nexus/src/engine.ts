@@ -100,13 +100,16 @@ export function calculateHarvestImpact(
   const revenuePerLaborDay = Math.round(grossRevenueNpr / Math.max(1, laborDays));
 
   // Composite Nexus Balance Index (0 - 100)
-  const ecoFoodComposite = (foodSecurityIndex + ecoHealthScore) / 2;
-  const ecoMargin = (netRevenueNpr / Math.max(1, grossRevenueNpr)) * 100;
-  const stressPenalty = waterStressIndex * 0.3 + fossilSharePercent * 0.2;
-  const nexusBalanceIndex = Math.min(
-    100,
-    Math.max(10, Math.round(ecoFoodComposite * 0.45 + ecoMargin * 0.35 - stressPenalty + 20))
-  );
+  // Standardized OECD / European Commission JRC Composite Indicator formulation:
+  // Equal-weighted 5-pillar arithmetic mean (20% each) across normalized pillar capacities.
+  const sWater = Math.max(5, Math.min(100, 100 - waterStressIndex));
+  const sEnergy = Math.max(5, Math.min(100, 100 - fossilSharePercent));
+  const sFood = Math.max(5, Math.min(100, foodSecurityIndex));
+  const sEco = Math.max(5, Math.min(100, ecoHealthScore));
+  const sSocio = Math.max(5, Math.min(100, Math.round((netRevenueNpr / Math.max(1, grossRevenueNpr)) * 100)));
+
+  const meanPillarScore = (sWater + sEnergy + sFood + sEco + sSocio) / 5;
+  const nexusBalanceIndex = Math.min(100, Math.max(10, Math.round(meanPillarScore)));
 
   let nexusRating = 'Optimal Equilibrium';
   if (nexusBalanceIndex < 45) nexusRating = 'High Vulnerability & Imbalance';
