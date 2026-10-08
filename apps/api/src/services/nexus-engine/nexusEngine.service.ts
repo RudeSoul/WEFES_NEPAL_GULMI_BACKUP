@@ -1,6 +1,6 @@
 import { db } from '@wefes/database';
 import { calculateHarvestImpact, simulateScenario, calculateFertilizerNexusImpact } from '@wefes/wefes-engine';
-import { WEFESOutput, ScenarioParameters, CropUnit } from '@wefes/shared-types';
+import { WEFESOutput, ScenarioParameters, ScenarioResult, CropUnit } from '@wefes/shared-types';
 
 export interface CalculateHarvestImpactInput {
   districtId: string;
@@ -17,7 +17,7 @@ export interface CalculateHarvestImpactInput {
   transportMode?: 'tractor_trailer' | 'light_mini_truck' | 'heavy_diesel_truck' | 'gravity_ropeway';
 }
 
-export class NexusEngineService {
+class NexusEngineService {
   public calculateHarvest(input: CalculateHarvestImpactInput): WEFESOutput {
     const district = db.getDistrictById(input.districtId) || db.getDistrictById('gulmi');
     if (!district) {
@@ -29,23 +29,10 @@ export class NexusEngineService {
       throw new Error(`Crop '${input.cropId}' not found in database`);
     }
 
-    return calculateHarvestImpact(
-      district,
-      crop,
-      input.quantity,
-      input.unit,
-      input.palikaId,
-      input.palikaName,
-      input.cultivationAreaHa,
-      input.irrigationSource,
-      input.energySource,
-      input.fertilizerRegime,
-      input.marketDestination,
-      input.transportMode
-    );
+    return calculateHarvestImpact(district, crop, input.quantity, input.unit);
   }
 
-  public simulate(baselineOutput: WEFESOutput, params: ScenarioParameters): WEFESOutput {
+  public simulate(baselineOutput: WEFESOutput, params: ScenarioParameters): ScenarioResult {
     return simulateScenario(baselineOutput, params);
   }
 

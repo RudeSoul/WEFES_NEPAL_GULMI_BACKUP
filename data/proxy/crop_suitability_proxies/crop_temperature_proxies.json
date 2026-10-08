@@ -1,0 +1,30 @@
+{
+  "_metadata": {
+    "classification": "PROXY",
+    "description": "Temperature and elevation thresholds for Gulmi indigenous specialty crops where ward-level data is missing.",
+    "source_surrogate": "NARC Hill Crops Research Programme (Kabre) & FAO ECOCROP Database",
+    "confidence": "MEDIUM (Regional Surrogate)",
+    "replacement_roadmap": "Replace with AKC (Agriculture Knowledge Centre) Gulmi field trial yield registers."
+  },
+  "arabica_coffee": {
+    "min_temp_c": 15.0,
+    "opt_temp_c": 22.0,
+    "max_temp_c": 28.0,
+    "min_elevation_m": 800,
+    "max_elevation_m": 1600
+  },
+  "large_cardamom": {
+    "min_temp_c": 10.0,
+    "opt_temp_c": 18.0,
+    "max_temp_c": 24.0,
+    "min_elevation_m": 1200,
+    "max_elevation_m": 2200
+  },
+  "ginger": {
+    "min_temp_c": 18.0,
+    "opt_temp_c": 26.0,
+    "max_temp_c": 32.0,
+    "min_elevation_m": 600,
+    "max_elevation_m": 1400
+  }
+}

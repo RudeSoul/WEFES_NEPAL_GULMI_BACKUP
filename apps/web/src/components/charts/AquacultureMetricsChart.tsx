@@ -22,9 +22,27 @@ export const AquacultureMetricsChart: React.FC<AquacultureMetricsChartProps> = (
   const polycarpSpecies = [
     { id: 'rohu', name: 'Rohu (Labeo rohita)', share: 35, feedingLayer: 'Column Feeder', color: '#0ea5e9' },
     { id: 'catla', name: 'Catla (Gibelion catla)', share: 20, feedingLayer: 'Surface Feeder', color: '#38bdf8' },
-    { id: 'naini', name: 'Mrigal/Naini (Cirrhinus mrigala)', share: 20, feedingLayer: 'Bottom Feeder', color: '#06b6d4' },
-    { id: 'grass', name: 'Grass Carp (Ctenopharyngodon)', share: 15, feedingLayer: 'Macrophyte Grazer', color: '#10b981' },
-    { id: 'silver', name: 'Silver Carp (Hypophthalmichthys)', share: 10, feedingLayer: 'Phytoplankton Filter', color: '#8b5cf6' },
+    {
+      id: 'naini',
+      name: 'Mrigal/Naini (Cirrhinus mrigala)',
+      share: 20,
+      feedingLayer: 'Bottom Feeder',
+      color: '#06b6d4',
+    },
+    {
+      id: 'grass',
+      name: 'Grass Carp (Ctenopharyngodon)',
+      share: 15,
+      feedingLayer: 'Macrophyte Grazer',
+      color: '#10b981',
+    },
+    {
+      id: 'silver',
+      name: 'Silver Carp (Hypophthalmichthys)',
+      share: 10,
+      feedingLayer: 'Phytoplankton Filter',
+      color: '#8b5cf6',
+    },
   ];
 
   return (
@@ -130,7 +148,15 @@ export const AquacultureMetricsChart: React.FC<AquacultureMetricsChartProps> = (
             <text x="150" y="145" textAnchor="middle" fill="#94a3b8" fontSize="9.5" fontFamily="monospace">
               Stocking Density
             </text>
-            <text x="150" y="165" textAnchor="middle" fill="#ffffff" fontSize="16" fontWeight="bold" fontFamily="Outfit, sans-serif">
+            <text
+              x="150"
+              y="165"
+              textAnchor="middle"
+              fill="#ffffff"
+              fontSize="16"
+              fontWeight="bold"
+              fontFamily="Outfit, sans-serif"
+            >
               8,000 / ha
             </text>
           </svg>
@@ -168,11 +194,15 @@ export const AquacultureMetricsChart: React.FC<AquacultureMetricsChartProps> = (
         </div>
         <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700">
           <span className="text-slate-400 font-sans text-[11px] block">Net Return / Hectare:</span>
-          <div className="text-sm font-bold text-emerald-400 mt-0.5">NPR {(netAnnualReturnNprPerHa / 1000).toFixed(0)}k / ha</div>
+          <div className="text-sm font-bold text-emerald-400 mt-0.5">
+            NPR {(netAnnualReturnNprPerHa / 1000).toFixed(0)}k / ha
+          </div>
         </div>
         <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700">
           <span className="text-slate-400 font-sans text-[11px] block">Pond Water Demand:</span>
-          <div className="text-sm font-bold text-sky-400 mt-0.5">{(totalAnnualAquacultureWaterDemandM3 / 1000).toFixed(1)}k m³ / yr</div>
+          <div className="text-sm font-bold text-sky-400 mt-0.5">
+            {(totalAnnualAquacultureWaterDemandM3 / 1000).toFixed(1)}k m³ / yr
+          </div>
         </div>
         <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700">
           <span className="text-slate-400 font-sans text-[11px] block">Recycled Irrigation:</span>

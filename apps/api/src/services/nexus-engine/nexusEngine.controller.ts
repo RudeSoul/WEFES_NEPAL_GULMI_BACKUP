@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { nexusEngineService } from './nexusEngine.service';
 
-export class NexusEngineController {
+class NexusEngineController {
   public calculateHarvest(req: Request, res: Response, next: NextFunction) {
     try {
       const output = nexusEngineService.calculateHarvest(req.body);

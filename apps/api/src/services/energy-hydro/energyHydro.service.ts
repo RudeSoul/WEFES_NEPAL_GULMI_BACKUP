@@ -1,6 +1,6 @@
 import { db } from '@wefes/database';
 
-export class EnergyHydroService {
+class EnergyHydroService {
   public getHydropowerProfile(districtId: string = 'gulmi') {
     const district = db.getDistrictById(districtId) || db.getDistrictById('gulmi');
     if (!district) throw new Error(`District '${districtId}' not found`);

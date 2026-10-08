@@ -8,40 +8,134 @@ export const DonorNetworkGraph: React.FC<DonorNetworkGraphProps> = ({ districtNa
   const [selectedNode, setSelectedNode] = useState<string>('wb_reed');
 
   const donorNodes = [
-    { id: 'wb_reed', label: 'World Bank REED', sub: '$80M Alliances', x: 110, y: 70, color: '#0284c7', category: 'donor' },
-    { id: 'adb_wrm', label: 'ADB Water Resource', sub: '$60M Basin Mgt', x: 110, y: 150, color: '#0369a1', category: 'donor' },
-    { id: 'usaid_ftf', label: 'USAID Feed Future', sub: '$35M Seed/Agro', x: 110, y: 230, color: '#dc2626', category: 'donor' },
-    { id: 'ifad_asdp', label: 'IFAD ASDP Value Chain', sub: '$45M High-Value', x: 110, y: 310, color: '#16a34a', category: 'donor' },
+    {
+      id: 'wb_reed',
+      label: 'World Bank REED',
+      sub: '$80M Alliances',
+      x: 110,
+      y: 70,
+      color: '#0284c7',
+      category: 'donor',
+    },
+    {
+      id: 'adb_wrm',
+      label: 'ADB Water Resource',
+      sub: '$60M Basin Mgt',
+      x: 110,
+      y: 150,
+      color: '#0369a1',
+      category: 'donor',
+    },
+    {
+      id: 'usaid_ftf',
+      label: 'USAID Feed Future',
+      sub: '$35M Seed/Agro',
+      x: 110,
+      y: 230,
+      color: '#dc2626',
+      category: 'donor',
+    },
+    {
+      id: 'ifad_asdp',
+      label: 'IFAD ASDP Value Chain',
+      sub: '$45M High-Value',
+      x: 110,
+      y: 310,
+      color: '#16a34a',
+      category: 'donor',
+    },
 
-    { id: 'moald', label: 'Ministry of Agriculture (MoALD)', sub: 'National Execution', x: 390, y: 100, color: '#10b981', category: 'ministry' },
-    { id: 'moewri', label: 'Energy & Water (MoEWRI)', sub: 'Canal & Solar Pumps', x: 390, y: 200, color: '#f59e0b', category: 'ministry' },
-    { id: 'mofe', label: 'Forests & Climate (MoFE)', sub: 'Article 6.2 Carbon', x: 390, y: 290, color: '#8b5cf6', category: 'ministry' },
+    {
+      id: 'moald',
+      label: 'Ministry of Agriculture (MoALD)',
+      sub: 'National Execution',
+      x: 390,
+      y: 100,
+      color: '#10b981',
+      category: 'ministry',
+    },
+    {
+      id: 'moewri',
+      label: 'Energy & Water (MoEWRI)',
+      sub: 'Canal & Solar Pumps',
+      x: 390,
+      y: 200,
+      color: '#f59e0b',
+      category: 'ministry',
+    },
+    {
+      id: 'mofe',
+      label: 'Forests & Climate (MoFE)',
+      sub: 'Article 6.2 Carbon',
+      x: 390,
+      y: 290,
+      color: '#8b5cf6',
+      category: 'ministry',
+    },
 
-    { id: 'palika_dairy', label: `${districtName} Dairy Hub`, sub: 'Solar Chilling + Biogas', x: 700, y: 70, color: '#059669', category: 'palika' },
-    { id: 'palika_irrigation', label: `${districtName} Tubewell Grid`, sub: 'Electric Shallow Wells', x: 700, y: 150, color: '#0284c7', category: 'palika' },
-    { id: 'palika_seeds', label: `${districtName} Seed Bank`, sub: 'NARC Foundation Seed', x: 700, y: 230, color: '#d97706', category: 'palika' },
-    { id: 'palika_gesi', label: `${districtName} GESI Earmark`, sub: 'Women Goat Cooperatives', x: 700, y: 310, color: '#7c3aed', category: 'palika' },
+    {
+      id: 'palika_dairy',
+      label: `${districtName} Dairy Hub`,
+      sub: 'Solar Chilling + Biogas',
+      x: 700,
+      y: 70,
+      color: '#059669',
+      category: 'palika',
+    },
+    {
+      id: 'palika_irrigation',
+      label: `${districtName} Tubewell Grid`,
+      sub: 'Electric Shallow Wells',
+      x: 700,
+      y: 150,
+      color: '#0284c7',
+      category: 'palika',
+    },
+    {
+      id: 'palika_seeds',
+      label: `${districtName} Seed Bank`,
+      sub: 'NARC Foundation Seed',
+      x: 700,
+      y: 230,
+      color: '#d97706',
+      category: 'palika',
+    },
+    {
+      id: 'palika_gesi',
+      label: `${districtName} GESI Earmark`,
+      sub: 'Women Goat Cooperatives',
+      x: 700,
+      y: 310,
+      color: '#7c3aed',
+      category: 'palika',
+    },
   ];
 
-  const nodeDetails: Record<string, { title: string; budget: string; scope: string; status: string; partners: string }> = {
+  const nodeDetails: Record<
+    string,
+    { title: string; budget: string; scope: string; status: string; partners: string }
+  > = {
     wb_reed: {
       title: 'World Bank Rural Enterprise & Economic Development (REED - Project ID: P170215)',
       budget: '$80,000,000 USD (Sovereign Concessional Credit)',
-      scope: 'Productive alliances along trade corridors, market aggregation centers, cold storage and digital traceability.',
+      scope:
+        'Productive alliances along trade corridors, market aggregation centers, cold storage and digital traceability.',
       status: 'Active (2021–2027) · Mid-Term Review Completed',
       partners: 'MoALD · Nepal Dairy Development Board · Commercial Banks (ADBL/Nabil)',
     },
     adb_wrm: {
       title: 'Asian Development Bank - Water Resources Management & Command Area Project',
       budget: '$60,000,000 USD (Blended Loan & Grant)',
-      scope: 'Conjunctive groundwater governance, command area canal lining, and 50m² community percolation recharge ponds.',
+      scope:
+        'Conjunctive groundwater governance, command area canal lining, and 50m² community percolation recharge ponds.',
       status: 'Active (2022–2028)',
       partners: 'Department of Water Resources & Irrigation (DWRI) · Water Users Associations (WUAs)',
     },
     usaid_ftf: {
       title: 'USAID Nepal Feed the Future (FtF) Accelerated Agronomic Resilience',
       budget: '$35,000,000 USD (Direct Bilateral Grant)',
-      scope: 'Private seed multiplier capacity, digital IPM early warning, and climate-resilient NARC seed commercialization.',
+      scope:
+        'Private seed multiplier capacity, digital IPM early warning, and climate-resilient NARC seed commercialization.',
       status: 'Active (2020–2026)',
       partners: 'NARC National Seed Board · SEAN (Seed Entrepreneurs Association Nepal)',
     },
@@ -55,7 +149,8 @@ export const DonorNetworkGraph: React.FC<DonorNetworkGraphProps> = ({ districtNa
     moald: {
       title: 'Ministry of Agriculture and Livestock Development (MoALD) Execution Unit',
       budget: 'National Priority Pipeline 2026',
-      scope: 'Site-specific fertilizer subsidies, NARC varietal release certification, and digital registry coordination.',
+      scope:
+        'Site-specific fertilizer subsidies, NARC varietal release certification, and digital registry coordination.',
       status: 'Sovereign Core Agency',
       partners: 'DLS · DoA · NARC Central Laboratory',
     },
@@ -129,7 +224,8 @@ export const DonorNetworkGraph: React.FC<DonorNetworkGraphProps> = ({ districtNa
             </span>
           </div>
           <p className="text-xs text-slate-400 font-sans">
-            Click any donor, ministry, or district intervention node to inspect financing instruments, sovereign alignment, and implementation pipelines.
+            Click any donor, ministry, or district intervention node to inspect financing instruments, sovereign
+            alignment, and implementation pipelines.
           </p>
         </div>
 

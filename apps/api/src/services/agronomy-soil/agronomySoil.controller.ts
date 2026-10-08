@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { agronomySoilService } from './agronomySoil.service';
 
-export class AgronomySoilController {
+class AgronomySoilController {
   public getAllCrops(req: Request, res: Response, next: NextFunction) {
     try {
       const crops = agronomySoilService.getAllCrops();

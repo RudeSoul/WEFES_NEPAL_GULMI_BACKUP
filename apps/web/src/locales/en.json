@@ -1,0 +1,211 @@
+{
+  "header": {
+    "title": "WEFES NEXUS · GULMI",
+    "subtitle": "Lumbini Province • Hill Zone",
+    "tagline": "Integrated WEFES Nexus & Sustainable Agro-Ecological Decision Support System",
+    "national_map": "National Map",
+    "palika_profiles": "Palika Profiles",
+    "run_analysis": "Run Analysis",
+    "palika_name": "{{name}} Palika",
+    "palika_placeholder": "____ Palika",
+    "view_palika_details": "View {{name}} Palika Details",
+    "select_palika_prompt": "Select a Palika from the map or search to view details"
+  },
+  "footer": {
+    "title": "WEFES Nexus · Gulmi District • Lumbini Province, Nepal",
+    "pillars": "Water · Energy · Food · Ecosystem · Socioeconomics"
+  },
+  "common": {
+    "loading": "Loading...",
+    "back": "Back",
+    "cancel": "Cancel",
+    "back_to_map": "National Map",
+    "back_to_map_interactive": "Back to National Interactive Map",
+    "back_to_district": "Back to {{district}} District",
+    "back_to_analysis": "Back to Analysis Report",
+    "district": "District",
+    "palika": "Palika",
+    "select_palika": "Select a Palika",
+    "close": "Close",
+    "reset": "Reset",
+    "details": "Details",
+    "methodology": "Methodology",
+    "proof": "Mathematical Proof",
+    "view_on_map": "View on Map",
+    "run_analysis": "Run Analysis",
+    "open_simulator": "Scenario Simulator",
+    "open_dossier": "Scientific Dossier",
+    "open_sandbox": "Formula Sandbox",
+    "scroll_to_top": "Scroll to Top",
+    "unit": "Unit",
+    "quantity": "Quantity",
+    "status": "Status"
+  },
+  "nav": {
+    "map": "Map",
+    "palikas": "Palika Profiles",
+    "analysis": "Analysis",
+    "simulator": "Simulator",
+    "dossier": "Dossier",
+    "sandbox": "Sandbox"
+  },
+  "map": {
+    "interactive_heading": "District Multi-Pillar Interactive Map",
+    "subtitle": "Spatiotemporal nexus layers for 12 local palikas in Gulmi",
+    "filter_pillar": "Pillar Filter",
+    "select_layer": "Select Layer",
+    "elevation": "Elevation",
+    "area": "Area",
+    "population": "Population",
+    "click_palika_prompt": "Click any Palika boundary to view its agro-hydrology profile",
+    "surfaces": "Surfaces",
+    "overlays": "Overlays",
+    "basemap": "Basemap",
+    "reset_view": "Reset View",
+    "contours": "Topographic Contours",
+    "labels": "Palika Labels",
+    "voyager": "Voyager",
+    "satellite": "Satellite",
+    "terrain": "Terrain"
+  },
+  "subfilters": {
+    "water": {
+      "label": "Hydrological Layer:",
+      "group_precipitation": "🌧️ Precipitation & Watersheds",
+      "annual_precipitation": "Observed Annual Precipitation (CHIRPS Gridded High-Res)",
+      "monsoon_precipitation": "Monsoon Season Rainfall (June–September Total)",
+      "dry_season_precipitation": "Dry Season Rainfall (October–May Total)",
+      "river_basins": "Gandaki Basin Drainage Corridors (Kali Gandaki, Badigad, Ridi)",
+      "dhm_station": "DHM Hydro-Meteorological Stations",
+      "group_hydrosheds": "🌊 HydroSHEDS Basin & Drainage Modeling",
+      "catchments": "Catchments (HydroBASINS Level 10 Watershed Basins)",
+      "rivers_streams": "Rivers & Stream Drainage Network (HydroRIVERS Strahler Orders)",
+      "flow_accumulation": "Surface Flow Accumulation Grid (Upslope Drainage Tiers)",
+      "flow_direction": "D8 Flow Direction Raster (8-Direction Flow Paths)",
+      "group_terrain": "⛰️ Terrain Water Security",
+      "spring_vulnerability": "Watershed Spring Depletion Vulnerability",
+      "irrigation_potential": "River Lift Irrigation Potential (Riverbed Flats)"
+    },
+    "food": {
+      "label": "Food Analysis:",
+      "single_crop": "Crop Suitability (Agro-Climatic Fit)",
+      "crop_water_stress": "Crop Water & Moisture Stress",
+      "land_typology": "Land Typology & Terraces (Khet vs Bari)",
+      "cash_crops_group": "☕ Cash & Horticultural Crops",
+      "cereals_group": "🌾 Cereals & Staple Crops",
+      "select_period_title": "Select Moisture Evaluation Period",
+      "crops": {
+        "coffee": "Arabica Coffee",
+        "large_cardamom": "Large Cardamom",
+        "tomato": "Fresh Market Tomato",
+        "apple": "High-Hill Apple",
+        "maize": "Mid-Hill Maize",
+        "rice": "Monsoon Paddy Rice",
+        "wheat": "Winter Wheat",
+        "finger_millet": "Finger Millet / Kodo"
+      },
+      "seasons": {
+        "cycle": "Full Growing Cycle (Crop Lifecycle Deficit)",
+        "winter_dry": "Winter Dry Period (Nov–Feb Deficit)",
+        "pre_monsoon": "Pre-Monsoon Dry Spell (Mar–May Deficit)",
+        "monsoon_wet": "Monsoon Wet Period (Jun–Sep Surplus)"
+      },
+      "land_metrics": {
+        "khet_pct": "Lowland Irrigated Terraces (Khet %)",
+        "bari_pct": "Sloping Rainfed Terraces (Bari %)",
+        "parcel_density": "Average Parcels per Holding"
+      }
+    },
+    "ecosystem": {
+      "label": "Ecosystem & Soil Domain:",
+      "group_soil": "🧪 Soil Geology & Chemistry",
+      "soil_ph": "Soil pH & Liming Need (Acidic Ridge vs Neutral Valley)",
+      "soil_nitrogen": "Soil Available Nitrogen (NARC Soil Fertility Grid)",
+      "soil_phosphorus": "NARC Soil Phosphorus (P₂O₅)",
+      "soil_potassium": "NARC Soil Potassium (K₂O)",
+      "group_topography": "🏔️ Topography & Flora",
+      "elevation_zones": "Topographic Elevation Tiers & Agro-Ecological Zones",
+      "agroforestry_belt": "Community Forestry & Pine/Sal Agroforestry Belt"
+    },
+    "energy": {
+      "label": "Renewable Energy Domain:",
+      "hydro_corridor": "Run-of-River & Micro-Hydro Corridors (Kali Gandaki, Badigad)",
+      "solar_irradiance": "Solar PV Potential & Tilt (PVOUT & OPTA • Global Solar Atlas)",
+      "clean_cooking_biomass": "Clean Cooking & Firewood Reliance (Census 2021 • NSO Nepal)",
+      "grid_electrification": "NEA Substation Grid Reach"
+    },
+    "socioeconomics": {
+      "label": "Governance & Infrastructure:",
+      "local_governance": "Local Governance Classification (Municipalities & Rural Palikas)",
+      "agri_landholding": "Average Agricultural Landholding per Household"
+    }
+  },
+  "palika": {
+    "profile_title": "Agro-Hydrology & Nexus Profile",
+    "back_to_map": "Back to Gulmi Spatial Map",
+    "urban_municipality": "Urban Municipality",
+    "rural_municipality": "Rural Municipality",
+    "province_nepal": "Lumbini Province, Nepal",
+    "tagline": "Integrated Water-Energy-Food-Ecosystem (WEFE) Decision Support System & Agro-Hydrological Infrastructure Platform.",
+    "switch_palika": "Switch Palika ({{count}} Local Bodies in Gulmi):",
+    "crops_tab": "Crop Suitability",
+    "indicators_tab": "District Indicators",
+    "calendar_tab": "Phenology Calendar",
+    "elevation_asl": "{{elevation}}m ASL"
+  },
+  "analysis": {
+    "report_heading": "WEFES 5-PILLAR NEXUS ANALYSIS REPORT",
+    "title": "Nexus Analysis Dashboard",
+    "no_analysis": "No active analysis loaded. Please select a Palika and crop to run analysis.",
+    "go_to_map": "Go to District Map",
+    "crop_in_district": "{{crop}} in {{district}} District",
+    "harvest_target": "Harvest Target:",
+    "overall_score": "Overall Nexus Balance",
+    "nexus_balance_score": "Nexus Balance Score",
+    "inspect_dossier": "Inspect Deep Science & Policy Dossier ↗",
+    "spider_chart_title": "WEFES 5-Pillar Equilibrium",
+    "water_resource": "Water (Resource)",
+    "energy_clean": "Energy (Clean)",
+    "food_security": "Food (Security)",
+    "ecosystem_health": "Ecosystem (Health)",
+    "socio_return": "Socioeconomics (Return)",
+    "open_simulator": "Launch Scenario Simulator"
+  },
+  "simulator": {
+    "title": "EXPANDED MULTI-SECTOR REAL-TIME SCENARIO SIMULATOR",
+    "subtitle": "16 real-world climate, technological, ecological & market levers recalculating WEFES trade-offs in real time.",
+    "require_baseline": "Scenario Simulator requires an initial analysis baseline. Start from the map or a Palika profile.",
+    "go_to_map": "Go to District Map",
+    "reset_levers": "Reset Levers",
+    "simulating_title": "Simulating {{crop}} in {{district}}",
+    "climate_tab": "Climate & Water",
+    "energy_tab": "Energy System",
+    "agronomic_tab": "Agronomy & Eco",
+    "socio_tab": "Socio & Market"
+  },
+  "dossier": {
+    "title": "Scientific Dossier & Verification Report",
+    "precision_agronomy": "Precision Agronomy",
+    "climate_finance": "Climate Finance",
+    "value_chain": "Value Chain",
+    "policy_gesi": "Policy & GESI"
+  },
+  "modal": {
+    "input_subtitle": "Specify harvest production quantity and target units",
+    "quick_presets": "Quick Presets:",
+    "production_amount": "Production Amount",
+    "unit": "Unit",
+    "enter_quantity": "Enter quantity",
+    "live_preview": "Live Impact Preview",
+    "water": "Water",
+    "energy": "Energy",
+    "est_revenue": "Est. Revenue",
+    "preset_smallholder": "Smallholder (500 kg)",
+    "preset_commercial": "Commercial Farm (5,000 kg)",
+    "preset_regional": "Regional Supply (25 MT)",
+    "preset_small_logging": "Small Scale (10 m³)",
+    "preset_medium_logging": "Medium Logging (50 m³)",
+    "preset_commercial_harvest": "Commercial Harvest (250 m³)",
+    "base_output": "Base: {{quantity}} {{unit}}"
+  }
+}

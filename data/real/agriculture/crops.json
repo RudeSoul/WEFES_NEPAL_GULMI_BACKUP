@@ -1,0 +1,381 @@
+[
+  {
+    "id": "maize",
+    "name": "Maize",
+    "nepaliName": "मकै",
+    "category": "Staple Cereal Crop",
+    "supportedUnits": [
+      "kg",
+      "metric_ton",
+      "muri"
+    ],
+    "defaultUnit": "kg",
+    "baseUnitName": "kg",
+    "baseUnitMultiplier": {
+      "kg": 1,
+      "metric_ton": 1000,
+      "muri": 65
+    },
+    "waterFootprintPerUnit": 1222.0,
+    "energyReqPerUnit": 1.03,
+    "carbonOffsetPerUnit": 1.2,
+    "marketValuePerUnit": 35.0,
+    "laborDaysPerUnit": 0.05,
+    "caloriesPerUnit": 3650.0,
+    "idealSoilPh": {
+      "min": 5.8,
+      "max": 7.0
+    },
+    "idealEcoZone": [
+      "Hill",
+      "Terai"
+    ],
+    "ecoServices": [
+      "Fodder Supply",
+      "Ground Cover / Weed Suppression"
+    ],
+    "dataSources": {
+      "baseUnitMultiplier": "Standard Department of Agriculture (Nepal) traditional volume-to-weight metrics: 1 muri = 65 kg for maize grain",
+      "waterFootprintPerUnit": "https://www.gdrc.org/uem/footprints/water-footprint.html and https://www.waterfootprint.org/resources/Report47-WaterFootprintCrops-Vol1.pdf",
+      "energyReqPerUnit": "https://www.researchgate.net/publication/331950170_The_Energy_input-output_analysis_of_maize_production_in_Sundarharaincha_Municipality_Morang_District_Nepal (IOP Conf. Series: Earth and Environmental Science 301, DOI: 10.1088/1755-1315/301/1/012027)",
+      "carbonOffsetPerUnit": "https://epubs.icar.org.in/index.php/IJVASR/article/view/153213 (DOI: 10.56093/ijvasr.v45i2.153213)",
+      "marketValuePerUnit": "https://www.selinawamucii.com/insights/prices/nepal/maize/",
+      "caloriesPerUnit": "https://openresearchafrica.org/articles/8-15 and https://www.fao.org/4/x9892e/X9892e05.htm",
+      "idealSoilPh": "https://krishisuchana.com/2021/06/06/11252/",
+      "ecoServices": "https://doi.org/10.26832/24566632.2021.0604021 (Archives of Agriculture and Environmental Science 6(4): 570-574, 2021)",
+      "laborDaysPerUnit": "Socio-economic assessments of traditional vs. mechanized hill agriculture in Nepal (approx. 90-120 days/ha yielding ~2,400 kg/ha equates to roughly 0.05 person-days of labor per single kilogram of grain)",
+      "idealEcoZone": "https://krishipatrika.com/2021/06/21889/"
+    }
+  },
+  {
+    "id": "finger_millet",
+    "name": "Finger Millet",
+    "nepaliName": "कोदो",
+    "category": "Staple Cereal Crop / Underutilized Crop",
+    "supportedUnits": [
+      "kg",
+      "metric_ton",
+      "muri"
+    ],
+    "defaultUnit": "kg",
+    "baseUnitName": "kg",
+    "baseUnitMultiplier": {
+      "kg": 1,
+      "metric_ton": 1000,
+      "muri": 75
+    },
+    "waterFootprintPerUnit": 1000.0,
+    "energyReqPerUnit": 0.6,
+    "carbonOffsetPerUnit": 0.9,
+    "marketValuePerUnit": 50.0,
+    "laborDaysPerUnit": 0.15,
+    "caloriesPerUnit": 3360.0,
+    "idealSoilPh": {
+      "min": 5.0,
+      "max": 6.5
+    },
+    "idealEcoZone": [
+      "Hill"
+    ],
+    "ecoServices": [
+      "Insurance against crop failure",
+      "Nutritional / Health Security"
+    ],
+    "dataSources": {
+      "baseUnitMultiplier": "Standard MoALD traditional grain weight conventions: 1 muri = 75 kg for finger millet grain.",
+      "waterFootprintPerUnit": "Water Footprint Network (WFN) Nutrient Navigator Crop Water Benchmark (https://tools.waterfootprint.org/nutrient-navigator/crops)",
+      "energyReqPerUnit": "Devsenapathy et al. (2009), Energy management in crop production, Indian Journal of Agronomy 54(1): 1-9",
+      "carbonOffsetPerUnit": "IPCC Tier 1 LULUCF rainfed crop biomass estimates & Open Research Africa agro-ecological indices",
+      "marketValuePerUnit": "MoALD Agri-Business Promotion and Market Development Directorate (ABPMDD) Hill Millet Price Bulletin",
+      "caloriesPerUnit": "ICMR-National Institute of Nutrition (NIN) Indian Food Composition Tables / FAO Annex I",
+      "idealSoilPh": "FAO Crop Ecological Requirements Database (ECOCROP) & MoALD Hill Crop Profiles",
+      "ecoServices": "Parajulee & Panta (2021), Archives of Agriculture and Environmental Science 6(4): 570-574 (DOI: 10.26832/24566632.2021.0604021)",
+      "laborDaysPerUnit": "Traditional manual terrace cultivation surveys (nursery raising, transplanting, hand harvesting: ~110 person-days/ha yielding ~750 kg/ha equates to ~0.15 person-days/kg).",
+      "idealEcoZone": "NARC Hill Crops Research Programme (Kabre) Agro-Ecological Matrix"
+    }
+  },
+  {
+    "id": "wheat",
+    "name": "Wheat",
+    "nepaliName": "गहूँ",
+    "category": "Staple Cereal Crop",
+    "supportedUnits": [
+      "kg",
+      "metric_ton",
+      "muri"
+    ],
+    "defaultUnit": "kg",
+    "baseUnitName": "kg",
+    "baseUnitMultiplier": {
+      "kg": 1,
+      "metric_ton": 1000,
+      "muri": 67
+    },
+    "waterFootprintPerUnit": 1827.0,
+    "energyReqPerUnit": 2.43,
+    "carbonOffsetPerUnit": 1.1,
+    "marketValuePerUnit": 42.0,
+    "laborDaysPerUnit": 0.04,
+    "caloriesPerUnit": 3390.0,
+    "idealSoilPh": {
+      "min": 6.0,
+      "max": 7.5
+    },
+    "idealEcoZone": [
+      "Terai",
+      "Hill"
+    ],
+    "ecoServices": [
+      "Winter Crop Rotational Biomass",
+      "Soil Structure Improvement"
+    ],
+    "dataSources": {
+      "baseUnitMultiplier": "Standard Nepal Department of Agriculture volumetric trading conversion: 1 muri = 67 kg for cleaned wheat seed grain",
+      "waterFootprintPerUnit": "https://seedcogroup.com/insights/wheat-production-a-gentle-production-guide/ and https://www.waterfootprint.org/resources/Report47-WaterFootprintCrops-Vol1.pdf",
+      "energyReqPerUnit": "https://www.sciencedirect.com/science/article/abs/pii/S0360544207000497 and ResearchGate publication 396850984 (Zaffar et al., 2026)",
+      "marketValuePerUnit": "MoALD Agri-Business Promotion and Market Development Directorate (ABPMDD) Regional Wheat Floor Price",
+      "caloriesPerUnit": "https://www.fao.org/4/x9892e/X9892e05.htm",
+      "idealSoilPh": "https://www.scribd.com/document/850148834/Wheat-Crop-Detailed-Info",
+      "ecoServices": "https://icl-growingsolutions.com and FAO Crop Residue Conservation Protocols",
+      "carbonOffsetPerUnit": "IPCC Good Practice Guidance for LULUCF annual cereal stubble residue models",
+      "laborDaysPerUnit": "https://www.banglajol.info/index.php/SJA/article/view/76657/54553 (Upadhaya & Bhatta, 2025, SAARC J. Agric., 23(1): 25-39, DOI: 10.3329/sja.v23i1.76657)"
+    }
+  },
+  {
+    "id": "rice",
+    "name": "Paddy Rice",
+    "nepaliName": "धान",
+    "category": "Primary Staple Cereal Crop",
+    "supportedUnits": [
+      "kg",
+      "metric_ton",
+      "muri"
+    ],
+    "defaultUnit": "kg",
+    "baseUnitName": "kg",
+    "baseUnitMultiplier": {
+      "kg": 1,
+      "metric_ton": 1000,
+      "muri": 50
+    },
+    "waterFootprintPerUnit": 2497.0,
+    "energyReqPerUnit": 4.36,
+    "carbonOffsetPerUnit": 1.3,
+    "marketValuePerUnit": 41.0,
+    "laborDaysPerUnit": 0.08,
+    "caloriesPerUnit": 3600.0,
+    "idealSoilPh": {
+      "min": 5.5,
+      "max": 7.0
+    },
+    "idealEcoZone": [
+      "Terai",
+      "Hill"
+    ],
+    "ecoServices": [
+      "Wetland Agro-Ecosystem Diversity",
+      "Methane Mitigation Management"
+    ],
+    "dataSources": {
+      "baseUnitMultiplier": "Standard National Department of Agriculture conversion for rough paddy grain: 1 muri = 50 kg",
+      "waterFootprintPerUnit": "Global average virtual water footprint benchmark for paddy rice (2,497 L/kg; Chapagain & Hoekstra, 2011; OIEau)",
+      "energyReqPerUnit": "https://se.org.pk/File-Download.aspx?archivedpaperid=100 (Khan et al., 2009, Soil & Environ. 28(1): 60-67)",
+      "marketValuePerUnit": "https://www.selinawamucii.com/insights/prices/nepal/rice/",
+      "caloriesPerUnit": "https://www.fao.org/4/x9892e/X9892e05.htm",
+      "idealSoilPh": "https://www.maxapress.com/article/doi/10.48130/cas-0025-0014?viewType=HTML",
+      "ecoServices": "Devsenapathy et al. (2009), Energy management in crop production, Indian Journal of Agronomy",
+      "carbonOffsetPerUnit": "IPCC Tier 1 wetland rice organic biomass incorporation balance",
+      "laborDaysPerUnit": "Traditional puddle-transplanting and manual post-harvest stacking (160-200 labor-days/ha at mean national yield threshold equates to ~0.08 person-days/kg)"
+    }
+  },
+  {
+    "id": "large_cardamom",
+    "name": "Large Black Cardamom",
+    "nepaliName": "अलैंची",
+    "category": "High-Value Export Cash Crop",
+    "supportedUnits": [
+      "kg",
+      "metric_ton",
+      "man"
+    ],
+    "defaultUnit": "kg",
+    "baseUnitName": "kg",
+    "baseUnitMultiplier": {
+      "kg": 1,
+      "metric_ton": 1000,
+      "man": 40
+    },
+    "waterFootprintPerUnit": 18876.0,
+    "energyReqPerUnit": 42.5,
+    "carbonOffsetPerUnit": 4.1,
+    "marketValuePerUnit": 2050.0,
+    "laborDaysPerUnit": 0.4,
+    "caloriesPerUnit": 3110.0,
+    "idealSoilPh": {
+      "min": 4.5,
+      "max": 6.5
+    },
+    "idealEcoZone": [
+      "Hill"
+    ],
+    "ecoServices": [
+      "Alnus nepalensis Shade Agroforestry",
+      "Landslide and Soil Erosion Control"
+    ],
+    "dataSources": {
+      "baseUnitMultiplier": "https://risingnepaldaily.com/news/86742 and Federation of Large Cardamom Entrepreneurs of Nepal (FLCEN) commercial packaging standard (1 man = 40 kg)",
+      "waterFootprintPerUnit": "https://onlinelibrary.wiley.com/doi/10.1002/ird.2503 (Kumar et al., 2020, Irrigation and Drainage 70(2): 300-311, DOI: 10.1002/ird.2503) and https://www.researchgate.net/publication/342767589_Assessing_water_footprint_of_large_cardamom_and_developing_management_strategy_in_Sikkim_India",
+      "energyReqPerUnit": "Nepal Agricultural Research Council (NARC) Post-Harvest Bio-Energy Modeling for traditional wood-cured Bhatti kilns (4-6 kg firewood per kg dry pods = ~42.5 MJ/kg)",
+      "marketValuePerUnit": "https://risingnepaldaily.com/news/86742 (Cardamom Entrepreneurs Association Market Bulletin, Phungling, Taplejung: Rs. 82,000 per 40 kg man = Rs. 2,050/kg)",
+      "caloriesPerUnit": "https://www.recipal.com/ingredients/286-nutrition-facts-calories-protein-carbs-fat-spices-cardamom and https://www.eatthismuch.com/calories/cardamom-181 (USDA FoodData Central standard: 3,110 kcal/kg)",
+      "idealSoilPh": "FAO Crop Ecological Requirements & Cardamom Growers Field Manual (pH 4.5 - 6.0)",
+      "ecoServices": "International Centre for Integrated Mountain Development (ICIMOD) Agroforestry Guidelines (Alnus nepalensis Shade Agroforestry & Landslide/Soil Erosion Control)",
+      "carbonOffsetPerUnit": "IPCC LULUCF perennial agroforestry carbon sequestration parameters",
+      "laborDaysPerUnit": "MoALD High-Value Spice Profiles (manual shade canopy maintenance and bhatti curing: ~0.40 person-days/kg)",
+      "idealEcoZone": "National Crop Agro-Ecological Zoning Atlas of Nepal (Mid-Hills 700m - 2,100m elevation)"
+    }
+  },
+  {
+    "id": "tomato",
+    "name": "Tomato",
+    "nepaliName": "गोलभेडा",
+    "category": "High-Value Vegetable / Fruit Crop",
+    "supportedUnits": [
+      "kg",
+      "metric_ton",
+      "crate"
+    ],
+    "defaultUnit": "kg",
+    "baseUnitName": "kg",
+    "baseUnitMultiplier": {
+      "kg": 1,
+      "metric_ton": 1000,
+      "crate": 25
+    },
+    "waterFootprintPerUnit": 214.0,
+    "energyReqPerUnit": 2.1,
+    "carbonOffsetPerUnit": 0.4,
+    "marketValuePerUnit": 48.0,
+    "laborDaysPerUnit": 0.12,
+    "caloriesPerUnit": 180.0,
+    "idealSoilPh": {
+      "min": 6.0,
+      "max": 6.8
+    },
+    "idealEcoZone": [
+      "Hill",
+      "Terai"
+    ],
+    "ecoServices": [
+      "Agro-biodiversity Enhancement",
+      "Microclimate Stabilization"
+    ],
+    "dataSources": {
+      "baseUnitMultiplier": "https://khojsamachar.com/kalimati-wholesale-prices-vegetables-fruits/ (Kalimati Fruits and Vegetable Market Development Board structural wholesale commercial plastic crate = 25 kg)",
+      "waterFootprintPerUnit": "https://www.aquaidwatercoolers.co.uk/a-tomato-fifty-litres-of-water and https://www.waterfootprint.org/resources/Report47-WaterFootprintCrops-Vol1.pdf",
+      "energyReqPerUnit": "WEFE Nexus Tool 2.0 / Greenhouse and Tunnel Cultivation Energetics Case Studies (~2.1 MJ/kg)",
+      "marketValuePerUnit": "https://ramropatro.com/vegetable and https://sharehubnepal.com/economy/kalimati-vegetable-rates (Kalimati Vegetable Market Daily Wholesale Bulletin: weighted average Rs. 48.00/kg)",
+      "caloriesPerUnit": "FAO Food Composition Matrix Guidelines / USDA FoodData Central (Raw fresh red tomatoes: 18 kcal/100g = 180 kcal/kg)",
+      "idealSoilPh": "FAO Crop Ecological Requirements Database / NARC Soil Data Systems Portal (pH 6.0 - 6.8)",
+      "ecoServices": "WEFE Nexus Eco-Services Frameworks & FAO Crop Ecology Protocols (Agro-biodiversity enhancement & microclimate stabilization)",
+      "carbonOffsetPerUnit": "IPCC Horticulture biomass turnover standards",
+      "laborDaysPerUnit": "MoALD Horticultural Labor Profiles (tunnel staking, pruning, harvesting: ~0.12 person-days/kg)",
+      "idealEcoZone": "Nepal Agricultural Research Council (NARC) Horticultural Production Zoning Maps (Terai open field & Mid-Hills tunnel)"
+    }
+  },
+  {
+    "id": "apple",
+    "name": "Apple",
+    "nepaliName": "स्याउ",
+    "category": "High-Value Mountain Fruit Crop",
+    "supportedUnits": [
+      "kg",
+      "metric_ton",
+      "crate"
+    ],
+    "defaultUnit": "kg",
+    "baseUnitName": "kg",
+    "baseUnitMultiplier": {
+      "kg": 1,
+      "metric_ton": 1000,
+      "crate": 20
+    },
+    "waterFootprintPerUnit": 822.0,
+    "energyReqPerUnit": 3.44,
+    "carbonOffsetPerUnit": 0.55,
+    "marketValuePerUnit": 60.0,
+    "laborDaysPerUnit": 0.08,
+    "caloriesPerUnit": 520.0,
+    "idealSoilPh": {
+      "min": 6.0,
+      "max": 6.8
+    },
+    "idealEcoZone": [
+      "High Hills / Mountain"
+    ],
+    "ecoServices": [
+      "Terrace Slope Stabilization",
+      "Orchard Carbon Sequestration"
+    ],
+    "dataSources": {
+      "baseUnitMultiplier": "https://www.exportersindia.com/indian-suppliers/apple.htm (High-altitude orchard logistics and transport packaging standard wooden/plastic commercial crate = 20 kg)",
+      "waterFootprintPerUnit": "https://www.jnr.ac.cn/EN/abstract/article/1000-3037/52682 (Journal of Natural Resources multi-decadal temperate orchard hydrologic modeling: 822 L/kg) and https://www.waterfootprint.org/resources/Report47-WaterFootprintCrops-Vol1.pdf",
+      "energyReqPerUnit": "https://www.academia.edu/7261688/Diet_Health_and_the_Environment (Agronomic energy input-output assessment frameworks for mountain orchard logistics: 820 kcal/kg = ~3.44 MJ/kg)",
+      "marketValuePerUnit": "https://www.researchgate.net/publication/379626039_Economic_Analysis_of_Apple_Production_and_Marketing_in_Raskot_Municipality_of_Kalikot_District_Nepal and The Rising Nepal Market Ledger (Rs. 50-70/kg, baseline Rs. 60.00/kg)",
+      "caloriesPerUnit": "https://www.academia.edu/7261688/Diet_Health_and_the_Environment and USDA FoodData Central (52 kcal/100g = 520 kcal/kg)",
+      "idealSoilPh": "https://www.researchgate.net/publication/379626039_Economic_Analysis_of_Apple_Production_and_Marketing_in_Raskot_Municipality_of_Kalikot_District_Nepal and FAO ECOCROP Index (pH 6.0 - 6.8)",
+      "ecoServices": "ICIMOD Sustainable Mountain Farming Frameworks (Terrace slope stabilization & orchard carbon sequestration)",
+      "carbonOffsetPerUnit": "IPCC Good Practice Guidance for Land Use, Land-Use Change, and Forestry (LULUCF) perennial woody orchard biomass accumulation (0.55 kg CO2-eq/kg)",
+      "laborDaysPerUnit": "https://www.academia.edu/28889797/Articulo_manzana_Canatlan (Macroeconomic agriculture labor dynamic surveys for manual temperate orchards: ~0.08 person-days/kg)",
+      "idealEcoZone": "Nepal Agricultural Research Council (NARC) Horticultural Agro-Ecological Mapping (High Hills and Mountain districts 1,800m - 2,800m for chilling hours)"
+    }
+  },
+  {
+    "id": "coffee",
+    "name": "Arabica Coffee",
+    "nepaliName": "अरबिका कफी",
+    "category": "High-Value Export Cash Crop",
+    "supportedUnits": [
+      "kg",
+      "metric_ton",
+      "bag"
+    ],
+    "defaultUnit": "kg",
+    "baseUnitName": "kg",
+    "baseUnitMultiplier": {
+      "kg": 1,
+      "metric_ton": 1000,
+      "bag": 50
+    },
+    "waterFootprintPerUnit": 840.0,
+    "energyReqPerUnit": 1.2,
+    "carbonOffsetPerUnit": 3.8,
+    "marketValuePerUnit": 650.0,
+    "laborDaysPerUnit": 0.45,
+    "caloriesPerUnit": 120.0,
+    "idealSoilPh": {
+      "min": 5.5,
+      "max": 6.8
+    },
+    "idealEcoZone": [
+      "Hill"
+    ],
+    "ecoServices": [
+      "Soil Erosion Control",
+      "Shade-Grown Biodiversity"
+    ],
+    "dataSources": {
+      "baseUnitMultiplier": "https://teacoffee.gov.np/pages/minimum-agreed-price-of-coffee-16/ and https://ico.org/what-we-do/world-coffee-statistics-database/",
+      "waterFootprintPerUnit": "https://www.gdrc.org/uem/footprints/water-footprint.html and https://www.researchgate.net/publication/222816886_The_Water_Footprint_of_Coffee_and_Tea_Consumption_in_the_Netherlands",
+      "energyReqPerUnit": "https://www.researchgate.net/figure/Energy-Requirement-in-Coffee-Production_tbl2_334590948 and https://www.sciencedirect.com/science/article/pii/S0924224417303394",
+      "carbonOffsetPerUnit": "https://www.sciencepg.com/article/10.11648/j.ijepp.20241202.12 and https://www.envirobiotechjournals.com/EEC/v27octSupplIssue2021/EEC-1.pdf",
+      "marketValuePerUnit": "https://teacoffee.gov.np/pages/minimum-agreed-price-of-coffee-16/",
+      "caloriesPerUnit": "https://www.fao.org/4/x9892e/X9892e05.htm",
+      "idealSoilPh": "https://datadryad.org/dataset/doi:10.25338/B8993H",
+      "ecoServices": "International Centre for Integrated Mountain Development (ICIMOD) Agroforestry Systems Guidelines (Soil Erosion Control & Shade-Grown Biodiversity)",
+      "laborDaysPerUnit": "https://ourworldindata.org/grapher/coffee-production-by-region",
+      "idealEcoZone": "https://teacoffee.gov.np",
+      "suitabilityMatrix": "https://www.academia.edu/figures/41030886/table-2-weightage-in-the-form-of-pairwise-comparison-matrix"
+    }
+  }
+]

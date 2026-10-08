@@ -37,7 +37,8 @@ export const SunburstWaterCarbon: React.FC<SunburstWaterCarbonProps> = ({
             </span>
           </div>
           <p className="text-xs text-slate-400 font-sans">
-            Switch between Hoekstra 3-Color Water Footprint and IPCC AR6 Carbon Stock to inspect hierarchical components.
+            Switch between Hoekstra 3-Color Water Footprint and IPCC AR6 Carbon Stock to inspect hierarchical
+            components.
           </p>
         </div>
 
@@ -45,15 +46,17 @@ export const SunburstWaterCarbon: React.FC<SunburstWaterCarbonProps> = ({
         <div className="flex items-center gap-1.5 p-1 bg-slate-800 rounded-xl border border-slate-700 text-xs font-outfit">
           <button
             onClick={() => setActiveTab('water')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${activeTab === 'water' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
-              }`}
+            className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+              activeTab === 'water' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:text-white'
+            }`}
           >
             💧 Hoekstra Water Footprint
           </button>
           <button
             onClick={() => setActiveTab('carbon')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${activeTab === 'carbon' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:bg-slate-700/50'
-              }`}
+            className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+              activeTab === 'carbon' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-400 hover:bg-slate-700/50'
+            }`}
           >
             🌲 IPCC Carbon Breakdown
           </button>
@@ -115,7 +118,15 @@ export const SunburstWaterCarbon: React.FC<SunburstWaterCarbonProps> = ({
               <text x="160" y="145" textAnchor="middle" fill="#94a3b8" fontSize="10" fontFamily="monospace">
                 Total Water Footprint
               </text>
-              <text x="160" y="170" textAnchor="middle" fill="#ffffff" fontSize="20" fontWeight="bold" fontFamily="Outfit, sans-serif">
+              <text
+                x="160"
+                y="170"
+                textAnchor="middle"
+                fill="#ffffff"
+                fontSize="20"
+                fontWeight="bold"
+                fontFamily="Outfit, sans-serif"
+              >
                 {totalWaterLPerKg.toLocaleString()}
               </text>
               <text x="160" y="186" textAnchor="middle" fill="#34d399" fontSize="10" fontFamily="monospace">
@@ -129,8 +140,11 @@ export const SunburstWaterCarbon: React.FC<SunburstWaterCarbonProps> = ({
             <div
               onMouseEnter={() => setHoveredSlice('green')}
               onMouseLeave={() => setHoveredSlice(null)}
-              className={`p-3 rounded-xl border transition-all cursor-pointer ${hoveredSlice === 'green' ? 'bg-emerald-950/80 border-emerald-500 shadow-xs' : 'bg-slate-800/80 border-slate-700'
-                }`}
+              className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                hoveredSlice === 'green'
+                  ? 'bg-emerald-950/80 border-emerald-500 shadow-xs'
+                  : 'bg-slate-800/80 border-slate-700'
+              }`}
             >
               <div className="flex items-center justify-between">
                 <span className="text-emerald-400 font-bold font-sans">🌿 Green Water (Rainfed)</span>
@@ -144,8 +158,9 @@ export const SunburstWaterCarbon: React.FC<SunburstWaterCarbonProps> = ({
             <div
               onMouseEnter={() => setHoveredSlice('blue')}
               onMouseLeave={() => setHoveredSlice(null)}
-              className={`p-3 rounded-xl border transition-all cursor-pointer ${hoveredSlice === 'blue' ? 'bg-sky-950/80 border-sky-500 shadow-xs' : 'bg-slate-800/80 border-slate-700'
-                }`}
+              className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                hoveredSlice === 'blue' ? 'bg-sky-950/80 border-sky-500 shadow-xs' : 'bg-slate-800/80 border-slate-700'
+              }`}
             >
               <div className="flex items-center justify-between">
                 <span className="text-sky-400 font-bold font-sans">💧 Blue Water (Irrigation)</span>
@@ -159,8 +174,9 @@ export const SunburstWaterCarbon: React.FC<SunburstWaterCarbonProps> = ({
             <div
               onMouseEnter={() => setHoveredSlice('grey')}
               onMouseLeave={() => setHoveredSlice(null)}
-              className={`p-3 rounded-xl border transition-all cursor-pointer ${hoveredSlice === 'grey' ? 'bg-slate-800 border-slate-500 shadow-xs' : 'bg-slate-800/80 border-slate-700'
-                }`}
+              className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                hoveredSlice === 'grey' ? 'bg-slate-800 border-slate-500 shadow-xs' : 'bg-slate-800/80 border-slate-700'
+              }`}
             >
               <div className="flex items-center justify-between">
                 <span className="text-slate-300 font-bold font-sans">🌫️ Grey Water (Dilution)</span>
@@ -178,8 +194,25 @@ export const SunburstWaterCarbon: React.FC<SunburstWaterCarbonProps> = ({
           <div className="md:col-span-7 flex items-center justify-center p-4">
             <svg viewBox="0 0 340 300" className="w-full max-w-sm h-auto select-none font-sans">
               {/* Outer Soil Carbon Sink Bubble */}
-              <circle cx="170" cy="150" r="135" fill="#064e3b" fillOpacity="0.4" stroke="#10b981" strokeWidth="2" strokeDasharray="4 4" />
-              <text x="170" y="8" textAnchor="middle" fill="#34d399" fontSize="10.5" fontWeight="bold" fontFamily="monospace">
+              <circle
+                cx="170"
+                cy="150"
+                r="135"
+                fill="#064e3b"
+                fillOpacity="0.4"
+                stroke="#10b981"
+                strokeWidth="2"
+                strokeDasharray="4 4"
+              />
+              <text
+                x="170"
+                y="8"
+                textAnchor="middle"
+                fill="#34d399"
+                fontSize="10.5"
+                fontWeight="bold"
+                fontFamily="monospace"
+              >
                 Soil Organic Carbon Sink: {soilCarbonStockMgHa} Mg C/ha
               </text>
 

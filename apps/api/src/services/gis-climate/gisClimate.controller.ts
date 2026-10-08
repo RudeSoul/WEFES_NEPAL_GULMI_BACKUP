@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { gisClimateService } from './gisClimate.service';
 
-export class GisClimateController {
+class GisClimateController {
   public getGulmiBoundary(req: Request, res: Response, next: NextFunction) {
     try {
       const data = gisClimateService.getGulmiBoundary();

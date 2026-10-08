@@ -20,26 +20,144 @@ export const CircularSankeyFlow: React.FC<CircularSankeyFlowProps> = ({
   const [activeNode, setActiveNode] = useState<string | null>(null);
 
   const nodes = [
-    { id: 'crop', label: `${cropName} Crop Land`, sub: `${annualStrawTonnes.toFixed(1)}t Residue/yr`, x: 95, y: 150, color: '#10b981', type: 'source' },
-    { id: 'livestock', label: 'Mixed Livestock Herd', sub: 'Buffalo, Cows & Goats', x: 340, y: 100, color: '#0ea5e9', type: 'process' },
-    { id: 'aquaculture', label: 'Aquaculture Ponds', sub: 'Effluent Recycling', x: 340, y: 230, color: '#06b6d4', type: 'process' },
-    { id: 'biogas', label: 'AEPC Biogas Digester', sub: `${biogasM3PerDay.toFixed(1)} m³/day gas`, x: 585, y: 80, color: '#f59e0b', type: 'energy' },
-    { id: 'slurry', label: 'Bio-Slurry Conditioner', sub: `${organicNPKSavedKg} kg NPK saved`, x: 585, y: 200, color: '#8b5cf6', type: 'fertilizer' },
-    { id: 'clean_cooking', label: 'Clean Cooking Energy', sub: `${lpgSavedPerYear} LPG Cylinders/yr`, x: 825, y: 60, color: '#ef4444', type: 'output' },
-    { id: 'soil_health', label: 'Recharged Soil Carbon', sub: 'Replaces Urea & DAP', x: 825, y: 160, color: '#10b981', type: 'output' },
-    { id: 'aquifer', label: 'Aquifer Recharge Pond', sub: '50m² Percolation', x: 825, y: 260, color: '#3b82f6', type: 'output' },
+    {
+      id: 'crop',
+      label: `${cropName} Crop Land`,
+      sub: `${annualStrawTonnes.toFixed(1)}t Residue/yr`,
+      x: 95,
+      y: 150,
+      color: '#10b981',
+      type: 'source',
+    },
+    {
+      id: 'livestock',
+      label: 'Mixed Livestock Herd',
+      sub: 'Buffalo, Cows & Goats',
+      x: 340,
+      y: 100,
+      color: '#0ea5e9',
+      type: 'process',
+    },
+    {
+      id: 'aquaculture',
+      label: 'Aquaculture Ponds',
+      sub: 'Effluent Recycling',
+      x: 340,
+      y: 230,
+      color: '#06b6d4',
+      type: 'process',
+    },
+    {
+      id: 'biogas',
+      label: 'AEPC Biogas Digester',
+      sub: `${biogasM3PerDay.toFixed(1)} m³/day gas`,
+      x: 585,
+      y: 80,
+      color: '#f59e0b',
+      type: 'energy',
+    },
+    {
+      id: 'slurry',
+      label: 'Bio-Slurry Conditioner',
+      sub: `${organicNPKSavedKg} kg NPK saved`,
+      x: 585,
+      y: 200,
+      color: '#8b5cf6',
+      type: 'fertilizer',
+    },
+    {
+      id: 'clean_cooking',
+      label: 'Clean Cooking Energy',
+      sub: `${lpgSavedPerYear} LPG Cylinders/yr`,
+      x: 825,
+      y: 60,
+      color: '#ef4444',
+      type: 'output',
+    },
+    {
+      id: 'soil_health',
+      label: 'Recharged Soil Carbon',
+      sub: 'Replaces Urea & DAP',
+      x: 825,
+      y: 160,
+      color: '#10b981',
+      type: 'output',
+    },
+    {
+      id: 'aquifer',
+      label: 'Aquifer Recharge Pond',
+      sub: '50m² Percolation',
+      x: 825,
+      y: 260,
+      color: '#3b82f6',
+      type: 'output',
+    },
   ];
 
   const links = [
-    { from: 'crop', to: 'livestock', label: 'Fodder & Straw', path: 'M 180 150 C 240 150, 260 110, 260 110', color: '#10b981' },
-    { from: 'crop', to: 'aquaculture', label: 'Plant By-products', path: 'M 180 160 C 240 160, 260 230, 260 230', color: '#06b6d4' },
-    { from: 'livestock', to: 'biogas', label: 'Daily Dung', path: 'M 420 100 C 480 100, 500 85, 505 85', color: '#f59e0b' },
-    { from: 'livestock', to: 'slurry', label: 'Composting', path: 'M 420 115 C 480 115, 500 200, 505 200', color: '#8b5cf6' },
-    { from: 'aquaculture', to: 'crop', label: 'Nutrient Water', path: 'M 260 240 C 190 240, 180 175, 180 165', color: '#0ea5e9' },
-    { from: 'biogas', to: 'clean_cooking', label: 'Biomethane', path: 'M 665 80 C 720 80, 740 65, 745 65', color: '#ef4444' },
-    { from: 'biogas', to: 'slurry', label: 'Digestate Effluent', path: 'M 585 105 C 585 140, 585 160, 585 175', color: '#8b5cf6' },
-    { from: 'slurry', to: 'soil_health', label: 'NPK Dressing', path: 'M 665 200 C 720 200, 740 165, 745 165', color: '#10b981' },
-    { from: 'aquaculture', to: 'aquifer', label: 'Pond Seepage', path: 'M 420 240 C 580 240, 680 265, 745 265', color: '#3b82f6' },
+    {
+      from: 'crop',
+      to: 'livestock',
+      label: 'Fodder & Straw',
+      path: 'M 180 150 C 240 150, 260 110, 260 110',
+      color: '#10b981',
+    },
+    {
+      from: 'crop',
+      to: 'aquaculture',
+      label: 'Plant By-products',
+      path: 'M 180 160 C 240 160, 260 230, 260 230',
+      color: '#06b6d4',
+    },
+    {
+      from: 'livestock',
+      to: 'biogas',
+      label: 'Daily Dung',
+      path: 'M 420 100 C 480 100, 500 85, 505 85',
+      color: '#f59e0b',
+    },
+    {
+      from: 'livestock',
+      to: 'slurry',
+      label: 'Composting',
+      path: 'M 420 115 C 480 115, 500 200, 505 200',
+      color: '#8b5cf6',
+    },
+    {
+      from: 'aquaculture',
+      to: 'crop',
+      label: 'Nutrient Water',
+      path: 'M 260 240 C 190 240, 180 175, 180 165',
+      color: '#0ea5e9',
+    },
+    {
+      from: 'biogas',
+      to: 'clean_cooking',
+      label: 'Biomethane',
+      path: 'M 665 80 C 720 80, 740 65, 745 65',
+      color: '#ef4444',
+    },
+    {
+      from: 'biogas',
+      to: 'slurry',
+      label: 'Digestate Effluent',
+      path: 'M 585 105 C 585 140, 585 160, 585 175',
+      color: '#8b5cf6',
+    },
+    {
+      from: 'slurry',
+      to: 'soil_health',
+      label: 'NPK Dressing',
+      path: 'M 665 200 C 720 200, 740 165, 745 165',
+      color: '#10b981',
+    },
+    {
+      from: 'aquaculture',
+      to: 'aquifer',
+      label: 'Pond Seepage',
+      path: 'M 420 240 C 580 240, 680 265, 745 265',
+      color: '#3b82f6',
+    },
   ];
 
   return (
@@ -55,7 +173,8 @@ export const CircularSankeyFlow: React.FC<CircularSankeyFlowProps> = ({
             </span>
           </div>
           <p className="text-xs text-slate-400 font-sans">
-            Hover over any node or flow ribbon to inspect mass, energy, and nutrient balances connecting crop, dairy, biogas, and soil.
+            Hover over any node or flow ribbon to inspect mass, energy, and nutrient balances connecting crop, dairy,
+            biogas, and soil.
           </p>
         </div>
 

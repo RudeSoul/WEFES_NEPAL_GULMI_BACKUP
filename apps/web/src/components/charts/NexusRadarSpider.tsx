@@ -23,11 +23,46 @@ export const NexusRadarSpider: React.FC<NexusRadarSpiderProps> = ({
 
   // Pillars around 360 degrees (72 deg increments, starting from top at -90 deg)
   const pillars = [
-    { id: 'water', label: 'Water Security', score: waterScore, baseline: Math.max(30, waterScore - 28), angle: -90, color: '#0ea5e9' },
-    { id: 'energy', label: 'Clean Energy', score: energyScore, baseline: Math.max(25, energyScore - 32), angle: -18, color: '#f59e0b' },
-    { id: 'food', label: 'Food & Nutrition', score: foodScore, baseline: Math.max(35, foodScore - 20), angle: 54, color: '#10b981' },
-    { id: 'ecosystem', label: 'Ecosystem Carbon', score: ecosystemScore, baseline: Math.max(20, ecosystemScore - 35), angle: 126, color: '#8b5cf6' },
-    { id: 'socio', label: 'Socioeconomics', score: socioeconomicScore, baseline: Math.max(30, socioeconomicScore - 25), angle: 198, color: '#ec4899' },
+    {
+      id: 'water',
+      label: 'Water Security',
+      score: waterScore,
+      baseline: Math.max(30, waterScore - 28),
+      angle: -90,
+      color: '#0ea5e9',
+    },
+    {
+      id: 'energy',
+      label: 'Clean Energy',
+      score: energyScore,
+      baseline: Math.max(25, energyScore - 32),
+      angle: -18,
+      color: '#f59e0b',
+    },
+    {
+      id: 'food',
+      label: 'Food & Nutrition',
+      score: foodScore,
+      baseline: Math.max(35, foodScore - 20),
+      angle: 54,
+      color: '#10b981',
+    },
+    {
+      id: 'ecosystem',
+      label: 'Ecosystem Carbon',
+      score: ecosystemScore,
+      baseline: Math.max(20, ecosystemScore - 35),
+      angle: 126,
+      color: '#8b5cf6',
+    },
+    {
+      id: 'socio',
+      label: 'Socioeconomics',
+      score: socioeconomicScore,
+      baseline: Math.max(30, socioeconomicScore - 25),
+      angle: 198,
+      color: '#ec4899',
+    },
   ];
 
   const center = 160;
@@ -42,18 +77,22 @@ export const NexusRadarSpider: React.FC<NexusRadarSpiderProps> = ({
   };
 
   // Generate polygon points for active scores
-  const scorePoints = pillars.map(p => {
-    const pt = polarToCartesian(center, center, (p.score / 100) * radius, p.angle);
-    return `${pt.x},${pt.y}`;
-  }).join(' ');
+  const scorePoints = pillars
+    .map((p) => {
+      const pt = polarToCartesian(center, center, (p.score / 100) * radius, p.angle);
+      return `${pt.x},${pt.y}`;
+    })
+    .join(' ');
 
   // Generate polygon points for baseline
-  const baselinePoints = pillars.map(p => {
-    const pt = polarToCartesian(center, center, (p.baseline / 100) * radius, p.angle);
-    return `${pt.x},${pt.y}`;
-  }).join(' ');
+  const baselinePoints = pillars
+    .map((p) => {
+      const pt = polarToCartesian(center, center, (p.baseline / 100) * radius, p.angle);
+      return `${pt.x},${pt.y}`;
+    })
+    .join(' ');
 
-  const activePillarObj = pillars.find(p => p.id === hoveredPillar);
+  const activePillarObj = pillars.find((p) => p.id === hoveredPillar);
 
   return (
     <div className="p-5 sm:p-6 bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-md space-y-4">
@@ -74,7 +113,8 @@ export const NexusRadarSpider: React.FC<NexusRadarSpiderProps> = ({
 
         <div className="flex items-center gap-2 shrink-0 text-xs font-mono">
           <span className="px-2.5 py-1 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800">
-            ⭐ Composite Balance: {Math.round((waterScore + energyScore + foodScore + ecosystemScore + socioeconomicScore) / 5)} / 100
+            ⭐ Composite Balance:{' '}
+            {Math.round((waterScore + energyScore + foodScore + ecosystemScore + socioeconomicScore) / 5)} / 100
           </span>
         </div>
       </div>
@@ -184,7 +224,9 @@ export const NexusRadarSpider: React.FC<NexusRadarSpiderProps> = ({
                 onMouseEnter={() => setHoveredPillar(p.id)}
                 onMouseLeave={() => setHoveredPillar(null)}
                 className={`p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
-                  hoveredPillar === p.id ? 'bg-emerald-950/80 border-emerald-500 shadow-xs' : 'bg-slate-800/80 border-slate-700'
+                  hoveredPillar === p.id
+                    ? 'bg-emerald-950/80 border-emerald-500 shadow-xs'
+                    : 'bg-slate-800/80 border-slate-700'
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -201,7 +243,9 @@ export const NexusRadarSpider: React.FC<NexusRadarSpiderProps> = ({
 
           {activePillarObj && (
             <div className="p-3 bg-emerald-950/90 rounded-xl border border-emerald-700 text-emerald-200 text-[11px] font-sans">
-              <strong>{activePillarObj.label} Leverage:</strong> +{activePillarObj.score - activePillarObj.baseline} point gain through integrated agro-solar pumping, bio-slurry substitution, and climate-resilient varietals.
+              <strong>{activePillarObj.label} Leverage:</strong> +{activePillarObj.score - activePillarObj.baseline}{' '}
+              point gain through integrated agro-solar pumping, bio-slurry substitution, and climate-resilient
+              varietals.
             </div>
           )}
         </div>
